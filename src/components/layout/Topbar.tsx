@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, BookOpen } from "lucide-react";
+import { Menu } from "lucide-react";
 
 interface TopbarProps {
   onMenu: () => void;
@@ -25,9 +25,9 @@ export function Topbar({ onMenu }: TopbarProps) {
         <Link
           to="/library"
           aria-label="Библиотека"
-          className="tap h-9 w-9 rounded-full bg-card hairline shadow-card flex items-center justify-center"
+          className="tap h-9 w-9 rounded-full bg-card hairline shadow-card flex items-center justify-center text-[20px] leading-none"
         >
-          <BookOpen className="h-[18px] w-[18px]" strokeWidth={2.2} />
+          <span aria-hidden="true">📚</span>
         </Link>
       </div>
     </header>

@@ -4,9 +4,10 @@ import { Settings, LifeBuoy, LogOut, CheckCircle2 } from "lucide-react";
 interface SideMenuProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onOpenOnboarding?: () => void;
 }
 
-export function SideMenu({ open, onOpenChange }: SideMenuProps) {
+export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-[300px] sm:w-[320px] bg-background p-0">
@@ -39,6 +40,15 @@ export function SideMenu({ open, onOpenChange }: SideMenuProps) {
           <MenuItem icon={LifeBuoy} label="Поддержка" />
           <MenuItem icon={LogOut} label="Выход" danger />
         </nav>
+
+        <div className="px-5 pt-2 pb-5 mt-auto absolute bottom-0 left-0 right-0">
+          <button
+            onClick={onOpenOnboarding}
+            className="tap text-[11px] text-muted-foreground/70 underline underline-offset-2"
+          >
+            Страница онбординга
+          </button>
+        </div>
       </SheetContent>
     </Sheet>
   );
