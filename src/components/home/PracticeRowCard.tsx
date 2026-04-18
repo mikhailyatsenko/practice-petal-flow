@@ -50,7 +50,7 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
               +1 ⭐
             </span>
           ) : (
-            <span className="rounded-full bg-gradient-to-b from-primary to-[hsl(var(--primary)/0.85)] text-primary-foreground text-[11px] font-semibold px-2.5 py-1 whitespace-nowrap shadow-[0_2px_6px_-1px_hsl(var(--primary)/0.45),inset_0_1px_0_rgba(255,255,255,0.3)]">
+            <span className="tap btn-pill-orange btn-sm">
               сделать
             </span>
           )}
