@@ -44,15 +44,17 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
           ))}
         </div>
 
-        {doneToday ? (
-          <span className="rounded-full bg-success/15 text-success-dark text-[11px] font-medium px-2 py-1">
-            +1 ⭐
-          </span>
-        ) : (
-          <span className="rounded-full bg-muted text-muted-foreground text-[11px] font-medium px-2 py-1">
-            сделать
-          </span>
-        )}
+        <div className="w-[64px] flex justify-end">
+          {doneToday ? (
+            <span className="rounded-full bg-success/15 text-success-dark text-[11px] font-medium px-2 py-1 whitespace-nowrap">
+              +1 ⭐
+            </span>
+          ) : (
+            <span className="rounded-full bg-muted text-muted-foreground text-[11px] font-medium px-2 py-1 whitespace-nowrap">
+              сделать
+            </span>
+          )}
+        </div>
       </div>
     </button>
   );
