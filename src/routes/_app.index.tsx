@@ -112,6 +112,10 @@ function HomeScreen() {
             document.getElementById("today-practices")?.scrollIntoView({ behavior: "smooth", block: "start" });
           }}
         />
+
+        <div className="mt-3">
+          <PathLevels />
+        </div>
       </section>
 
       <section id="today-practices" className="mt-5">
