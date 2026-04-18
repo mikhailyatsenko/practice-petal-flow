@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { StatCard } from "@/components/home/StatCard";
 import { PathCard, type PathStep } from "@/components/home/PathCard";
+import { PathLevels } from "@/components/home/PathLevels";
 import { PracticeRowCard, type PracticeRow, type DayState } from "@/components/home/PracticeRowCard";
 
 export const Route = createFileRoute("/_app/")({
@@ -111,6 +112,10 @@ function HomeScreen() {
             document.getElementById("today-practices")?.scrollIntoView({ behavior: "smooth", block: "start" });
           }}
         />
+
+        <div className="mt-3">
+          <PathLevels />
+        </div>
       </section>
 
       <section id="today-practices" className="mt-5">
