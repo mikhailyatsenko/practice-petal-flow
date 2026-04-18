@@ -345,16 +345,14 @@ function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
   const word = CHARGE_WORDS[safe];
 
   return (
-    <div className="flex items-center gap-2.5 min-w-0">
-      <button
-        onClick={onTap}
-        aria-label="Заряд желания"
-        className="tap text-[22px] leading-none select-none active:scale-90 transition-transform"
-      >
-        ❤️
-      </button>
-      <div className="flex flex-col gap-1 min-w-0">
-        <div className="flex items-center gap-1">
+    <button
+      onClick={onTap}
+      aria-label="Заряд желания"
+      className="tap flex items-center gap-2.5 min-w-0 select-none -mx-1 px-1 py-1 rounded-lg"
+    >
+      <span className="text-[22px] leading-none transition-transform active:scale-90">❤️</span>
+      <span className="flex flex-col gap-1 min-w-0 text-left">
+        <span className="flex items-center gap-1">
           {Array.from({ length: 5 }).map((_, i) => {
             const filled = i < safe;
             return (
@@ -365,7 +363,7 @@ function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
               />
             );
           })}
-        </div>
+        </span>
         <span
           key={safe}
           className="text-[12px] font-medium leading-none animate-pop"
@@ -373,7 +371,7 @@ function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
         >
           {word.label}
         </span>
-      </div>
-    </div>
+      </span>
+    </button>
   );
 }
