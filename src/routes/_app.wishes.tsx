@@ -170,6 +170,9 @@ function WishesScreen() {
 
       {activeTab === "wishes" && (
         <div className="px-4 pt-3 space-y-4">
+          <button className="tap btn-pill-orange w-full inline-flex items-center justify-center gap-1.5">
+            <Plus className="h-4 w-4" /> Добавить желание
+          </button>
           {WISHES.map((w, i) => (
             <WishCard
               key={w.id}
@@ -187,6 +190,9 @@ function WishesScreen() {
 
       {activeTab === "wants" && (
         <div className="px-4 pt-3 space-y-2">
+          <button className="tap btn-pill-orange w-full inline-flex items-center justify-center gap-1.5 mb-1">
+            <Plus className="h-4 w-4" /> Добавить хотелку
+          </button>
           {HOTELKI.map((h, i) => (
             <div
               key={i}
