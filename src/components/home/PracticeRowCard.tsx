@@ -37,14 +37,14 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
         </p>
       </div>
 
-      <div className="flex items-center gap-2 shrink-0">
-        <div className="flex items-center gap-1">
+      <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-1 shrink-0">
           {history.map((s, i) => (
             <span key={i} className={"h-1.5 w-1.5 rounded-full " + dotColor(s)} />
           ))}
         </div>
 
-        <div className="w-[64px] flex justify-end">
+        <div className="w-[78px] flex justify-end shrink-0">
           {doneToday ? (
             <span className="rounded-full bg-success/15 text-success-dark text-[11px] font-medium px-2 py-1 whitespace-nowrap">
               +1 ⭐
