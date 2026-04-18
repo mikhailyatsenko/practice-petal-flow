@@ -1,5 +1,6 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Settings, LifeBuoy, LogOut, CheckCircle2 } from "lucide-react";
+import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 interface SideMenuProps {
   open: boolean;
@@ -36,6 +37,14 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
         </div>
 
         <nav className="px-2 py-3">
+          <Link
+            to="/onboarding"
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <PlayCircle className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>Вводная страница</span>
+          </Link>
           <MenuItem icon={Settings} label="Настройки" />
           <MenuItem icon={LifeBuoy} label="Поддержка" />
           <MenuItem icon={LogOut} label="Выход" danger />
@@ -46,7 +55,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             onClick={onOpenOnboarding}
             className="tap text-[11px] text-muted-foreground/70 underline underline-offset-2"
           >
-            Страница онбординга
+            Демо онбординга
           </button>
         </div>
       </SheetContent>

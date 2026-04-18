@@ -33,7 +33,7 @@ export function Onboarding({ onComplete, onClose }: OnboardingProps) {
         </button>
       )}
 
-      <div className="mx-auto max-w-md px-5 pt-12 pb-10 safe-top safe-bottom">
+      <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-5 py-8 safe-top safe-bottom">
         {/* Бейдж */}
         <div className="flex justify-center">
           <span
