@@ -29,8 +29,12 @@ const STATUSES = [
 const statusFor = (stars: number) =>
   [...STATUSES].reverse().find((s) => stars >= s.min) ?? STATUSES[0];
 
-const h = (p: string): DayState[] =>
-  p.split("").map((c) => (c === "x" ? "done" : c === "." ? "missed" : "empty"));
+const h = (p: string): DayState[] => {
+  const arr = p.split("").map((c) => (c === "x" ? "done" : c === "." ? "missed" : "empty") as DayState);
+  // дополнить до 30 пустыми слева
+  while (arr.length < 30) arr.unshift("empty");
+  return arr.slice(-30);
+};
 
 const initialPathSteps: PathStep[] = [
   { id: "s1", label: "День 1 — все 5 практик", done: true  },
