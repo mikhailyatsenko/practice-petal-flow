@@ -327,3 +327,53 @@ function EmptyTab({ tab }: { tab: string }) {
     </div>
   );
 }
+
+const CHARGE_WORDS = [
+  { label: "Нравится",      color: "#9c8f7a" },
+  { label: "Вдохновляет",   color: "#FFB300" },
+  { label: "Зажигает",      color: "#FF9100" },
+  { label: "Манит",         color: "#FF7A00" },
+  { label: "Жажду",         color: "#FF5722" },
+  { label: "Горю желанием", color: "#E64A19" },
+] as const;
+
+const DOT_FILLED_COLORS = ["#FFD180", "#FFB300", "#FF9100", "#FF6D00", "#E64A19"];
+const DOT_EMPTY = "#e0d8cc";
+
+function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
+  const safe = Math.max(0, Math.min(5, level));
+  const word = CHARGE_WORDS[safe];
+
+  return (
+    <div className="flex items-center gap-2.5 min-w-0">
+      <button
+        onClick={onTap}
+        aria-label="Заряд желания"
+        className="tap text-[22px] leading-none select-none active:scale-90 transition-transform"
+      >
+        ❤️
+      </button>
+      <div className="flex flex-col gap-1 min-w-0">
+        <div className="flex items-center gap-1">
+          {Array.from({ length: 5 }).map((_, i) => {
+            const filled = i < safe;
+            return (
+              <span
+                key={i}
+                className="h-2 w-2 rounded-full transition-colors"
+                style={{ backgroundColor: filled ? DOT_FILLED_COLORS[i] : DOT_EMPTY }}
+              />
+            );
+          })}
+        </div>
+        <span
+          key={safe}
+          className="text-[12px] font-medium leading-none animate-pop"
+          style={{ color: word.color }}
+        >
+          {word.label}
+        </span>
+      </div>
+    </div>
+  );
+}
