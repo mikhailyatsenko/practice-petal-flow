@@ -141,8 +141,10 @@ function WishesScreen() {
   const [inspires, setInspires] = useState<Record<string, number>>({});
 
   const handleInspire = (id: string) => {
-    setInspires((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
+    setInspires((prev) => ({ ...prev, [id]: Math.min(5, (prev[id] ?? 0) + 1) }));
   };
+
+  // (kept for backward compatibility above)
 
   return (
     <div className="pb-4">
