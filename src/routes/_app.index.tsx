@@ -47,11 +47,11 @@ const initialPathSteps: PathStep[] = [
 ];
 
 const initialPractices: PracticeRow[] = [
-  { id: "self-prog", title: "Программирование успеха", streakDays: 5, doneToday: true,  history: h("xxxxx") },
-  { id: "charge",    title: "Зарядка об цель",         streakDays: 3, doneToday: true,  history: h("xx.xx") },
-  { id: "essay",     title: "Жизнь мечты",             streakDays: 0, doneToday: false, history: h("..x.x") },
-  { id: "skill",     title: "Навык успеха",            streakDays: 7, doneToday: true,  history: h("xxxxx") },
-  { id: "wishes",    title: "Воплощение желаний",      streakDays: 1, doneToday: false, history: h("xxxx-") },
+  { id: "self-prog", title: "Программирование успеха", streakDays: 5, doneToday: true,  history: h("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"), level: 1, progress: 17 },
+  { id: "charge",    title: "Зарядка об цель",         streakDays: 3, doneToday: true,  history: h("xxxxxxxxxxxxxxxxxxxxxxxx.xxxx"), level: 0, progress: 12 },
+  { id: "essay",     title: "Жизнь мечты",             streakDays: 0, doneToday: false, history: h("xxxxxxxxxxxxxxxxxxxxxxxx......"), level: 0, progress: 8 },
+  { id: "skill",     title: "Навык успеха",            streakDays: 7, doneToday: true,  history: h("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"), level: 2, progress: 22 },
+  { id: "wishes",    title: "Воплощение желаний",      streakDays: 1, doneToday: false, history: h("xxxxxxxxxxxxxxxxxxxxxxxxxxxxx-"), level: 0, progress: 4 },
 ];
 
 function HomeScreen() {
