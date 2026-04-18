@@ -102,20 +102,7 @@ function HomeScreen() {
         <h2 className="px-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
           Твой путь
         </h2>
-        <PathCard
-          level={3}
-          totalLevels={10}
-          title="Выработай ритм"
-          description="5 практик подряд — 7 дней без пропусков"
-          steps={pathSteps}
-          onOpen={() => {
-            document.getElementById("today-practices")?.scrollIntoView({ behavior: "smooth", block: "start" });
-          }}
-        />
-
-        <div className="mt-3">
-          <PathLevels />
-        </div>
+        <PathLevels />
       </section>
 
       <section id="today-practices" className="mt-5">
