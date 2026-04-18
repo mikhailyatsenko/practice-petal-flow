@@ -105,18 +105,21 @@ const dayWord = (n: number) => {
 };
 
 export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
-  const { id, title, streakDays, doneToday, history, level, progress } = practice;
+  const { id, title, streakDays, doneToday, level, progress } = practice;
 
-  // Подсчёт пропусков подряд с конца истории
-  let missedStreak = 0;
-  for (let i = history.length - 1; i >= 0; i--) {
-    if (history[i] === "missed") missedStreak++;
-    else break;
-  }
-  const hasMissedStreak = missedStreak > 0;
+  // Логика: progress < 0 => N красных слева (пропуски обнулили прогресс).
+  // progress > 0 => N зелёных слева. Остальное — пусто.
+  const hasMissedStreak = progress < 0;
+  const missedStreak = hasMissedStreak ? Math.abs(progress) : 0;
+  const doneCount = progress > 0 ? progress : 0;
+
+  const dots: DayState[] = Array.from({ length: 30 }, (_, i) => {
+    if (hasMissedStreak) return i < missedStreak ? "missed" : "empty";
+    return i < doneCount ? "done" : "empty";
+  });
 
   const levelName = LEVELS[id]?.[Math.min(level, 10)] ?? `Уровень ${level}`;
-  const progressValue = hasMissedStreak ? -missedStreak : progress;
+  const progressValue = progress;
 
   return (
     <div className="w-full bg-card hairline rounded-xl px-3.5 py-2.5 shadow-card animate-fade-up">
@@ -159,7 +162,7 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
 
       {/* 30 кружков */}
       <div className="mt-2 flex flex-wrap gap-[2px]">
-        {history.map((s, i) => (
+        {dots.map((s, i) => (
           <span
             key={i}
             className={"h-1.5 w-1.5 rounded-full " + dotStyle(s)}
