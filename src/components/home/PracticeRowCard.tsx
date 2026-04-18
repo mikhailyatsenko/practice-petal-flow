@@ -162,7 +162,7 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
 
       {/* 30 кружков */}
       <div className="mt-2 flex flex-wrap gap-[2px]">
-        {history.map((s, i) => (
+        {dots.map((s, i) => (
           <span
             key={i}
             className={"h-1.5 w-1.5 rounded-full " + dotStyle(s)}
