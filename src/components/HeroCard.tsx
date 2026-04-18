@@ -1,24 +1,28 @@
-import { ArrowRight, Check } from "lucide-react";
-
-interface ChecklistItem {
-  id: string;
-  label: string;
-  done: boolean;
-}
+import { ArrowRight } from "lucide-react";
 
 interface HeroCardProps {
-  title: string;
-  subtitle: string;
-  progress: number; // 0..1
-  checklist: ChecklistItem[];
-  ctaLabel: string;
+  doneToday: number;     // 0..5
+  totalToday: number;    // обычно 5
+  todayStars: number;    // очков заработано сегодня
+  multiplier: number;    // напр. 1.1
+  isHit: boolean;        // 5/5
   onCta: () => void;
-  onToggle: (id: string) => void;
 }
 
-export function HeroCard({ title, subtitle, progress, checklist, ctaLabel, onCta, onToggle }: HeroCardProps) {
+export function HeroCard({ doneToday, totalToday, todayStars, multiplier, isHit, onCta }: HeroCardProps) {
+  const progress = doneToday / totalToday;
   const pct = Math.round(progress * 100);
-  const near = progress >= 0.66;
+  const remaining = totalToday - doneToday;
+
+  const title = isHit
+    ? "ХИТ дня! Все 5 практик выполнены 🔥"
+    : remaining === 1
+    ? "Остался один шаг до ХИТА"
+    : `Ещё ${remaining} практики до ХИТА`;
+
+  const subtitle = isHit
+    ? "Бонус +1 ⭐ начислен"
+    : "5 практик · 1 день · твоя жизнь";
 
   return (
     <section
@@ -26,8 +30,15 @@ export function HeroCard({ title, subtitle, progress, checklist, ctaLabel, onCta
       style={{ background: "var(--gradient-hero)" }}
     >
       <div className="relative z-10">
-        <p className="text-[12px] uppercase tracking-wider opacity-80">{subtitle}</p>
+        <p className="text-[11px] uppercase tracking-[0.12em] opacity-85">{subtitle}</p>
         <h2 className="mt-1 text-[22px] font-bold leading-tight text-balance">{title}</h2>
+
+        {/* Stats row */}
+        <div className="mt-4 grid grid-cols-3 gap-2">
+          <Stat label="Сегодня" value={`${doneToday}/${totalToday}`} />
+          <Stat label="Очков" value={`+${todayStars}`} />
+          <Stat label="Множитель" value={`×${multiplier.toFixed(1)}`} />
+        </div>
 
         {/* Progress */}
         <div className="mt-4">
@@ -40,7 +51,9 @@ export function HeroCard({ title, subtitle, progress, checklist, ctaLabel, onCta
               className="h-full rounded-full transition-[width,background] duration-700 ease-out"
               style={{
                 width: `${pct}%`,
-                background: near
+                background: isHit
+                  ? "linear-gradient(90deg, white, oklch(0.85 0.18 70))"
+                  : progress >= 0.66
                   ? "linear-gradient(90deg, white, oklch(0.9 0.15 70))"
                   : "white",
               }}
@@ -48,50 +61,29 @@ export function HeroCard({ title, subtitle, progress, checklist, ctaLabel, onCta
           </div>
         </div>
 
-        {/* Checklist */}
-        <ul className="mt-4 space-y-2">
-          {checklist.map((it) => (
-            <li key={it.id}>
-              <button
-                onClick={() => onToggle(it.id)}
-                className="tap w-full flex items-center gap-3 rounded-2xl bg-white/10 px-3 py-2.5 text-left hover:bg-white/15"
-              >
-                <span
-                  className={
-                    "flex h-6 w-6 items-center justify-center rounded-full border-2 transition-colors " +
-                    (it.done ? "bg-white border-white" : "border-white/60")
-                  }
-                >
-                  {it.done && (
-                    <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--primary-dark)" }}>
-                      <path className="check-path" d="M5 12.5l4.5 4.5L19 7" />
-                    </svg>
-                  )}
-                </span>
-                <span className={"text-[14px] " + (it.done ? "line-through opacity-60" : "")}>
-                  {it.label}
-                </span>
-                {it.done && <Check className="ml-auto h-4 w-4 opacity-70" />}
-              </button>
-            </li>
-          ))}
-        </ul>
-
         {/* CTA */}
         <button
           onClick={onCta}
-          className="tap relative mt-5 w-full overflow-hidden rounded-2xl bg-white px-5 py-3.5 font-semibold text-foreground shadow-soft"
+          className="tap relative mt-5 w-full overflow-hidden rounded-2xl bg-white px-5 py-3.5 font-semibold shadow-soft"
           style={{ color: "var(--primary-dark)" }}
         >
           <span className="relative z-10 inline-flex items-center justify-center gap-2">
-            {ctaLabel} <ArrowRight className="h-4 w-4" />
+            {isHit ? "Открыть кабинет" : "К следующей практике"} <ArrowRight className="h-4 w-4" />
           </span>
           <span className="shine-overlay" />
         </button>
       </div>
 
-      {/* Decorative orb */}
       <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/15 blur-2xl" />
     </section>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl bg-white/10 px-3 py-2">
+      <div className="text-[10px] uppercase tracking-wider opacity-80">{label}</div>
+      <div className="text-[16px] font-bold tabular-nums">{value}</div>
+    </div>
   );
 }
