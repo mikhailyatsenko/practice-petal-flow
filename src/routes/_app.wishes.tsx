@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { Plus } from "lucide-react";
 import wishHouse from "@/assets/wish-house.jpg";
 import wishBali from "@/assets/wish-bali.jpg";
 import wishBody from "@/assets/wish-body.jpg";
@@ -140,8 +141,10 @@ function WishesScreen() {
   const [inspires, setInspires] = useState<Record<string, number>>({});
 
   const handleInspire = (id: string) => {
-    setInspires((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
+    setInspires((prev) => ({ ...prev, [id]: Math.min(5, (prev[id] ?? 0) + 1) }));
   };
+
+  // (kept for backward compatibility above)
 
   return (
     <div className="pb-4">
@@ -169,6 +172,9 @@ function WishesScreen() {
 
       {activeTab === "wishes" && (
         <div className="px-4 pt-3 space-y-4">
+          <button className="tap btn-pill-orange w-full inline-flex items-center justify-center gap-1.5">
+            <Plus className="h-4 w-4" /> Добавить желание
+          </button>
           {WISHES.map((w, i) => (
             <WishCard
               key={w.id}
@@ -186,6 +192,9 @@ function WishesScreen() {
 
       {activeTab === "wants" && (
         <div className="px-4 pt-3 space-y-2">
+          <button className="tap btn-pill-orange w-full inline-flex items-center justify-center gap-1.5 mb-1">
+            <Plus className="h-4 w-4" /> Добавить хотелку
+          </button>
           {HOTELKI.map((h, i) => (
             <div
               key={i}
@@ -296,23 +305,9 @@ function WishCard({
           ))}
         </ul>
 
-        <div className="mt-3 flex items-center justify-between">
-          <button
-            onClick={onInspire}
-            className="tap inline-flex items-center gap-1.5 text-[12px] font-medium text-foreground/80"
-          >
-            <span className="text-[15px] leading-none">❤️</span>
-            <span>Вдохновляет</span>
-            {count > 0 && (
-              <span
-                key={count}
-                className="ml-0.5 inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full bg-primary/10 text-primary text-[11px] font-semibold animate-pop"
-              >
-                +{count}
-              </span>
-            )}
-          </button>
-          <button className="tap btn-pill-orange btn-sm">
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <DesireCharge level={count} onTap={onInspire} />
+          <button className="tap btn-pill-orange btn-sm shrink-0">
             Сделать целью →
           </button>
         </div>
@@ -329,6 +324,56 @@ function EmptyTab({ tab }: { tab: string }) {
       <p className="mt-1.5 text-[12px] text-muted-foreground max-w-[260px] mx-auto">
         Здесь скоро появится твой раздел «{tab}». Сейчас открыты «Желания».
       </p>
+    </div>
+  );
+}
+
+const CHARGE_WORDS = [
+  { label: "Нравится",      color: "#9c8f7a" },
+  { label: "Вдохновляет",   color: "#FFB300" },
+  { label: "Зажигает",      color: "#FF9100" },
+  { label: "Манит",         color: "#FF7A00" },
+  { label: "Жажду",         color: "#FF5722" },
+  { label: "Горю желанием", color: "#E64A19" },
+] as const;
+
+const DOT_FILLED_COLORS = ["#FFD180", "#FFB300", "#FF9100", "#FF6D00", "#E64A19"];
+const DOT_EMPTY = "#e0d8cc";
+
+function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
+  const safe = Math.max(0, Math.min(5, level));
+  const word = CHARGE_WORDS[safe];
+
+  return (
+    <div className="flex items-center gap-2.5 min-w-0">
+      <button
+        onClick={onTap}
+        aria-label="Заряд желания"
+        className="tap text-[22px] leading-none select-none active:scale-90 transition-transform"
+      >
+        ❤️
+      </button>
+      <div className="flex flex-col gap-1 min-w-0">
+        <div className="flex items-center gap-1">
+          {Array.from({ length: 5 }).map((_, i) => {
+            const filled = i < safe;
+            return (
+              <span
+                key={i}
+                className="h-2 w-2 rounded-full transition-colors"
+                style={{ backgroundColor: filled ? DOT_FILLED_COLORS[i] : DOT_EMPTY }}
+              />
+            );
+          })}
+        </div>
+        <span
+          key={safe}
+          className="text-[12px] font-medium leading-none animate-pop"
+          style={{ color: word.color }}
+        >
+          {word.label}
+        </span>
+      </div>
     </div>
   );
 }
