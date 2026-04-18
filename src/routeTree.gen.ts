@@ -9,50 +9,177 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AppWishesRouteImport } from './routes/_app.wishes'
+import { Route as AppSectionsRouteImport } from './routes/_app.sections'
+import { Route as AppPartnerRouteImport } from './routes/_app.partner'
+import { Route as AppLibraryRouteImport } from './routes/_app.library'
+import { Route as AppCommunityRouteImport } from './routes/_app.community'
 
-const IndexRoute = IndexRouteImport.update({
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
+} as any)
+const AppWishesRoute = AppWishesRouteImport.update({
+  id: '/wishes',
+  path: '/wishes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSectionsRoute = AppSectionsRouteImport.update({
+  id: '/sections',
+  path: '/sections',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPartnerRoute = AppPartnerRouteImport.update({
+  id: '/partner',
+  path: '/partner',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLibraryRoute = AppLibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCommunityRoute = AppCommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof AppIndexRoute
+  '/community': typeof AppCommunityRoute
+  '/library': typeof AppLibraryRoute
+  '/partner': typeof AppPartnerRoute
+  '/sections': typeof AppSectionsRoute
+  '/wishes': typeof AppWishesRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/community': typeof AppCommunityRoute
+  '/library': typeof AppLibraryRoute
+  '/partner': typeof AppPartnerRoute
+  '/sections': typeof AppSectionsRoute
+  '/wishes': typeof AppWishesRoute
+  '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/_app/community': typeof AppCommunityRoute
+  '/_app/library': typeof AppLibraryRoute
+  '/_app/partner': typeof AppPartnerRoute
+  '/_app/sections': typeof AppSectionsRoute
+  '/_app/wishes': typeof AppWishesRoute
+  '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/community'
+    | '/library'
+    | '/partner'
+    | '/sections'
+    | '/wishes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/community' | '/library' | '/partner' | '/sections' | '/wishes' | '/'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/_app/community'
+    | '/_app/library'
+    | '/_app/partner'
+    | '/_app/sections'
+    | '/_app/wishes'
+    | '/_app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/': {
+      id: '/_app/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/wishes': {
+      id: '/_app/wishes'
+      path: '/wishes'
+      fullPath: '/wishes'
+      preLoaderRoute: typeof AppWishesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/sections': {
+      id: '/_app/sections'
+      path: '/sections'
+      fullPath: '/sections'
+      preLoaderRoute: typeof AppSectionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/partner': {
+      id: '/_app/partner'
+      path: '/partner'
+      fullPath: '/partner'
+      preLoaderRoute: typeof AppPartnerRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/library': {
+      id: '/_app/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof AppLibraryRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/community': {
+      id: '/_app/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof AppCommunityRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
+interface AppRouteChildren {
+  AppCommunityRoute: typeof AppCommunityRoute
+  AppLibraryRoute: typeof AppLibraryRoute
+  AppPartnerRoute: typeof AppPartnerRoute
+  AppSectionsRoute: typeof AppSectionsRoute
+  AppWishesRoute: typeof AppWishesRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppCommunityRoute: AppCommunityRoute,
+  AppLibraryRoute: AppLibraryRoute,
+  AppPartnerRoute: AppPartnerRoute,
+  AppSectionsRoute: AppSectionsRoute,
+  AppWishesRoute: AppWishesRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
