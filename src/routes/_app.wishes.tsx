@@ -86,8 +86,62 @@ const WISHES: Wish[] = [
   },
 ];
 
+const HOTELKI = [
+  "Купить новые беспроводные наушники",
+  "Сходить на массаж в эти выходные",
+  "Попробовать сёрфинг",
+  "Прочитать «Атомные привычки»",
+  "Завести привычку медитации по утрам",
+  "Съездить на выходные в горы",
+  "Купить красивую кружку для кофе",
+  "Научиться готовить пасту карбонара",
+  "Сходить в новый ресторан с другом",
+  "Завести растение на рабочий стол",
+];
+
+interface Goal {
+  id: string;
+  emoji: string;
+  title: string;
+  deadline: string;
+  progress: number;
+  next: string;
+}
+
+const GOALS: Goal[] = [
+  {
+    id: "g1",
+    emoji: "🏝️",
+    title: "Зимовка на Бали в январе",
+    deadline: "до 1 января 2027",
+    progress: 35,
+    next: "Купить билеты до 1 декабря",
+  },
+  {
+    id: "g2",
+    emoji: "💪",
+    title: "Похудеть на 6 кг",
+    deadline: "до 1 июля 2026",
+    progress: 50,
+    next: "Тренировка 3 раза в неделю",
+  },
+  {
+    id: "g3",
+    emoji: "📖",
+    title: "Написать черновик книги",
+    deadline: "до 31 декабря 2026",
+    progress: 15,
+    next: "Писать по 500 слов в день",
+  },
+];
+
 function WishesScreen() {
   const [activeTab, setActiveTab] = useState<TabId>("wishes");
+  const [inspires, setInspires] = useState<Record<string, number>>({});
+
+  const handleInspire = (id: string) => {
+    setInspires((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
+  };
 
   return (
     <div className="pb-4">
@@ -113,24 +167,104 @@ function WishesScreen() {
         </div>
       </div>
 
-      {/* Лента */}
-      {activeTab === "wishes" ? (
+      {activeTab === "wishes" && (
         <div className="px-4 pt-3 space-y-4">
           {WISHES.map((w, i) => (
-            <WishCard key={w.id} wish={w} priority={i === 0} />
+            <WishCard
+              key={w.id}
+              wish={w}
+              priority={i === 0}
+              count={inspires[w.id] ?? 0}
+              onInspire={() => handleInspire(w.id)}
+            />
           ))}
           <div className="text-center text-[11px] text-muted-foreground pt-2 pb-1">
             Это все твои желания на сегодня ✨
           </div>
         </div>
-      ) : (
-        <EmptyTab tab={TABS.find((t) => t.id === activeTab)!.label} />
       )}
+
+      {activeTab === "wants" && (
+        <div className="px-4 pt-3 space-y-2">
+          {HOTELKI.map((h, i) => (
+            <div
+              key={i}
+              className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 animate-fade-up"
+            >
+              <div className="h-7 w-7 shrink-0 rounded-full bg-secondary flex items-center justify-center text-[12px] font-medium text-muted-foreground">
+                {i + 1}
+              </div>
+              <p className="text-[14px] leading-snug text-foreground/90 flex-1">{h}</p>
+            </div>
+          ))}
+          <div className="text-center text-[11px] text-muted-foreground pt-2 pb-1">
+            Маленькие хотелки — большие радости 🌿
+          </div>
+        </div>
+      )}
+
+      {activeTab === "goals" && (
+        <div className="px-4 pt-3 space-y-3">
+          {GOALS.map((g) => (
+            <article
+              key={g.id}
+              className="bg-card hairline rounded-2xl p-4 shadow-card animate-fade-up"
+            >
+              <div className="flex items-start gap-3">
+                <div className="h-11 w-11 shrink-0 rounded-xl bg-secondary flex items-center justify-center text-2xl">
+                  {g.emoji}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-[15px] font-semibold leading-tight">{g.title}</h3>
+                  <p className="mt-0.5 text-[12px] text-muted-foreground">{g.deadline}</p>
+                </div>
+              </div>
+
+              <div className="mt-3">
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1">
+                  <span>Прогресс</span>
+                  <span className="font-medium text-foreground">{g.progress}%</span>
+                </div>
+                <div className="h-2 w-full rounded-full bg-secondary overflow-hidden">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${g.progress}%`,
+                      background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-3 flex items-center justify-between gap-2">
+                <p className="text-[12px] text-foreground/70 leading-snug flex-1">
+                  <span className="text-muted-foreground">След. шаг: </span>
+                  {g.next}
+                </p>
+                <button className="tap btn-pill-orange btn-sm shrink-0">Открыть</button>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+
+      {activeTab === "tasks" && <EmptyTab tab="Задачи" />}
+      {activeTab === "done" && <EmptyTab tab="Воплощённые" />}
     </div>
   );
 }
 
-function WishCard({ wish, priority }: { wish: Wish; priority?: boolean }) {
+function WishCard({
+  wish,
+  priority,
+  count,
+  onInspire,
+}: {
+  wish: Wish;
+  priority?: boolean;
+  count: number;
+  onInspire: () => void;
+}) {
   return (
     <article className="bg-card hairline rounded-2xl overflow-hidden shadow-card animate-fade-up">
       <div className="aspect-[4/5] w-full overflow-hidden bg-muted">
@@ -163,10 +297,22 @@ function WishCard({ wish, priority }: { wish: Wish; priority?: boolean }) {
         </ul>
 
         <div className="mt-3 flex items-center justify-between">
-          <button className="tap text-[12px] font-medium text-muted-foreground">
-            ❤️ Вдохновляет
+          <button
+            onClick={onInspire}
+            className="tap inline-flex items-center gap-1.5 text-[12px] font-medium text-foreground/80"
+          >
+            <span className="text-[15px] leading-none">❤️</span>
+            <span>Вдохновляет</span>
+            {count > 0 && (
+              <span
+                key={count}
+                className="ml-0.5 inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full bg-primary/10 text-primary text-[11px] font-semibold animate-pop"
+              >
+                +{count}
+              </span>
+            )}
           </button>
-          <button className="tap btn-pill-orange">
+          <button className="tap btn-pill-orange btn-sm">
             Сделать целью →
           </button>
         </div>
