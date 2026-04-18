@@ -101,10 +101,9 @@ function WishesScreen() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={
-                  "tap shrink-0 rounded-full px-3.5 py-1.5 text-[12px] font-medium transition-all " +
-                  (active
-                    ? "bg-gradient-to-b from-primary to-[hsl(var(--primary)/0.85)] text-primary-foreground shadow-[0_2px_6px_-1px_hsl(var(--primary)/0.45),inset_0_1px_0_rgba(255,255,255,0.3)]"
-                    : "bg-card text-muted-foreground hairline")
+                  active
+                    ? "tap btn-pill-orange btn-sm shrink-0"
+                    : "tap shrink-0 rounded-full px-3.5 py-1.5 text-[12px] font-medium bg-card text-muted-foreground hairline"
                 }
               >
                 {tab.label}
@@ -167,7 +166,7 @@ function WishCard({ wish, priority }: { wish: Wish; priority?: boolean }) {
           <button className="tap text-[12px] font-medium text-muted-foreground">
             ❤️ Вдохновляет
           </button>
-          <button className="tap rounded-full bg-gradient-to-b from-primary to-[hsl(var(--primary)/0.85)] text-primary-foreground text-[12px] font-semibold px-3.5 py-1.5 shadow-[0_2px_6px_-1px_hsl(var(--primary)/0.45),inset_0_1px_0_rgba(255,255,255,0.3)]">
+          <button className="tap btn-pill-orange">
             Сделать целью →
           </button>
         </div>
