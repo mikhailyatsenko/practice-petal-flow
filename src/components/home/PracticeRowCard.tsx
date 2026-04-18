@@ -5,7 +5,9 @@ export interface PracticeRow {
   title: string;
   streakDays: number;
   doneToday: boolean;
-  history: DayState[]; // 5 точек
+  history: DayState[]; // 30 точек
+  level: number; // 0..10
+  progress: number; // дней в текущем уровне (может быть отрицательным при пропусках подряд)
 }
 
 interface PracticeRowCardProps {
@@ -13,49 +15,177 @@ interface PracticeRowCardProps {
   onToggle: (id: string) => void;
 }
 
-const dotColor = (s: DayState) => {
+const LEVELS: Record<string, string[]> = {
+  "self-prog": [
+    "0️⃣ Молчащий 🤐",
+    "1️⃣ Программирующий 🗣️",
+    "2️⃣ Эксперт слова 📝",
+    "3️⃣ Хранитель формул 📜",
+    "4️⃣ Программист сознания 🧠",
+    "5️⃣ Мастер аффирмаций 💬",
+    "6️⃣ Укротитель подсознания 🌀",
+    "7️⃣ Повелитель убеждений 👑",
+    "8️⃣ Архитектор мышления 🏛️",
+    "9️⃣ Владыка установок ⚡",
+    "🔟 Бог самопрограммирования 🌟",
+  ],
+  charge: [
+    "0️⃣ Не видящий 🙈",
+    "1️⃣ Начинающий видеть 👁️‍🗨️",
+    "2️⃣ Мечтатель 💭",
+    "3️⃣ Визионер 🔮",
+    "4️⃣ Провидец 👁️",
+    "5️⃣ Архитектор будущего 🏗️",
+    "6️⃣ Творец реальности ✨",
+    "7️⃣ Повелитель образов 🎭",
+    "8️⃣ Мастер воображения 🎨",
+    "9️⃣ Создатель миров 🌍",
+    "🔟 Бог визуализации 🌟",
+  ],
+  essay: [
+    "0️⃣ Чистый лист 📄",
+    "1️⃣ Начинающий писать ✏️",
+    "2️⃣ Мечтающий вслух 💭",
+    "3️⃣ Страж мечты 🔑",
+    "4️⃣ Летописец жизни 📖",
+    "5️⃣ Искусный сочинитель ✍️",
+    "6️⃣ Архитектор мечты 🏗️",
+    "7️⃣ Творец будущего 🌅",
+    "8️⃣ Автор своей жизни 🖊️",
+    "9️⃣ Владыка своей жизни 👑",
+    "🔟 Бог воплощения мечты 🌟",
+  ],
+  skill: [
+    "0️⃣ Слепой к победам 🤷",
+    "1️⃣ Замечающий успехи 🔍",
+    "2️⃣ Коллекционер побед 📝",
+    "3️⃣ Хранитель триумфов 🏆",
+    "4️⃣ Мастер достижений ✨",
+    "5️⃣ Архитектор успеха 🏗️",
+    "6️⃣ Повелитель побед 👑",
+    "7️⃣ Создатель славы 🌟",
+    "8️⃣ Владыка триумфов 💎",
+    "9️⃣ Творец легенд ⚡",
+    "🔟 Бог успеха 🏆",
+  ],
+  wishes: [
+    "0️⃣ Бездействующий 🪨",
+    "1️⃣ Движущийся ➡️",
+    "2️⃣ Созидатель 🔨",
+    "3️⃣ Реализатор 🚀",
+    "4️⃣ Воплотитель 💪",
+    "5️⃣ Мастер действий 🏃",
+    "6️⃣ Покоритель целей 🎯",
+    "7️⃣ Повелитель результатов 🏆",
+    "8️⃣ Архитектор побед 👑",
+    "9️⃣ Владыка достижений 💎",
+    "🔟 Бог воплощения 🌟",
+  ],
+};
+
+const dotStyle = (s: DayState): string => {
   switch (s) {
-    case "done":   return "bg-success";
-    case "missed": return "bg-danger";
-    default:       return "bg-muted";
+    case "done":
+      return "bg-[#16a34a]";
+    case "missed":
+      return "bg-[#ef4444]";
+    default:
+      return "bg-[#e0d8cc]";
   }
 };
 
+const dayWord = (n: number) => {
+  const abs = Math.abs(n);
+  const mod10 = abs % 10;
+  const mod100 = abs % 100;
+  if (mod100 >= 11 && mod100 <= 14) return "дней";
+  if (mod10 === 1) return "день";
+  if (mod10 >= 2 && mod10 <= 4) return "дня";
+  return "дней";
+};
+
 export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
-  const { id, title, streakDays, doneToday, history } = practice;
-  const streakActive = streakDays > 0;
+  const { id, title, streakDays, doneToday, history, level, progress } = practice;
+
+  // Подсчёт пропусков подряд с конца истории
+  let missedStreak = 0;
+  for (let i = history.length - 1; i >= 0; i--) {
+    if (history[i] === "missed") missedStreak++;
+    else break;
+  }
+  const hasMissedStreak = missedStreak > 0;
+
+  const levelName = LEVELS[id]?.[Math.min(level, 10)] ?? `Уровень ${level}`;
+  const progressValue = hasMissedStreak ? -missedStreak : progress;
 
   return (
-    <button
-      onClick={() => onToggle(id)}
-      className="tap w-full bg-card hairline rounded-xl px-3.5 py-2.5 shadow-card flex items-center gap-3 text-left animate-fade-up"
-    >
-      <div className="min-w-0 flex-1">
-        <h3 className="text-[14px] font-medium leading-tight truncate">{title}</h3>
-        <p className={"mt-0.5 text-[11px] leading-tight " + (streakActive ? "text-success-dark" : "text-muted-foreground")}>
-          Серия: {streakDays} {streakDays === 1 ? "день" : streakDays >= 2 && streakDays <= 4 ? "дня" : "дней"}
-        </p>
-      </div>
-
-      <div className="flex items-center gap-3 shrink-0">
-        <div className="flex items-center gap-1 shrink-0">
-          {history.map((s, i) => (
-            <span key={i} className={"h-1.5 w-1.5 rounded-full " + dotColor(s)} />
-          ))}
-        </div>
-
-        <div className="w-[78px] flex justify-end shrink-0">
+    <div className="w-full bg-card hairline rounded-xl px-3.5 py-2.5 shadow-card animate-fade-up">
+      {/* Верхняя строка */}
+      <div className="flex items-center gap-3">
+        <h3 className="text-[14px] font-medium leading-tight truncate flex-1 min-w-0">
+          {title}
+        </h3>
+        <div className="shrink-0">
           {doneToday ? (
             <span className="rounded-full bg-success/15 text-success-dark text-[11px] font-medium px-2 py-1 whitespace-nowrap">
               +1 ⭐
             </span>
           ) : (
-            <span className="tap btn-pill-orange btn-sm">
+            <button
+              onClick={() => onToggle(id)}
+              className="tap btn-pill-orange btn-sm"
+            >
               сделать
-            </span>
+            </button>
           )}
         </div>
       </div>
-    </button>
+
+      {/* Вторая строка: серия / пропуски */}
+      <p
+        className={
+          "mt-1 text-[11px] leading-tight " +
+          (hasMissedStreak
+            ? "text-[#ef4444] font-medium"
+            : streakDays > 0
+              ? "text-success-dark"
+              : "text-muted-foreground")
+        }
+      >
+        {hasMissedStreak
+          ? `Пропущено ${missedStreak} ${dayWord(missedStreak)} подряд`
+          : `Серия: ${streakDays} ${dayWord(streakDays)}`}
+      </p>
+
+      {/* 30 кружков */}
+      <div className="mt-2 flex flex-wrap gap-[2px]">
+        {history.map((s, i) => (
+          <span
+            key={i}
+            className={"h-1.5 w-1.5 rounded-full " + dotStyle(s)}
+          />
+        ))}
+      </div>
+
+      {/* Разделитель */}
+      <div className="mt-2 h-px bg-border/60" />
+
+      {/* Нижняя строка: уровень + прогресс */}
+      <div className="mt-2 flex items-center justify-between gap-2">
+        <span className="text-[11px] font-medium text-[#FF6D00] truncate">
+          {levelName}
+        </span>
+        <span
+          className={
+            "text-[11px] tabular-nums shrink-0 " +
+            (hasMissedStreak
+              ? "text-[#ef4444] font-bold"
+              : "text-muted-foreground")
+          }
+        >
+          {progressValue > 0 ? `${progressValue}/30` : `${progressValue}/30`}
+        </span>
+      </div>
+    </div>
   );
 }
