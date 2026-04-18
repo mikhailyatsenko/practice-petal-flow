@@ -146,6 +146,9 @@
 
   .hairline { border: 0.5px solid var(--border); }
 
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
   .btn-orange {
     background: var(--gradient-orange);
     box-shadow: var(--shadow-orange);
