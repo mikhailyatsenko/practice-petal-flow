@@ -305,23 +305,9 @@ function WishCard({
           ))}
         </ul>
 
-        <div className="mt-3 flex items-center justify-between">
-          <button
-            onClick={onInspire}
-            className="tap inline-flex items-center gap-1.5 text-[12px] font-medium text-foreground/80"
-          >
-            <span className="text-[15px] leading-none">❤️</span>
-            <span>Вдохновляет</span>
-            {count > 0 && (
-              <span
-                key={count}
-                className="ml-0.5 inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full bg-primary/10 text-primary text-[11px] font-semibold animate-pop"
-              >
-                +{count}
-              </span>
-            )}
-          </button>
-          <button className="tap btn-pill-orange btn-sm">
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <DesireCharge level={count} onTap={onInspire} />
+          <button className="tap btn-pill-orange btn-sm shrink-0">
             Сделать целью →
           </button>
         </div>
