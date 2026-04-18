@@ -1,0 +1,59 @@
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Settings, LifeBuoy, LogOut, CheckCircle2 } from "lucide-react";
+
+interface SideMenuProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function SideMenu({ open, onOpenChange }: SideMenuProps) {
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="left" className="w-[300px] sm:w-[320px] bg-background p-0">
+        <SheetHeader className="sr-only">
+          <SheetTitle>Меню</SheetTitle>
+        </SheetHeader>
+
+        <div className="safe-top px-5 pt-5 pb-4 border-b border-border">
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-full btn-orange flex items-center justify-center text-white font-semibold">
+              <span className="relative z-10">A</span>
+            </div>
+            <div className="min-w-0">
+              <p className="text-[15px] font-medium leading-tight truncate">Александр</p>
+              <p className="text-[12px] text-muted-foreground leading-tight truncate">@alex</p>
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-xl bg-card hairline px-3 py-2.5">
+            <div className="flex items-center gap-2 text-[12px]">
+              <CheckCircle2 className="h-4 w-4 text-success" />
+              <span className="text-muted-foreground">Подписка активна до</span>
+            </div>
+            <p className="mt-0.5 text-[13.5px] font-medium">01.05.2026 · 13 дней</p>
+          </div>
+        </div>
+
+        <nav className="px-2 py-3">
+          <MenuItem icon={Settings} label="Настройки" />
+          <MenuItem icon={LifeBuoy} label="Поддержка" />
+          <MenuItem icon={LogOut} label="Выход" danger />
+        </nav>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+function MenuItem({ icon: Icon, label, danger }: { icon: typeof Settings; label: string; danger?: boolean }) {
+  return (
+    <button
+      className={
+        "tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] " +
+        (danger ? "text-destructive" : "text-foreground")
+      }
+    >
+      <Icon className="h-[18px] w-[18px]" strokeWidth={2} />
+      <span>{label}</span>
+    </button>
+  );
+}
