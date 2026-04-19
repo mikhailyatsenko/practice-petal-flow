@@ -108,6 +108,23 @@ const dayWord = (n: number) => {
 
 export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
   const { id, title, streakDays, doneToday, level, progress } = practice;
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const playPressEffect = () => {
+    const el = cardRef.current;
+    if (!el) return;
+    el.style.transform = "scale(0.97)";
+    el.style.background = "rgba(255,109,0,0.06)";
+    window.setTimeout(() => {
+      el.style.transform = "scale(1)";
+      el.style.background = "";
+    }, 180);
+  };
+
+  const handleActivate = () => {
+    playPressEffect();
+    onToggle(id);
+  };
 
   // Логика: progress < 0 => N красных слева (пропуски обнулили прогресс).
   // progress > 0 => N зелёных слева. Остальное — пусто.
