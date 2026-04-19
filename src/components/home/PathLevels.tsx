@@ -132,60 +132,62 @@ export function PathLevels() {
         type="button"
         onClick={next}
         className="relative w-full text-left px-4 py-4 text-white overflow-hidden"
-        style={{ background: lvl.gradient }}
+        style={{ background: "#1a0e00" }}
         aria-label={`Перейти к следующему уровню (сейчас ${idx + 1} из ${LEVELS.length})`}
       >
         {/* Декоративные полупрозрачные круги */}
         <span
           className="absolute rounded-full pointer-events-none"
           style={{
-            width: 80,
-            height: 80,
-            background: "rgba(255,255,255,0.12)",
-            top: -25,
+            width: 70,
+            height: 70,
+            background: "rgba(255,255,255,0.08)",
+            top: -15,
             right: -10,
           }}
         />
         <span
           className="absolute rounded-full pointer-events-none"
           style={{
-            width: 50,
-            height: 50,
-            background: "rgba(255,255,255,0.08)",
-            top: 15,
-            right: 50,
+            width: 45,
+            height: 45,
+            background: "rgba(255,255,255,0.06)",
+            top: 20,
+            right: 45,
           }}
         />
 
-        <div className="relative flex items-center gap-3">
-          {/* Иконка-эмодзи в оранжевой рамке */}
-          <div
-            className="shrink-0 flex items-center justify-center"
-            style={{
-              background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-              borderRadius: 12,
-              width: 44,
-              height: 44,
-              fontSize: 22,
-              boxShadow: "0 4px 12px rgba(255,109,0,0.35)",
-            }}
-            aria-hidden
-          >
-            {lvl.emoji}
-          </div>
-
-          <div className="flex-1 min-w-0">
-            <span className="inline-block rounded-full bg-white/22 backdrop-blur px-2.5 py-0.5 text-[10.5px] font-medium">
+        <div className="relative">
+          {/* Строка 1: эмодзи + бейдж по нижнему краю */}
+          <div className="flex items-end gap-[10px]">
+            <div
+              className="shrink-0 flex items-center justify-center"
+              style={{
+                background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                borderRadius: 10,
+                width: 40,
+                height: 40,
+                fontSize: 20,
+                boxShadow: "0 4px 12px rgba(255,109,0,0.35)",
+              }}
+              aria-hidden
+            >
+              {lvl.emoji}
+            </div>
+            <span className="inline-block rounded-full bg-white/15 backdrop-blur px-2.5 py-0.5 text-[10.5px] font-medium mb-0.5">
               Уровень {idx + 1} из {LEVELS.length}
             </span>
-            <h3 className="mt-1.5 text-[20px] font-semibold leading-tight">
-              {lvl.title}
-            </h3>
-            <p className="mt-0.5 text-[12px] text-white/90 leading-snug">
-              {lvl.subtitle}
-            </p>
+            <ChevronRight className="ml-auto h-5 w-5 shrink-0 opacity-80 self-center" />
           </div>
-          <ChevronRight className="h-5 w-5 shrink-0 opacity-90 relative z-10" />
+
+          {/* Строка 2: название */}
+          <h3 className="mt-2 text-[20px] font-semibold leading-tight">
+            {lvl.title}
+          </h3>
+          {/* Строка 3: подзаголовок */}
+          <p className="mt-0.5 text-[12px] text-white/70 leading-snug">
+            {lvl.subtitle}
+          </p>
         </div>
       </button>
 

@@ -4,7 +4,7 @@ import { SectionHeader, SubItemList } from "@/components/section/SubItemList";
 export const Route = createFileRoute("/_app/sections")({
   head: () => ({
     meta: [
-      { title: "Разделы — Клуб «Моя жизнь»" },
+      { title: "Разделы магазина — Клуб «Моя жизнь»" },
       { name: "description", content: "Дополнительные разделы клуба, открываемые за очки." },
     ],
   }),
@@ -14,24 +14,23 @@ export const Route = createFileRoute("/_app/sections")({
 function SectionsScreen() {
   return (
     <div className="px-4">
-      <SectionHeader emoji="🧩" title="Разделы" subtitle="Открывай дополнительные разделы за очки" />
-
-      <h2 className="mt-2 mb-3 text-[18px] font-semibold text-foreground">Разделы магазина</h2>
+      <SectionHeader emoji="🧩" title="Разделы магазина" subtitle="Открывай дополнительные разделы за очки" />
 
       <SubItemList
         items={[
-          { emoji: "💪", title: "Привычки",                subtitle: "Отслеживание любых привычек", price: "200 ⭐", locked: true },
-          { emoji: "👑", title: "Качества характера",      subtitle: "Развитие 100+ качеств",       price: "200 ⭐", locked: true },
-          { emoji: "🌐", title: "Сферы жизни",                                                       price: "200 ⭐", locked: true },
-          { emoji: "🧠", title: "Потребности",                                                       price: "200 ⭐", locked: true },
-          { emoji: "💡", title: "Ценности",                                                          price: "200 ⭐", locked: true },
-          { emoji: "🤝", title: "Самоулучшение",            subtitle: "30 вопросов для рефлексии",    price: "200 ⭐", locked: true },
-          { emoji: "🙏", title: "Дневник благодарности",                                              price: "200 ⭐", locked: true },
-          { emoji: "🧭", title: "Дневник решений",                                                    price: "200 ⭐", locked: true },
-          { emoji: "📝", title: "Дневник ошибок",                                                     price: "200 ⭐", locked: true },
-          { emoji: "⚖️", title: "Дневник ответственности",                                            price: "200 ⭐", locked: true },
-          { emoji: "📔", title: "Создание дневников",                                                 price: "200 ⭐", locked: true },
-          { emoji: "🔰", title: "Страховка привычки",       subtitle: "Защита от обнуления",          price: "50 ⭐",  locked: true },
+          { emoji: "💪", title: "Привычки",                subtitle: "Отслеживание любых привычек", price: "300 ⭐", locked: true },
+          { emoji: "👑", title: "Качества характера",      subtitle: "Развитие 100+ качеств",       price: "300 ⭐", locked: true },
+          { emoji: "🌐", title: "Сферы жизни",                                                       price: "300 ⭐", locked: true },
+          { emoji: "🧠", title: "Потребности",                                                       price: "300 ⭐", locked: true },
+          { emoji: "💡", title: "Ценности",                                                          price: "300 ⭐", locked: true },
+          { emoji: "🤝", title: "Самоулучшение",            subtitle: "30 вопросов для рефлексии",    price: "300 ⭐", locked: true },
+          { emoji: "🙏", title: "Дневник благодарности",                                              price: "300 ⭐", locked: true },
+          { emoji: "🧭", title: "Дневник решений",                                                    price: "300 ⭐", locked: true },
+          { emoji: "📝", title: "Дневник ошибок",                                                     price: "300 ⭐", locked: true },
+          { emoji: "⚖️", title: "Дневник ответственности",                                            price: "300 ⭐", locked: true },
+          { emoji: "📔", title: "Создание дневников",                                                 price: "300 ⭐", locked: true },
+          { emoji: "❄️", title: "Заморозка клуба",          subtitle: "Поставить клуб на паузу",     price: "300 ⭐", locked: true },
+          { emoji: "🔰", title: "Страховка от пропуска",    subtitle: "Защита от обнуления",          price: "50 ⭐",  locked: true },
         ]}
       />
     </div>
