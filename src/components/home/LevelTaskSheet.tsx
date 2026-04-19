@@ -44,7 +44,7 @@ export function LevelTaskSheet({ open, onClose, levelNumber, levelTitle, emoji, 
           background: "#fff",
           borderRadius: "20px 20px 0 0",
           padding: "20px 16px 24px",
-          maxHeight: "75vh",
+          height: 540,
           overflowY: "auto",
           animation: "slide-up 0.25s ease-out",
         }}
