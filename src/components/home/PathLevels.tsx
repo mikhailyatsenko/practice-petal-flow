@@ -11,6 +11,7 @@ interface Level {
   id: string;
   title: string;
   subtitle: string;
+  emoji: string;
   gradient: string;
   steps: LevelStep[];
   progress?: { done: number; total: number; unit?: string };
@@ -22,6 +23,7 @@ const LEVELS: Level[] = [
     id: "l1",
     title: "Найди союзника",
     subtitle: "Бадди + первый созвон",
+    emoji: "🤝",
     gradient: "linear-gradient(135deg, #C75B3C, #8E3B25)",
     steps: [
       { id: "s1", label: "Найти Бадди", done: true },
@@ -33,7 +35,8 @@ const LEVELS: Level[] = [
     id: "l2",
     title: "Познай формулу",
     subtitle: "Книга + ИИ-бот 50%+",
-    gradient: "linear-gradient(135deg, #B8893A, #7A5A22)",
+    emoji: "📖",
+    gradient: "linear-gradient(135deg, #6B5B3E, #3E3320)",
     steps: [
       { id: "s1", label: "Прослушать книгу 6 ч", done: false },
       { id: "s2", label: "Сформулировать формулу", done: false },
@@ -44,7 +47,8 @@ const LEVELS: Level[] = [
     id: "l3",
     title: "Выработай ритм",
     subtitle: "7 дней хит — 5 из 5",
-    gradient: "linear-gradient(135deg, #FFB300, #FF6D00)",
+    emoji: "🔥",
+    gradient: "linear-gradient(135deg, #A8541E, #6E3210)",
     progress: { done: 3, total: 7, unit: "дней" },
     steps: [
       { id: "d1", label: "День 1 — все 5 практик", done: true },
@@ -60,7 +64,8 @@ const LEVELS: Level[] = [
     id: "l4",
     title: "Найди племя",
     subtitle: "Четвёрка + созвон",
-    gradient: "linear-gradient(135deg, #7A8B4A, #4F5E2A)",
+    emoji: "👥",
+    gradient: "linear-gradient(135deg, #5E7244, #364626)",
     steps: [
       { id: "s1", label: "Найти вторую пару", done: false },
       { id: "s2", label: "Все 4 подтверждают", done: false },
@@ -71,6 +76,7 @@ const LEVELS: Level[] = [
     id: "l5",
     title: "Создай видение",
     subtitle: "Дизайн жизни + день",
+    emoji: "🌅",
     gradient: "linear-gradient(135deg, #8B3A4E, #5A1F30)",
     steps: [
       { id: "s1", label: "Написать 1000+ символов", done: false },
@@ -82,7 +88,8 @@ const LEVELS: Level[] = [
     id: "l6",
     title: "Стань собой",
     subtitle: "3 качества × 7 дней",
-    gradient: "linear-gradient(135deg, #3E5266, #243646)",
+    emoji: "💎",
+    gradient: "linear-gradient(135deg, #3E5266, #1F2E3E)",
     steps: [
       { id: "s1", label: "Выбрать 3 качества", done: false },
       { id: "s2", label: "7 дней практики", done: false },
@@ -93,7 +100,8 @@ const LEVELS: Level[] = [
     id: "l7",
     title: "30 хитов подряд",
     subtitle: "Все 5 практик 30 дней без пропуска",
-    gradient: "linear-gradient(135deg, #5C4033, #2E1F18)",
+    emoji: "🏆",
+    gradient: "linear-gradient(135deg, #4A3826, #241810)",
     progress: { done: 0, total: 30, unit: "дней" },
     steps: [
       { id: "s1", label: "Участники: ты и Бадди", done: false },
