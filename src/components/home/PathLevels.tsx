@@ -294,6 +294,67 @@ export function PathLevels() {
           <p className="mt-3 text-[12px] text-muted-foreground">{lvl.footer}</p>
         )}
 
+        {/* CTA: Посмотреть задание */}
+        <div
+          onClick={() => setSheetOpen(true)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setSheetOpen(true);
+            }
+          }}
+          style={{
+            background: "linear-gradient(135deg,#FFB300,#FF6D00,#FF9800)",
+            borderRadius: 14,
+            padding: "14px 18px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            position: "relative",
+            overflow: "hidden",
+            marginTop: 14,
+          }}
+        >
+          <span
+            style={{
+              position: "absolute",
+              width: 60,
+              height: 60,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.18)",
+              top: -20,
+              right: 10,
+            }}
+            aria-hidden
+          />
+          <span
+            style={{
+              position: "absolute",
+              width: 38,
+              height: 38,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.12)",
+              top: 5,
+              right: 50,
+            }}
+            aria-hidden
+          />
+          <span
+            style={{
+              fontSize: 15,
+              fontWeight: 500,
+              color: "#fff",
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
+            Посмотреть задание
+          </span>
+        </div>
+
         {/* Pagination dots */}
         <div className="mt-4 flex items-center justify-center gap-1.5">
           {LEVELS.map((l, i) => (
@@ -306,6 +367,15 @@ export function PathLevels() {
           ))}
         </div>
       </div>
+
+      <LevelTaskSheet
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        levelNumber={idx + 1}
+        levelTitle={lvl.title}
+        emoji={lvl.emoji}
+        content={lvl.task}
+      />
     </article>
   );
 }
