@@ -39,18 +39,20 @@ export function LevelTaskSheet({ open, onClose, levelNumber, levelTitle, emoji, 
       aria-label={`Уровень ${levelNumber} — ${levelTitle}`}
     >
       <div
-        className="w-full flex flex-col"
+        className="w-full"
         style={{
           background: "#fff",
           borderRadius: "20px 20px 0 0",
-          maxHeight: "85vh",
+          padding: "20px 16px 24px",
+          maxHeight: "75vh",
+          overflowY: "auto",
           animation: "slide-up 0.25s ease-out",
         }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 pt-5 pb-3 shrink-0">
-          <h3 className="text-[16px] font-semibold text-foreground">
+        <div className="flex items-center justify-between mb-3">
+          <h3 style={{ fontSize: 16, fontWeight: 500, color: "#1a0e00" }}>
             <span className="mr-1.5" aria-hidden>{emoji}</span>
             Уровень {levelNumber} — {levelTitle}
           </h3>
@@ -66,7 +68,7 @@ export function LevelTaskSheet({ open, onClose, levelNumber, levelTitle, emoji, 
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "#7a6b54",
+              color: "#b8a888",
               fontSize: 14,
               lineHeight: 1,
               flexShrink: 0,
@@ -76,69 +78,73 @@ export function LevelTaskSheet({ open, onClose, levelNumber, levelTitle, emoji, 
           </button>
         </div>
 
-        {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto px-4 pb-8">
-          {/* Caption above video */}
-          <div style={{ fontSize: 13, color: "#b8a888", marginBottom: 8 }}>
-            Как выполнить этот уровень
-          </div>
+        {/* Caption above video */}
+        <div
+          style={{
+            fontSize: 13,
+            color: "#b8a888",
+            textAlign: "center",
+            marginBottom: 12,
+          }}
+        >
+          Посмотри как выполнить этот уровень
+        </div>
 
-          {/* Video card */}
+        {/* Video card */}
+        <div
+          style={{
+            background: "linear-gradient(135deg,#2a1505,#5a2e10)",
+            height: 190,
+            borderRadius: 14,
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
+          }}
+        >
           <div
             style={{
-              background: "linear-gradient(135deg,#2a1505,#5a2e10)",
-              height: 180,
-              borderRadius: 14,
-              position: "relative",
+              background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+              width: 54,
+              height: 54,
+              borderRadius: "50%",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              overflow: "hidden",
+              boxShadow: "0 6px 18px rgba(255,109,0,0.45)",
             }}
           >
-            <div
+            <Play className="h-6 w-6 text-white fill-white ml-0.5" />
+          </div>
+          {content.duration && (
+            <span
               style={{
-                background: "linear-gradient(135deg,#FFB300,#FF6D00)",
-                width: 54,
-                height: 54,
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0 6px 18px rgba(255,109,0,0.45)",
+                position: "absolute",
+                bottom: 10,
+                right: 10,
+                background: "rgba(0,0,0,0.55)",
+                color: "#fff",
+                fontSize: 11,
+                padding: "3px 8px",
+                borderRadius: 6,
               }}
             >
-              <Play className="h-6 w-6 text-white fill-white ml-0.5" />
-            </div>
-            {content.duration && (
-              <span
-                style={{
-                  position: "absolute",
-                  bottom: 10,
-                  right: 10,
-                  background: "rgba(0,0,0,0.55)",
-                  color: "#fff",
-                  fontSize: 11,
-                  padding: "3px 8px",
-                  borderRadius: 6,
-                }}
-              >
-                {content.duration}
-              </span>
-            )}
-          </div>
+              {content.duration}
+            </span>
+          )}
+        </div>
 
-          {/* Caption below video */}
-          <div
-            style={{
-              fontSize: 12,
-              color: "#b8a888",
-              marginTop: 8,
-              textAlign: "center",
-            }}
-          >
-            Посмотри видео и следуй инструкции. Выполни все шаги чтобы перейти на следующий уровень.
-          </div>
+        {/* Caption below video */}
+        <div
+          style={{
+            fontSize: 12,
+            color: "#b8a888",
+            textAlign: "center",
+            marginTop: 12,
+          }}
+        >
+          Выполни задание чтобы перейти на следующий уровень.
         </div>
       </div>
 
