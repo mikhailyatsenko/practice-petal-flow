@@ -33,6 +33,7 @@ const LEVELS: Level[] = [
       { id: "s2", label: "Провести созвон 60 мин", done: true },
       { id: "s3", label: "Написать желание Бадди", done: false },
     ],
+    reward: "🎁 Открывается Магазин",
     task: {
       videoTitle: "Как найти своего Бадди",
       caption: "Введение • Уровень 1",
