@@ -355,17 +355,6 @@ export function PathLevels() {
           </span>
         </div>
 
-        {/* Pagination dots */}
-        <div className="mt-4 flex items-center justify-center gap-1.5">
-          {LEVELS.map((l, i) => (
-            <span
-              key={l.id}
-              className={`h-1.5 rounded-full transition-all ${
-                i === idx ? "w-5 bg-foreground/70" : "w-1.5 bg-foreground/20"
-              }`}
-            />
-          ))}
-        </div>
       </div>
 
       <LevelTaskSheet
