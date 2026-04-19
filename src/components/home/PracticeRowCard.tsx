@@ -172,9 +172,12 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
                 color: "#fff",
                 whiteSpace: "nowrap",
                 cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
               }}
             >
-              Сделать
+              Сделать <span aria-hidden>→</span>
             </div>
           ) : (
             <ChevronRight className="h-5 w-5 text-muted-foreground/60" />

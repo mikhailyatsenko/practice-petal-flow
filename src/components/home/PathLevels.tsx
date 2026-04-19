@@ -185,7 +185,6 @@ export function PathLevels() {
     <article
       key={lvl.id}
       className="rounded-2xl bg-card hairline overflow-hidden shadow-card animate-fade-up flex flex-col"
-      style={{ minHeight: 356 }}
     >
       {/* Header (clickable — switches to next level) */}
       <button
@@ -250,8 +249,7 @@ export function PathLevels() {
       </button>
 
       {/* Body */}
-      <div className="px-4 pt-3.5 pb-4 flex flex-col justify-between flex-1">
-        <div>
+      <div className="flex flex-col flex-1" style={{ padding: "14px 16px 16px" }}>
         {lvl.progress && (
           <>
             <div className="flex items-center justify-between text-[12px]">
@@ -302,9 +300,7 @@ export function PathLevels() {
         {lvl.footer && (
           <p className="mt-3 text-[12px] text-muted-foreground">{lvl.footer}</p>
         )}
-        </div>
 
-        <div>
         {/* Награда */}
         <div
           style={{
@@ -343,7 +339,7 @@ export function PathLevels() {
             cursor: "pointer",
             position: "relative",
             overflow: "hidden",
-            marginTop: 4,
+            marginTop: "auto",
           }}
         >
           <span
@@ -381,7 +377,6 @@ export function PathLevels() {
           >
             Посмотреть задание
           </span>
-        </div>
         </div>
       </div>
 
