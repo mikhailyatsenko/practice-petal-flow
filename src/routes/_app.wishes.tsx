@@ -341,10 +341,12 @@ const DOT_FILLED_COLORS = ["#FFD180", "#FFB300", "#FF9100", "#FF6D00", "#E64A19"
 const DOT_EMPTY = "#e0d8cc";
 
 function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
-  const cycles = Math.floor(level / 5);
   const inCycle = level % 5;
-  // На границе круга показываем полностью заполненный предыдущий круг
+  // Полный круг (когда level кратен 5 и > 0) показываем как 5 заполненных
   const displayDots = level > 0 && inCycle === 0 ? 5 : inCycle;
+  // Бейдж: +1 при первом нажатии, далее +1 за каждый полный круг из 5
+  // Формула: 1 + floor((level-1)/5) при level>0
+  const badge = level > 0 ? 1 + Math.floor((level - 1) / 5) : 0;
   const wordIdx = Math.min(5, displayDots);
   const word = CHARGE_WORDS[wordIdx];
 
@@ -354,32 +356,34 @@ function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
       aria-label="Заряд желания"
       className="tap flex items-center gap-2.5 min-w-0 select-none -mx-1 px-1 py-1 rounded-lg"
     >
-      <span className="relative text-[22px] leading-none transition-transform active:scale-90">
+      <span className="text-[22px] leading-none transition-transform active:scale-90">
         ❤️
-        {cycles > 0 && (
-          <span
-            key={cycles}
-            className="absolute -top-1 -right-2 min-w-[18px] h-[18px] px-1 rounded-full bg-[#FF6D00] text-white text-[10px] font-bold flex items-center justify-center animate-pop"
-          >
-            +{cycles}
-          </span>
-        )}
       </span>
       <span className="flex flex-col gap-1 min-w-0 text-left">
-        <span className="flex items-center gap-1">
-          {Array.from({ length: 5 }).map((_, i) => {
-            const filled = i < displayDots;
-            return (
-              <span
-                key={i}
-                className="h-2 w-2 rounded-full transition-colors"
-                style={{ backgroundColor: filled ? DOT_FILLED_COLORS[i] : DOT_EMPTY }}
-              />
-            );
-          })}
+        <span className="flex items-center gap-1.5">
+          <span className="flex items-center gap-1">
+            {Array.from({ length: 5 }).map((_, i) => {
+              const filled = i < displayDots;
+              return (
+                <span
+                  key={i}
+                  className="h-2 w-2 rounded-full transition-colors"
+                  style={{ backgroundColor: filled ? DOT_FILLED_COLORS[i] : DOT_EMPTY }}
+                />
+              );
+            })}
+          </span>
+          {badge > 0 && (
+            <span
+              key={badge}
+              className="min-w-[20px] h-[18px] px-1.5 rounded-full bg-[#FF6D00] text-white text-[10px] font-bold flex items-center justify-center animate-pop"
+            >
+              +{badge}
+            </span>
+          )}
         </span>
         <span
-          key={`${cycles}-${displayDots}`}
+          key={`${badge}-${displayDots}`}
           className="text-[12px] font-medium leading-none animate-pop"
           style={{ color: word.color }}
         >

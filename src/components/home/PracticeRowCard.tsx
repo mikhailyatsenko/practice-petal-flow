@@ -1,3 +1,5 @@
+import { ChevronRight } from "lucide-react";
+
 export type DayState = "done" | "missed" | "empty";
 
 export interface PracticeRow {
@@ -134,31 +136,25 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
       }}
       className="tap w-full text-left bg-card hairline rounded-xl px-3.5 py-2.5 shadow-card animate-fade-up cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
     >
-      {/* Верхняя строка: название + статус (фикс. высота) */}
+      {/* Верхняя строка: название + стрелка (фикс. высота) */}
       <div className="flex items-center gap-3">
         <h3 className="text-[14px] font-medium leading-tight truncate flex-1 min-w-0">
           {title}
         </h3>
-        <div className="shrink-0 h-7 flex items-center">
-          {doneToday ? (
+        <div className="shrink-0 h-7 w-7 flex items-center justify-center">
+          {!doneToday && (
             <span
-              className="whitespace-nowrap inline-flex items-center"
+              className="inline-flex items-center justify-center"
               style={{
-                background: "#f0fdf4",
-                border: "0.5px solid #16a34a",
-                color: "#16a34a",
-                borderRadius: "20px",
-                padding: "3px 10px",
-                fontSize: "12px",
-                fontWeight: 500,
-                lineHeight: 1.2,
+                background: "#1a0e00",
+                color: "#fff",
+                borderRadius: 8,
+                width: 28,
+                height: 28,
               }}
+              aria-hidden
             >
-              +1 ⭐
-            </span>
-          ) : (
-            <span className="btn-pill-orange btn-sm pointer-events-none">
-              сделать
+              <ChevronRight className="h-4 w-4" strokeWidth={2.5} />
             </span>
           )}
         </div>
@@ -180,8 +176,8 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
           : `Серия: ${streakDays} ${dayWord(streakDays)}`}
       </p>
 
-      {/* Кружки */}
-      <div className="mt-2 flex items-center gap-2">
+      {/* Кружки + бейдж +1 ⭐ справа */}
+      <div className="mt-2 flex items-center gap-2 min-h-[20px]">
         <div className="flex flex-wrap gap-[2px] flex-1 min-w-0">
           {dots.map((s, i) => (
             <span
@@ -190,6 +186,23 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
             />
           ))}
         </div>
+        {doneToday && (
+          <span
+            className="shrink-0 whitespace-nowrap inline-flex items-center"
+            style={{
+              background: "#f0fdf4",
+              border: "0.5px solid #16a34a",
+              color: "#16a34a",
+              borderRadius: 20,
+              padding: "3px 8px",
+              fontSize: 11,
+              fontWeight: 500,
+              lineHeight: 1.2,
+            }}
+          >
+            +1 ⭐
+          </span>
+        )}
       </div>
 
       {/* Разделитель */}
