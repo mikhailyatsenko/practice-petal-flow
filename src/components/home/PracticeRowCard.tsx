@@ -1,3 +1,4 @@
+import { useRef } from "react";
 
 
 export type DayState = "done" | "missed" | "empty";
@@ -142,15 +143,17 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
 
   return (
     <div
+      ref={cardRef}
       role="button"
       tabIndex={0}
-      onClick={() => onToggle(id)}
+      onClick={handleActivate}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          onToggle(id);
+          handleActivate();
         }
       }}
+      style={{ transition: "transform 0.18s ease, background 0.18s ease" }}
       className="tap w-full text-left bg-card hairline rounded-xl px-3 py-2 shadow-card animate-fade-up cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
     >
       {/* Верхняя строка: название + бейдж/кнопка (фикс. высота) */}
