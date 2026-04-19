@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Check, Circle, ChevronRight } from "lucide-react";
+import { LevelTaskSheet, type LevelTaskContent } from "./LevelTaskSheet";
 
 interface LevelStep {
   id: string;
@@ -16,6 +17,7 @@ interface Level {
   steps: LevelStep[];
   progress?: { done: number; total: number; unit?: string };
   footer?: string;
+  task: LevelTaskContent;
 }
 
 const LEVELS: Level[] = [
