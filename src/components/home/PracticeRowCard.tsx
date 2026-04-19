@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 export type DayState = "done" | "missed" | "empty";
 
 export interface PracticeRow {
@@ -177,7 +177,7 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
                 gap: 4,
               }}
             >
-              Сделать <span aria-hidden>→</span>
+              Сделать <ChevronLeft className="h-3.5 w-3.5 rotate-180 stroke-[2.75]" aria-hidden />
             </div>
           ) : (
             <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
