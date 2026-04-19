@@ -78,6 +78,7 @@ const LEVELS: Level[] = [
       { id: "d6", label: "День 6 — все 5 практик", done: false },
       { id: "d7", label: "День 7 — все 5 практик", done: false },
     ],
+    reward: "🎁 +100 ⭐",
     task: {
       videoTitle: "Как выработать ритм",
       caption: "Введение • Уровень 3",
@@ -96,6 +97,7 @@ const LEVELS: Level[] = [
       { id: "s2", label: "Все 4 подтверждают", done: false },
       { id: "s3", label: "Созвон 80 мин", done: false },
     ],
+    reward: "🎁 +100 ⭐",
     task: {
       videoTitle: "Найди свою Четвёрку",
       caption: "Введение • Уровень 4",
@@ -115,6 +117,7 @@ const LEVELS: Level[] = [
       { id: "s2", label: "Описать идеальный день", done: false },
       { id: "s3", label: "Поделиться с Бадди", done: false },
     ],
+    reward: "🎁 +100 ⭐",
     task: {
       videoTitle: "Дизайн своей жизни",
       caption: "Введение • Уровень 5",
@@ -134,6 +137,7 @@ const LEVELS: Level[] = [
       { id: "s2", label: "7 дней практики", done: false },
       { id: "s3", label: "Написать рефлексию", done: false },
     ],
+    reward: "🎁 +100 ⭐",
     task: {
       videoTitle: "Стань собой",
       caption: "Введение • Уровень 6",
@@ -155,6 +159,7 @@ const LEVELS: Level[] = [
       { id: "s3", label: "Награда: 200 ⭐", done: false },
     ],
     footer: "Награда: 200 ⭐",
+    reward: "🎁 +200 ⭐",
     task: {
       videoTitle: "30 хитов подряд",
       caption: "Введение • Уровень 7",
