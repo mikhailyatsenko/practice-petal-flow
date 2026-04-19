@@ -65,7 +65,7 @@ const LEVELS: Level[] = [
     title: "Найди племя",
     subtitle: "Четвёрка + созвон",
     emoji: "👥",
-    gradient: "linear-gradient(135deg, #5E7244, #364626)",
+    gradient: "linear-gradient(135deg, #185FA5, #378ADD)",
     steps: [
       { id: "s1", label: "Найти вторую пару", done: false },
       { id: "s2", label: "Все 4 подтверждают", done: false },
