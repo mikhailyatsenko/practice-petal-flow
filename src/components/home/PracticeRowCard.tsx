@@ -134,28 +134,36 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
           onToggle(id);
         }
       }}
-      className="tap w-full text-left bg-card hairline rounded-xl px-3.5 py-2.5 shadow-card animate-fade-up cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+      className="tap w-full text-left bg-card hairline rounded-xl px-3 py-2 shadow-card animate-fade-up cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
     >
-      {/* Верхняя строка: название + стрелка (фикс. высота) */}
-      <div className="flex items-center gap-3">
+      {/* Верхняя строка: название + кнопка/стрелка (фикс. высота) */}
+      <div className="flex items-center gap-2">
         <h3 className="text-[14px] font-medium leading-tight truncate flex-1 min-w-0">
           {title}
         </h3>
-        <div className="shrink-0 h-7 w-7 flex items-center justify-center">
-          {!doneToday && (
-            <span
-              className="inline-flex items-center justify-center"
+        <div className="shrink-0 flex items-center justify-center min-h-[24px]">
+          {!doneToday ? (
+            <div
               style={{
-                background: "#1a0e00",
+                background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+                borderRadius: 20,
+                padding: "5px 12px",
+                fontSize: 12,
+                fontWeight: 500,
                 color: "#fff",
-                borderRadius: 8,
-                width: 28,
-                height: 28,
+                whiteSpace: "nowrap",
+                cursor: "pointer",
               }}
-              aria-hidden
             >
-              <ChevronRight className="h-4 w-4" strokeWidth={2.5} />
-            </span>
+              Сделать
+            </div>
+          ) : (
+            <ChevronRight
+              className="h-4 w-4"
+              style={{ color: "#b8a888" }}
+              strokeWidth={2.5}
+              aria-hidden
+            />
           )}
         </div>
       </div>
