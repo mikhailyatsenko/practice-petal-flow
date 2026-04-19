@@ -132,7 +132,7 @@ export function PathLevels() {
         type="button"
         onClick={next}
         className="relative w-full text-left px-4 py-4 text-white overflow-hidden"
-        style={{ background: "#1a0e00" }}
+        style={{ background: lvl.gradient }}
         aria-label={`Перейти к следующему уровню (сейчас ${idx + 1} из ${LEVELS.length})`}
       >
         {/* Декоративные полупрозрачные круги */}
