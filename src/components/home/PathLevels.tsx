@@ -177,7 +177,6 @@ export function PathLevels() {
     <article
       key={lvl.id}
       className="rounded-2xl bg-card hairline overflow-hidden shadow-card animate-fade-up flex flex-col"
-      style={{ minHeight: "85vh" }}
     >
       {/* Header (clickable — switches to next level) */}
       <button
