@@ -77,7 +77,7 @@ const LEVELS: Level[] = [
     title: "Создай видение",
     subtitle: "Дизайн жизни + день",
     emoji: "🌅",
-    gradient: "linear-gradient(135deg, #8B3A4E, #5A1F30)",
+    gradient: "linear-gradient(135deg, #26215C, #534AB7)",
     steps: [
       { id: "s1", label: "Написать 1000+ символов", done: false },
       { id: "s2", label: "Описать идеальный день", done: false },
