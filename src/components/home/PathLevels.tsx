@@ -101,7 +101,7 @@ const LEVELS: Level[] = [
     title: "30 хитов подряд",
     subtitle: "Все 5 практик 30 дней без пропуска",
     emoji: "🏆",
-    gradient: "linear-gradient(135deg, #4A3826, #241810)",
+    gradient: "linear-gradient(135deg, #3B6D11, #639922)",
     progress: { done: 0, total: 30, unit: "дней" },
     steps: [
       { id: "s1", label: "Участники: ты и Бадди", done: false },
