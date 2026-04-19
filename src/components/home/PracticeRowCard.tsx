@@ -1,4 +1,4 @@
-import { ChevronRight } from "lucide-react";
+
 
 export type DayState = "done" | "missed" | "empty";
 
