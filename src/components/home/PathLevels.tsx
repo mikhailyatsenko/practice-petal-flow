@@ -382,7 +382,7 @@ export function PathLevels() {
             Посмотреть задание
           </span>
         </div>
-
+        </div>
       </div>
 
       <LevelTaskSheet
