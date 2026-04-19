@@ -24,7 +24,7 @@ const LEVELS: Level[] = [
     title: "Найди союзника",
     subtitle: "Бадди + первый созвон",
     emoji: "🤝",
-    gradient: "linear-gradient(135deg, #C75B3C, #8E3B25)",
+    gradient: "linear-gradient(135deg, #993C1D, #D85A30)",
     steps: [
       { id: "s1", label: "Найти Бадди", done: true },
       { id: "s2", label: "Провести созвон 60 мин", done: true },
