@@ -135,22 +135,57 @@ export function PathLevels() {
         style={{ background: lvl.gradient }}
         aria-label={`Перейти к следующему уровню (сейчас ${idx + 1} из ${LEVELS.length})`}
       >
-        <span className="absolute -top-10 -right-8 h-32 w-32 rounded-full bg-white/15 blur-xl" />
-        <span className="absolute -bottom-12 -left-6 h-28 w-28 rounded-full bg-white/10 blur-xl" />
+        {/* Декоративные полупрозрачные круги */}
+        <span
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: 80,
+            height: 80,
+            background: "rgba(255,255,255,0.12)",
+            top: -25,
+            right: -10,
+          }}
+        />
+        <span
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: 50,
+            height: 50,
+            background: "rgba(255,255,255,0.08)",
+            top: 15,
+            right: 50,
+          }}
+        />
 
         <div className="relative flex items-center gap-3">
+          {/* Иконка-эмодзи в оранжевой рамке */}
+          <div
+            className="shrink-0 flex items-center justify-center"
+            style={{
+              background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+              borderRadius: 12,
+              width: 44,
+              height: 44,
+              fontSize: 22,
+              boxShadow: "0 4px 12px rgba(255,109,0,0.35)",
+            }}
+            aria-hidden
+          >
+            {lvl.emoji}
+          </div>
+
           <div className="flex-1 min-w-0">
             <span className="inline-block rounded-full bg-white/22 backdrop-blur px-2.5 py-0.5 text-[10.5px] font-medium">
               Уровень {idx + 1} из {LEVELS.length}
             </span>
-            <h3 className="mt-2 text-[20px] font-semibold leading-tight">
+            <h3 className="mt-1.5 text-[20px] font-semibold leading-tight">
               {lvl.title}
             </h3>
             <p className="mt-0.5 text-[12px] text-white/90 leading-snug">
               {lvl.subtitle}
             </p>
           </div>
-          <ChevronRight className="h-5 w-5 shrink-0 opacity-90" />
+          <ChevronRight className="h-5 w-5 shrink-0 opacity-90 relative z-10" />
         </div>
       </button>
 
