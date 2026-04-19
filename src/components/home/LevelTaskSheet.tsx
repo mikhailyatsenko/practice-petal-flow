@@ -39,17 +39,18 @@ export function LevelTaskSheet({ open, onClose, levelNumber, levelTitle, emoji, 
       aria-label={`Уровень ${levelNumber} — ${levelTitle}`}
     >
       <div
-        className="w-full animate-slide-in-right"
+        className="w-full flex flex-col"
         style={{
           background: "#fff",
           borderRadius: "20px 20px 0 0",
-          padding: "20px 16px 32px",
+          height: "85vh",
+          minHeight: "85vh",
           animation: "slide-up 0.25s ease-out",
         }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between px-4 pt-5 pb-3 shrink-0">
           <h3 className="text-[16px] font-semibold text-foreground">
             <span className="mr-1.5" aria-hidden>{emoji}</span>
             Уровень {levelNumber} — {levelTitle}
@@ -69,82 +70,76 @@ export function LevelTaskSheet({ open, onClose, levelNumber, levelTitle, emoji, 
               color: "#7a6b54",
               fontSize: 14,
               lineHeight: 1,
+              flexShrink: 0,
             }}
           >
             ✕
           </button>
         </div>
 
-        {/* Video card */}
-        <div
-          style={{
-            background: "linear-gradient(135deg,#2a1505,#5a2e10)",
-            height: 180,
-            borderRadius: 14,
-            position: "relative",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            overflow: "hidden",
-          }}
-        >
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto px-4 pb-8">
+          {/* Caption above video */}
+          <div style={{ fontSize: 13, color: "#b8a888", marginBottom: 8 }}>
+            Как выполнить этот уровень
+          </div>
+
+          {/* Video card */}
           <div
             style={{
-              background: "linear-gradient(135deg,#FFB300,#FF6D00)",
-              width: 54,
-              height: 54,
-              borderRadius: "50%",
+              background: "linear-gradient(135deg,#2a1505,#5a2e10)",
+              height: 180,
+              borderRadius: 14,
+              position: "relative",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 6px 18px rgba(255,109,0,0.45)",
+              overflow: "hidden",
             }}
           >
-            <Play className="h-6 w-6 text-white fill-white ml-0.5" />
-          </div>
-          {content.duration && (
-            <span
+            <div
               style={{
-                position: "absolute",
-                bottom: 10,
-                right: 10,
-                background: "rgba(0,0,0,0.55)",
-                color: "#fff",
-                fontSize: 11,
-                padding: "3px 8px",
-                borderRadius: 6,
+                background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+                width: 54,
+                height: 54,
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 6px 18px rgba(255,109,0,0.45)",
               }}
             >
-              {content.duration}
-            </span>
-          )}
-        </div>
-
-        {/* Video title strip */}
-        <div className="bg-white pt-3 pb-1">
-          <div style={{ fontSize: 14, fontWeight: 500, color: "#1a1a1a" }}>
-            {content.videoTitle}
-          </div>
-          {content.caption && (
-            <div style={{ fontSize: 12, color: "#b8a888", marginTop: 2 }}>
-              {content.caption}
+              <Play className="h-6 w-6 text-white fill-white ml-0.5" />
             </div>
-          )}
-        </div>
+            {content.duration && (
+              <span
+                style={{
+                  position: "absolute",
+                  bottom: 10,
+                  right: 10,
+                  background: "rgba(0,0,0,0.55)",
+                  color: "#fff",
+                  fontSize: 11,
+                  padding: "3px 8px",
+                  borderRadius: 6,
+                }}
+              >
+                {content.duration}
+              </span>
+            )}
+          </div>
 
-        {/* Description */}
-        <div
-          style={{
-            background: "#FAF6EF",
-            borderRadius: 12,
-            padding: "12px 14px",
-            marginTop: 12,
-            fontSize: 13,
-            lineHeight: 1.5,
-            color: "#3a2e1f",
-          }}
-        >
-          {content.description}
+          {/* Caption below video */}
+          <div
+            style={{
+              fontSize: 12,
+              color: "#b8a888",
+              marginTop: 8,
+              textAlign: "center",
+            }}
+          >
+            Посмотри видео и следуй инструкции. Выполни все шаги чтобы перейти на следующий уровень.
+          </div>
         </div>
       </div>
 
