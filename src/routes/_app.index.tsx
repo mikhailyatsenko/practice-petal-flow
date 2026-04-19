@@ -73,11 +73,24 @@ function HomeScreen() {
         const newHistory: DayState[] = [...p.history];
         newHistory[newHistory.length - 1] = newDone ? "done" : "empty";
         setStars((s) => s + (newDone ? 1 : -1));
+        // Если были пропуски (отрицательный прогресс) и пользователь выполнил —
+        // сбрасываем красные и начинаем заново с 1/30.
+        const hadMissed = p.progress < 0;
+        const newProgress = newDone
+          ? hadMissed
+            ? 1
+            : p.progress + 1
+          : Math.max(0, p.progress - 1);
         return {
           ...p,
           doneToday: newDone,
           history: newHistory,
-          streakDays: Math.max(0, p.streakDays + (newDone ? 1 : -1)),
+          streakDays: newDone
+            ? hadMissed
+              ? 1
+              : p.streakDays + 1
+            : Math.max(0, p.streakDays - 1),
+          progress: newProgress,
         };
       })
     );

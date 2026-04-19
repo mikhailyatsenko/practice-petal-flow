@@ -1,4 +1,4 @@
-import { ChevronRight } from "lucide-react";
+
 
 export type DayState = "done" | "missed" | "empty";
 
@@ -136,12 +136,12 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
       }}
       className="tap w-full text-left bg-card hairline rounded-xl px-3 py-2 shadow-card animate-fade-up cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
     >
-      {/* Верхняя строка: название + кнопка/стрелка (фикс. высота) */}
+      {/* Верхняя строка: название + бейдж/кнопка (фикс. высота) */}
       <div className="flex items-center gap-2">
         <h3 className="text-[14px] font-medium leading-tight truncate flex-1 min-w-0">
           {title}
         </h3>
-        <div className="shrink-0 flex items-center justify-center min-h-[24px]">
+        <div className="shrink-0 flex items-center justify-center min-h-[26px]">
           {!doneToday ? (
             <div
               style={{
@@ -158,12 +158,22 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
               Сделать
             </div>
           ) : (
-            <ChevronRight
-              className="h-4 w-4"
-              style={{ color: "#b8a888" }}
-              strokeWidth={2.5}
-              aria-hidden
-            />
+            <span
+              className="inline-flex items-center"
+              style={{
+                background: "#f0fdf4",
+                border: "0.5px solid #16a34a",
+                color: "#16a34a",
+                borderRadius: 20,
+                padding: "3px 8px",
+                fontSize: 11,
+                fontWeight: 500,
+                lineHeight: 1.2,
+                whiteSpace: "nowrap",
+              }}
+            >
+              +1 ⭐
+            </span>
           )}
         </div>
       </div>
@@ -184,7 +194,7 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
           : `Серия: ${streakDays} ${dayWord(streakDays)}`}
       </p>
 
-      {/* Кружки + бейдж +1 ⭐ справа */}
+      {/* Кружки */}
       <div className="mt-2 flex items-center gap-2 min-h-[20px]">
         <div className="flex flex-wrap gap-[2px] flex-1 min-w-0">
           {dots.map((s, i) => (
@@ -194,23 +204,6 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
             />
           ))}
         </div>
-        {doneToday && (
-          <span
-            className="shrink-0 whitespace-nowrap inline-flex items-center"
-            style={{
-              background: "#f0fdf4",
-              border: "0.5px solid #16a34a",
-              color: "#16a34a",
-              borderRadius: 20,
-              padding: "3px 8px",
-              fontSize: 11,
-              fontWeight: 500,
-              lineHeight: 1.2,
-            }}
-          >
-            +1 ⭐
-          </span>
-        )}
       </div>
 
       {/* Разделитель */}
