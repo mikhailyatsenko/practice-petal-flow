@@ -163,12 +163,11 @@ export function PathLevels() {
             <div
               className="shrink-0 flex items-center justify-center"
               style={{
-                background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                background: "rgba(255,255,255,0.2)",
                 borderRadius: 10,
                 width: 40,
                 height: 40,
                 fontSize: 20,
-                boxShadow: "0 4px 12px rgba(255,109,0,0.35)",
               }}
               aria-hidden
             >
