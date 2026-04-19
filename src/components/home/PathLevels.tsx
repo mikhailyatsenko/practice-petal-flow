@@ -17,6 +17,7 @@ interface Level {
   steps: LevelStep[];
   progress?: { done: number; total: number; unit?: string };
   footer?: string;
+  reward: string;
   task: LevelTaskContent;
 }
 
