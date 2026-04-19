@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Circle, ChevronRight } from "lucide-react";
+import { Check, Circle } from "lucide-react";
 import { LevelTaskSheet, type LevelTaskContent } from "./LevelTaskSheet";
 
 interface LevelStep {
@@ -177,6 +177,7 @@ export function PathLevels() {
     <article
       key={lvl.id}
       className="rounded-2xl bg-card hairline overflow-hidden shadow-card animate-fade-up flex flex-col"
+      style={{ minHeight: "75vh" }}
     >
       {/* Header (clickable — switches to next level) */}
       <button
@@ -227,7 +228,6 @@ export function PathLevels() {
             <span className="inline-block rounded-full bg-white/15 backdrop-blur px-2.5 py-0.5 text-[10.5px] font-medium mb-0.5">
               Уровень {idx + 1} из {LEVELS.length}
             </span>
-            <ChevronRight className="ml-auto h-5 w-5 shrink-0 opacity-80 self-center" />
           </div>
 
           {/* Строка 2: название */}
