@@ -48,7 +48,7 @@ const LEVELS: Level[] = [
     title: "Выработай ритм",
     subtitle: "7 дней хит — 5 из 5",
     emoji: "🔥",
-    gradient: "linear-gradient(135deg, #A8541E, #6E3210)",
+    gradient: "linear-gradient(135deg, #0F6E56, #1D9E75)",
     progress: { done: 3, total: 7, unit: "дней" },
     steps: [
       { id: "d1", label: "День 1 — все 5 практик", done: true },
