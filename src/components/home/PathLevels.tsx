@@ -89,7 +89,7 @@ const LEVELS: Level[] = [
     title: "Стань собой",
     subtitle: "3 качества × 7 дней",
     emoji: "💎",
-    gradient: "linear-gradient(135deg, #3E5266, #1F2E3E)",
+    gradient: "linear-gradient(135deg, #993556, #D4537E)",
     steps: [
       { id: "s1", label: "Выбрать 3 качества", done: false },
       { id: "s2", label: "7 дней практики", done: false },
