@@ -250,7 +250,8 @@ export function PathLevels() {
       </button>
 
       {/* Body */}
-      <div className="px-4 py-3.5">
+      <div className="px-4 pt-3.5 pb-4 flex flex-col justify-between flex-1">
+        <div>
         {lvl.progress && (
           <>
             <div className="flex items-center justify-between text-[12px]">
@@ -301,6 +302,25 @@ export function PathLevels() {
         {lvl.footer && (
           <p className="mt-3 text-[12px] text-muted-foreground">{lvl.footer}</p>
         )}
+        </div>
+
+        <div>
+        {/* Награда */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "10px 0",
+            borderTop: "0.5px solid rgba(0,0,0,0.07)",
+            marginTop: 10,
+          }}
+        >
+          <span style={{ fontSize: 12, color: "#b8a888" }}>Награда:</span>
+          <span style={{ fontSize: 13, fontWeight: 500, color: "#FF6D00" }}>
+            {lvl.reward}
+          </span>
+        </div>
 
         {/* CTA: Посмотреть задание */}
         <div
@@ -323,7 +343,7 @@ export function PathLevels() {
             cursor: "pointer",
             position: "relative",
             overflow: "hidden",
-            marginTop: 14,
+            marginTop: 4,
           }}
         >
           <span
