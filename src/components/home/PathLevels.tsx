@@ -164,6 +164,7 @@ const LEVELS: Level[] = [
 
 export function PathLevels() {
   const [idx, setIdx] = useState(0);
+  const [sheetOpen, setSheetOpen] = useState(false);
   const lvl = LEVELS[idx];
   const doneCount = lvl.steps.filter((s) => s.done).length;
   const pct = lvl.progress
