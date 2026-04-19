@@ -155,12 +155,31 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
       style={{ transition: "transform 0.18s ease, background 0.18s ease" }}
       className="tap w-full text-left bg-card hairline rounded-xl px-3 py-2 shadow-card animate-fade-up cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
     >
-      {/* Верхняя строка: название + шеврон */}
-      <div className="flex items-center gap-2">
-        <h3 className="text-[14px] font-medium leading-tight truncate flex-1 min-w-0">
+      {/* Верхняя строка: название + кнопка/шеврон справа (фикс. высота) */}
+      <div className="flex items-start gap-2 min-h-[32px]">
+        <h3 className="text-[14px] font-medium leading-tight truncate flex-1 min-w-0 pt-1">
           {title}
         </h3>
-        <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/60" />
+        <div className="shrink-0 flex items-center justify-center min-h-[32px]">
+          {!doneToday ? (
+            <div
+              style={{
+                background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+                borderRadius: 20,
+                padding: "6px 14px",
+                fontSize: 12,
+                fontWeight: 500,
+                color: "#fff",
+                whiteSpace: "nowrap",
+                cursor: "pointer",
+              }}
+            >
+              Сделать
+            </div>
+          ) : (
+            <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
+          )}
+        </div>
       </div>
 
       {/* Вторая строка: серия / пропуски */}
@@ -179,7 +198,7 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
           : `Серия: ${streakDays} ${dayWord(streakDays)}`}
       </p>
 
-      {/* Кружки + кнопка действия справа */}
+      {/* Кружки + +1 ⭐ справа */}
       <div className="mt-2 flex items-center gap-2 min-h-[26px]">
         <div className="flex flex-wrap gap-[2px] flex-1 min-w-0">
           {dots.map((s, i) => (
@@ -189,23 +208,8 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
             />
           ))}
         </div>
-        <div className="shrink-0 flex items-center justify-center min-h-[26px]">
-          {!doneToday ? (
-            <div
-              style={{
-                background: "linear-gradient(135deg,#FFB300,#FF6D00)",
-                borderRadius: 20,
-                padding: "5px 12px",
-                fontSize: 12,
-                fontWeight: 500,
-                color: "#fff",
-                whiteSpace: "nowrap",
-                cursor: "pointer",
-              }}
-            >
-              Сделать
-            </div>
-          ) : (
+        <div className="shrink-0 flex items-center justify-center min-h-[22px] min-w-[48px]">
+          {doneToday && (
             <span
               className="inline-flex items-center"
               style={{
