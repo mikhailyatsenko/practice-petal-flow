@@ -36,7 +36,7 @@ const LEVELS: Level[] = [
     title: "Познай формулу",
     subtitle: "Книга + ИИ-бот 50%+",
     emoji: "📖",
-    gradient: "linear-gradient(135deg, #6B5B3E, #3E3320)",
+    gradient: "linear-gradient(135deg, #412402, #854F0B)",
     steps: [
       { id: "s1", label: "Прослушать книгу 6 ч", done: false },
       { id: "s2", label: "Сформулировать формулу", done: false },
