@@ -176,7 +176,8 @@ export function PathLevels() {
   return (
     <article
       key={lvl.id}
-      className="rounded-2xl bg-card hairline overflow-hidden shadow-card animate-fade-up"
+      className="rounded-2xl bg-card hairline overflow-hidden shadow-card animate-fade-up flex flex-col"
+      style={{ minHeight: "85vh" }}
     >
       {/* Header (clickable — switches to next level) */}
       <button
@@ -355,17 +356,6 @@ export function PathLevels() {
           </span>
         </div>
 
-        {/* Pagination dots */}
-        <div className="mt-4 flex items-center justify-center gap-1.5">
-          {LEVELS.map((l, i) => (
-            <span
-              key={l.id}
-              className={`h-1.5 rounded-full transition-all ${
-                i === idx ? "w-5 bg-foreground/70" : "w-1.5 bg-foreground/20"
-              }`}
-            />
-          ))}
-        </div>
       </div>
 
       <LevelTaskSheet
