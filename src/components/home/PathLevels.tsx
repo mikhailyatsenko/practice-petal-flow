@@ -17,6 +17,7 @@ interface Level {
   steps: LevelStep[];
   progress?: { done: number; total: number; unit?: string };
   footer?: string;
+  reward: string;
   task: LevelTaskContent;
 }
 
@@ -32,6 +33,7 @@ const LEVELS: Level[] = [
       { id: "s2", label: "Провести созвон 60 мин", done: true },
       { id: "s3", label: "Написать желание Бадди", done: false },
     ],
+    reward: "🎁 Открывается Магазин",
     task: {
       videoTitle: "Как найти своего Бадди",
       caption: "Введение • Уровень 1",
@@ -51,6 +53,7 @@ const LEVELS: Level[] = [
       { id: "s2", label: "Сформулировать формулу", done: false },
       { id: "s3", label: "Сдать ИИ-боту на 50%+", done: false },
     ],
+    reward: "🎁 Открывается раздел Четвёрка",
     task: {
       videoTitle: "Книга и формула успеха",
       caption: "Введение • Уровень 2",
@@ -75,6 +78,7 @@ const LEVELS: Level[] = [
       { id: "d6", label: "День 6 — все 5 практик", done: false },
       { id: "d7", label: "День 7 — все 5 практик", done: false },
     ],
+    reward: "🎁 +100 ⭐",
     task: {
       videoTitle: "Как выработать ритм",
       caption: "Введение • Уровень 3",
@@ -93,6 +97,7 @@ const LEVELS: Level[] = [
       { id: "s2", label: "Все 4 подтверждают", done: false },
       { id: "s3", label: "Созвон 80 мин", done: false },
     ],
+    reward: "🎁 +100 ⭐",
     task: {
       videoTitle: "Найди свою Четвёрку",
       caption: "Введение • Уровень 4",
@@ -112,6 +117,7 @@ const LEVELS: Level[] = [
       { id: "s2", label: "Описать идеальный день", done: false },
       { id: "s3", label: "Поделиться с Бадди", done: false },
     ],
+    reward: "🎁 +100 ⭐",
     task: {
       videoTitle: "Дизайн своей жизни",
       caption: "Введение • Уровень 5",
@@ -131,6 +137,7 @@ const LEVELS: Level[] = [
       { id: "s2", label: "7 дней практики", done: false },
       { id: "s3", label: "Написать рефлексию", done: false },
     ],
+    reward: "🎁 +100 ⭐",
     task: {
       videoTitle: "Стань собой",
       caption: "Введение • Уровень 6",
@@ -152,6 +159,7 @@ const LEVELS: Level[] = [
       { id: "s3", label: "Награда: 200 ⭐", done: false },
     ],
     footer: "Награда: 200 ⭐",
+    reward: "🎁 +200 ⭐",
     task: {
       videoTitle: "30 хитов подряд",
       caption: "Введение • Уровень 7",
@@ -242,7 +250,8 @@ export function PathLevels() {
       </button>
 
       {/* Body */}
-      <div className="px-4 py-3.5">
+      <div className="px-4 pt-3.5 pb-4 flex flex-col justify-between flex-1">
+        <div>
         {lvl.progress && (
           <>
             <div className="flex items-center justify-between text-[12px]">
@@ -293,6 +302,25 @@ export function PathLevels() {
         {lvl.footer && (
           <p className="mt-3 text-[12px] text-muted-foreground">{lvl.footer}</p>
         )}
+        </div>
+
+        <div>
+        {/* Награда */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "10px 0",
+            borderTop: "0.5px solid rgba(0,0,0,0.07)",
+            marginTop: 10,
+          }}
+        >
+          <span style={{ fontSize: 12, color: "#b8a888" }}>Награда:</span>
+          <span style={{ fontSize: 13, fontWeight: 500, color: "#FF6D00" }}>
+            {lvl.reward}
+          </span>
+        </div>
 
         {/* CTA: Посмотреть задание */}
         <div
@@ -315,7 +343,7 @@ export function PathLevels() {
             cursor: "pointer",
             position: "relative",
             overflow: "hidden",
-            marginTop: 14,
+            marginTop: 4,
           }}
         >
           <span
@@ -354,7 +382,7 @@ export function PathLevels() {
             Посмотреть задание
           </span>
         </div>
-
+        </div>
       </div>
 
       <LevelTaskSheet
