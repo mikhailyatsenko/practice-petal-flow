@@ -11,6 +11,7 @@ interface Level {
   id: string;
   title: string;
   subtitle: string;
+  emoji: string;
   gradient: string;
   steps: LevelStep[];
   progress?: { done: number; total: number; unit?: string };
@@ -22,6 +23,7 @@ const LEVELS: Level[] = [
     id: "l1",
     title: "Найди союзника",
     subtitle: "Бадди + первый созвон",
+    emoji: "🤝",
     gradient: "linear-gradient(135deg, #C75B3C, #8E3B25)",
     steps: [
       { id: "s1", label: "Найти Бадди", done: true },
@@ -33,7 +35,8 @@ const LEVELS: Level[] = [
     id: "l2",
     title: "Познай формулу",
     subtitle: "Книга + ИИ-бот 50%+",
-    gradient: "linear-gradient(135deg, #B8893A, #7A5A22)",
+    emoji: "📖",
+    gradient: "linear-gradient(135deg, #6B5B3E, #3E3320)",
     steps: [
       { id: "s1", label: "Прослушать книгу 6 ч", done: false },
       { id: "s2", label: "Сформулировать формулу", done: false },
@@ -44,7 +47,8 @@ const LEVELS: Level[] = [
     id: "l3",
     title: "Выработай ритм",
     subtitle: "7 дней хит — 5 из 5",
-    gradient: "linear-gradient(135deg, #FFB300, #FF6D00)",
+    emoji: "🔥",
+    gradient: "linear-gradient(135deg, #A8541E, #6E3210)",
     progress: { done: 3, total: 7, unit: "дней" },
     steps: [
       { id: "d1", label: "День 1 — все 5 практик", done: true },
@@ -60,7 +64,8 @@ const LEVELS: Level[] = [
     id: "l4",
     title: "Найди племя",
     subtitle: "Четвёрка + созвон",
-    gradient: "linear-gradient(135deg, #7A8B4A, #4F5E2A)",
+    emoji: "👥",
+    gradient: "linear-gradient(135deg, #5E7244, #364626)",
     steps: [
       { id: "s1", label: "Найти вторую пару", done: false },
       { id: "s2", label: "Все 4 подтверждают", done: false },
@@ -71,6 +76,7 @@ const LEVELS: Level[] = [
     id: "l5",
     title: "Создай видение",
     subtitle: "Дизайн жизни + день",
+    emoji: "🌅",
     gradient: "linear-gradient(135deg, #8B3A4E, #5A1F30)",
     steps: [
       { id: "s1", label: "Написать 1000+ символов", done: false },
@@ -82,7 +88,8 @@ const LEVELS: Level[] = [
     id: "l6",
     title: "Стань собой",
     subtitle: "3 качества × 7 дней",
-    gradient: "linear-gradient(135deg, #3E5266, #243646)",
+    emoji: "💎",
+    gradient: "linear-gradient(135deg, #3E5266, #1F2E3E)",
     steps: [
       { id: "s1", label: "Выбрать 3 качества", done: false },
       { id: "s2", label: "7 дней практики", done: false },
@@ -93,7 +100,8 @@ const LEVELS: Level[] = [
     id: "l7",
     title: "30 хитов подряд",
     subtitle: "Все 5 практик 30 дней без пропуска",
-    gradient: "linear-gradient(135deg, #5C4033, #2E1F18)",
+    emoji: "🏆",
+    gradient: "linear-gradient(135deg, #4A3826, #241810)",
     progress: { done: 0, total: 30, unit: "дней" },
     steps: [
       { id: "s1", label: "Участники: ты и Бадди", done: false },
@@ -127,22 +135,57 @@ export function PathLevels() {
         style={{ background: lvl.gradient }}
         aria-label={`Перейти к следующему уровню (сейчас ${idx + 1} из ${LEVELS.length})`}
       >
-        <span className="absolute -top-10 -right-8 h-32 w-32 rounded-full bg-white/15 blur-xl" />
-        <span className="absolute -bottom-12 -left-6 h-28 w-28 rounded-full bg-white/10 blur-xl" />
+        {/* Декоративные полупрозрачные круги */}
+        <span
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: 80,
+            height: 80,
+            background: "rgba(255,255,255,0.12)",
+            top: -25,
+            right: -10,
+          }}
+        />
+        <span
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: 50,
+            height: 50,
+            background: "rgba(255,255,255,0.08)",
+            top: 15,
+            right: 50,
+          }}
+        />
 
         <div className="relative flex items-center gap-3">
+          {/* Иконка-эмодзи в оранжевой рамке */}
+          <div
+            className="shrink-0 flex items-center justify-center"
+            style={{
+              background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+              borderRadius: 12,
+              width: 44,
+              height: 44,
+              fontSize: 22,
+              boxShadow: "0 4px 12px rgba(255,109,0,0.35)",
+            }}
+            aria-hidden
+          >
+            {lvl.emoji}
+          </div>
+
           <div className="flex-1 min-w-0">
             <span className="inline-block rounded-full bg-white/22 backdrop-blur px-2.5 py-0.5 text-[10.5px] font-medium">
               Уровень {idx + 1} из {LEVELS.length}
             </span>
-            <h3 className="mt-2 text-[20px] font-semibold leading-tight">
+            <h3 className="mt-1.5 text-[20px] font-semibold leading-tight">
               {lvl.title}
             </h3>
             <p className="mt-0.5 text-[12px] text-white/90 leading-snug">
               {lvl.subtitle}
             </p>
           </div>
-          <ChevronRight className="h-5 w-5 shrink-0 opacity-90" />
+          <ChevronRight className="h-5 w-5 shrink-0 opacity-90 relative z-10" />
         </div>
       </button>
 

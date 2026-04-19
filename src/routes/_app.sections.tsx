@@ -16,6 +16,8 @@ function SectionsScreen() {
     <div className="px-4">
       <SectionHeader emoji="🧩" title="Разделы" subtitle="Открывай дополнительные разделы за очки" />
 
+      <h2 className="mt-2 mb-3 text-[18px] font-semibold text-foreground">Разделы магазина</h2>
+
       <SubItemList
         items={[
           { emoji: "💪", title: "Привычки",                subtitle: "Отслеживание любых привычек", price: "200 ⭐", locked: true },

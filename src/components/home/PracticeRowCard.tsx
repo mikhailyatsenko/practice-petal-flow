@@ -122,28 +122,44 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
   const progressValue = progress;
 
   return (
-    <div className="w-full bg-card hairline rounded-xl px-3.5 py-2.5 shadow-card animate-fade-up">
-      {/* Верхняя строка: название + кнопка */}
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={() => onToggle(id)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onToggle(id);
+        }
+      }}
+      className="tap w-full text-left bg-card hairline rounded-xl px-3.5 py-2.5 shadow-card animate-fade-up cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+    >
+      {/* Верхняя строка: название + статус (фикс. высота) */}
       <div className="flex items-center gap-3">
         <h3 className="text-[14px] font-medium leading-tight truncate flex-1 min-w-0">
           {title}
         </h3>
-        <div className="shrink-0">
+        <div className="shrink-0 h-7 flex items-center">
           {doneToday ? (
-            <button
-              onClick={() => onToggle(id)}
-              className="tap rounded-full text-[12px] font-medium px-3 py-1 whitespace-nowrap"
-              style={{ background: "#f0ebe0", color: "#b8a888" }}
+            <span
+              className="whitespace-nowrap inline-flex items-center"
+              style={{
+                background: "#f0fdf4",
+                border: "0.5px solid #16a34a",
+                color: "#16a34a",
+                borderRadius: "20px",
+                padding: "3px 10px",
+                fontSize: "12px",
+                fontWeight: 500,
+                lineHeight: 1.2,
+              }}
             >
-              перейти
-            </button>
+              +1 ⭐
+            </span>
           ) : (
-            <button
-              onClick={() => onToggle(id)}
-              className="tap btn-pill-orange btn-sm"
-            >
+            <span className="btn-pill-orange btn-sm pointer-events-none">
               сделать
-            </button>
+            </span>
           )}
         </div>
       </div>
@@ -164,7 +180,7 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
           : `Серия: ${streakDays} ${dayWord(streakDays)}`}
       </p>
 
-      {/* Кружки + бейдж +1⭐ справа */}
+      {/* Кружки */}
       <div className="mt-2 flex items-center gap-2">
         <div className="flex flex-wrap gap-[2px] flex-1 min-w-0">
           {dots.map((s, i) => (
@@ -174,21 +190,6 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
             />
           ))}
         </div>
-        {doneToday && (
-          <span
-            className="shrink-0 whitespace-nowrap"
-            style={{
-              background: "#f0fdf4",
-              border: "0.5px solid #16a34a",
-              color: "#16a34a",
-              borderRadius: "20px",
-              padding: "3px 8px",
-              fontSize: "11px",
-            }}
-          >
-            +1 ⭐
-          </span>
-        )}
       </div>
 
       {/* Разделитель */}

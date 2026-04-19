@@ -141,7 +141,7 @@ function WishesScreen() {
   const [inspires, setInspires] = useState<Record<string, number>>({});
 
   const handleInspire = (id: string) => {
-    setInspires((prev) => ({ ...prev, [id]: Math.min(5, (prev[id] ?? 0) + 1) }));
+    setInspires((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
   };
 
   // (kept for backward compatibility above)
@@ -341,8 +341,12 @@ const DOT_FILLED_COLORS = ["#FFD180", "#FFB300", "#FF9100", "#FF6D00", "#E64A19"
 const DOT_EMPTY = "#e0d8cc";
 
 function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
-  const safe = Math.max(0, Math.min(5, level));
-  const word = CHARGE_WORDS[safe];
+  const cycles = Math.floor(level / 5);
+  const inCycle = level % 5;
+  // На границе круга показываем полностью заполненный предыдущий круг
+  const displayDots = level > 0 && inCycle === 0 ? 5 : inCycle;
+  const wordIdx = Math.min(5, displayDots);
+  const word = CHARGE_WORDS[wordIdx];
 
   return (
     <button
@@ -350,11 +354,21 @@ function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
       aria-label="Заряд желания"
       className="tap flex items-center gap-2.5 min-w-0 select-none -mx-1 px-1 py-1 rounded-lg"
     >
-      <span className="text-[22px] leading-none transition-transform active:scale-90">❤️</span>
+      <span className="relative text-[22px] leading-none transition-transform active:scale-90">
+        ❤️
+        {cycles > 0 && (
+          <span
+            key={cycles}
+            className="absolute -top-1 -right-2 min-w-[18px] h-[18px] px-1 rounded-full bg-[#FF6D00] text-white text-[10px] font-bold flex items-center justify-center animate-pop"
+          >
+            +{cycles}
+          </span>
+        )}
+      </span>
       <span className="flex flex-col gap-1 min-w-0 text-left">
         <span className="flex items-center gap-1">
           {Array.from({ length: 5 }).map((_, i) => {
-            const filled = i < safe;
+            const filled = i < displayDots;
             return (
               <span
                 key={i}
@@ -365,7 +379,7 @@ function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
           })}
         </span>
         <span
-          key={safe}
+          key={`${cycles}-${displayDots}`}
           className="text-[12px] font-medium leading-none animate-pop"
           style={{ color: word.color }}
         >

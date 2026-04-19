@@ -96,9 +96,9 @@ function HomeScreen() {
   return (
     <div className="px-4 pt-2">
       <section aria-label="Статистика" className="grid grid-cols-4 gap-2">
-        <StatCard emoji="⭐" label="Очки"      value={String(stars)}        tone="orange" />
-        <StatCard emoji="🔥" label="Хит"       value={`${hit} дн`}          tone="green"  />
         <StatCard emoji="💎" label="Статус"    value={status.label}         tone="orange" />
+        <StatCard emoji="🔥" label="Хит"       value={`${hit} дн`}          tone="green"  />
+        <StatCard emoji="⭐" label="Очки"      value={String(stars)}        tone="orange" />
         <StatCard emoji="🔰" label="Страховка" value={`${insurance} шт`}                  />
       </section>
 
