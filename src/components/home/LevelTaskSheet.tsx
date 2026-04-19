@@ -1,0 +1,159 @@
+import { useEffect } from "react";
+import { Play } from "lucide-react";
+
+export interface LevelTaskContent {
+  videoTitle: string;
+  description: string;
+  duration?: string;
+  caption?: string;
+}
+
+interface Props {
+  open: boolean;
+  onClose: () => void;
+  levelNumber: number;
+  levelTitle: string;
+  emoji: string;
+  content: LevelTaskContent;
+}
+
+export function LevelTaskSheet({ open, onClose, levelNumber, levelTitle, emoji, content }: Props) {
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-end animate-fade-in"
+      style={{ background: "rgba(0,0,0,0.5)" }}
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Уровень ${levelNumber} — ${levelTitle}`}
+    >
+      <div
+        className="w-full animate-slide-in-right"
+        style={{
+          background: "#fff",
+          borderRadius: "20px 20px 0 0",
+          padding: "20px 16px 32px",
+          animation: "slide-up 0.25s ease-out",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-[16px] font-semibold text-foreground">
+            <span className="mr-1.5" aria-hidden>{emoji}</span>
+            Уровень {levelNumber} — {levelTitle}
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Закрыть"
+            style={{
+              background: "#f0ebe0",
+              borderRadius: "50%",
+              width: 28,
+              height: 28,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#7a6b54",
+              fontSize: 14,
+              lineHeight: 1,
+            }}
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Video card */}
+        <div
+          style={{
+            background: "linear-gradient(135deg,#2a1505,#5a2e10)",
+            height: 180,
+            borderRadius: 14,
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+              width: 54,
+              height: 54,
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 6px 18px rgba(255,109,0,0.45)",
+            }}
+          >
+            <Play className="h-6 w-6 text-white fill-white ml-0.5" />
+          </div>
+          {content.duration && (
+            <span
+              style={{
+                position: "absolute",
+                bottom: 10,
+                right: 10,
+                background: "rgba(0,0,0,0.55)",
+                color: "#fff",
+                fontSize: 11,
+                padding: "3px 8px",
+                borderRadius: 6,
+              }}
+            >
+              {content.duration}
+            </span>
+          )}
+        </div>
+
+        {/* Video title strip */}
+        <div className="bg-white pt-3 pb-1">
+          <div style={{ fontSize: 14, fontWeight: 500, color: "#1a1a1a" }}>
+            {content.videoTitle}
+          </div>
+          {content.caption && (
+            <div style={{ fontSize: 12, color: "#b8a888", marginTop: 2 }}>
+              {content.caption}
+            </div>
+          )}
+        </div>
+
+        {/* Description */}
+        <div
+          style={{
+            background: "#FAF6EF",
+            borderRadius: 12,
+            padding: "12px 14px",
+            marginTop: 12,
+            fontSize: 13,
+            lineHeight: 1.5,
+            color: "#3a2e1f",
+          }}
+        >
+          {content.description}
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes slide-up {
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
+        }
+      `}</style>
+    </div>
+  );
+}
