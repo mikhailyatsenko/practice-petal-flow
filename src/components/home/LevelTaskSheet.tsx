@@ -43,8 +43,7 @@ export function LevelTaskSheet({ open, onClose, levelNumber, levelTitle, emoji, 
         style={{
           background: "#fff",
           borderRadius: "20px 20px 0 0",
-          height: "85vh",
-          minHeight: "85vh",
+          maxHeight: "85vh",
           animation: "slide-up 0.25s ease-out",
         }}
         onClick={(e) => e.stopPropagation()}

@@ -1,6 +1,5 @@
 import { useRef } from "react";
-
-
+import { ChevronRight } from "lucide-react";
 export type DayState = "done" | "missed" | "empty";
 
 export interface PracticeRow {
@@ -156,11 +155,40 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
       style={{ transition: "transform 0.18s ease, background 0.18s ease" }}
       className="tap w-full text-left bg-card hairline rounded-xl px-3 py-2 shadow-card animate-fade-up cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
     >
-      {/* Верхняя строка: название + бейдж/кнопка (фикс. высота) */}
+      {/* Верхняя строка: название + шеврон */}
       <div className="flex items-center gap-2">
         <h3 className="text-[14px] font-medium leading-tight truncate flex-1 min-w-0">
           {title}
         </h3>
+        <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/60" />
+      </div>
+
+      {/* Вторая строка: серия / пропуски */}
+      <p
+        className={
+          "mt-1 text-[11px] leading-tight " +
+          (hasMissedStreak
+            ? "text-[#ef4444] font-medium"
+            : streakDays > 0
+              ? "text-success-dark"
+              : "text-muted-foreground")
+        }
+      >
+        {hasMissedStreak
+          ? `Пропущено ${missedStreak} ${dayWord(missedStreak)} подряд`
+          : `Серия: ${streakDays} ${dayWord(streakDays)}`}
+      </p>
+
+      {/* Кружки + кнопка действия справа */}
+      <div className="mt-2 flex items-center gap-2 min-h-[26px]">
+        <div className="flex flex-wrap gap-[2px] flex-1 min-w-0">
+          {dots.map((s, i) => (
+            <span
+              key={i}
+              className={"h-1.5 w-1.5 rounded-full " + dotStyle(s)}
+            />
+          ))}
+        </div>
         <div className="shrink-0 flex items-center justify-center min-h-[26px]">
           {!doneToday ? (
             <div
@@ -195,34 +223,6 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
               +1 ⭐
             </span>
           )}
-        </div>
-      </div>
-
-      {/* Вторая строка: серия / пропуски */}
-      <p
-        className={
-          "mt-1 text-[11px] leading-tight " +
-          (hasMissedStreak
-            ? "text-[#ef4444] font-medium"
-            : streakDays > 0
-              ? "text-success-dark"
-              : "text-muted-foreground")
-        }
-      >
-        {hasMissedStreak
-          ? `Пропущено ${missedStreak} ${dayWord(missedStreak)} подряд`
-          : `Серия: ${streakDays} ${dayWord(streakDays)}`}
-      </p>
-
-      {/* Кружки */}
-      <div className="mt-2 flex items-center gap-2 min-h-[20px]">
-        <div className="flex flex-wrap gap-[2px] flex-1 min-w-0">
-          {dots.map((s, i) => (
-            <span
-              key={i}
-              className={"h-1.5 w-1.5 rounded-full " + dotStyle(s)}
-            />
-          ))}
         </div>
       </div>
 
