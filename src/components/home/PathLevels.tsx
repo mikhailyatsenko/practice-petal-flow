@@ -24,7 +24,7 @@ const LEVELS: Level[] = [
     title: "Найди союзника",
     subtitle: "Бадди + первый созвон",
     emoji: "🤝",
-    gradient: "linear-gradient(135deg, #C75B3C, #8E3B25)",
+    gradient: "linear-gradient(135deg, #993C1D, #D85A30)",
     steps: [
       { id: "s1", label: "Найти Бадди", done: true },
       { id: "s2", label: "Провести созвон 60 мин", done: true },
@@ -36,7 +36,7 @@ const LEVELS: Level[] = [
     title: "Познай формулу",
     subtitle: "Книга + ИИ-бот 50%+",
     emoji: "📖",
-    gradient: "linear-gradient(135deg, #6B5B3E, #3E3320)",
+    gradient: "linear-gradient(135deg, #412402, #854F0B)",
     steps: [
       { id: "s1", label: "Прослушать книгу 6 ч", done: false },
       { id: "s2", label: "Сформулировать формулу", done: false },
@@ -48,7 +48,7 @@ const LEVELS: Level[] = [
     title: "Выработай ритм",
     subtitle: "7 дней хит — 5 из 5",
     emoji: "🔥",
-    gradient: "linear-gradient(135deg, #A8541E, #6E3210)",
+    gradient: "linear-gradient(135deg, #0F6E56, #1D9E75)",
     progress: { done: 3, total: 7, unit: "дней" },
     steps: [
       { id: "d1", label: "День 1 — все 5 практик", done: true },
@@ -65,7 +65,7 @@ const LEVELS: Level[] = [
     title: "Найди племя",
     subtitle: "Четвёрка + созвон",
     emoji: "👥",
-    gradient: "linear-gradient(135deg, #5E7244, #364626)",
+    gradient: "linear-gradient(135deg, #185FA5, #378ADD)",
     steps: [
       { id: "s1", label: "Найти вторую пару", done: false },
       { id: "s2", label: "Все 4 подтверждают", done: false },
@@ -77,7 +77,7 @@ const LEVELS: Level[] = [
     title: "Создай видение",
     subtitle: "Дизайн жизни + день",
     emoji: "🌅",
-    gradient: "linear-gradient(135deg, #8B3A4E, #5A1F30)",
+    gradient: "linear-gradient(135deg, #26215C, #534AB7)",
     steps: [
       { id: "s1", label: "Написать 1000+ символов", done: false },
       { id: "s2", label: "Описать идеальный день", done: false },
@@ -89,7 +89,7 @@ const LEVELS: Level[] = [
     title: "Стань собой",
     subtitle: "3 качества × 7 дней",
     emoji: "💎",
-    gradient: "linear-gradient(135deg, #3E5266, #1F2E3E)",
+    gradient: "linear-gradient(135deg, #993556, #D4537E)",
     steps: [
       { id: "s1", label: "Выбрать 3 качества", done: false },
       { id: "s2", label: "7 дней практики", done: false },
@@ -101,7 +101,7 @@ const LEVELS: Level[] = [
     title: "30 хитов подряд",
     subtitle: "Все 5 практик 30 дней без пропуска",
     emoji: "🏆",
-    gradient: "linear-gradient(135deg, #4A3826, #241810)",
+    gradient: "linear-gradient(135deg, #3B6D11, #639922)",
     progress: { done: 0, total: 30, unit: "дней" },
     steps: [
       { id: "s1", label: "Участники: ты и Бадди", done: false },
@@ -132,7 +132,7 @@ export function PathLevels() {
         type="button"
         onClick={next}
         className="relative w-full text-left px-4 py-4 text-white overflow-hidden"
-        style={{ background: "#1a0e00" }}
+        style={{ background: lvl.gradient }}
         aria-label={`Перейти к следующему уровню (сейчас ${idx + 1} из ${LEVELS.length})`}
       >
         {/* Декоративные полупрозрачные круги */}
@@ -163,12 +163,11 @@ export function PathLevels() {
             <div
               className="shrink-0 flex items-center justify-center"
               style={{
-                background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                background: "rgba(255,255,255,0.2)",
                 borderRadius: 10,
                 width: 40,
                 height: 40,
                 fontSize: 20,
-                boxShadow: "0 4px 12px rgba(255,109,0,0.35)",
               }}
               aria-hidden
             >
