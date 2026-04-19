@@ -53,6 +53,7 @@ const LEVELS: Level[] = [
       { id: "s2", label: "Сформулировать формулу", done: false },
       { id: "s3", label: "Сдать ИИ-боту на 50%+", done: false },
     ],
+    reward: "🎁 Открывается раздел Четвёрка",
     task: {
       videoTitle: "Книга и формула успеха",
       caption: "Введение • Уровень 2",
