@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Circle, ChevronRight } from "lucide-react";
+import { Check, Circle } from "lucide-react";
 import { LevelTaskSheet, type LevelTaskContent } from "./LevelTaskSheet";
 
 interface LevelStep {
