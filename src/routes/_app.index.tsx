@@ -211,7 +211,6 @@ function HomeScreen() {
         );
       })}
 
-      <StatInfoSheet statKey={openStat} onClose={() => setOpenStat(null)} />
     </div>
   );
 }
