@@ -71,28 +71,42 @@ export function StatInfoSheet({ statKey, onClose }: Props) {
   const info = INFO[statKey];
 
   return (
-    <div
-      ref={ref}
-      style={{
-        marginTop: 10,
-        background: "#fff",
-        borderRadius: 16,
-        padding: "14px 14px 16px",
-        boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
-        border: "0.5px solid rgba(0,0,0,0.06)",
-        animation: "fade-in 0.2s ease-out",
-      }}
-      role="dialog"
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-        <span style={{ fontSize: 22, lineHeight: 1 }}>{info.emoji}</span>
-        <h3 style={{ fontSize: 16, fontWeight: 600, color: info.color, margin: 0 }}>
-          {info.title}
-        </h3>
+    <>
+      <div
+        onClick={onClose}
+        style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(0,0,0,0.4)",
+          zIndex: 40,
+          animation: "fade-in 0.2s ease-out",
+        }}
+      />
+      <div
+        ref={ref}
+        style={{
+          position: "relative",
+          zIndex: 50,
+          marginTop: 10,
+          background: "#fff",
+          borderRadius: 16,
+          padding: "14px 14px 16px",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+          border: "0.5px solid rgba(0,0,0,0.06)",
+          animation: "fade-in 0.2s ease-out",
+        }}
+        role="dialog"
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+          <span style={{ fontSize: 22, lineHeight: 1 }}>{info.emoji}</span>
+          <h3 style={{ fontSize: 16, fontWeight: 600, color: info.color, margin: 0 }}>
+            {info.title}
+          </h3>
+        </div>
+        <p style={{ fontSize: 13, lineHeight: 1.5, color: "#3a2f20", margin: 0 }}>
+          {info.text}
+        </p>
       </div>
-      <p style={{ fontSize: 13, lineHeight: 1.5, color: "#3a2f20", margin: 0 }}>
-        {info.text}
-      </p>
-    </div>
+    </>
   );
 }
