@@ -73,10 +73,12 @@ function HomeScreen() {
   const status = statusFor(stars);
   const doneToday = useMemo(() => practices.filter((p) => p.doneToday).length, [practices]);
 
-  const launchStar = (origin: HTMLElement | null) => {
-    if (!origin || !starIconRef.current) return;
-    const from = origin.getBoundingClientRect();
-    const to = starIconRef.current.getBoundingClientRect();
+  const launchStarFromRect = (from: DOMRect) => {
+    if (!starIconRef.current) return;
+    // Получаем bounds иконки-цели; если она в pulse-состоянии (scale 1.5),
+    // центр не меняется, но возьмём его без учёта transform через offsetParent
+    const iconEl = starIconRef.current;
+    const to = iconEl.getBoundingClientRect();
     const id = ++flyIdRef.current;
     const star: FlyingStar = {
       id,
@@ -87,13 +89,11 @@ function HomeScreen() {
       phase: "start",
     };
     setFlyingStars((s) => [...s, star]);
-    // следующий кадр — переключаем в end-фазу для CSS-перехода
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         setFlyingStars((s) => s.map((x) => (x.id === id ? { ...x, phase: "end" } : x)));
       });
     });
-    // когда долетит — пульс иконки + +1 к очкам + удаление
     window.setTimeout(() => {
       setStars((v) => v + 1);
       setStarPulse(true);
@@ -103,14 +103,17 @@ function HomeScreen() {
   };
 
   const togglePractice = (id: string, origin?: HTMLElement | null) => {
-    const current = practices.find((p) => p.id === id);
-    const willBeDone = current ? !current.doneToday : false;
-    // Звёздочка летит ТОЛЬКО при переходе "не сделано" → "сделано"
-    if (willBeDone) {
-      launchStar(origin ?? null);
-    }
-    setPractices((list) =>
-      list.map((p) => {
+    // Захватываем геометрию origin СРАЗУ (до любых ре-рендеров)
+    const originRect = origin ? origin.getBoundingClientRect() : null;
+    setPractices((list) => {
+      const current = list.find((p) => p.id === id);
+      if (!current) return list;
+      const willBeDone = !current.doneToday;
+      // Звёздочка летит ТОЛЬКО при переходе "не сделано" → "сделано"
+      if (willBeDone && originRect) {
+        launchStarFromRect(originRect);
+      }
+      return list.map((p) => {
         if (p.id !== id) return p;
         const newDone = !p.doneToday;
         const newHistory: DayState[] = [...p.history];
@@ -128,8 +131,8 @@ function HomeScreen() {
             : Math.max(0, p.streakDays - 1),
           progress: newProgress,
         };
-      })
-    );
+      });
+    });
     setTimeout(() => {
       setPractices((list) => {
         const all = list.every((p) => p.doneToday);
