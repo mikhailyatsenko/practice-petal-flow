@@ -103,12 +103,12 @@ function HomeScreen() {
   };
 
   const togglePractice = (id: string, origin?: HTMLElement | null) => {
-    let willBeDone = false;
+    // Всегда запускаем летящую звёздочку при каждом тапе
+    launchStar(origin ?? null);
     setPractices((list) =>
       list.map((p) => {
         if (p.id !== id) return p;
         const newDone = !p.doneToday;
-        willBeDone = newDone;
         const newHistory: DayState[] = [...p.history];
         newHistory[newHistory.length - 1] = newDone ? "done" : "empty";
         const hadMissed = p.progress < 0;
@@ -126,12 +126,6 @@ function HomeScreen() {
         };
       })
     );
-    if (willBeDone) {
-      // запуск анимации звёздочки (она сама прибавит +1 к очкам по завершении)
-      launchStar(origin ?? null);
-    } else {
-      setStars((s) => s - 1);
-    }
     setTimeout(() => {
       setPractices((list) => {
         const all = list.every((p) => p.doneToday);
