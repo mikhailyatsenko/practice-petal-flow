@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export type StatKey = "stars" | "hit" | "insurance" | "status";
 
@@ -46,11 +46,25 @@ interface Props {
 }
 
 export function StatInfoSheet({ statKey, onClose }: Props) {
+  const ref = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (!statKey) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const onDocClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        // не закрывать если клик по StatCard (он сам переключит)
+        const target = e.target as HTMLElement;
+        if (target.closest("[data-stat-card]")) return;
+        onClose();
+      }
+    };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onDocClick);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onDocClick);
+    };
   }, [statKey, onClose]);
 
   if (!statKey) return null;
@@ -58,75 +72,27 @@ export function StatInfoSheet({ statKey, onClose }: Props) {
 
   return (
     <div
-      onClick={onClose}
+      ref={ref}
       style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.3)",
-        zIndex: 60,
-        display: "flex",
-        alignItems: "flex-end",
-        justifyContent: "center",
+        marginTop: 10,
+        background: "#fff",
+        borderRadius: 16,
+        padding: "14px 14px 16px",
+        boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+        border: "0.5px solid rgba(0,0,0,0.06)",
         animation: "fade-in 0.2s ease-out",
       }}
-      aria-modal="true"
       role="dialog"
     >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          background: "#fff",
-          borderRadius: "20px 20px 0 0",
-          padding: "20px 16px 32px",
-          width: "100%",
-          maxWidth: 448,
-          boxShadow: "0 -4px 20px rgba(0,0,0,0.1)",
-          animation: "slide-up 0.25s ease-out",
-        }}
-      >
-        <div
-          style={{
-            width: 36,
-            height: 4,
-            background: "#f0ebe0",
-            borderRadius: 2,
-            margin: "0 auto 16px",
-          }}
-        />
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            marginBottom: 12,
-          }}
-        >
-          <span style={{ fontSize: 28, lineHeight: 1 }}>{info.emoji}</span>
-          <h3
-            style={{
-              fontSize: 20,
-              fontWeight: 600,
-              color: info.color,
-              margin: 0,
-            }}
-          >
-            {info.title}
-          </h3>
-        </div>
-        <p
-          style={{
-            fontSize: 14,
-            lineHeight: 1.5,
-            color: "#3a2f20",
-            margin: 0,
-          }}
-        >
-          {info.text}
-        </p>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+        <span style={{ fontSize: 22, lineHeight: 1 }}>{info.emoji}</span>
+        <h3 style={{ fontSize: 16, fontWeight: 600, color: info.color, margin: 0 }}>
+          {info.title}
+        </h3>
       </div>
-      <style>{`
-        @keyframes slide-up { from { transform: translateY(100%);} to { transform: translateY(0);} }
-      `}</style>
+      <p style={{ fontSize: 13, lineHeight: 1.5, color: "#3a2f20", margin: 0 }}>
+        {info.text}
+      </p>
     </div>
   );
 }
