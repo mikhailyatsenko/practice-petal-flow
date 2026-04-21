@@ -103,8 +103,12 @@ function HomeScreen() {
   };
 
   const togglePractice = (id: string, origin?: HTMLElement | null) => {
-    // Всегда запускаем летящую звёздочку при каждом тапе
-    launchStar(origin ?? null);
+    const current = practices.find((p) => p.id === id);
+    const willBeDone = current ? !current.doneToday : false;
+    // Звёздочка летит ТОЛЬКО при переходе "не сделано" → "сделано"
+    if (willBeDone) {
+      launchStar(origin ?? null);
+    }
     setPractices((list) =>
       list.map((p) => {
         if (p.id !== id) return p;
