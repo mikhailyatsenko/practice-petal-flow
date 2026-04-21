@@ -14,7 +14,7 @@ export interface PracticeRow {
 
 interface PracticeRowCardProps {
   practice: PracticeRow;
-  onToggle: (id: string) => void;
+  onToggle: (id: string, origin?: HTMLElement | null) => void;
 }
 
 const LEVELS: Record<string, string[]> = {
