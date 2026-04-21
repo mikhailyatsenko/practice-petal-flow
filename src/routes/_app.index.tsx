@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { StatCard } from "@/components/home/StatCard";
 import { PathCard, type PathStep } from "@/components/home/PathCard";
 import { PathLevels } from "@/components/home/PathLevels";
 import { PracticeRowCard, type PracticeRow, type DayState } from "@/components/home/PracticeRowCard";
+import { StatInfoSheet, type StatKey } from "@/components/home/StatInfoSheet";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
@@ -29,13 +30,6 @@ const STATUSES = [
 const statusFor = (stars: number) =>
   [...STATUSES].reverse().find((s) => stars >= s.min) ?? STATUSES[0];
 
-const h = (p: string): DayState[] => {
-  const arr = p.split("").map((c) => (c === "x" ? "done" : c === "." ? "missed" : "empty") as DayState);
-  // дополнить до 30 пустыми слева
-  while (arr.length < 30) arr.unshift("empty");
-  return arr.slice(-30);
-};
-
 const initialPathSteps: PathStep[] = [
   { id: "s1", label: "День 1 — все 5 практик", done: true  },
   { id: "s2", label: "День 2 — все 5 практик", done: true  },
@@ -54,6 +48,15 @@ const initialPractices: PracticeRow[] = [
   { id: "wishes",    title: "Воплощение желаний",      streakDays: 4,  doneToday: false, history: [], level: 0, progress: 4 },
 ];
 
+interface FlyingStar {
+  id: number;
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+  phase: "start" | "end";
+}
+
 function HomeScreen() {
   const navigate = useNavigate();
   const [stars, setStars]         = useState(973);
@@ -61,39 +64,74 @@ function HomeScreen() {
   const [insurance]               = useState(0);
   const [practices, setPractices] = useState<PracticeRow[]>(initialPractices);
   const [pathSteps]               = useState<PathStep[]>(initialPathSteps);
+  const [openStat, setOpenStat]   = useState<StatKey | null>(null);
+  const [flyingStars, setFlyingStars] = useState<FlyingStar[]>([]);
+  const [starPulse, setStarPulse] = useState(false);
+  const starIconRef = useRef<HTMLDivElement>(null);
+  const flyIdRef = useRef(0);
 
   const status = statusFor(stars);
   const doneToday = useMemo(() => practices.filter((p) => p.doneToday).length, [practices]);
 
-  const togglePractice = (id: string) => {
+  const launchStar = (origin: HTMLElement | null) => {
+    if (!origin || !starIconRef.current) return;
+    const from = origin.getBoundingClientRect();
+    const to = starIconRef.current.getBoundingClientRect();
+    const id = ++flyIdRef.current;
+    const star: FlyingStar = {
+      id,
+      startX: from.left + from.width / 2,
+      startY: from.top + from.height / 2,
+      endX: to.left + to.width / 2,
+      endY: to.top + to.height / 2,
+      phase: "start",
+    };
+    setFlyingStars((s) => [...s, star]);
+    // следующий кадр — переключаем в end-фазу для CSS-перехода
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setFlyingStars((s) => s.map((x) => (x.id === id ? { ...x, phase: "end" } : x)));
+      });
+    });
+    // когда долетит — пульс иконки + +1 к очкам + удаление
+    window.setTimeout(() => {
+      setStars((v) => v + 1);
+      setStarPulse(true);
+      window.setTimeout(() => setStarPulse(false), 150);
+      setFlyingStars((s) => s.filter((x) => x.id !== id));
+    }, 600);
+  };
+
+  const togglePractice = (id: string, origin?: HTMLElement | null) => {
+    let willBeDone = false;
     setPractices((list) =>
       list.map((p) => {
         if (p.id !== id) return p;
         const newDone = !p.doneToday;
+        willBeDone = newDone;
         const newHistory: DayState[] = [...p.history];
         newHistory[newHistory.length - 1] = newDone ? "done" : "empty";
-        setStars((s) => s + (newDone ? 1 : -1));
-        // Если были пропуски (отрицательный прогресс) и пользователь выполнил —
-        // сбрасываем красные и начинаем заново с 1/30.
         const hadMissed = p.progress < 0;
         const newProgress = newDone
-          ? hadMissed
-            ? 1
-            : p.progress + 1
+          ? hadMissed ? 1 : p.progress + 1
           : Math.max(0, p.progress - 1);
         return {
           ...p,
           doneToday: newDone,
           history: newHistory,
           streakDays: newDone
-            ? hadMissed
-              ? 1
-              : p.streakDays + 1
+            ? hadMissed ? 1 : p.streakDays + 1
             : Math.max(0, p.streakDays - 1),
           progress: newProgress,
         };
       })
     );
+    if (willBeDone) {
+      // запуск анимации звёздочки (она сама прибавит +1 к очкам по завершении)
+      launchStar(origin ?? null);
+    } else {
+      setStars((s) => s - 1);
+    }
     setTimeout(() => {
       setPractices((list) => {
         const all = list.every((p) => p.doneToday);
@@ -107,12 +145,12 @@ function HomeScreen() {
   };
 
   return (
-    <div className="px-4 pt-2">
+    <div className="px-4 pt-2 relative">
       <section aria-label="Статистика" className="grid grid-cols-4 gap-2">
-        <StatCard emoji="⭐" label="Очки"      value={String(stars)}        tone="orange" />
-        <StatCard emoji="🔥" label="Хит"       value={`${hit} дн`}          tone="green"  />
-        <StatCard emoji="🔰" label="Страховка" value={`${insurance} шт`}                  />
-        <StatCard emoji="💎" label="Статус"    value={status.label}         tone="orange" />
+        <StatCard ref={starIconRef} emoji="⭐" label="Очки" value={String(stars)} tone="orange" pulse={starPulse} onClick={() => setOpenStat("stars")} />
+        <StatCard emoji="🔥" label="Хит" value={`${hit} дн`} tone="green" onClick={() => setOpenStat("hit")} />
+        <StatCard emoji="🔰" label="Страховка" value={`${insurance} шт`} onClick={() => setOpenStat("insurance")} />
+        <StatCard emoji="💎" label="Статус" value={status.label} tone="orange" onClick={() => setOpenStat("status")} />
       </section>
 
       <section className="mt-5">
@@ -141,6 +179,36 @@ function HomeScreen() {
 
       <div className="h-2" />
       <span className="hidden">{String(!!navigate)}</span>
+
+      {/* Летящие звёздочки */}
+      {flyingStars.map((s) => {
+        const x = s.phase === "start" ? s.startX : s.endX;
+        const y = s.phase === "start" ? s.startY : s.endY;
+        const scale = s.phase === "start" ? 1 : 0.4;
+        const opacity = s.phase === "start" ? 1 : 0;
+        return (
+          <div
+            key={s.id}
+            style={{
+              position: "fixed",
+              left: 0,
+              top: 0,
+              transform: `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${scale})`,
+              transition:
+                "transform 0.6s cubic-bezier(0.4,0,0.2,1), opacity 0.2s 0.45s",
+              opacity,
+              fontSize: 20,
+              pointerEvents: "none",
+              zIndex: 70,
+              lineHeight: 1,
+            }}
+          >
+            ⭐
+          </div>
+        );
+      })}
+
+      <StatInfoSheet statKey={openStat} onClose={() => setOpenStat(null)} />
     </div>
   );
 }
