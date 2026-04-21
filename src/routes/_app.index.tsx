@@ -99,7 +99,7 @@ function HomeScreen() {
       setStarPulse(true);
       window.setTimeout(() => setStarPulse(false), 150);
       setFlyingStars((s) => s.filter((x) => x.id !== id));
-    }, 600);
+    }, 1200);
   };
 
   const togglePractice = (id: string, origin?: HTMLElement | null) => {
@@ -146,11 +146,14 @@ function HomeScreen() {
 
   return (
     <div className="px-4 pt-2 relative">
-      <section aria-label="Статистика" className="grid grid-cols-4 gap-2">
-        <StatCard ref={starIconRef} emoji="⭐" label="Очки" value={String(stars)} tone="orange" pulse={starPulse} onClick={() => setOpenStat("stars")} />
-        <StatCard emoji="🔥" label="Хит" value={`${hit} дн`} tone="green" onClick={() => setOpenStat("hit")} />
-        <StatCard emoji="🔰" label="Страховка" value={`${insurance} шт`} onClick={() => setOpenStat("insurance")} />
-        <StatCard emoji="💎" label="Статус" value={status.label} tone="orange" onClick={() => setOpenStat("status")} />
+      <section aria-label="Статистика">
+        <div className="grid grid-cols-4 gap-2">
+          <StatCard ref={starIconRef} emoji="⭐" label="Очки" value={String(stars)} tone="orange" pulse={starPulse} onClick={() => setOpenStat(openStat === "stars" ? null : "stars")} />
+          <StatCard emoji="🔥" label="Хит" value={`${hit} дн`} tone="green" onClick={() => setOpenStat(openStat === "hit" ? null : "hit")} />
+          <StatCard emoji="🔰" label="Страховка" value={`${insurance} шт`} onClick={() => setOpenStat(openStat === "insurance" ? null : "insurance")} />
+          <StatCard emoji="💎" label="Статус" value={status.label} tone="orange" onClick={() => setOpenStat(openStat === "status" ? null : "status")} />
+        </div>
+        <StatInfoSheet statKey={openStat} onClose={() => setOpenStat(null)} />
       </section>
 
       <section className="mt-5">
@@ -195,7 +198,7 @@ function HomeScreen() {
               top: 0,
               transform: `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${scale})`,
               transition:
-                "transform 0.6s cubic-bezier(0.4,0,0.2,1), opacity 0.2s 0.45s",
+                "transform 1.2s cubic-bezier(0.4,0,0.2,1), opacity 0.4s 0.9s",
               opacity,
               fontSize: 20,
               pointerEvents: "none",
@@ -208,7 +211,6 @@ function HomeScreen() {
         );
       })}
 
-      <StatInfoSheet statKey={openStat} onClose={() => setOpenStat(null)} />
     </div>
   );
 }
