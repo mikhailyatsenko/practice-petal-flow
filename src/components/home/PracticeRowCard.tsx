@@ -219,6 +219,7 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
         <div className="shrink-0 flex items-center justify-center min-h-[22px] min-w-[48px]">
           {doneToday && (
             <span
+              ref={tagRef}
               className="inline-flex items-center"
               style={{
                 background: "#f0fdf4",
