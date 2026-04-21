@@ -167,6 +167,7 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
         <div className="shrink-0 flex items-center justify-center min-h-[32px]">
           {!doneToday ? (
             <div
+              ref={buttonRef}
               style={{
                 background: "linear-gradient(135deg,#FFB300,#FF6D00)",
                 borderRadius: 20,
