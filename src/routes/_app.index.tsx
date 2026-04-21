@@ -198,7 +198,7 @@ function HomeScreen() {
               top: 0,
               transform: `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${scale})`,
               transition:
-                "transform 1.2s cubic-bezier(0.4,0,0.2,1), opacity 0.4s 0.9s",
+                "transform 2.4s cubic-bezier(0.4,0,0.2,1), opacity 0.8s 1.8s",
               opacity,
               fontSize: 20,
               pointerEvents: "none",
