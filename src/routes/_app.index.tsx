@@ -73,10 +73,12 @@ function HomeScreen() {
   const status = statusFor(stars);
   const doneToday = useMemo(() => practices.filter((p) => p.doneToday).length, [practices]);
 
-  const launchStar = (origin: HTMLElement | null) => {
-    if (!origin || !starIconRef.current) return;
-    const from = origin.getBoundingClientRect();
-    const to = starIconRef.current.getBoundingClientRect();
+  const launchStarFromRect = (from: DOMRect) => {
+    if (!starIconRef.current) return;
+    // Получаем bounds иконки-цели; если она в pulse-состоянии (scale 1.5),
+    // центр не меняется, но возьмём его без учёта transform через offsetParent
+    const iconEl = starIconRef.current;
+    const to = iconEl.getBoundingClientRect();
     const id = ++flyIdRef.current;
     const star: FlyingStar = {
       id,
@@ -87,13 +89,11 @@ function HomeScreen() {
       phase: "start",
     };
     setFlyingStars((s) => [...s, star]);
-    // следующий кадр — переключаем в end-фазу для CSS-перехода
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         setFlyingStars((s) => s.map((x) => (x.id === id ? { ...x, phase: "end" } : x)));
       });
     });
-    // когда долетит — пульс иконки + +1 к очкам + удаление
     window.setTimeout(() => {
       setStars((v) => v + 1);
       setStarPulse(true);
