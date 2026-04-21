@@ -99,7 +99,7 @@ function HomeScreen() {
       setStarPulse(true);
       window.setTimeout(() => setStarPulse(false), 150);
       setFlyingStars((s) => s.filter((x) => x.id !== id));
-    }, 1200);
+    }, 2400);
   };
 
   const togglePractice = (id: string, origin?: HTMLElement | null) => {
@@ -146,7 +146,7 @@ function HomeScreen() {
 
   return (
     <div className="px-4 pt-2 relative">
-      <section aria-label="Статистика">
+      <section aria-label="Статистика" style={{ position: "relative", zIndex: openStat ? 50 : undefined }}>
         <div className="grid grid-cols-4 gap-2">
           <StatCard ref={starIconRef} emoji="⭐" label="Очки" value={String(stars)} tone="orange" pulse={starPulse} onClick={() => setOpenStat(openStat === "stars" ? null : "stars")} />
           <StatCard emoji="🔥" label="Хит" value={`${hit} дн`} tone="green" onClick={() => setOpenStat(openStat === "hit" ? null : "hit")} />
@@ -198,7 +198,7 @@ function HomeScreen() {
               top: 0,
               transform: `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${scale})`,
               transition:
-                "transform 1.2s cubic-bezier(0.4,0,0.2,1), opacity 0.4s 0.9s",
+                "transform 2.4s cubic-bezier(0.4,0,0.2,1), opacity 0.8s 1.8s",
               opacity,
               fontSize: 20,
               pointerEvents: "none",
