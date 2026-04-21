@@ -146,11 +146,14 @@ function HomeScreen() {
 
   return (
     <div className="px-4 pt-2 relative">
-      <section aria-label="Статистика" className="grid grid-cols-4 gap-2">
-        <StatCard ref={starIconRef} emoji="⭐" label="Очки" value={String(stars)} tone="orange" pulse={starPulse} onClick={() => setOpenStat("stars")} />
-        <StatCard emoji="🔥" label="Хит" value={`${hit} дн`} tone="green" onClick={() => setOpenStat("hit")} />
-        <StatCard emoji="🔰" label="Страховка" value={`${insurance} шт`} onClick={() => setOpenStat("insurance")} />
-        <StatCard emoji="💎" label="Статус" value={status.label} tone="orange" onClick={() => setOpenStat("status")} />
+      <section aria-label="Статистика">
+        <div className="grid grid-cols-4 gap-2">
+          <StatCard ref={starIconRef} emoji="⭐" label="Очки" value={String(stars)} tone="orange" pulse={starPulse} onClick={() => setOpenStat(openStat === "stars" ? null : "stars")} />
+          <StatCard emoji="🔥" label="Хит" value={`${hit} дн`} tone="green" onClick={() => setOpenStat(openStat === "hit" ? null : "hit")} />
+          <StatCard emoji="🔰" label="Страховка" value={`${insurance} шт`} onClick={() => setOpenStat(openStat === "insurance" ? null : "insurance")} />
+          <StatCard emoji="💎" label="Статус" value={status.label} tone="orange" onClick={() => setOpenStat(openStat === "status" ? null : "status")} />
+        </div>
+        <StatInfoSheet statKey={openStat} onClose={() => setOpenStat(null)} />
       </section>
 
       <section className="mt-5">
