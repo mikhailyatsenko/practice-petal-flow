@@ -99,7 +99,7 @@ function HomeScreen() {
       setStarPulse(true);
       window.setTimeout(() => setStarPulse(false), 150);
       setFlyingStars((s) => s.filter((x) => x.id !== id));
-    }, 1200);
+    }, 2400);
   };
 
   const togglePractice = (id: string, origin?: HTMLElement | null) => {
