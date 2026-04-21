@@ -14,7 +14,7 @@ export interface PracticeRow {
 
 interface PracticeRowCardProps {
   practice: PracticeRow;
-  onToggle: (id: string) => void;
+  onToggle: (id: string, origin?: HTMLElement | null) => void;
 }
 
 const LEVELS: Record<string, string[]> = {
@@ -109,6 +109,8 @@ const dayWord = (n: number) => {
 export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
   const { id, title, streakDays, doneToday, level, progress } = practice;
   const cardRef = useRef<HTMLDivElement>(null);
+  const tagRef = useRef<HTMLSpanElement>(null);
+  const buttonRef = useRef<HTMLDivElement>(null);
 
   const playPressEffect = () => {
     const el = cardRef.current;
@@ -123,7 +125,9 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
 
   const handleActivate = () => {
     playPressEffect();
-    onToggle(id);
+    // origin = текущая кнопка "Сделать" (если ещё не выполнена), иначе тег
+    const origin = !doneToday ? buttonRef.current : tagRef.current;
+    onToggle(id, origin);
   };
 
   // Логика: progress < 0 => N красных слева (пропуски обнулили прогресс).
@@ -163,6 +167,7 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
         <div className="shrink-0 flex items-center justify-center min-h-[32px]">
           {!doneToday ? (
             <div
+              ref={buttonRef}
               style={{
                 background: "linear-gradient(135deg,#FFB300,#FF6D00)",
                 borderRadius: 20,
@@ -214,6 +219,7 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
         <div className="shrink-0 flex items-center justify-center min-h-[22px] min-w-[48px]">
           {doneToday && (
             <span
+              ref={tagRef}
               className="inline-flex items-center"
               style={{
                 background: "#f0fdf4",
