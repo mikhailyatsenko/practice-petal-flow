@@ -109,6 +109,8 @@ const dayWord = (n: number) => {
 export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
   const { id, title, streakDays, doneToday, level, progress } = practice;
   const cardRef = useRef<HTMLDivElement>(null);
+  const tagRef = useRef<HTMLSpanElement>(null);
+  const buttonRef = useRef<HTMLDivElement>(null);
 
   const playPressEffect = () => {
     const el = cardRef.current;
@@ -123,7 +125,9 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
 
   const handleActivate = () => {
     playPressEffect();
-    onToggle(id);
+    // origin = текущая кнопка "Сделать" (если ещё не выполнена), иначе тег
+    const origin = !doneToday ? buttonRef.current : tagRef.current;
+    onToggle(id, origin);
   };
 
   // Логика: progress < 0 => N красных слева (пропуски обнулили прогресс).
