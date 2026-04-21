@@ -103,14 +103,17 @@ function HomeScreen() {
   };
 
   const togglePractice = (id: string, origin?: HTMLElement | null) => {
-    const current = practices.find((p) => p.id === id);
-    const willBeDone = current ? !current.doneToday : false;
-    // Звёздочка летит ТОЛЬКО при переходе "не сделано" → "сделано"
-    if (willBeDone) {
-      launchStar(origin ?? null);
-    }
-    setPractices((list) =>
-      list.map((p) => {
+    // Захватываем геометрию origin СРАЗУ (до любых ре-рендеров)
+    const originRect = origin ? origin.getBoundingClientRect() : null;
+    setPractices((list) => {
+      const current = list.find((p) => p.id === id);
+      if (!current) return list;
+      const willBeDone = !current.doneToday;
+      // Звёздочка летит ТОЛЬКО при переходе "не сделано" → "сделано"
+      if (willBeDone && originRect) {
+        launchStarFromRect(originRect);
+      }
+      return list.map((p) => {
         if (p.id !== id) return p;
         const newDone = !p.doneToday;
         const newHistory: DayState[] = [...p.history];
@@ -128,8 +131,8 @@ function HomeScreen() {
             : Math.max(0, p.streakDays - 1),
           progress: newProgress,
         };
-      })
-    );
+      });
+    });
     setTimeout(() => {
       setPractices((list) => {
         const all = list.every((p) => p.doneToday);
