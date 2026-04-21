@@ -146,7 +146,7 @@ function HomeScreen() {
 
   return (
     <div className="px-4 pt-2 relative">
-      <section aria-label="Статистика">
+      <section aria-label="Статистика" style={{ position: "relative", zIndex: openStat ? 50 : undefined }}>
         <div className="grid grid-cols-4 gap-2">
           <StatCard ref={starIconRef} emoji="⭐" label="Очки" value={String(stars)} tone="orange" pulse={starPulse} onClick={() => setOpenStat(openStat === "stars" ? null : "stars")} />
           <StatCard emoji="🔥" label="Хит" value={`${hit} дн`} tone="green" onClick={() => setOpenStat(openStat === "hit" ? null : "hit")} />
