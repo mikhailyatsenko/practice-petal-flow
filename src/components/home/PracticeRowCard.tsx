@@ -124,10 +124,11 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
   };
 
   const handleActivate = () => {
-    playPressEffect();
     // origin = текущая кнопка "Сделать" (если ещё не выполнена), иначе тег
     const origin = !doneToday ? buttonRef.current : tagRef.current;
+    // Сначала отдаём origin (с актуальной геометрией), потом запускаем press-эффект
     onToggle(id, origin);
+    playPressEffect();
   };
 
   // Логика: progress < 0 => N красных слева (пропуски обнулили прогресс).
