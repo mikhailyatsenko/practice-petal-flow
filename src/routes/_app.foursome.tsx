@@ -3,6 +3,9 @@ import { useState } from "react";
 import { ArrowLeft, ChevronRight, BookOpen, Play, Zap, Calendar, Globe, MessageCircle, Users } from "lucide-react";
 
 export const Route = createFileRoute("/_app/foursome")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    demo: (search.demo as "has" | "waiting" | "locked" | undefined) ?? undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Четвёрка — Клуб «Моя жизнь»" },
@@ -107,8 +110,15 @@ const DEMO_FOURSOME: FoursomeData = {
 // ───────────────────────── Root ─────────────────────────
 
 function FoursomeScreen() {
-  // Демо: есть бадди, нет четвёрки
-  const initial: Screen = { name: "no_foursome" };
+  const { demo } = Route.useSearch();
+  const initial: Screen =
+    demo === "has"
+      ? { name: "has_foursome" }
+      : demo === "waiting"
+        ? { name: "waiting", to: DEMO_REQUESTS[0] }
+        : demo === "locked"
+          ? { name: "locked" }
+          : { name: "no_foursome" };
   const [screen, setScreen] = useState<Screen>(initial);
 
   switch (screen.name) {
