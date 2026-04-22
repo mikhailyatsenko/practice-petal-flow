@@ -147,7 +147,7 @@ function HomeScreen() {
       if (opts?.incrementCount !== false) setStars((v) => v + 1);
       onArrive?.();
       setFlyingStars((s) => s.filter((x) => x.id !== id));
-    }, 2400);
+    }, 1200);
   };
 
   const togglePractice = (id: string, origin?: HTMLElement | null) => {
