@@ -3,6 +3,10 @@ import { useState } from "react";
 import { ArrowLeft, ChevronRight, BookOpen, Play, Zap, Calendar, Globe, MessageCircle, Users } from "lucide-react";
 
 export const Route = createFileRoute("/_app/foursome")({
+  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "locked" } => {
+    const d = search.demo;
+    return d === "has" || d === "waiting" || d === "locked" ? { demo: d } : {};
+  },
   head: () => ({
     meta: [
       { title: "Четвёрка — Клуб «Моя жизнь»" },
@@ -20,6 +24,7 @@ interface Member {
   avatar: string;
   job: string;
   username?: string;
+  bio?: string;
 }
 
 interface FoursomeRequest {
@@ -65,8 +70,8 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f1",
     members: [
-      { userId: "u1", name: "Анна", avatar: "🌸", job: "Маркетолог" },
-      { userId: "u2", name: "Ольга", avatar: "🌿", job: "Психолог" },
+      { userId: "u1", name: "Анна", avatar: "🌸", job: "Маркетолог", bio: "Запускаю свой бренд косметики, цель — выйти на стабильные 300к/мес. Ищу системность и поддержку." },
+      { userId: "u2", name: "Ольга", avatar: "🌿", job: "Психолог", bio: "Веду частную практику и онлайн-курс. Хочу окружение, где растут и не сливаются с целей." },
     ],
     day: "Вт",
     time: "19:00",
@@ -74,8 +79,8 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f2",
     members: [
-      { userId: "u3", name: "Дмитрий", avatar: "🎯", job: "Предприниматель" },
-      { userId: "u4", name: "Сергей", avatar: "🚀", job: "Основатель стартапа" },
+      { userId: "u3", name: "Дмитрий", avatar: "🎯", job: "Предприниматель", bio: "Развиваю IT-агентство, цель года — 1М/мес. Ценю чёткие задачи и дисциплину." },
+      { userId: "u4", name: "Сергей", avatar: "🚀", job: "Основатель стартапа", bio: "Делаю SaaS для малого бизнеса. Хочу окружение людей, которые тоже строят и не боятся больших целей." },
     ],
     day: "Чт",
     time: "20:00",
@@ -83,8 +88,8 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f3",
     members: [
-      { userId: "u5", name: "Мария", avatar: "✨", job: "Коуч" },
-      { userId: "u6", name: "Ирина", avatar: "🌷", job: "HR-директор" },
+      { userId: "u5", name: "Мария", avatar: "✨", job: "Коуч", bio: "Расту в личном бренде, веду программу для женщин. Ищу длинную дистанцию и честную обратную связь." },
+      { userId: "u6", name: "Ирина", avatar: "🌷", job: "HR-директор", bio: "Перехожу из найма в консалтинг. Нужна команда, которая держит в фокусе и помогает не откладывать." },
     ],
     day: "Ср",
     time: "10:00",
@@ -106,8 +111,15 @@ const DEMO_FOURSOME: FoursomeData = {
 // ───────────────────────── Root ─────────────────────────
 
 function FoursomeScreen() {
-  // Демо: есть бадди, нет четвёрки
-  const initial: Screen = { name: "no_foursome" };
+  const { demo } = Route.useSearch();
+  const initial: Screen =
+    demo === "has"
+      ? { name: "has_foursome" }
+      : demo === "waiting"
+        ? { name: "waiting", to: DEMO_REQUESTS[0] }
+        : demo === "locked"
+          ? { name: "locked" }
+          : { name: "no_foursome" };
   const [screen, setScreen] = useState<Screen>(initial);
 
   switch (screen.name) {
@@ -651,20 +663,27 @@ function BrowseRequests({
       <div className="space-y-3">
         {DEMO_REQUESTS.map((req) => (
           <Card key={req.id} className="p-4">
-            <div className="grid grid-cols-2 gap-2 mb-3">
+            <div className="space-y-2 mb-3">
               {req.members.map((m) => (
                 <div
                   key={m.userId}
-                  className="rounded-xl p-2.5 flex items-center gap-2"
+                  className="rounded-xl p-2.5"
                   style={{ background: "#FAF6EF" }}
                 >
-                  <div className="h-9 w-9 rounded-lg bg-white flex items-center justify-center text-[18px] shrink-0">
-                    {m.avatar}
+                  <div className="flex items-center gap-2">
+                    <div className="h-9 w-9 rounded-lg bg-white flex items-center justify-center text-[18px] shrink-0">
+                      {m.avatar}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[13px] font-semibold truncate">{m.name}</div>
+                      <div className="text-[11px] text-muted-foreground truncate">{m.job}</div>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <div className="text-[13px] font-semibold truncate">{m.name}</div>
-                    <div className="text-[11px] text-muted-foreground truncate">{m.job}</div>
-                  </div>
+                  {m.bio && (
+                    <p className="text-[12px] text-foreground/80 mt-2" style={{ lineHeight: 1.5 }}>
+                      {m.bio}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>

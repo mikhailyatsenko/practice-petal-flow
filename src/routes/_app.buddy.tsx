@@ -3,6 +3,10 @@ import { useState } from "react";
 import { ArrowLeft, ChevronRight, BookOpen, Play, Zap, MessageCircle, Check, X } from "lucide-react";
 
 export const Route = createFileRoute("/_app/buddy")({
+  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" } => {
+    const d = search.demo;
+    return d === "has" || d === "waiting" ? { demo: d } : {};
+  },
   head: () => ({
     meta: [
       { title: "Бадди — Клуб «Моя жизнь»" },
@@ -88,11 +92,14 @@ const DEMO_BUDDY: BuddyRequest = {
 // ───────────────────────── Root ─────────────────────────
 
 function BuddyScreen() {
-  // Демо: переключение состояния «есть бадди / нет бадди»
-  const [hasBuddy] = useState(false);
-  const [screen, setScreen] = useState<Screen>(
-    hasBuddy ? { name: "has_buddy" } : { name: "no_buddy" }
-  );
+  const { demo } = Route.useSearch();
+  const initial: Screen =
+    demo === "has"
+      ? { name: "has_buddy" }
+      : demo === "waiting"
+        ? { name: "waiting", to: DEMO_REQUESTS[0] }
+        : { name: "no_buddy" };
+  const [screen, setScreen] = useState<Screen>(initial);
 
   switch (screen.name) {
     case "no_buddy":
