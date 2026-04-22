@@ -7,6 +7,8 @@ interface StatCardProps {
   tone?: "orange" | "green" | "default";
   onClick?: () => void;
   pulse?: boolean;
+  iconStyle?: React.CSSProperties;
+  iconClassName?: string;
 }
 
 const toneClass = {
