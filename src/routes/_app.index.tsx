@@ -335,24 +335,31 @@ function HomeScreen() {
             }
             onClick={() => setOpenStat(openStat === "insurance" ? null : "insurance")}
           />
-          <StatCard
-            ref={statusIconRef}
-            emoji="💎"
-            label="Статус"
-            value={status.label}
-            tone="orange"
-            iconStyle={
-              statusFlash
-                ? {
-                    transform: "scale(1.6)",
-                    boxShadow: "0 0 16px rgba(255,179,0,0.8)",
-                    transition: "transform 160ms ease-out, box-shadow 160ms ease-out",
-                    borderRadius: "50%",
-                  }
-                : undefined
-            }
-            onClick={() => setOpenStat(openStat === "status" ? null : "status")}
-          />
+          <div
+            style={{
+              transform: `perspective(600px) rotateY(${statusFlipDeg}deg)`,
+              transition: "transform 300ms ease-in-out",
+            }}
+          >
+            <StatCard
+              ref={statusIconRef}
+              emoji={statusDisplay.emoji}
+              label="Статус"
+              value={statusDisplay.label}
+              tone="orange"
+              iconStyle={
+                statusFlash
+                  ? {
+                      transform: "scale(1.6)",
+                      boxShadow: "0 0 16px rgba(255,179,0,0.8)",
+                      transition: "transform 160ms ease-out, box-shadow 160ms ease-out",
+                      borderRadius: "50%",
+                    }
+                  : undefined
+              }
+              onClick={() => setOpenStat(openStat === "status" ? null : "status")}
+            />
+          </div>
         </div>
         <StatInfoSheet statKey={openStat} onClose={() => setOpenStat(null)} />
       </section>
