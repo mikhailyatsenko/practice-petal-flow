@@ -73,9 +73,9 @@ interface EffectInstance {
 
 function HomeScreen() {
   const navigate = useNavigate();
-  const [stars, setStars]         = useState(973);
-  const [hit, setHit]             = useState(3);
-  const [insurance]               = useState(0);
+  const [stars, setStars]         = useState(970);
+  const [hit, setHit]             = useState(2);
+  const [insurance, setInsurance] = useState(0);
   const [practices, setPractices] = useState<PracticeRow[]>(initialPractices);
   const [pathSteps]               = useState<PathStep[]>(initialPathSteps);
   const [openStat, setOpenStat]   = useState<StatKey | null>(null);
@@ -86,6 +86,12 @@ function HomeScreen() {
   const [insuranceTransform, setInsuranceTransform] = useState<string | null>(null);
   const [statusFlash, setStatusFlash] = useState(false);
   const [effects, setEffects]     = useState<EffectInstance[]>([]);
+  // Статус: показываем "Эксперт" 🥇 в начале, затем флипаем на "Мастер" 💎
+  const [statusDisplay, setStatusDisplay] = useState<{ emoji: string; label: string }>({
+    emoji: "🥇",
+    label: "Эксперт",
+  });
+  const [statusFlipDeg, setStatusFlipDeg] = useState(0);
 
   const starIconRef = useRef<HTMLDivElement>(null);
   const hitIconRef = useRef<HTMLDivElement>(null);
