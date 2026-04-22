@@ -197,13 +197,10 @@ function HomeScreen() {
     autoplayedRef.current = true;
 
     const timeouts: number[] = [];
-    const STAR_FLIGHT = 2400;
-    const STAR_GAP = 350;
-    const FLIP_DURATION = 600; // 300ms на половину
-    // Первая звезда должна долететь сразу после флипа статуса.
-    const FLIP_START = STAR_FLIGHT - FLIP_DURATION; // 1800
+    const STAR_FLIGHT = 1200;
+    const STAR_GAP = 200;
 
-    // 1) Звёздочки от 3 выполненных практик летят сразу
+    // 1) Звёздочки от 3 выполненных практик летят сразу (слева направо)
     timeouts.push(
       window.setTimeout(() => {
         if (!containerRef.current) return;
@@ -225,7 +222,40 @@ function HomeScreen() {
       }, 0),
     );
 
-    // 2) Флип статуса 🥇 Эксперт → 💎 Мастер
+    // Когда долетит последняя звезда
+    const LAST_STAR_AT = STAR_FLIGHT + 2 * STAR_GAP; // 1600
+
+    // 2) 🔥 Хит — после звёзд
+    const HIT_AT = LAST_STAR_AT + 400;
+    timeouts.push(
+      window.setTimeout(() => {
+        if (!hitIconRef.current) return;
+        const r = hitIconRef.current.getBoundingClientRect();
+        spawnEffect("fire", r.left + r.width / 2, r.top + r.height / 2);
+        setHitPulse(true);
+        setHit((h) => h + 1);
+        window.setTimeout(() => setHitPulse(false), 200);
+      }, HIT_AT),
+    );
+
+    // 3) 🛡 Страховка
+    const INS_AT = HIT_AT + 600;
+    timeouts.push(
+      window.setTimeout(() => {
+        if (!insuranceIconRef.current) return;
+        const r = insuranceIconRef.current.getBoundingClientRect();
+        spawnEffect("confetti", r.left + r.width / 2, r.top + r.height / 2);
+        setInsurance((v) => v + 1);
+        setInsuranceTransform("scale(0.5)");
+        window.setTimeout(() => setInsuranceTransform("scale(1.4)"), 100);
+        window.setTimeout(() => setInsuranceTransform("scale(1)"), 100 + 350);
+        window.setTimeout(() => setInsuranceTransform(null), 100 + 350 + 150);
+      }, INS_AT),
+    );
+
+    // 4) 💎 Статус — флип Эксперт → Мастер, затем кольца + вспышка
+    const FLIP_DURATION = 600;
+    const FLIP_START = INS_AT + 700;
     timeouts.push(
       window.setTimeout(() => {
         setStatusFlipDeg(90);
@@ -241,7 +271,6 @@ function HomeScreen() {
       }, FLIP_START),
     );
 
-    // 3) После завершения флипа — пульс + кольца статуса
     const STATUS_FX_AT = FLIP_START + FLIP_DURATION;
     timeouts.push(
       window.setTimeout(() => {
@@ -251,35 +280,6 @@ function HomeScreen() {
         setStatusFlash(true);
         window.setTimeout(() => setStatusFlash(false), 160);
       }, STATUS_FX_AT),
-    );
-
-    // 4) Хит — после прилёта всех звёзд
-    const LAST_STAR_AT = STAR_FLIGHT + 2 * STAR_GAP;
-    const HIT_AT = LAST_STAR_AT + 400;
-    timeouts.push(
-      window.setTimeout(() => {
-        if (!hitIconRef.current) return;
-        const r = hitIconRef.current.getBoundingClientRect();
-        spawnEffect("fire", r.left + r.width / 2, r.top + r.height / 2);
-        setHitPulse(true);
-        setHit((h) => h + 1);
-        window.setTimeout(() => setHitPulse(false), 200);
-      }, HIT_AT),
-    );
-
-    // 5) Страховка
-    const INS_AT = HIT_AT + 400;
-    timeouts.push(
-      window.setTimeout(() => {
-        if (!insuranceIconRef.current) return;
-        const r = insuranceIconRef.current.getBoundingClientRect();
-        spawnEffect("confetti", r.left + r.width / 2, r.top + r.height / 2);
-        setInsurance((v) => v + 1);
-        setInsuranceTransform("scale(0.5)");
-        window.setTimeout(() => setInsuranceTransform("scale(1.4)"), 100);
-        window.setTimeout(() => setInsuranceTransform("scale(1)"), 100 + 350);
-        window.setTimeout(() => setInsuranceTransform(null), 100 + 350 + 150);
-      }, INS_AT),
     );
 
     setInsurancePulse(false);
