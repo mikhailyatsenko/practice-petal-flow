@@ -1,5 +1,5 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle } from "lucide-react";
+import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, Hourglass } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 interface SideMenuProps {
@@ -11,7 +11,7 @@ interface SideMenuProps {
 export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="left" className="w-[300px] sm:w-[320px] bg-background p-0">
+      <SheetContent side="left" className="w-[300px] sm:w-[320px] bg-background p-0 overflow-y-auto">
         <SheetHeader className="sr-only">
           <SheetTitle>Меню</SheetTitle>
         </SheetHeader>
