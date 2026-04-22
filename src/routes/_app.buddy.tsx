@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { ArrowLeft, ChevronRight, BookOpen, Play, Search, PenLine, Zap, Calendar, MessageCircle, Check, X } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, ChevronRight, BookOpen, Play, Zap, MessageCircle, Check, X } from "lucide-react";
 
 export const Route = createFileRoute("/_app/buddy")({
   head: () => ({
@@ -816,13 +816,6 @@ function HasBuddy({ buddy, onBack }: { buddy: BuddyRequest; onBack: () => void }
         <ChevronRight className="h-5 w-5 shrink-0" style={{ color: "#6d28d9" }} />
       </button>
 
-      {/* unused imports guard */}
-      <span className="hidden">
-        <Calendar />
-        <Search />
-        <PenLine />
-      </span>
-      {useMemo(() => null, [])}
     </div>
   );
 }

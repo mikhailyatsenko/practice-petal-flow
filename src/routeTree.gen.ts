@@ -17,6 +17,7 @@ import { Route as AppSectionsRouteImport } from './routes/_app.sections'
 import { Route as AppPartnerRouteImport } from './routes/_app.partner'
 import { Route as AppLibraryRouteImport } from './routes/_app.library'
 import { Route as AppCommunityRouteImport } from './routes/_app.community'
+import { Route as AppBuddyRouteImport } from './routes/_app.buddy'
 
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
@@ -57,10 +58,16 @@ const AppCommunityRoute = AppCommunityRouteImport.update({
   path: '/community',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBuddyRoute = AppBuddyRouteImport.update({
+  id: '/buddy',
+  path: '/buddy',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/onboarding': typeof OnboardingRoute
+  '/buddy': typeof AppBuddyRoute
   '/community': typeof AppCommunityRoute
   '/library': typeof AppLibraryRoute
   '/partner': typeof AppPartnerRoute
@@ -69,6 +76,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
+  '/buddy': typeof AppBuddyRoute
   '/community': typeof AppCommunityRoute
   '/library': typeof AppLibraryRoute
   '/partner': typeof AppPartnerRoute
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/_app/buddy': typeof AppBuddyRoute
   '/_app/community': typeof AppCommunityRoute
   '/_app/library': typeof AppLibraryRoute
   '/_app/partner': typeof AppPartnerRoute
@@ -92,6 +101,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/onboarding'
+    | '/buddy'
     | '/community'
     | '/library'
     | '/partner'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/onboarding'
+    | '/buddy'
     | '/community'
     | '/library'
     | '/partner'
@@ -110,6 +121,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_app'
     | '/onboarding'
+    | '/_app/buddy'
     | '/_app/community'
     | '/_app/library'
     | '/_app/partner'
@@ -181,10 +193,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCommunityRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/buddy': {
+      id: '/_app/buddy'
+      path: '/buddy'
+      fullPath: '/buddy'
+      preLoaderRoute: typeof AppBuddyRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
+  AppBuddyRoute: typeof AppBuddyRoute
   AppCommunityRoute: typeof AppCommunityRoute
   AppLibraryRoute: typeof AppLibraryRoute
   AppPartnerRoute: typeof AppPartnerRoute
@@ -194,6 +214,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppBuddyRoute: AppBuddyRoute,
   AppCommunityRoute: AppCommunityRoute,
   AppLibraryRoute: AppLibraryRoute,
   AppPartnerRoute: AppPartnerRoute,
