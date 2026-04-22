@@ -116,7 +116,7 @@ function FoursomeScreen() {
     case "no_foursome":
       return <NoFoursome onNavigate={setScreen} />;
     case "instructions":
-      return <Instructions onBack={() => setScreen({ name: screen.from })} />;
+      return <Instructions onBack={() => setScreen(screen.from === "locked" ? { name: "locked" } : { name: "no_foursome" })} />;
     case "create_request":
       return (
         <CreateRequest
