@@ -18,7 +18,7 @@ const toneClass = {
 } as const;
 
 export const StatCard = forwardRef<HTMLDivElement, StatCardProps>(function StatCard(
-  { emoji, label, value, tone = "default", onClick, pulse },
+  { emoji, label, value, tone = "default", onClick, pulse, iconStyle, iconClassName },
   ref,
 ) {
   return (
@@ -40,10 +40,11 @@ export const StatCard = forwardRef<HTMLDivElement, StatCardProps>(function StatC
     >
       <div
         ref={ref}
-        className="text-[14px] leading-none inline-block"
+        className={"text-[14px] leading-none inline-block " + (iconClassName ?? "")}
         style={{
           transition: "transform 150ms ease-out",
           transform: pulse ? "scale(1.5)" : "scale(1)",
+          ...iconStyle,
         }}
       >
         {emoji}
