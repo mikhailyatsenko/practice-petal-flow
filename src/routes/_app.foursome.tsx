@@ -20,6 +20,7 @@ interface Member {
   avatar: string;
   job: string;
   username?: string;
+  bio?: string;
 }
 
 interface FoursomeRequest {
@@ -65,8 +66,8 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f1",
     members: [
-      { userId: "u1", name: "Анна", avatar: "🌸", job: "Маркетолог" },
-      { userId: "u2", name: "Ольга", avatar: "🌿", job: "Психолог" },
+      { userId: "u1", name: "Анна", avatar: "🌸", job: "Маркетолог", bio: "Запускаю свой бренд косметики, цель — выйти на стабильные 300к/мес. Ищу системность и поддержку." },
+      { userId: "u2", name: "Ольга", avatar: "🌿", job: "Психолог", bio: "Веду частную практику и онлайн-курс. Хочу окружение, где растут и не сливаются с целей." },
     ],
     day: "Вт",
     time: "19:00",
@@ -74,8 +75,8 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f2",
     members: [
-      { userId: "u3", name: "Дмитрий", avatar: "🎯", job: "Предприниматель" },
-      { userId: "u4", name: "Сергей", avatar: "🚀", job: "Основатель стартапа" },
+      { userId: "u3", name: "Дмитрий", avatar: "🎯", job: "Предприниматель", bio: "Развиваю IT-агентство, цель года — 1М/мес. Ценю чёткие задачи и дисциплину." },
+      { userId: "u4", name: "Сергей", avatar: "🚀", job: "Основатель стартапа", bio: "Делаю SaaS для малого бизнеса. Хочу окружение людей, которые тоже строят и не боятся больших целей." },
     ],
     day: "Чт",
     time: "20:00",
@@ -83,8 +84,8 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f3",
     members: [
-      { userId: "u5", name: "Мария", avatar: "✨", job: "Коуч" },
-      { userId: "u6", name: "Ирина", avatar: "🌷", job: "HR-директор" },
+      { userId: "u5", name: "Мария", avatar: "✨", job: "Коуч", bio: "Расту в личном бренде, веду программу для женщин. Ищу длинную дистанцию и честную обратную связь." },
+      { userId: "u6", name: "Ирина", avatar: "🌷", job: "HR-директор", bio: "Перехожу из найма в консалтинг. Нужна команда, которая держит в фокусе и помогает не откладывать." },
     ],
     day: "Ср",
     time: "10:00",
