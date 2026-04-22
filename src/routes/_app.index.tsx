@@ -73,9 +73,9 @@ interface EffectInstance {
 
 function HomeScreen() {
   const navigate = useNavigate();
-  const [stars, setStars]         = useState(973);
-  const [hit, setHit]             = useState(3);
-  const [insurance]               = useState(0);
+  const [stars, setStars]         = useState(970);
+  const [hit, setHit]             = useState(2);
+  const [insurance, setInsurance] = useState(0);
   const [practices, setPractices] = useState<PracticeRow[]>(initialPractices);
   const [pathSteps]               = useState<PathStep[]>(initialPathSteps);
   const [openStat, setOpenStat]   = useState<StatKey | null>(null);
@@ -86,6 +86,12 @@ function HomeScreen() {
   const [insuranceTransform, setInsuranceTransform] = useState<string | null>(null);
   const [statusFlash, setStatusFlash] = useState(false);
   const [effects, setEffects]     = useState<EffectInstance[]>([]);
+  // Статус: показываем "Эксперт" 🥇 в начале, затем флипаем на "Мастер" 💎
+  const [statusDisplay, setStatusDisplay] = useState<{ emoji: string; label: string }>({
+    emoji: "🥇",
+    label: "Эксперт",
+  });
+  const [statusFlipDeg, setStatusFlipDeg] = useState(0);
 
   const starIconRef = useRef<HTMLDivElement>(null);
   const hitIconRef = useRef<HTMLDivElement>(null);
@@ -96,7 +102,7 @@ function HomeScreen() {
   const containerRef = useRef<HTMLDivElement>(null);
   const autoplayedRef = useRef(false);
 
-  const status = statusFor(stars);
+  void statusFor; // status вычисляется динамически в анимации флипа
   const doneToday = useMemo(() => practices.filter((p) => p.doneToday).length, [practices]);
 
   const spawnEffect = (type: EffectInstance["type"], x: number, y: number) => {
@@ -115,7 +121,11 @@ function HomeScreen() {
     window.setTimeout(() => setStarPulse(false), 200);
   };
 
-  const launchStarFromRect = (from: DOMRect, onArrive?: () => void) => {
+  const launchStarFromRect = (
+    from: DOMRect,
+    onArrive?: () => void,
+    opts?: { incrementCount?: boolean },
+  ) => {
     if (!starIconRef.current) return;
     const to = starIconRef.current.getBoundingClientRect();
     const id = ++flyIdRef.current;
@@ -134,7 +144,7 @@ function HomeScreen() {
       });
     });
     window.setTimeout(() => {
-      setStars((v) => v + 1);
+      if (opts?.incrementCount !== false) setStars((v) => v + 1);
       onArrive?.();
       setFlyingStars((s) => s.filter((x) => x.id !== id));
     }, 2400);
@@ -187,8 +197,13 @@ function HomeScreen() {
     autoplayedRef.current = true;
 
     const timeouts: number[] = [];
+    const STAR_FLIGHT = 2400;
+    const STAR_GAP = 350;
+    const FLIP_DURATION = 600; // 300ms на половину
+    // Первая звезда должна долететь сразу после флипа статуса.
+    const FLIP_START = STAR_FLIGHT - FLIP_DURATION; // 1800
 
-    // 1) Звёздочки от 3 выполненных практик → блок "Очки"
+    // 1) Звёздочки от 3 выполненных практик летят сразу
     timeouts.push(
       window.setTimeout(() => {
         if (!containerRef.current) return;
@@ -203,48 +218,31 @@ function HomeScreen() {
           timeouts.push(
             window.setTimeout(() => {
               const r = card.getBoundingClientRect();
-              // запускаем без увеличения счётчика — счётчик уже отражает реальность
               launchStarFromRect(r, () => triggerStarBurstAtIcon());
-            }, i * 350),
+            }, i * STAR_GAP),
           );
         });
-      }, 600),
-    );
-
-    // 2) Анимации блоков статистики, по очереди с задержкой 300ms
-    // Очки уже инициируются при долёте звёзд — но запустим явный взрыв тоже:
-    timeouts.push(
-      window.setTimeout(() => {
-        triggerStarBurstAtIcon();
       }, 0),
     );
 
-    // 🔥 Хит — t=300ms
+    // 2) Флип статуса 🥇 Эксперт → 💎 Мастер
     timeouts.push(
       window.setTimeout(() => {
-        if (!hitIconRef.current) return;
-        const r = hitIconRef.current.getBoundingClientRect();
-        spawnEffect("fire", r.left + r.width / 2, r.top + r.height / 2);
-        setHitPulse(true);
-        window.setTimeout(() => setHitPulse(false), 200);
-      }, 300),
+        setStatusFlipDeg(90);
+        timeouts.push(
+          window.setTimeout(() => {
+            setStatusDisplay({ emoji: "💎", label: "Мастер" });
+            setStatusFlipDeg(-90);
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => setStatusFlipDeg(0));
+            });
+          }, FLIP_DURATION / 2),
+        );
+      }, FLIP_START),
     );
 
-    // 🛡️ Страховка — t=600ms
-    timeouts.push(
-      window.setTimeout(() => {
-        if (!insuranceIconRef.current) return;
-        const r = insuranceIconRef.current.getBoundingClientRect();
-        spawnEffect("confetti", r.left + r.width / 2, r.top + r.height / 2);
-        // пружина: 0.5 → 1.4 → 1
-        setInsuranceTransform("scale(0.5)");
-        window.setTimeout(() => setInsuranceTransform("scale(1.4)"), 100);
-        window.setTimeout(() => setInsuranceTransform("scale(1)"), 100 + 350);
-        window.setTimeout(() => setInsuranceTransform(null), 100 + 350 + 150);
-      }, 600),
-    );
-
-    // 💎 Статус — t=900ms
+    // 3) После завершения флипа — пульс + кольца статуса
+    const STATUS_FX_AT = FLIP_START + FLIP_DURATION;
     timeouts.push(
       window.setTimeout(() => {
         if (!statusIconRef.current) return;
@@ -252,10 +250,38 @@ function HomeScreen() {
         spawnEffect("rings", r.left + r.width / 2, r.top + r.height / 2);
         setStatusFlash(true);
         window.setTimeout(() => setStatusFlash(false), 160);
-      }, 900),
+      }, STATUS_FX_AT),
     );
 
-    // суппресс пульса insurance, если использован transform
+    // 4) Хит — после прилёта всех звёзд
+    const LAST_STAR_AT = STAR_FLIGHT + 2 * STAR_GAP;
+    const HIT_AT = LAST_STAR_AT + 400;
+    timeouts.push(
+      window.setTimeout(() => {
+        if (!hitIconRef.current) return;
+        const r = hitIconRef.current.getBoundingClientRect();
+        spawnEffect("fire", r.left + r.width / 2, r.top + r.height / 2);
+        setHitPulse(true);
+        setHit((h) => h + 1);
+        window.setTimeout(() => setHitPulse(false), 200);
+      }, HIT_AT),
+    );
+
+    // 5) Страховка
+    const INS_AT = HIT_AT + 400;
+    timeouts.push(
+      window.setTimeout(() => {
+        if (!insuranceIconRef.current) return;
+        const r = insuranceIconRef.current.getBoundingClientRect();
+        spawnEffect("confetti", r.left + r.width / 2, r.top + r.height / 2);
+        setInsurance((v) => v + 1);
+        setInsuranceTransform("scale(0.5)");
+        window.setTimeout(() => setInsuranceTransform("scale(1.4)"), 100);
+        window.setTimeout(() => setInsuranceTransform("scale(1)"), 100 + 350);
+        window.setTimeout(() => setInsuranceTransform(null), 100 + 350 + 150);
+      }, INS_AT),
+    );
+
     setInsurancePulse(false);
 
     return () => {
@@ -309,24 +335,31 @@ function HomeScreen() {
             }
             onClick={() => setOpenStat(openStat === "insurance" ? null : "insurance")}
           />
-          <StatCard
-            ref={statusIconRef}
-            emoji="💎"
-            label="Статус"
-            value={status.label}
-            tone="orange"
-            iconStyle={
-              statusFlash
-                ? {
-                    transform: "scale(1.6)",
-                    boxShadow: "0 0 16px rgba(255,179,0,0.8)",
-                    transition: "transform 160ms ease-out, box-shadow 160ms ease-out",
-                    borderRadius: "50%",
-                  }
-                : undefined
-            }
-            onClick={() => setOpenStat(openStat === "status" ? null : "status")}
-          />
+          <div
+            style={{
+              transform: `perspective(600px) rotateY(${statusFlipDeg}deg)`,
+              transition: "transform 300ms ease-in-out",
+            }}
+          >
+            <StatCard
+              ref={statusIconRef}
+              emoji={statusDisplay.emoji}
+              label="Статус"
+              value={statusDisplay.label}
+              tone="orange"
+              iconStyle={
+                statusFlash
+                  ? {
+                      transform: "scale(1.6)",
+                      boxShadow: "0 0 16px rgba(255,179,0,0.8)",
+                      transition: "transform 160ms ease-out, box-shadow 160ms ease-out",
+                      borderRadius: "50%",
+                    }
+                  : undefined
+              }
+              onClick={() => setOpenStat(openStat === "status" ? null : "status")}
+            />
+          </div>
         </div>
         <StatInfoSheet statKey={openStat} onClose={() => setOpenStat(null)} />
       </section>
