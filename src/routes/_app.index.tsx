@@ -197,8 +197,13 @@ function HomeScreen() {
     autoplayedRef.current = true;
 
     const timeouts: number[] = [];
+    const STAR_FLIGHT = 2400;
+    const STAR_GAP = 350;
+    const FLIP_DURATION = 600; // 300ms на половину
+    // Первая звезда должна долететь сразу после флипа статуса.
+    const FLIP_START = STAR_FLIGHT - FLIP_DURATION; // 1800
 
-    // 1) Звёздочки от 3 выполненных практик → блок "Очки"
+    // 1) Звёздочки от 3 выполненных практик летят сразу
     timeouts.push(
       window.setTimeout(() => {
         if (!containerRef.current) return;
@@ -213,48 +218,31 @@ function HomeScreen() {
           timeouts.push(
             window.setTimeout(() => {
               const r = card.getBoundingClientRect();
-              // запускаем без увеличения счётчика — счётчик уже отражает реальность
               launchStarFromRect(r, () => triggerStarBurstAtIcon());
-            }, i * 350),
+            }, i * STAR_GAP),
           );
         });
-      }, 600),
-    );
-
-    // 2) Анимации блоков статистики, по очереди с задержкой 300ms
-    // Очки уже инициируются при долёте звёзд — но запустим явный взрыв тоже:
-    timeouts.push(
-      window.setTimeout(() => {
-        triggerStarBurstAtIcon();
       }, 0),
     );
 
-    // 🔥 Хит — t=300ms
+    // 2) Флип статуса 🥇 Эксперт → 💎 Мастер
     timeouts.push(
       window.setTimeout(() => {
-        if (!hitIconRef.current) return;
-        const r = hitIconRef.current.getBoundingClientRect();
-        spawnEffect("fire", r.left + r.width / 2, r.top + r.height / 2);
-        setHitPulse(true);
-        window.setTimeout(() => setHitPulse(false), 200);
-      }, 300),
+        setStatusFlipDeg(90);
+        timeouts.push(
+          window.setTimeout(() => {
+            setStatusDisplay({ emoji: "💎", label: "Мастер" });
+            setStatusFlipDeg(-90);
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => setStatusFlipDeg(0));
+            });
+          }, FLIP_DURATION / 2),
+        );
+      }, FLIP_START),
     );
 
-    // 🛡️ Страховка — t=600ms
-    timeouts.push(
-      window.setTimeout(() => {
-        if (!insuranceIconRef.current) return;
-        const r = insuranceIconRef.current.getBoundingClientRect();
-        spawnEffect("confetti", r.left + r.width / 2, r.top + r.height / 2);
-        // пружина: 0.5 → 1.4 → 1
-        setInsuranceTransform("scale(0.5)");
-        window.setTimeout(() => setInsuranceTransform("scale(1.4)"), 100);
-        window.setTimeout(() => setInsuranceTransform("scale(1)"), 100 + 350);
-        window.setTimeout(() => setInsuranceTransform(null), 100 + 350 + 150);
-      }, 600),
-    );
-
-    // 💎 Статус — t=900ms
+    // 3) После завершения флипа — пульс + кольца статуса
+    const STATUS_FX_AT = FLIP_START + FLIP_DURATION;
     timeouts.push(
       window.setTimeout(() => {
         if (!statusIconRef.current) return;
@@ -262,10 +250,38 @@ function HomeScreen() {
         spawnEffect("rings", r.left + r.width / 2, r.top + r.height / 2);
         setStatusFlash(true);
         window.setTimeout(() => setStatusFlash(false), 160);
-      }, 900),
+      }, STATUS_FX_AT),
     );
 
-    // суппресс пульса insurance, если использован transform
+    // 4) Хит — после прилёта всех звёзд
+    const LAST_STAR_AT = STAR_FLIGHT + 2 * STAR_GAP;
+    const HIT_AT = LAST_STAR_AT + 400;
+    timeouts.push(
+      window.setTimeout(() => {
+        if (!hitIconRef.current) return;
+        const r = hitIconRef.current.getBoundingClientRect();
+        spawnEffect("fire", r.left + r.width / 2, r.top + r.height / 2);
+        setHitPulse(true);
+        setHit((h) => h + 1);
+        window.setTimeout(() => setHitPulse(false), 200);
+      }, HIT_AT),
+    );
+
+    // 5) Страховка
+    const INS_AT = HIT_AT + 400;
+    timeouts.push(
+      window.setTimeout(() => {
+        if (!insuranceIconRef.current) return;
+        const r = insuranceIconRef.current.getBoundingClientRect();
+        spawnEffect("confetti", r.left + r.width / 2, r.top + r.height / 2);
+        setInsurance((v) => v + 1);
+        setInsuranceTransform("scale(0.5)");
+        window.setTimeout(() => setInsuranceTransform("scale(1.4)"), 100);
+        window.setTimeout(() => setInsuranceTransform("scale(1)"), 100 + 350);
+        window.setTimeout(() => setInsuranceTransform(null), 100 + 350 + 150);
+      }, INS_AT),
+    );
+
     setInsurancePulse(false);
 
     return () => {
