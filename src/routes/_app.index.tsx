@@ -102,7 +102,7 @@ function HomeScreen() {
   const containerRef = useRef<HTMLDivElement>(null);
   const autoplayedRef = useRef(false);
 
-  const status = statusFor(stars);
+  void statusFor; // status вычисляется динамически в анимации флипа
   const doneToday = useMemo(() => practices.filter((p) => p.doneToday).length, [practices]);
 
   const spawnEffect = (type: EffectInstance["type"], x: number, y: number) => {
