@@ -121,7 +121,11 @@ function HomeScreen() {
     window.setTimeout(() => setStarPulse(false), 200);
   };
 
-  const launchStarFromRect = (from: DOMRect, onArrive?: () => void) => {
+  const launchStarFromRect = (
+    from: DOMRect,
+    onArrive?: () => void,
+    opts?: { incrementCount?: boolean },
+  ) => {
     if (!starIconRef.current) return;
     const to = starIconRef.current.getBoundingClientRect();
     const id = ++flyIdRef.current;
@@ -140,7 +144,7 @@ function HomeScreen() {
       });
     });
     window.setTimeout(() => {
-      setStars((v) => v + 1);
+      if (opts?.incrementCount !== false) setStars((v) => v + 1);
       onArrive?.();
       setFlyingStars((s) => s.filter((x) => x.id !== id));
     }, 2400);
