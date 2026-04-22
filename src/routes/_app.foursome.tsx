@@ -652,20 +652,27 @@ function BrowseRequests({
       <div className="space-y-3">
         {DEMO_REQUESTS.map((req) => (
           <Card key={req.id} className="p-4">
-            <div className="grid grid-cols-2 gap-2 mb-3">
+            <div className="space-y-2 mb-3">
               {req.members.map((m) => (
                 <div
                   key={m.userId}
-                  className="rounded-xl p-2.5 flex items-center gap-2"
+                  className="rounded-xl p-2.5"
                   style={{ background: "#FAF6EF" }}
                 >
-                  <div className="h-9 w-9 rounded-lg bg-white flex items-center justify-center text-[18px] shrink-0">
-                    {m.avatar}
+                  <div className="flex items-center gap-2">
+                    <div className="h-9 w-9 rounded-lg bg-white flex items-center justify-center text-[18px] shrink-0">
+                      {m.avatar}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[13px] font-semibold truncate">{m.name}</div>
+                      <div className="text-[11px] text-muted-foreground truncate">{m.job}</div>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <div className="text-[13px] font-semibold truncate">{m.name}</div>
-                    <div className="text-[11px] text-muted-foreground truncate">{m.job}</div>
-                  </div>
+                  {m.bio && (
+                    <p className="text-[12px] text-foreground/80 mt-2" style={{ lineHeight: 1.5 }}>
+                      {m.bio}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
