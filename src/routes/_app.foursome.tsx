@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ChevronRight, BookOpen, Play, Zap, Calendar, Globe, MessageCircle, Users } from "lucide-react";
 
 export const Route = createFileRoute("/_app/foursome")({
@@ -121,6 +121,13 @@ function FoursomeScreen() {
           ? { name: "locked" }
           : { name: "no_foursome" };
   const [screen, setScreen] = useState<Screen>(initial);
+  const lastDemo = useRef(demo);
+  useEffect(() => {
+    if (lastDemo.current !== demo) {
+      lastDemo.current = demo;
+      setScreen(initial);
+    }
+  }, [demo]);
 
   switch (screen.name) {
     case "locked":

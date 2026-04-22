@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ChevronRight, BookOpen, Play, Zap, MessageCircle, Check, X } from "lucide-react";
 
 export const Route = createFileRoute("/_app/buddy")({
@@ -100,6 +100,13 @@ function BuddyScreen() {
         ? { name: "waiting", to: DEMO_REQUESTS[0] }
         : { name: "no_buddy" };
   const [screen, setScreen] = useState<Screen>(initial);
+  const lastDemo = useRef(demo);
+  useEffect(() => {
+    if (lastDemo.current !== demo) {
+      lastDemo.current = demo;
+      setScreen(initial);
+    }
+  }, [demo]);
 
   switch (screen.name) {
     case "no_buddy":
