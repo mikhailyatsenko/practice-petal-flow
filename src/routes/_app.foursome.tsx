@@ -3,9 +3,10 @@ import { useState } from "react";
 import { ArrowLeft, ChevronRight, BookOpen, Play, Zap, Calendar, Globe, MessageCircle, Users } from "lucide-react";
 
 export const Route = createFileRoute("/_app/foursome")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    demo: (search.demo as "has" | "waiting" | "locked" | undefined) ?? undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "locked" } => {
+    const d = search.demo;
+    return d === "has" || d === "waiting" || d === "locked" ? { demo: d } : {};
+  },
   head: () => ({
     meta: [
       { title: "Четвёрка — Клуб «Моя жизнь»" },

@@ -3,9 +3,10 @@ import { useState } from "react";
 import { ArrowLeft, ChevronRight, BookOpen, Play, Zap, MessageCircle, Check, X } from "lucide-react";
 
 export const Route = createFileRoute("/_app/buddy")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    demo: (search.demo as "has" | "waiting" | undefined) ?? undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" } => {
+    const d = search.demo;
+    return d === "has" || d === "waiting" ? { demo: d } : {};
+  },
   head: () => ({
     meta: [
       { title: "Бадди — Клуб «Моя жизнь»" },
