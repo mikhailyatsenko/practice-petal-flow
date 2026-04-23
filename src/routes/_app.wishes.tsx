@@ -191,7 +191,14 @@ function WishesScreen() {
   };
 
   if (creating) {
-    return <CreateWishWizard onClose={() => setCreating(false)} onCreate={handleCreateWish} />;
+    return (
+      <CreateWishWizard
+        onClose={() => setCreating(false)}
+        onCreate={handleCreateWish}
+        hotelki={hotelki}
+        onConsumeHotelka={(idx) => setHotelki((prev) => prev.filter((_, j) => j !== idx))}
+      />
+    );
   }
 
   if (editingWish) {
