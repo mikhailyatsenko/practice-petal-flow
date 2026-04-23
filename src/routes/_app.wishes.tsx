@@ -1188,11 +1188,10 @@ function EditWishScreen({
           <div className="flex gap-2">
             <button
               onClick={() => setConfirmDelete(true)}
-              aria-label="Удалить желание"
-              className="tap h-10 w-10 shrink-0 rounded-full inline-flex items-center justify-center"
+              className="tap rounded-full px-3.5 h-10 inline-flex items-center justify-center gap-1.5 text-[13px] font-medium shrink-0"
               style={{ background: "rgba(229,57,53,0.08)", color: "#E53935", border: "1px solid rgba(229,57,53,0.25)" }}
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-4 w-4" /> Удалить
             </button>
             <button onClick={handleSave} className="tap btn-pill-orange flex-1">
               Сохранить изменения
