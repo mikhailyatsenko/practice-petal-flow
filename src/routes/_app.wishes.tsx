@@ -112,7 +112,7 @@ interface GoalTask {
 interface Goal {
   id: string;
   title: string;
-  gradient: string;
+  image: string;            // путь к картинке цели
   deadline: string;
   progress: number;
   reasons: string[];
@@ -120,15 +120,6 @@ interface Goal {
   plan: string;
   tasks: GoalTask[];
 }
-
-const GOAL_GRADIENTS = [
-  "linear-gradient(135deg, #6b4c3b, #a0734f, #c8956c)",
-  "linear-gradient(135deg, #2d4a3e, #3d7a5e, #5aaa84)",
-  "linear-gradient(135deg, #1a3a5c, #2d6098, #4a8bc4)",
-  "linear-gradient(135deg, #4a2060, #7b3fa0, #a866cc)",
-];
-
-const pickGradient = (i: number) => GOAL_GRADIENTS[i % GOAL_GRADIENTS.length];
 
 const MONTHS_RU = [
   "января", "февраля", "марта", "апреля", "мая", "июня",
@@ -141,57 +132,58 @@ const daysInMonth = (monthIdx: number, year: number) =>
 const formatDeadline = (d: number, m: number, y: number) =>
   `${d} ${MONTHS_RU[m]} ${y}`;
 
+// Начальные цели — НЕ пересекаются с желаниями (другие темы и картинки)
 const INITIAL_GOALS: Goal[] = [
   {
     id: "g1",
-    title: "Зимовка на Бали в январе",
-    gradient: GOAL_GRADIENTS[2],
-    deadline: "1 января 2027",
+    title: "Пробежать первый марафон",
+    image: goalMarathon,
+    deadline: "1 октября 2026",
     progress: 35,
     reasons: [
-      "Сменить обстановку и перезагрузить голову",
-      "Жить среди природы и тепла",
+      "Доказать себе, что могу больше",
+      "Построить выносливость и здоровье",
     ],
-    criteria: "Куплены билеты на Бали и забронировано жильё на 2 месяца.",
-    plan: "Накопить деньги → купить билеты → найти жильё → оформить страховку.",
+    criteria: "Финиш марафона 42,2 км в пределах 4:30:00.",
+    plan: "Тренировки 4 раза в неделю → длинная пробежка по выходным → участие в полумарафоне в августе.",
     tasks: [
-      { id: 1, text: "Накопить 200 000 ₽", done: true },
-      { id: 2, text: "Купить билеты", done: false },
-      { id: 3, text: "Найти жильё в Чангу", done: false },
+      { id: 1, text: "Купить кроссовки для длинных дистанций", done: true },
+      { id: 2, text: "Составить план тренировок", done: false },
+      { id: 3, text: "Зарегистрироваться на марафон", done: false },
     ],
   },
   {
     id: "g2",
-    title: "Похудеть на 6 кг",
-    gradient: GOAL_GRADIENTS[1],
-    deadline: "1 июля 2026",
-    progress: 50,
+    title: "Выучить испанский до B1",
+    image: goalLanguage,
+    deadline: "1 июня 2027",
+    progress: 20,
     reasons: [
-      "Чувствовать лёгкость и энергию",
-      "Уверенность в теле",
+      "Свободно общаться в путешествиях",
+      "Открыть мир испаноязычной культуры",
     ],
-    criteria: "Вес 74 кг на весах утром натощак.",
-    plan: "3 тренировки в неделю + убрать сахар. Взвешиваться раз в 2 недели.",
+    criteria: "Сдан экзамен DELE B1 с положительным результатом.",
+    plan: "3 урока в неделю с преподавателем + ежедневно 20 мин Duolingo + один сериал в оригинале в неделю.",
     tasks: [
-      { id: 1, text: "Записаться в зал", done: true },
-      { id: 2, text: "Составить план питания", done: false },
+      { id: 1, text: "Найти преподавателя", done: true },
+      { id: 2, text: "Пройти базовый курс грамматики", done: false },
     ],
   },
   {
     id: "g3",
-    title: "Написать черновик книги",
-    gradient: GOAL_GRADIENTS[0],
+    title: "Накопить финансовую подушку",
+    image: goalSavings,
     deadline: "31 декабря 2026",
-    progress: 15,
+    progress: 45,
     reasons: [
-      "Оставить след и поделиться опытом",
-      "Структурировать мысли и путь",
+      "Чувствовать уверенность и спокойствие",
+      "Иметь свободу выбирать, а не выживать",
     ],
-    criteria: "Написана и опубликована первая глава книги.",
-    plan: "Писать по 500 слов в день. Каждую неделю редактировать написанное.",
+    criteria: "На отдельном счёте лежит сумма равная 6 месячным расходам.",
+    plan: "Откладывать 20% дохода каждый месяц → класть на отдельный накопительный счёт → не трогать.",
     tasks: [
-      { id: 1, text: "Составить структуру глав", done: false },
-      { id: 2, text: "Написать первую главу", done: false },
+      { id: 1, text: "Открыть накопительный счёт", done: true },
+      { id: 2, text: "Настроить автоперевод 20%", done: false },
     ],
   },
 ];
