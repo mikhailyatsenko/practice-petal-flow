@@ -48,6 +48,7 @@ const INITIAL_WISHES: Wish[] = [
     id: "w1",
     image: wishHouse,
     title: "Дом у океана",
+    aspect: "portrait",
     reasons: [
       "Просыпаться под шум волн и встречать рассветы у воды",
       "Свобода и пространство для семьи и творчества",
@@ -58,6 +59,7 @@ const INITIAL_WISHES: Wish[] = [
     id: "w2",
     image: wishBali,
     title: "Зимовка на Бали",
+    aspect: "landscape",
     reasons: [
       "Сменить обстановку и перезагрузить голову",
       "Жить среди природы, тепла и спокойствия",
@@ -68,6 +70,7 @@ const INITIAL_WISHES: Wish[] = [
     id: "w3",
     image: wishBody,
     title: "Тело, в котором энергия",
+    aspect: "square",
     reasons: [
       "Чувствовать лёгкость и силу каждый день",
       "Уверенность в себе и в зеркале",
@@ -78,6 +81,7 @@ const INITIAL_WISHES: Wish[] = [
     id: "w4",
     image: wishBook,
     title: "Написать свою книгу",
+    aspect: "landscape",
     reasons: [
       "Оставить след и поделиться опытом с другими",
       "Структурировать свои мысли и путь",
@@ -88,6 +92,7 @@ const INITIAL_WISHES: Wish[] = [
     id: "w5",
     image: wishBusiness,
     title: "Своё дело, которое вдохновляет",
+    aspect: "portrait",
     reasons: [
       "Заниматься тем, что зажигает по утрам",
       "Финансовая свобода и контроль над временем",
