@@ -842,14 +842,17 @@ function CreateWishWizard({
         <div className="px-4 animate-fade-up">
           <h2 className="text-[18px] font-bold leading-tight">Как называется твоё желание?</h2>
           <p className="mt-1.5 text-[14px] text-muted-foreground">
-            Короткое и образное — так оно лучше запоминается
+            Напиши своё желание или выбери одну из хотелок ниже, чтобы превратить её в желание.
           </p>
 
           <input
             autoFocus
             value={title}
             maxLength={80}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (fromHotelkaIdx !== null) setFromHotelkaIdx(null);
+            }}
             placeholder="Например: Дом у океана"
             className="mt-5 w-full rounded-xl bg-card px-4 py-3.5 text-[18px] font-bold outline-none transition-colors"
             style={{ border: `1px solid ${title.trim() ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
@@ -857,6 +860,42 @@ function CreateWishWizard({
           <div className="mt-1.5 text-right text-[11px] text-muted-foreground">
             {title.length}/80
           </div>
+
+          {hotelki.length > 0 && (
+            <div className="mt-6">
+              <div className="flex items-center gap-2 mb-2.5">
+                <div className="h-px flex-1 bg-border/60" />
+                <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
+                  или выбери из хотелок
+                </span>
+                <div className="h-px flex-1 bg-border/60" />
+              </div>
+              <div className="space-y-2 max-h-[40vh] overflow-y-auto -mx-1 px-1 pb-1">
+                {hotelki.map((h, i) => {
+                  const active = fromHotelkaIdx === i;
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => handlePickHotelka(i, h)}
+                      className="tap w-full text-left bg-card rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 transition-colors"
+                      style={{ border: `1px solid ${active ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
+                    >
+                      <div
+                        className="h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-[12px] font-medium transition-colors"
+                        style={{
+                          background: active ? "#FF6D00" : "var(--secondary)",
+                          color: active ? "#fff" : "var(--muted-foreground)",
+                        }}
+                      >
+                        {active ? <Check className="h-4 w-4" /> : i + 1}
+                      </div>
+                      <p className="text-[14px] leading-snug text-foreground/90 flex-1">{h}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           <button
             disabled={title.trim().length < 2}
