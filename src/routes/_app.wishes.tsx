@@ -2227,6 +2227,7 @@ function EditGoalScreen({
           </div>
         )}
 
+        {tab === "reasons" && (
           <div className="animate-fade-up space-y-2.5">
             {reasons.map((r, i) => {
               const filled = r.trim().length > 0;
