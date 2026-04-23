@@ -150,6 +150,7 @@ const INITIAL_GOALS: Goal[] = [
     id: "g1",
     title: "Пробежать первый марафон",
     image: goalMarathon,
+    aspect: "landscape",
     deadline: "1 октября 2026",
     progress: 35,
     reasons: [
