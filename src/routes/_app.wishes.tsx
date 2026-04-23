@@ -100,39 +100,85 @@ const INITIAL_HOTELKI = [
   "Завести растение на рабочий стол",
 ];
 
-interface Goal {
-  id: string;
-  emoji: string;
-  title: string;
-  deadline: string;
-  progress: number;
-  next: string;
+interface GoalTask {
+  id: number;
+  text: string;
+  done: boolean;
 }
 
-const GOALS: Goal[] = [
+interface Goal {
+  id: string;
+  title: string;
+  gradient: string;
+  deadline: string;
+  progress: number;
+  reasons: string[];
+  criteria: string;
+  plan: string;
+  tasks: GoalTask[];
+}
+
+const GOAL_GRADIENTS = [
+  "linear-gradient(135deg, #6b4c3b, #a0734f, #c8956c)",
+  "linear-gradient(135deg, #2d4a3e, #3d7a5e, #5aaa84)",
+  "linear-gradient(135deg, #1a3a5c, #2d6098, #4a8bc4)",
+  "linear-gradient(135deg, #4a2060, #7b3fa0, #a866cc)",
+];
+
+const pickGradient = (i: number) => GOAL_GRADIENTS[i % GOAL_GRADIENTS.length];
+
+const INITIAL_GOALS: Goal[] = [
   {
     id: "g1",
-    emoji: "🏝️",
     title: "Зимовка на Бали в январе",
-    deadline: "до 1 января 2027",
+    gradient: GOAL_GRADIENTS[2],
+    deadline: "1 января 2027",
     progress: 35,
-    next: "Купить билеты до 1 декабря",
+    reasons: [
+      "Сменить обстановку и перезагрузить голову",
+      "Жить среди природы и тепла",
+    ],
+    criteria: "Куплены билеты на Бали и забронировано жильё на 2 месяца.",
+    plan: "Накопить деньги → купить билеты → найти жильё → оформить страховку.",
+    tasks: [
+      { id: 1, text: "Накопить 200 000 ₽", done: true },
+      { id: 2, text: "Купить билеты", done: false },
+      { id: 3, text: "Найти жильё в Чангу", done: false },
+    ],
   },
   {
     id: "g2",
-    emoji: "💪",
     title: "Похудеть на 6 кг",
-    deadline: "до 1 июля 2026",
+    gradient: GOAL_GRADIENTS[1],
+    deadline: "1 июля 2026",
     progress: 50,
-    next: "Тренировка 3 раза в неделю",
+    reasons: [
+      "Чувствовать лёгкость и энергию",
+      "Уверенность в теле",
+    ],
+    criteria: "Вес 74 кг на весах утром натощак.",
+    plan: "3 тренировки в неделю + убрать сахар. Взвешиваться раз в 2 недели.",
+    tasks: [
+      { id: 1, text: "Записаться в зал", done: true },
+      { id: 2, text: "Составить план питания", done: false },
+    ],
   },
   {
     id: "g3",
-    emoji: "📖",
     title: "Написать черновик книги",
-    deadline: "до 31 декабря 2026",
+    gradient: GOAL_GRADIENTS[0],
+    deadline: "31 декабря 2026",
     progress: 15,
-    next: "Писать по 500 слов в день",
+    reasons: [
+      "Оставить след и поделиться опытом",
+      "Структурировать мысли и путь",
+    ],
+    criteria: "Написана и опубликована первая глава книги.",
+    plan: "Писать по 500 слов в день. Каждую неделю редактировать написанное.",
+    tasks: [
+      { id: 1, text: "Составить структуру глав", done: false },
+      { id: 2, text: "Написать первую главу", done: false },
+    ],
   },
 ];
 
@@ -141,6 +187,12 @@ function WishesScreen() {
   const [inspires, setInspires] = useState<Record<string, number>>({});
   const [wishes, setWishes] = useState<Wish[]>(INITIAL_WISHES);
   const [hotelki, setHotelki] = useState<string[]>(INITIAL_HOTELKI);
+
+  // Цели
+  const [goals, setGoals] = useState<Goal[]>(INITIAL_GOALS);
+  const [goalInspires, setGoalInspires] = useState<Record<string, number>>({});
+  const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
+  const [creatingGoal, setCreatingGoal] = useState<null | { fromWish?: Wish; returnTo?: TabId }>(null);
 
   // Inline-форма для хотелки
   const [adding, setAdding] = useState(false);
@@ -154,6 +206,9 @@ function WishesScreen() {
 
   const handleInspire = (id: string) => {
     setInspires((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
+  };
+  const handleGoalInspire = (id: string) => {
+    setGoalInspires((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
   };
 
   const handleAddHotelka = () => {
@@ -189,6 +244,56 @@ function WishesScreen() {
   const handleDeleteHotelka = (i: number) => {
     setHotelki((prev) => prev.filter((_, j) => j !== i));
   };
+
+  const handleCreateGoal = (g: Omit<Goal, "id" | "gradient">) => {
+    const newGoal: Goal = {
+      ...g,
+      id: `g${Date.now()}`,
+      gradient: pickGradient(goals.length),
+    };
+    setGoals((prev) => [newGoal, ...prev]);
+  };
+
+  const handleSaveGoal = (updated: Goal) => {
+    setGoals((prev) => prev.map((g) => (g.id === updated.id ? updated : g)));
+    setEditingGoal(null);
+  };
+  const handleDeleteGoal = (id: string) => {
+    setGoals((prev) => prev.filter((g) => g.id !== id));
+    setEditingGoal(null);
+  };
+
+  if (creatingGoal) {
+    return (
+      <CreateGoalWizard
+        wishes={wishes}
+        fromWish={creatingGoal.fromWish}
+        onClose={() => {
+          const ret = creatingGoal.returnTo;
+          setCreatingGoal(null);
+          if (ret) setActiveTab(ret);
+        }}
+        onCreate={(g, openInGoals) => {
+          handleCreateGoal(g);
+          const ret = creatingGoal.returnTo;
+          setCreatingGoal(null);
+          if (openInGoals) setActiveTab("goals");
+          else if (ret) setActiveTab(ret);
+        }}
+      />
+    );
+  }
+
+  if (editingGoal) {
+    return (
+      <EditGoalScreen
+        goal={editingGoal}
+        onClose={() => setEditingGoal(null)}
+        onSave={handleSaveGoal}
+        onDelete={() => handleDeleteGoal(editingGoal.id)}
+      />
+    );
+  }
 
   if (creating) {
     return (
@@ -252,6 +357,7 @@ function WishesScreen() {
               count={inspires[w.id] ?? 0}
               onInspire={() => handleInspire(w.id)}
               onEdit={() => setEditingWish(w)}
+              onMakeGoal={() => setCreatingGoal({ fromWish: w, returnTo: "wishes" })}
             />
           ))}
           <div className="text-center text-[11px] text-muted-foreground pt-2 pb-1">
@@ -298,47 +404,27 @@ function WishesScreen() {
       )}
 
       {activeTab === "goals" && (
-        <div className="px-4 pt-3 space-y-3">
-          {GOALS.map((g) => (
-            <article
+        <div className="px-4 pt-3 space-y-4">
+          <button
+            onClick={() => setCreatingGoal({ returnTo: "goals" })}
+            className="tap btn-pill-orange w-full inline-flex items-center justify-center gap-1.5"
+          >
+            <Plus className="h-4 w-4" /> Добавить цель
+          </button>
+          {goals.map((g) => (
+            <GoalCard
               key={g.id}
-              className="bg-card hairline rounded-2xl p-4 shadow-card animate-fade-up"
-            >
-              <div className="flex items-start gap-3">
-                <div className="h-11 w-11 shrink-0 rounded-xl bg-secondary flex items-center justify-center text-2xl">
-                  {g.emoji}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-[15px] font-semibold leading-tight">{g.title}</h3>
-                  <p className="mt-0.5 text-[12px] text-muted-foreground">{g.deadline}</p>
-                </div>
-              </div>
-
-              <div className="mt-3">
-                <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1">
-                  <span>Прогресс</span>
-                  <span className="font-medium text-foreground">{g.progress}%</span>
-                </div>
-                <div className="h-2 w-full rounded-full bg-secondary overflow-hidden">
-                  <div
-                    className="h-full rounded-full"
-                    style={{
-                      width: `${g.progress}%`,
-                      background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="mt-3 flex items-center justify-between gap-2">
-                <p className="text-[12px] text-foreground/70 leading-snug flex-1">
-                  <span className="text-muted-foreground">След. шаг: </span>
-                  {g.next}
-                </p>
-                <button className="tap btn-pill-orange btn-sm shrink-0">Открыть</button>
-              </div>
-            </article>
+              goal={g}
+              count={goalInspires[g.id] ?? 0}
+              onInspire={() => handleGoalInspire(g.id)}
+              onEdit={() => setEditingGoal(g)}
+            />
           ))}
+          {goals.length === 0 && (
+            <div className="text-center text-[12px] text-muted-foreground pt-6">
+              Пока нет целей. Создай первую — вырасти её из желания 🎯
+            </div>
+          )}
         </div>
       )}
 
@@ -523,12 +609,14 @@ function WishCard({
   count,
   onInspire,
   onEdit,
+  onMakeGoal,
 }: {
   wish: Wish;
   priority?: boolean;
   count: number;
   onInspire: () => void;
   onEdit: () => void;
+  onMakeGoal: () => void;
 }) {
   return (
     <article className="bg-card hairline rounded-2xl overflow-hidden shadow-card animate-fade-up">
@@ -576,7 +664,7 @@ function WishCard({
 
         <div className="mt-3 flex items-center justify-between gap-3">
           <DesireCharge level={count} onTap={onInspire} />
-          <button className="tap btn-pill-orange btn-sm shrink-0">
+          <button onClick={onMakeGoal} className="tap btn-pill-orange btn-sm shrink-0">
             Сделать целью →
           </button>
         </div>
@@ -1330,6 +1418,713 @@ function EditWishScreen({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/* ============================================================
+   ========================  ЦЕЛИ  ============================ */
+
+function GoalCard({
+  goal,
+  count,
+  onInspire,
+  onEdit,
+}: {
+  goal: Goal;
+  count: number;
+  onInspire: () => void;
+  onEdit: () => void;
+}) {
+  const openTasks = goal.tasks.filter((t) => !t.done);
+  const allDone = goal.tasks.length > 0 && openTasks.length === 0;
+
+  return (
+    <article className="bg-card hairline rounded-[20px] overflow-hidden shadow-card animate-fade-up">
+      <div className="relative w-full" style={{ aspectRatio: "16 / 9", background: goal.gradient }}>
+        <button
+          onClick={onEdit}
+          aria-label="Изменить цель"
+          className="tap absolute top-3 right-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px]"
+          style={{
+            background: "rgba(0,0,0,0.08)",
+            border: "1px solid rgba(255,255,255,0.25)",
+            color: "rgba(255,255,255,0.55)",
+            backdropFilter: "blur(4px)",
+          }}
+        >
+          <Pencil className="h-3 w-3" /> Изменить
+        </button>
+      </div>
+
+      <div className="px-4 py-3.5">
+        <h3 className="text-[20px] font-bold leading-tight text-foreground">{goal.title}</h3>
+        <p className="mt-1 text-[12px] text-muted-foreground">📅 до {goal.deadline}</p>
+
+        <div className="mt-3">
+          <div className="flex items-center justify-between text-[11px] mb-1">
+            <span className="text-muted-foreground">Прогресс</span>
+            <span className="font-semibold" style={{ color: "#FF6D00" }}>{goal.progress}%</span>
+          </div>
+          <div className="h-1.5 w-full rounded-full overflow-hidden" style={{ background: "#ede8df" }}>
+            <div
+              className="h-full rounded-full transition-all"
+              style={{
+                width: `${goal.progress}%`,
+                background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="my-3 h-px bg-border/60" />
+
+        <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+          Почему это важно
+        </p>
+        <ul className="mt-1.5 space-y-1.5">
+          {goal.reasons.map((r, i) => (
+            <li key={i} className="flex gap-2 text-[13px] leading-snug text-foreground/80">
+              <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full" style={{ background: "#FF6D00" }} />
+              <span>{r}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="my-3 h-px bg-border/60" />
+
+        <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+          Критерий готовности
+        </p>
+        <div
+          className="mt-1.5 rounded-xl px-3 py-2.5 text-[13px] leading-snug text-foreground/85"
+          style={{ background: "#FAF6EF" }}
+        >
+          {goal.criteria}
+        </div>
+
+        <div className="my-3 h-px bg-border/60" />
+
+        <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+          План реализации
+        </p>
+        <p className="mt-1.5 text-[13px] leading-snug text-foreground/85 whitespace-pre-line">
+          {goal.plan}
+        </p>
+
+        <div className="my-3 h-px bg-border/60" />
+
+        <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+          Главные задачи
+        </p>
+        {allDone ? (
+          <p className="mt-1.5 text-[13px] text-foreground/85">✅ Все задачи выполнены!</p>
+        ) : openTasks.length === 0 ? (
+          <p className="mt-1.5 text-[12.5px] text-muted-foreground">Задач пока нет</p>
+        ) : (
+          <ul className="mt-1.5 space-y-1.5">
+            {openTasks.map((t) => (
+              <li key={t.id} className="flex items-start gap-2 text-[13px] leading-snug text-foreground/85">
+                <span
+                  className="mt-0.5 inline-block h-4 w-4 rounded-[4px] shrink-0"
+                  style={{ border: "1.5px solid #c8c0b0", background: "#fff" }}
+                />
+                <span>{t.text}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <DesireCharge level={count} onTap={onInspire} />
+          <button
+            className="tap btn-pill-orange btn-sm shrink-0"
+            style={{ borderRadius: 12 }}
+          >
+            К задачам →
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+/* ============================================================
+   =================  МАСТЕР СОЗДАНИЯ ЦЕЛИ  =================== */
+
+function GoalStepIndicator({
+  step,
+  labels,
+}: {
+  step: number;
+  labels: string[];
+}) {
+  return (
+    <div className="px-4 pt-3 pb-4">
+      <div className="flex items-center justify-between">
+        {labels.map((label, i) => {
+          const idx = i + 1;
+          const done = step > idx;
+          const active = step === idx;
+          return (
+            <div key={label} className="flex-1 flex items-center">
+              <div className="flex flex-col items-center gap-1.5 min-w-0">
+                <div
+                  className="h-7 w-7 rounded-full flex items-center justify-center text-[12px] font-semibold transition-colors"
+                  style={
+                    done || active
+                      ? { background: "linear-gradient(135deg, #FFB300, #FF6D00)", color: "#fff" }
+                      : { background: "var(--secondary)", color: "var(--muted-foreground)" }
+                  }
+                >
+                  {done ? <Check className="h-3.5 w-3.5" /> : idx}
+                </div>
+                <span
+                  className="text-[10px] font-medium whitespace-nowrap"
+                  style={{ color: active || done ? "var(--foreground)" : "var(--muted-foreground)" }}
+                >
+                  {label}
+                </span>
+              </div>
+              {i < labels.length - 1 && (
+                <div
+                  className="flex-1 h-[2px] mx-1 -mt-4 rounded"
+                  style={{ background: step > idx ? "#FF6D00" : "var(--secondary)" }}
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function CreateGoalWizard({
+  wishes,
+  fromWish,
+  onClose,
+  onCreate,
+}: {
+  wishes: Wish[];
+  fromWish?: Wish;
+  onClose: () => void;
+  onCreate: (g: Omit<Goal, "id" | "gradient">, openInGoals: boolean) => void;
+}) {
+  const startFromWish = !!fromWish;
+  // Шаги: если из желания — 1: Критерий, 2: План, 3: Готово
+  // Если с нуля — 1: Желание, 2: Критерий, 3: План, 4: Готово
+  const labels = startFromWish ? ["Критерий", "План"] : ["Желание", "Критерий", "План"];
+  const [step, setStep] = useState<number>(1);
+  const [selectedWish, setSelectedWish] = useState<Wish | null>(fromWish ?? null);
+  const [criteria, setCriteria] = useState("");
+  const [plan, setPlan] = useState("");
+  const [done, setDone] = useState(false);
+
+  const totalSteps = labels.length;
+
+  const finalize = () => {
+    if (!selectedWish) return;
+    onCreate(
+      {
+        title: selectedWish.title,
+        deadline: "31 декабря 2026",
+        progress: 0,
+        reasons: selectedWish.reasons,
+        criteria: criteria.trim(),
+        plan: plan.trim(),
+        tasks: [],
+      },
+      !startFromWish, // если создавали из ленты целей — открыть цели; если из желания — вернуться в желания
+    );
+  };
+
+  if (done) {
+    return (
+      <div className="min-h-screen bg-background pb-8">
+        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50">
+          <div className="flex items-center px-4 py-3">
+            <h2 className="flex-1 text-center text-[15px] font-semibold">Готово</h2>
+          </div>
+        </div>
+        <div className="px-4 pt-8 text-center animate-fade-up">
+          <div className="text-6xl mb-3">🎯</div>
+          <h2 className="text-[20px] font-bold">Цель создана!</h2>
+          <p className="mt-1.5 text-[13px] text-muted-foreground">
+            Твоя цель добавлена в ленту целей
+          </p>
+
+          {selectedWish && (
+            <article className="mt-6 mx-auto max-w-sm bg-card hairline rounded-[20px] overflow-hidden shadow-card text-left">
+              <div
+                className="w-full"
+                style={{ aspectRatio: "16 / 9", background: GOAL_GRADIENTS[0] }}
+              />
+              <div className="px-4 py-3.5">
+                <h3 className="text-[18px] font-bold">{selectedWish.title}</h3>
+                <div className="mt-2 h-1.5 w-full rounded-full" style={{ background: "#ede8df" }} />
+                <p className="mt-1 text-right text-[11px] text-muted-foreground">0%</p>
+              </div>
+            </article>
+          )}
+
+          <button
+            onClick={finalize}
+            className="tap btn-pill-orange mt-6 inline-flex items-center justify-center gap-1.5 px-6"
+          >
+            {startFromWish ? "Вернуться в Желания" : "Посмотреть в ленте целей"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Хедер
+  const handleBack = () => {
+    if (step > 1) setStep(step - 1);
+    else onClose();
+  };
+
+  // Какой логический шаг сейчас
+  const isPickWish = !startFromWish && step === 1;
+  const isCriteria = startFromWish ? step === 1 : step === 2;
+  const isPlan = startFromWish ? step === 2 : step === 3;
+
+  return (
+    <div className="min-h-screen bg-background pb-8">
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50">
+        <div className="flex items-center px-4 py-3">
+          <button onClick={onClose} className="tap inline-flex items-center gap-1 text-[13px] text-muted-foreground">
+            <ArrowLeft className="h-4 w-4" /> Отмена
+          </button>
+          <h2 className="flex-1 text-center text-[15px] font-semibold pr-12">Новая цель</h2>
+        </div>
+      </div>
+
+      <GoalStepIndicator step={step} labels={labels} />
+
+      {isPickWish && (
+        <div className="px-4 animate-fade-up">
+          <h2 className="text-[18px] font-bold leading-tight">Выбери желание</h2>
+          <p className="mt-1.5 text-[14px] text-muted-foreground">
+            Цель вырастает из желания — выбери то, которое хочешь воплотить
+          </p>
+
+          <div className="mt-5 space-y-2">
+            {wishes.length === 0 && (
+              <p className="text-[13px] text-muted-foreground text-center py-6">
+                Сначала создай желание во вкладке «Желания»
+              </p>
+            )}
+            {wishes.map((w, i) => {
+              const active = selectedWish?.id === w.id;
+              return (
+                <button
+                  key={w.id}
+                  onClick={() => setSelectedWish(w)}
+                  className="tap w-full text-left bg-card rounded-xl px-3 py-3 shadow-card flex items-center gap-3 transition-colors"
+                  style={{ border: `1.5px solid ${active ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
+                >
+                  <div
+                    className="h-12 w-12 shrink-0 rounded-xl"
+                    style={{ background: pickGradient(i) }}
+                  />
+                  <p className="flex-1 text-[14px] font-medium text-foreground/90">{w.title}</p>
+                  {active && (
+                    <div
+                      className="h-6 w-6 shrink-0 rounded-full inline-flex items-center justify-center text-white"
+                      style={{ background: "#FF6D00" }}
+                    >
+                      <Check className="h-3.5 w-3.5" />
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            disabled={!selectedWish}
+            onClick={() => setStep(2)}
+            className="tap btn-pill-orange w-full mt-6 disabled:opacity-40"
+          >
+            Далее → Критерий готовности
+          </button>
+        </div>
+      )}
+
+      {isCriteria && (
+        <div className="px-4 animate-fade-up">
+          <h2 className="text-[18px] font-bold leading-tight">Напиши критерий готовности</h2>
+          <p className="mt-1.5 text-[14px] text-muted-foreground">
+            Одно предложение — конкретный факт, по которому ты поймёшь что цель достигнута. Не «хочу похудеть», а «вес 74 кг на весах утром».
+          </p>
+
+          <div
+            className="mt-4 rounded-xl px-3.5 py-3 text-[12.5px] leading-snug text-foreground/80"
+            style={{ background: "#fff8ee", border: "1px solid #ffe0a3" }}
+          >
+            <div className="font-semibold mb-1.5">Примеры:</div>
+            <ul className="space-y-1">
+              <li>• «Написана и опубликована первая глава книги.»</li>
+              <li>• «Куплены билеты на Бали и забронировано жильё на 2 месяца.»</li>
+              <li>• «Открыт расчётный счёт ИП и получен первый оплаченный заказ.»</li>
+            </ul>
+          </div>
+
+          {selectedWish && (
+            <div className="mt-4 bg-card rounded-xl px-3 py-2.5 shadow-card flex items-center gap-3 hairline">
+              <div
+                className="h-10 w-10 shrink-0 rounded-lg"
+                style={{ background: GOAL_GRADIENTS[0] }}
+              />
+              <p className="text-[13px] font-medium text-foreground/85">{selectedWish.title}</p>
+            </div>
+          )}
+
+          <textarea
+            value={criteria}
+            onChange={(e) => setCriteria(e.target.value)}
+            placeholder="Напиши критерий готовности"
+            rows={4}
+            className="mt-4 w-full rounded-xl bg-card px-3.5 py-3 text-[14px] outline-none transition-colors resize-none"
+            style={{ border: `1px solid ${criteria.trim().length > 5 ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
+          />
+
+          <div className="mt-6 flex gap-2">
+            <button
+              onClick={handleBack}
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
+            >
+              ← Назад
+            </button>
+            <button
+              disabled={criteria.trim().length <= 5}
+              onClick={() => setStep(step + 1)}
+              className="tap btn-pill-orange flex-1 disabled:opacity-40"
+            >
+              Далее → План
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isPlan && (
+        <div className="px-4 animate-fade-up">
+          <h2 className="text-[18px] font-bold leading-tight">Напиши план реализации</h2>
+          <p className="mt-1.5 text-[14px] text-muted-foreground">
+            Опиши шаги — как и в каком порядке ты будешь двигаться к цели.
+          </p>
+
+          <div
+            className="mt-4 rounded-xl px-3.5 py-3 text-[12.5px] leading-snug text-foreground/80"
+            style={{ background: "#fff8ee", border: "1px solid #ffe0a3" }}
+          >
+            <div className="font-semibold mb-1.5">Примеры:</div>
+            <ul className="space-y-1">
+              <li>• «Накопить деньги → купить билеты → найти жильё → оформить страховку.»</li>
+              <li>• «3 тренировки в неделю + убрать сахар. Взвешиваться раз в 2 недели.»</li>
+            </ul>
+          </div>
+
+          <textarea
+            value={plan}
+            onChange={(e) => setPlan(e.target.value)}
+            placeholder="Опиши порядок действий..."
+            rows={5}
+            className="mt-4 w-full rounded-xl bg-card px-3.5 py-3 text-[14px] outline-none transition-colors resize-none"
+            style={{ border: `1px solid ${plan.trim().length > 5 ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
+          />
+
+          <div className="mt-6 flex gap-2">
+            <button
+              onClick={handleBack}
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
+            >
+              ← Назад
+            </button>
+            <button
+              disabled={plan.trim().length <= 5}
+              onClick={() => setDone(true)}
+              className="tap btn-pill-orange flex-1 inline-flex items-center justify-center gap-1.5 disabled:opacity-40"
+            >
+              🎯 Создать цель
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+   =================  РЕДАКТИРОВАНИЕ ЦЕЛИ  ==================== */
+
+type GoalEditTab = "title" | "reasons" | "image" | "criteria" | "plan" | "progress";
+
+function EditGoalScreen({
+  goal,
+  onClose,
+  onSave,
+  onDelete,
+}: {
+  goal: Goal;
+  onClose: () => void;
+  onSave: (g: Goal) => void;
+  onDelete: () => void;
+}) {
+  const [tab, setTab] = useState<GoalEditTab>("title");
+  const [title, setTitle] = useState(goal.title);
+  const [reasons, setReasons] = useState<string[]>(goal.reasons.length ? goal.reasons : [""]);
+  const [criteria, setCriteria] = useState(goal.criteria);
+  const [plan, setPlan] = useState(goal.plan);
+  const [progress, setProgress] = useState(goal.progress);
+  const [gradient, setGradient] = useState(goal.gradient);
+
+  const handleSave = () => {
+    onSave({
+      ...goal,
+      title: title.trim() || goal.title,
+      reasons: reasons.map((r) => r.trim()).filter(Boolean),
+      criteria: criteria.trim() || goal.criteria,
+      plan: plan.trim() || goal.plan,
+      progress,
+      gradient,
+    });
+  };
+
+  const tabs: { id: GoalEditTab; label: string }[] = [
+    { id: "title",    label: "✏️ Название"  },
+    { id: "reasons",  label: "💡 Причины"  },
+    { id: "image",    label: "🖼 Картинка"  },
+    { id: "criteria", label: "✅ Критерий" },
+    { id: "plan",     label: "🗺 План"      },
+    { id: "progress", label: "📊 Прогресс" },
+  ];
+
+  return (
+    <div className="min-h-screen bg-background pb-24">
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50">
+        <div className="flex items-center gap-2 px-4 py-3">
+          <button
+            onClick={onClose}
+            className="tap inline-flex items-center gap-1 text-[13px] text-muted-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" /> К цели
+          </button>
+          <h2 className="flex-1 text-center text-[15px] font-semibold">Изменить</h2>
+          <button
+            onClick={onDelete}
+            aria-label="Удалить цель"
+            className="tap inline-flex items-center justify-center h-8 w-8 rounded-full"
+            style={{ background: "#fff0f0", color: "#E53935", border: "1px solid rgba(229,57,53,0.25)" }}
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+          <button onClick={handleSave} className="tap btn-pill-orange btn-sm">Сохранить</button>
+        </div>
+      </div>
+
+      {/* Live превью */}
+      <div className="px-4 pt-3">
+        <div className="relative rounded-2xl overflow-hidden" style={{ height: 100, background: gradient }}>
+          <div className="absolute inset-x-0 bottom-0 px-3 py-2">
+            <div className="text-white text-[15px] font-semibold drop-shadow">{title}</div>
+          </div>
+          <div
+            className="absolute top-2 right-2 text-white text-[12px] font-semibold px-2 py-0.5 rounded-full"
+            style={{ background: "rgba(0,0,0,0.25)", backdropFilter: "blur(4px)" }}
+          >
+            {progress}%
+          </div>
+        </div>
+      </div>
+
+      {/* Табы — две строки */}
+      <div className="px-4 mt-3 flex gap-1.5 flex-wrap">
+        {tabs.map((t) => {
+          const active = t.id === tab;
+          return (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={
+                active
+                  ? "tap btn-pill-orange btn-sm"
+                  : "tap rounded-full px-3 py-1.5 text-[12px] font-medium bg-card text-muted-foreground hairline"
+              }
+            >
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="px-4 mt-4">
+        {tab === "title" && (
+          <div className="animate-fade-up">
+            <input
+              value={title}
+              maxLength={80}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full rounded-xl bg-card px-4 py-3 text-[16px] font-semibold outline-none transition-colors"
+              style={{ border: `1px solid ${title.trim() ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
+            />
+            <div className="mt-1.5 text-right text-[11px] text-muted-foreground">{title.length}/80</div>
+          </div>
+        )}
+
+        {tab === "reasons" && (
+          <div className="animate-fade-up space-y-2.5">
+            {reasons.map((r, i) => {
+              const filled = r.trim().length > 0;
+              return (
+                <div key={i} className="flex items-center gap-2">
+                  <div
+                    className="h-9 w-9 shrink-0 rounded-lg flex items-center justify-center text-[13px] font-bold"
+                    style={
+                      filled
+                        ? { background: "linear-gradient(135deg, #FFB300, #FF6D00)", color: "#fff" }
+                        : { background: "var(--secondary)", color: "var(--muted-foreground)" }
+                    }
+                  >
+                    {i + 1}
+                  </div>
+                  <input
+                    value={r}
+                    onChange={(e) => {
+                      const next = [...reasons];
+                      next[i] = e.target.value;
+                      setReasons(next);
+                    }}
+                    placeholder={`Причина ${i + 1}...`}
+                    className="flex-1 rounded-xl bg-card px-3.5 py-2.5 text-[14px] outline-none transition-colors"
+                    style={{ border: `1px solid ${filled ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
+                  />
+                  {reasons.length > 1 && (
+                    <button
+                      onClick={() => setReasons(reasons.filter((_, j) => j !== i))}
+                      aria-label="Удалить причину"
+                      className="tap h-8 w-8 shrink-0 rounded-full bg-secondary text-muted-foreground inline-flex items-center justify-center"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+            {reasons.length < 5 && (
+              <button
+                onClick={() => setReasons([...reasons, ""])}
+                className="tap w-full rounded-xl py-2.5 text-[13px] font-medium text-muted-foreground"
+                style={{ border: "1px dashed rgba(0,0,0,0.18)" }}
+              >
+                + Добавить причину
+              </button>
+            )}
+          </div>
+        )}
+
+        {tab === "image" && (
+          <div className="animate-fade-up">
+            <p className="text-[12px] text-muted-foreground mb-3">
+              У целей нет фото — выбери цвет фона:
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {GOAL_GRADIENTS.map((g) => {
+                const active = g === gradient;
+                return (
+                  <button
+                    key={g}
+                    onClick={() => setGradient(g)}
+                    className="tap h-20 rounded-xl relative overflow-hidden"
+                    style={{ background: g, border: `2px solid ${active ? "#FF6D00" : "transparent"}` }}
+                  >
+                    {active && (
+                      <span className="absolute top-1.5 right-1.5 h-5 w-5 rounded-full bg-white inline-flex items-center justify-center" style={{ color: "#FF6D00" }}>
+                        <Check className="h-3.5 w-3.5" />
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            <label
+              className="tap mt-4 block cursor-pointer rounded-[18px] bg-card px-4 py-6 text-center"
+              style={{ border: "1.5px dashed #ede8df" }}
+            >
+              <div className="mx-auto h-12 w-12 rounded-2xl flex items-center justify-center text-2xl" style={{ background: "linear-gradient(135deg, #FFE0B2, #FFB300)" }}>
+                <FolderOpen className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="mt-2 text-[14px] font-semibold">Загрузить новое фото</h3>
+              <p className="mt-1 text-[12px] text-muted-foreground">С телефона или компьютера</p>
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) setGradient(`url(${URL.createObjectURL(f)}) center/cover no-repeat`);
+                }}
+              />
+            </label>
+          </div>
+        )}
+
+        {tab === "criteria" && (
+          <div className="animate-fade-up">
+            <textarea
+              value={criteria}
+              onChange={(e) => setCriteria(e.target.value)}
+              rows={4}
+              className="w-full rounded-xl bg-card px-3.5 py-3 text-[14px] outline-none transition-colors resize-none"
+              style={{ border: `1px solid ${criteria.trim() ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
+            />
+          </div>
+        )}
+
+        {tab === "plan" && (
+          <div className="animate-fade-up">
+            <textarea
+              value={plan}
+              onChange={(e) => setPlan(e.target.value)}
+              rows={6}
+              className="w-full rounded-xl bg-card px-3.5 py-3 text-[14px] outline-none transition-colors resize-none"
+              style={{ border: `1px solid ${plan.trim() ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
+            />
+          </div>
+        )}
+
+        {tab === "progress" && (
+          <div className="animate-fade-up">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[13px] text-muted-foreground">Текущий прогресс</span>
+              <span
+                className="text-[13px] font-bold text-white px-3 py-1 rounded-full"
+                style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+              >
+                {progress}%
+              </span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={progress}
+              onChange={(e) => setProgress(Number(e.target.value))}
+              className="w-full accent-orange-500"
+              style={{ accentColor: "#FF6D00" }}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Bottom save */}
+      <div className="fixed bottom-0 inset-x-0 bg-background/95 backdrop-blur-md border-t border-border/50 px-4 py-3 safe-bottom">
+        <button onClick={handleSave} className="tap btn-pill-orange w-full">
+          Сохранить изменения
+        </button>
+      </div>
     </div>
   );
 }
