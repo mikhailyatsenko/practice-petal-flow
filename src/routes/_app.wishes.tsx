@@ -175,6 +175,21 @@ function WishesScreen() {
     setEditingWish(null);
   };
 
+  const handleDeleteWish = (id: string) => {
+    setWishes((prev) => prev.filter((w) => w.id !== id));
+    setEditingWish(null);
+  };
+
+  const handleEditHotelka = (i: number, v: string) => {
+    const t = v.trim();
+    if (!t) return;
+    setHotelki((prev) => prev.map((h, j) => (j === i ? t : h)));
+  };
+
+  const handleDeleteHotelka = (i: number) => {
+    setHotelki((prev) => prev.filter((_, j) => j !== i));
+  };
+
   if (creating) {
     return <CreateWishWizard onClose={() => setCreating(false)} onCreate={handleCreateWish} />;
   }
@@ -185,6 +200,7 @@ function WishesScreen() {
         wish={editingWish}
         onClose={() => setEditingWish(null)}
         onSave={handleSaveEdit}
+        onDelete={() => handleDeleteWish(editingWish.id)}
       />
     );
   }
