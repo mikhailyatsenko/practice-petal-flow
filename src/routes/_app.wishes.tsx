@@ -30,11 +30,17 @@ const TABS = [
 
 type TabId = typeof TABS[number]["id"];
 
+type ImageAspect = "portrait" | "landscape" | "square";
+
+const aspectClass = (a?: ImageAspect) =>
+  a === "landscape" ? "aspect-[16/10]" : a === "square" ? "aspect-square" : "aspect-[4/5]";
+
 interface Wish {
   id: string;
   image: string;
   title: string;
   reasons: string[];
+  aspect?: ImageAspect;
 }
 
 const INITIAL_WISHES: Wish[] = [
