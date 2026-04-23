@@ -1451,15 +1451,17 @@ function GoalCard({
 
   return (
     <article className="bg-card hairline rounded-[20px] overflow-hidden shadow-card animate-fade-up">
-      <div className="relative w-full" style={{ aspectRatio: "16 / 9", background: goal.gradient }}>
+      <div className="relative w-full" style={{ aspectRatio: "16 / 9" }}>
+        <img src={goal.image} alt={goal.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
         <button
           onClick={onEdit}
           aria-label="Изменить цель"
           className="tap absolute top-3 right-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px]"
           style={{
-            background: "rgba(0,0,0,0.08)",
+            background: "rgba(0,0,0,0.28)",
             border: "1px solid rgba(255,255,255,0.25)",
-            color: "rgba(255,255,255,0.55)",
+            color: "rgba(255,255,255,0.85)",
             backdropFilter: "blur(4px)",
           }}
         >
