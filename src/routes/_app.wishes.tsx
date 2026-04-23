@@ -100,39 +100,85 @@ const INITIAL_HOTELKI = [
   "Завести растение на рабочий стол",
 ];
 
-interface Goal {
-  id: string;
-  emoji: string;
-  title: string;
-  deadline: string;
-  progress: number;
-  next: string;
+interface GoalTask {
+  id: number;
+  text: string;
+  done: boolean;
 }
 
-const GOALS: Goal[] = [
+interface Goal {
+  id: string;
+  title: string;
+  gradient: string;
+  deadline: string;
+  progress: number;
+  reasons: string[];
+  criteria: string;
+  plan: string;
+  tasks: GoalTask[];
+}
+
+const GOAL_GRADIENTS = [
+  "linear-gradient(135deg, #6b4c3b, #a0734f, #c8956c)",
+  "linear-gradient(135deg, #2d4a3e, #3d7a5e, #5aaa84)",
+  "linear-gradient(135deg, #1a3a5c, #2d6098, #4a8bc4)",
+  "linear-gradient(135deg, #4a2060, #7b3fa0, #a866cc)",
+];
+
+const pickGradient = (i: number) => GOAL_GRADIENTS[i % GOAL_GRADIENTS.length];
+
+const INITIAL_GOALS: Goal[] = [
   {
     id: "g1",
-    emoji: "🏝️",
     title: "Зимовка на Бали в январе",
-    deadline: "до 1 января 2027",
+    gradient: GOAL_GRADIENTS[2],
+    deadline: "1 января 2027",
     progress: 35,
-    next: "Купить билеты до 1 декабря",
+    reasons: [
+      "Сменить обстановку и перезагрузить голову",
+      "Жить среди природы и тепла",
+    ],
+    criteria: "Куплены билеты на Бали и забронировано жильё на 2 месяца.",
+    plan: "Накопить деньги → купить билеты → найти жильё → оформить страховку.",
+    tasks: [
+      { id: 1, text: "Накопить 200 000 ₽", done: true },
+      { id: 2, text: "Купить билеты", done: false },
+      { id: 3, text: "Найти жильё в Чангу", done: false },
+    ],
   },
   {
     id: "g2",
-    emoji: "💪",
     title: "Похудеть на 6 кг",
-    deadline: "до 1 июля 2026",
+    gradient: GOAL_GRADIENTS[1],
+    deadline: "1 июля 2026",
     progress: 50,
-    next: "Тренировка 3 раза в неделю",
+    reasons: [
+      "Чувствовать лёгкость и энергию",
+      "Уверенность в теле",
+    ],
+    criteria: "Вес 74 кг на весах утром натощак.",
+    plan: "3 тренировки в неделю + убрать сахар. Взвешиваться раз в 2 недели.",
+    tasks: [
+      { id: 1, text: "Записаться в зал", done: true },
+      { id: 2, text: "Составить план питания", done: false },
+    ],
   },
   {
     id: "g3",
-    emoji: "📖",
     title: "Написать черновик книги",
-    deadline: "до 31 декабря 2026",
+    gradient: GOAL_GRADIENTS[0],
+    deadline: "31 декабря 2026",
     progress: 15,
-    next: "Писать по 500 слов в день",
+    reasons: [
+      "Оставить след и поделиться опытом",
+      "Структурировать мысли и путь",
+    ],
+    criteria: "Написана и опубликована первая глава книги.",
+    plan: "Писать по 500 слов в день. Каждую неделю редактировать написанное.",
+    tasks: [
+      { id: 1, text: "Составить структуру глав", done: false },
+      { id: 2, text: "Написать первую главу", done: false },
+    ],
   },
 ];
 
