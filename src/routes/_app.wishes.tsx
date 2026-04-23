@@ -1586,16 +1586,41 @@ function GoalStepIndicator({
   step: number;
   labels: string[];
 }) {
+  const n = labels.length;
+  // Прогресс линии: от центра 1-го кружка до центра последнего
+  const progressPct = n > 1 ? Math.min(Math.max((step - 1) / (n - 1), 0), 1) * 100 : 0;
   return (
     <div className="px-4 pt-3 pb-4">
-      <div className="flex items-center justify-between">
-        {labels.map((label, i) => {
-          const idx = i + 1;
-          const done = step > idx;
-          const active = step === idx;
-          return (
-            <div key={label} className="flex-1 flex items-center">
-              <div className="flex flex-col items-center gap-1.5 min-w-0">
+      <div className="relative">
+        {/* Линия-фон (между центрами первого и последнего кружка) */}
+        <div
+          className="absolute top-[14px] h-[2px] rounded"
+          style={{
+            left: `calc((100% / ${n}) / 2)`,
+            right: `calc((100% / ${n}) / 2)`,
+            background: "var(--secondary)",
+          }}
+        />
+        {/* Линия-прогресс */}
+        <div
+          className="absolute top-[14px] h-[2px] rounded transition-[width]"
+          style={{
+            left: `calc((100% / ${n}) / 2)`,
+            width: `calc((100% - (100% / ${n})) * ${progressPct / 100})`,
+            background: "#FF6D00",
+          }}
+        />
+        <div className="relative flex items-start">
+          {labels.map((label, i) => {
+            const idx = i + 1;
+            const done = step > idx;
+            const active = step === idx;
+            return (
+              <div
+                key={label}
+                className="flex flex-col items-center gap-1.5"
+                style={{ width: `${100 / n}%` }}
+              >
                 <div
                   className="h-7 w-7 rounded-full flex items-center justify-center text-[12px] font-semibold transition-colors"
                   style={
@@ -1613,15 +1638,9 @@ function GoalStepIndicator({
                   {label}
                 </span>
               </div>
-              {i < labels.length - 1 && (
-                <div
-                  className="flex-1 h-[2px] mx-1 -mt-4 rounded"
-                  style={{ background: step > idx ? "#FF6D00" : "var(--secondary)" }}
-                />
-              )}
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
