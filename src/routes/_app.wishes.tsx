@@ -357,6 +357,7 @@ function WishesScreen() {
               count={inspires[w.id] ?? 0}
               onInspire={() => handleInspire(w.id)}
               onEdit={() => setEditingWish(w)}
+              onMakeGoal={() => setCreatingGoal({ fromWish: w, returnTo: "wishes" })}
             />
           ))}
           <div className="text-center text-[11px] text-muted-foreground pt-2 pb-1">
@@ -403,47 +404,27 @@ function WishesScreen() {
       )}
 
       {activeTab === "goals" && (
-        <div className="px-4 pt-3 space-y-3">
-          {GOALS.map((g) => (
-            <article
+        <div className="px-4 pt-3 space-y-4">
+          <button
+            onClick={() => setCreatingGoal({ returnTo: "goals" })}
+            className="tap btn-pill-orange w-full inline-flex items-center justify-center gap-1.5"
+          >
+            <Plus className="h-4 w-4" /> Добавить цель
+          </button>
+          {goals.map((g) => (
+            <GoalCard
               key={g.id}
-              className="bg-card hairline rounded-2xl p-4 shadow-card animate-fade-up"
-            >
-              <div className="flex items-start gap-3">
-                <div className="h-11 w-11 shrink-0 rounded-xl bg-secondary flex items-center justify-center text-2xl">
-                  {g.emoji}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-[15px] font-semibold leading-tight">{g.title}</h3>
-                  <p className="mt-0.5 text-[12px] text-muted-foreground">{g.deadline}</p>
-                </div>
-              </div>
-
-              <div className="mt-3">
-                <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1">
-                  <span>Прогресс</span>
-                  <span className="font-medium text-foreground">{g.progress}%</span>
-                </div>
-                <div className="h-2 w-full rounded-full bg-secondary overflow-hidden">
-                  <div
-                    className="h-full rounded-full"
-                    style={{
-                      width: `${g.progress}%`,
-                      background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="mt-3 flex items-center justify-between gap-2">
-                <p className="text-[12px] text-foreground/70 leading-snug flex-1">
-                  <span className="text-muted-foreground">След. шаг: </span>
-                  {g.next}
-                </p>
-                <button className="tap btn-pill-orange btn-sm shrink-0">Открыть</button>
-              </div>
-            </article>
+              goal={g}
+              count={goalInspires[g.id] ?? 0}
+              onInspire={() => handleGoalInspire(g.id)}
+              onEdit={() => setEditingGoal(g)}
+            />
           ))}
+          {goals.length === 0 && (
+            <div className="text-center text-[12px] text-muted-foreground pt-6">
+              Пока нет целей. Создай первую — вырасти её из желания 🎯
+            </div>
+          )}
         </div>
       )}
 
@@ -628,12 +609,14 @@ function WishCard({
   count,
   onInspire,
   onEdit,
+  onMakeGoal,
 }: {
   wish: Wish;
   priority?: boolean;
   count: number;
   onInspire: () => void;
   onEdit: () => void;
+  onMakeGoal: () => void;
 }) {
   return (
     <article className="bg-card hairline rounded-2xl overflow-hidden shadow-card animate-fade-up">
@@ -681,7 +664,7 @@ function WishCard({
 
         <div className="mt-3 flex items-center justify-between gap-3">
           <DesireCharge level={count} onTap={onInspire} />
-          <button className="tap btn-pill-orange btn-sm shrink-0">
+          <button onClick={onMakeGoal} className="tap btn-pill-orange btn-sm shrink-0">
             Сделать целью →
           </button>
         </div>
