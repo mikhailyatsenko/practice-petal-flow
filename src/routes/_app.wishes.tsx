@@ -591,63 +591,44 @@ function EmptyTab({ tab }: { tab: string }) {
 
 /* ---------------- Заряд желания ---------------- */
 
-const CHARGE_WORDS = [
-  { label: "Нравится",      color: "#9c8f7a" },
-  { label: "Вдохновляет",   color: "#FFB300" },
-  { label: "Зажигает",      color: "#FF9100" },
-  { label: "Манит",         color: "#FF7A00" },
-  { label: "Жажду",         color: "#FF5722" },
-  { label: "Горю желанием", color: "#E64A19" },
-] as const;
-
+const CHARGE_COLORS = ["#9c8f7a", "#FFB300", "#FF9100", "#FF7A00", "#FF5722", "#E64A19"];
 const DOT_FILLED_COLORS = ["#FFD180", "#FFB300", "#FF9100", "#FF6D00", "#E64A19"];
 const DOT_EMPTY = "#e0d8cc";
 
 function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
-  const inCycle = level % 5;
-  const displayDots = level > 0 && inCycle === 0 ? 5 : inCycle;
-  const badge = level > 0 ? 1 + Math.floor((level - 1) / 5) : 0;
-  const wordIdx = Math.min(5, displayDots);
-  const word = CHARGE_WORDS[wordIdx];
+  const dots = Math.min(5, Math.max(0, level));
+  const label = dots === 0 ? "Заряжает" : `Зарядил на ${dots * 20}%`;
+  const color = CHARGE_COLORS[dots];
 
   return (
     <button
       onClick={onTap}
+      disabled={dots >= 5}
       aria-label="Заряд желания"
-      className="tap flex items-center gap-2.5 min-w-0 select-none -mx-1 px-1 py-1 rounded-lg"
+      className="tap flex items-center gap-2.5 min-w-0 select-none -mx-1 px-1 py-1 rounded-lg disabled:opacity-100"
     >
       <span className="text-[22px] leading-none transition-transform active:scale-90">
         ❤️
       </span>
       <span className="flex flex-col gap-1 min-w-0 text-left">
-        <span className="flex items-center gap-1.5">
-          <span className="flex items-center gap-1">
-            {Array.from({ length: 5 }).map((_, i) => {
-              const filled = i < displayDots;
-              return (
-                <span
-                  key={i}
-                  className="h-2 w-2 rounded-full transition-colors"
-                  style={{ backgroundColor: filled ? DOT_FILLED_COLORS[i] : DOT_EMPTY }}
-                />
-              );
-            })}
-          </span>
-          {badge > 0 && (
-            <span
-              key={badge}
-              className="min-w-[20px] h-[18px] px-1.5 rounded-full bg-[#FF6D00] text-white text-[10px] font-bold flex items-center justify-center animate-pop"
-            >
-              +{badge}
-            </span>
-          )}
+        <span className="flex items-center gap-1">
+          {Array.from({ length: 5 }).map((_, i) => {
+            const filled = i < dots;
+            return (
+              <span
+                key={i}
+                className="h-2 w-2 rounded-full transition-colors"
+                style={{ backgroundColor: filled ? DOT_FILLED_COLORS[i] : DOT_EMPTY }}
+              />
+            );
+          })}
         </span>
         <span
-          key={`${badge}-${displayDots}`}
+          key={dots}
           className="text-[12px] font-medium leading-none animate-pop"
-          style={{ color: word.color }}
+          style={{ color }}
         >
-          {word.label}
+          {label}
         </span>
       </span>
     </button>
