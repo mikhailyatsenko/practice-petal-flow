@@ -6,6 +6,9 @@ import wishBali from "@/assets/wish-bali.jpg";
 import wishBody from "@/assets/wish-body.jpg";
 import wishBook from "@/assets/wish-book.jpg";
 import wishBusiness from "@/assets/wish-business.jpg";
+import goalMarathon from "@/assets/goal-marathon.jpg";
+import goalLanguage from "@/assets/goal-language.jpg";
+import goalSavings from "@/assets/goal-savings.jpg";
 
 export const Route = createFileRoute("/_app/wishes")({
   head: () => ({
