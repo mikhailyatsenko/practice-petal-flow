@@ -399,6 +399,114 @@ function InlineHotelkaForm({
   );
 }
 
+/* ---------------- Хотелка с редактированием ---------------- */
+
+function HotelkaItem({
+  index,
+  text,
+  onSave,
+  onDelete,
+}: {
+  index: number;
+  text: string;
+  onSave: (v: string) => void;
+  onDelete: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(text);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editing) {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    }
+  }, [editing]);
+
+  const filled = value.trim().length > 0;
+
+  const submit = () => {
+    if (!filled) return;
+    onSave(value);
+    setEditing(false);
+  };
+
+  if (editing) {
+    return (
+      <div
+        className="bg-card rounded-xl px-3.5 py-3 shadow-card animate-fade-up"
+        style={{ border: `1px solid ${filled ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
+      >
+        <div className="flex items-center gap-3">
+          <div className="h-7 w-7 shrink-0 rounded-full bg-secondary flex items-center justify-center text-[12px] font-medium text-muted-foreground">
+            {index}
+          </div>
+          <input
+            ref={inputRef}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                submit();
+              } else if (e.key === "Escape") {
+                e.preventDefault();
+                setValue(text);
+                setEditing(false);
+              }
+            }}
+            className="flex-1 bg-transparent outline-none text-[14px] text-foreground"
+          />
+        </div>
+        <div className="mt-3 flex gap-2">
+          <button
+            onClick={() => {
+              setValue(text);
+              setEditing(false);
+            }}
+            className="tap flex-1 rounded-full px-3.5 py-1.5 text-[12px] font-medium bg-secondary text-muted-foreground hairline"
+          >
+            Отмена
+          </button>
+          <button
+            onClick={onDelete}
+            className="tap rounded-full px-3.5 py-1.5 text-[12px] font-medium inline-flex items-center justify-center gap-1.5"
+            style={{ background: "rgba(229,57,53,0.08)", color: "#E53935", border: "1px solid rgba(229,57,53,0.25)" }}
+          >
+            <Trash2 className="h-3.5 w-3.5" /> Удалить
+          </button>
+          <button
+            onClick={submit}
+            disabled={!filled}
+            className="tap btn-pill-orange btn-sm flex-1 disabled:opacity-40"
+          >
+            Сохранить
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 animate-fade-up">
+      <div className="h-7 w-7 shrink-0 rounded-full bg-secondary flex items-center justify-center text-[12px] font-medium text-muted-foreground">
+        {index}
+      </div>
+      <p className="text-[14px] leading-snug text-foreground/90 flex-1">{text}</p>
+      <button
+        onClick={() => {
+          setValue(text);
+          setEditing(true);
+        }}
+        aria-label="Изменить хотелку"
+        className="tap h-7 w-7 shrink-0 rounded-full bg-secondary text-muted-foreground inline-flex items-center justify-center"
+      >
+        <Pencil className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  );
+}
+
 /* ---------------- Карточка желания ---------------- */
 
 function WishCard({
