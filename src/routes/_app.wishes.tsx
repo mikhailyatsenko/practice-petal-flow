@@ -6,6 +6,9 @@ import wishBali from "@/assets/wish-bali.jpg";
 import wishBody from "@/assets/wish-body.jpg";
 import wishBook from "@/assets/wish-book.jpg";
 import wishBusiness from "@/assets/wish-business.jpg";
+import goalMarathon from "@/assets/goal-marathon.jpg";
+import goalLanguage from "@/assets/goal-language.jpg";
+import goalSavings from "@/assets/goal-savings.jpg";
 
 export const Route = createFileRoute("/_app/wishes")({
   head: () => ({
@@ -109,7 +112,7 @@ interface GoalTask {
 interface Goal {
   id: string;
   title: string;
-  gradient: string;
+  image: string;            // путь к картинке цели
   deadline: string;
   progress: number;
   reasons: string[];
@@ -117,15 +120,6 @@ interface Goal {
   plan: string;
   tasks: GoalTask[];
 }
-
-const GOAL_GRADIENTS = [
-  "linear-gradient(135deg, #6b4c3b, #a0734f, #c8956c)",
-  "linear-gradient(135deg, #2d4a3e, #3d7a5e, #5aaa84)",
-  "linear-gradient(135deg, #1a3a5c, #2d6098, #4a8bc4)",
-  "linear-gradient(135deg, #4a2060, #7b3fa0, #a866cc)",
-];
-
-const pickGradient = (i: number) => GOAL_GRADIENTS[i % GOAL_GRADIENTS.length];
 
 const MONTHS_RU = [
   "января", "февраля", "марта", "апреля", "мая", "июня",
@@ -138,57 +132,58 @@ const daysInMonth = (monthIdx: number, year: number) =>
 const formatDeadline = (d: number, m: number, y: number) =>
   `${d} ${MONTHS_RU[m]} ${y}`;
 
+// Начальные цели — НЕ пересекаются с желаниями (другие темы и картинки)
 const INITIAL_GOALS: Goal[] = [
   {
     id: "g1",
-    title: "Зимовка на Бали в январе",
-    gradient: GOAL_GRADIENTS[2],
-    deadline: "1 января 2027",
+    title: "Пробежать первый марафон",
+    image: goalMarathon,
+    deadline: "1 октября 2026",
     progress: 35,
     reasons: [
-      "Сменить обстановку и перезагрузить голову",
-      "Жить среди природы и тепла",
+      "Доказать себе, что могу больше",
+      "Построить выносливость и здоровье",
     ],
-    criteria: "Куплены билеты на Бали и забронировано жильё на 2 месяца.",
-    plan: "Накопить деньги → купить билеты → найти жильё → оформить страховку.",
+    criteria: "Финиш марафона 42,2 км в пределах 4:30:00.",
+    plan: "Тренировки 4 раза в неделю → длинная пробежка по выходным → участие в полумарафоне в августе.",
     tasks: [
-      { id: 1, text: "Накопить 200 000 ₽", done: true },
-      { id: 2, text: "Купить билеты", done: false },
-      { id: 3, text: "Найти жильё в Чангу", done: false },
+      { id: 1, text: "Купить кроссовки для длинных дистанций", done: true },
+      { id: 2, text: "Составить план тренировок", done: false },
+      { id: 3, text: "Зарегистрироваться на марафон", done: false },
     ],
   },
   {
     id: "g2",
-    title: "Похудеть на 6 кг",
-    gradient: GOAL_GRADIENTS[1],
-    deadline: "1 июля 2026",
-    progress: 50,
+    title: "Выучить испанский до B1",
+    image: goalLanguage,
+    deadline: "1 июня 2027",
+    progress: 20,
     reasons: [
-      "Чувствовать лёгкость и энергию",
-      "Уверенность в теле",
+      "Свободно общаться в путешествиях",
+      "Открыть мир испаноязычной культуры",
     ],
-    criteria: "Вес 74 кг на весах утром натощак.",
-    plan: "3 тренировки в неделю + убрать сахар. Взвешиваться раз в 2 недели.",
+    criteria: "Сдан экзамен DELE B1 с положительным результатом.",
+    plan: "3 урока в неделю с преподавателем + ежедневно 20 мин Duolingo + один сериал в оригинале в неделю.",
     tasks: [
-      { id: 1, text: "Записаться в зал", done: true },
-      { id: 2, text: "Составить план питания", done: false },
+      { id: 1, text: "Найти преподавателя", done: true },
+      { id: 2, text: "Пройти базовый курс грамматики", done: false },
     ],
   },
   {
     id: "g3",
-    title: "Написать черновик книги",
-    gradient: GOAL_GRADIENTS[0],
+    title: "Накопить финансовую подушку",
+    image: goalSavings,
     deadline: "31 декабря 2026",
-    progress: 15,
+    progress: 45,
     reasons: [
-      "Оставить след и поделиться опытом",
-      "Структурировать мысли и путь",
+      "Чувствовать уверенность и спокойствие",
+      "Иметь свободу выбирать, а не выживать",
     ],
-    criteria: "Написана и опубликована первая глава книги.",
-    plan: "Писать по 500 слов в день. Каждую неделю редактировать написанное.",
+    criteria: "На отдельном счёте лежит сумма равная 6 месячным расходам.",
+    plan: "Откладывать 20% дохода каждый месяц → класть на отдельный накопительный счёт → не трогать.",
     tasks: [
-      { id: 1, text: "Составить структуру глав", done: false },
-      { id: 2, text: "Написать первую главу", done: false },
+      { id: 1, text: "Открыть накопительный счёт", done: true },
+      { id: 2, text: "Настроить автоперевод 20%", done: false },
     ],
   },
 ];
@@ -256,11 +251,10 @@ function WishesScreen() {
     setHotelki((prev) => prev.filter((_, j) => j !== i));
   };
 
-  const handleCreateGoal = (g: Omit<Goal, "id" | "gradient">) => {
+  const handleCreateGoal = (g: Omit<Goal, "id">) => {
     const newGoal: Goal = {
       ...g,
       id: `g${Date.now()}`,
-      gradient: pickGradient(goals.length),
     };
     setGoals((prev) => [newGoal, ...prev]);
   };
@@ -284,12 +278,17 @@ function WishesScreen() {
           setCreatingGoal(null);
           if (ret) setActiveTab(ret);
         }}
-        onCreate={(g, openInGoals) => {
+        onCreate={(g, openInGoals, sourceWishId) => {
           handleCreateGoal(g);
+          // Желание превратилось в цель — убираем его из ленты желаний
+          if (sourceWishId) {
+            setWishes((prev) => prev.filter((w) => w.id !== sourceWishId));
+          }
           const ret = creatingGoal.returnTo;
           setCreatingGoal(null);
           if (openInGoals) setActiveTab("goals");
-          else if (ret) setActiveTab(ret);
+          else setActiveTab("goals"); // всегда показываем созданную цель
+          void ret;
         }}
       />
     );
@@ -1452,15 +1451,17 @@ function GoalCard({
 
   return (
     <article className="bg-card hairline rounded-[20px] overflow-hidden shadow-card animate-fade-up">
-      <div className="relative w-full" style={{ aspectRatio: "16 / 9", background: goal.gradient }}>
+      <div className="relative w-full" style={{ aspectRatio: "16 / 9" }}>
+        <img src={goal.image} alt={goal.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
         <button
           onClick={onEdit}
           aria-label="Изменить цель"
           className="tap absolute top-3 right-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px]"
           style={{
-            background: "rgba(0,0,0,0.08)",
+            background: "rgba(0,0,0,0.28)",
             border: "1px solid rgba(255,255,255,0.25)",
-            color: "rgba(255,255,255,0.55)",
+            color: "rgba(255,255,255,0.85)",
             backdropFilter: "blur(4px)",
           }}
         >
@@ -1761,7 +1762,7 @@ function CreateGoalWizard({
   wishes: Wish[];
   fromWish?: Wish;
   onClose: () => void;
-  onCreate: (g: Omit<Goal, "id" | "gradient">, openInGoals: boolean) => void;
+  onCreate: (g: Omit<Goal, "id">, openInGoals: boolean, sourceWishId?: string) => void;
 }) {
   const startFromWish = !!fromWish;
   // Шаги:
@@ -1783,13 +1784,12 @@ function CreateGoalWizard({
   const [plan, setPlan] = useState("");
   const [done, setDone] = useState(false);
 
-  const totalSteps = labels.length;
-
   const finalize = () => {
     if (!selectedWish) return;
     onCreate(
       {
         title: selectedWish.title,
+        image: selectedWish.image,
         deadline: formatDeadline(dlDay, dlMonth, dlYear),
         progress: 0,
         reasons: selectedWish.reasons,
@@ -1797,7 +1797,8 @@ function CreateGoalWizard({
         plan: plan.trim(),
         tasks: [],
       },
-      !startFromWish, // если создавали из ленты целей — открыть цели; если из желания — вернуться в желания
+      true,
+      startFromWish ? selectedWish.id : undefined,
     );
   };
 
@@ -1818,13 +1819,15 @@ function CreateGoalWizard({
 
           {selectedWish && (
             <article className="mt-6 mx-auto max-w-sm bg-card hairline rounded-[20px] overflow-hidden shadow-card text-left">
-              <div
-                className="w-full"
-                style={{ aspectRatio: "16 / 9", background: GOAL_GRADIENTS[0] }}
-              />
+              <div className="relative w-full" style={{ aspectRatio: "16 / 9" }}>
+                <img src={selectedWish.image} alt={selectedWish.title} className="absolute inset-0 h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                <div className="absolute left-3 bottom-2 text-white text-[15px] font-semibold drop-shadow">
+                  {selectedWish.title}
+                </div>
+              </div>
               <div className="px-4 py-3.5">
-                <h3 className="text-[18px] font-bold">{selectedWish.title}</h3>
-                <div className="mt-2 h-1.5 w-full rounded-full" style={{ background: "#ede8df" }} />
+                <div className="h-1.5 w-full rounded-full" style={{ background: "#ede8df" }} />
                 <p className="mt-1 text-right text-[11px] text-muted-foreground">0%</p>
               </div>
             </article>
@@ -1834,7 +1837,7 @@ function CreateGoalWizard({
             onClick={finalize}
             className="tap btn-pill-orange mt-6 inline-flex items-center justify-center gap-1.5 px-6"
           >
-            {startFromWish ? "Вернуться в Желания" : "Посмотреть в ленте целей"}
+            Посмотреть в ленте целей
           </button>
         </div>
       </div>
@@ -1853,6 +1856,9 @@ function CreateGoalWizard({
   const isCriteria = startFromWish ? step === 2 : step === 3;
   const isPlan = startFromWish ? step === 3 : step === 4;
 
+  // Превью карточки (название + картинка) — показываем на всех шагах после выбора желания
+  const showPreview = !!selectedWish && !isPickWish;
+
   return (
     <div className="min-h-screen bg-background pb-8">
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50">
@@ -1865,6 +1871,18 @@ function CreateGoalWizard({
       </div>
 
       <GoalStepIndicator step={step} labels={labels} />
+
+      {showPreview && selectedWish && (
+        <div className="px-4 pt-1 pb-1">
+          <div className="relative rounded-2xl overflow-hidden" style={{ height: 110 }}>
+            <img src={selectedWish.image} alt={selectedWish.title} className="absolute inset-0 h-full w-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+            <div className="absolute left-3 bottom-2 right-3 text-white text-[16px] font-semibold drop-shadow leading-tight">
+              {selectedWish.title}
+            </div>
+          </div>
+        </div>
+      )}
 
       {isPickWish && (
         <div className="px-4 animate-fade-up">
@@ -1879,7 +1897,7 @@ function CreateGoalWizard({
                 Сначала создай желание во вкладке «Желания»
               </p>
             )}
-            {wishes.map((w, i) => {
+            {wishes.map((w) => {
               const active = selectedWish?.id === w.id;
               return (
                 <button
@@ -1888,9 +1906,10 @@ function CreateGoalWizard({
                   className="tap w-full text-left bg-card rounded-xl px-3 py-3 shadow-card flex items-center gap-3 transition-colors"
                   style={{ border: `1.5px solid ${active ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
                 >
-                  <div
-                    className="h-12 w-12 shrink-0 rounded-xl"
-                    style={{ background: pickGradient(i) }}
+                  <img
+                    src={w.image}
+                    alt={w.title}
+                    className="h-12 w-12 shrink-0 rounded-xl object-cover"
                   />
                   <p className="flex-1 text-[14px] font-medium text-foreground/90">{w.title}</p>
                   {active && (
@@ -1918,20 +1937,10 @@ function CreateGoalWizard({
 
       {isDeadline && (
         <div className="px-4 animate-fade-up">
-          <h2 className="text-[18px] font-bold leading-tight">До какого числа?</h2>
+          <h2 className="text-[18px] font-bold leading-tight">До какого числа хочешь достичь цели?</h2>
           <p className="mt-1.5 text-[14px] text-muted-foreground">
-            Выбери дату, до которой хочешь достичь цели. Конкретный срок помогает двигаться.
+            Выбери дату — конкретный срок помогает двигаться.
           </p>
-
-          {selectedWish && (
-            <div className="mt-4 bg-card rounded-xl px-3 py-2.5 shadow-card flex items-center gap-3 hairline">
-              <div
-                className="h-10 w-10 shrink-0 rounded-lg"
-                style={{ background: GOAL_GRADIENTS[0] }}
-              />
-              <p className="text-[13px] font-medium text-foreground/85">{selectedWish.title}</p>
-            </div>
-          )}
 
           <DateWheelPicker
             day={dlDay}
@@ -1983,16 +1992,6 @@ function CreateGoalWizard({
               <li>• «Открыт расчётный счёт ИП и получен первый оплаченный заказ.»</li>
             </ul>
           </div>
-
-          {selectedWish && (
-            <div className="mt-4 bg-card rounded-xl px-3 py-2.5 shadow-card flex items-center gap-3 hairline">
-              <div
-                className="h-10 w-10 shrink-0 rounded-lg"
-                style={{ background: GOAL_GRADIENTS[0] }}
-              />
-              <p className="text-[13px] font-medium text-foreground/85">{selectedWish.title}</p>
-            </div>
-          )}
 
           <textarea
             value={criteria}
@@ -2104,7 +2103,7 @@ function EditGoalScreen({
   const [criteria, setCriteria] = useState(goal.criteria);
   const [plan, setPlan] = useState(goal.plan);
   const [progress, setProgress] = useState(goal.progress);
-  const [gradient, setGradient] = useState(goal.gradient);
+  const [image, setImage] = useState(goal.image);
 
   const initDl = parseDeadline(goal.deadline);
   const [dlDay, setDlDay] = useState<number>(initDl.d);
@@ -2120,15 +2119,16 @@ function EditGoalScreen({
       criteria: criteria.trim() || goal.criteria,
       plan: plan.trim() || goal.plan,
       progress,
-      gradient,
+      image,
     });
   };
 
+  // Порядок: Название → Причины → Картинка → Срок → Критерий → План → Прогресс
   const tabs: { id: GoalEditTab; label: string }[] = [
     { id: "title",    label: "✏️ Название"  },
-    { id: "deadline", label: "📅 Срок"      },
     { id: "reasons",  label: "💡 Причины"  },
     { id: "image",    label: "🖼 Картинка"  },
+    { id: "deadline", label: "📅 Срок"      },
     { id: "criteria", label: "✅ Критерий" },
     { id: "plan",     label: "🗺 План"      },
     { id: "progress", label: "📊 Прогресс" },
@@ -2159,13 +2159,15 @@ function EditGoalScreen({
 
       {/* Live превью */}
       <div className="px-4 pt-3">
-        <div className="relative rounded-2xl overflow-hidden" style={{ height: 100, background: gradient }}>
+        <div className="relative rounded-2xl overflow-hidden" style={{ height: 110 }}>
+          <img src={image} alt={title} className="absolute inset-0 h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 px-3 py-2">
             <div className="text-white text-[15px] font-semibold drop-shadow">{title}</div>
           </div>
           <div
             className="absolute top-2 right-2 text-white text-[12px] font-semibold px-2 py-0.5 rounded-full"
-            style={{ background: "rgba(0,0,0,0.25)", backdropFilter: "blur(4px)" }}
+            style={{ background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)" }}
           >
             {progress}%
           </div>
@@ -2280,30 +2282,11 @@ function EditGoalScreen({
 
         {tab === "image" && (
           <div className="animate-fade-up">
-            <p className="text-[12px] text-muted-foreground mb-3">
-              У целей нет фото — выбери цвет фона:
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {GOAL_GRADIENTS.map((g) => {
-                const active = g === gradient;
-                return (
-                  <button
-                    key={g}
-                    onClick={() => setGradient(g)}
-                    className="tap h-20 rounded-xl relative overflow-hidden"
-                    style={{ background: g, border: `2px solid ${active ? "#FF6D00" : "transparent"}` }}
-                  >
-                    {active && (
-                      <span className="absolute top-1.5 right-1.5 h-5 w-5 rounded-full bg-white inline-flex items-center justify-center" style={{ color: "#FF6D00" }}>
-                        <Check className="h-3.5 w-3.5" />
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
+            <div className="rounded-2xl overflow-hidden mb-3" style={{ aspectRatio: "16 / 9" }}>
+              <img src={image} alt={title} className="h-full w-full object-cover" />
             </div>
             <label
-              className="tap mt-4 block cursor-pointer rounded-[18px] bg-card px-4 py-6 text-center"
+              className="tap block cursor-pointer rounded-[18px] bg-card px-4 py-6 text-center"
               style={{ border: "1.5px dashed #ede8df" }}
             >
               <div className="mx-auto h-12 w-12 rounded-2xl flex items-center justify-center text-2xl" style={{ background: "linear-gradient(135deg, #FFE0B2, #FFB300)" }}>
@@ -2317,7 +2300,7 @@ function EditGoalScreen({
                 hidden
                 onChange={(e) => {
                   const f = e.target.files?.[0];
-                  if (f) setGradient(`url(${URL.createObjectURL(f)}) center/cover no-repeat`);
+                  if (f) setImage(URL.createObjectURL(f));
                 }}
               />
             </label>
