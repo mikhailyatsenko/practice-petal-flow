@@ -597,9 +597,10 @@ const DOT_EMPTY = "#e0d8cc";
 
 function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
   const total = Math.max(0, level);
-  // dots внутри текущего круга: 1..5, после полного круга снова 1..5
   const inRound = total === 0 ? 0 : ((total - 1) % 5) + 1;
-  const completedRounds = total === 0 ? 0 : Math.floor((total - 1) / 5);
+  // +1 — с первого тапа; +2 — когда пошёл второй круг (после 100%)
+  const badgeCount = total === 0 ? 0 : Math.floor((total - 1) / 5) + 1;
+  const justHit100 = total > 0 && inRound === 5;
   const label = total === 0 ? "Заряжает" : `Зарядился на ${inRound * 20}%`;
   const color = CHARGE_COLORS[inRound];
 
@@ -607,9 +608,12 @@ function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
     <button
       onClick={onTap}
       aria-label="Заряд желания"
-      className="tap flex items-center gap-2.5 min-w-0 select-none -mx-1 px-1 py-1 rounded-lg"
+      className="tap flex items-center gap-2.5 min-w-0 select-none -mx-1 px-1 py-1 rounded-lg relative"
     >
-      <span className="text-[22px] leading-none transition-transform active:scale-90">
+      <span
+        key={`heart-${justHit100 ? total : "idle"}`}
+        className={`text-[22px] leading-none transition-transform active:scale-90 ${justHit100 ? "animate-celebrate" : ""}`}
+      >
         ❤️
       </span>
       <span className="flex flex-col gap-1 min-w-0 text-left">
@@ -619,29 +623,63 @@ function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
             return (
               <span
                 key={i}
-                className="h-2 w-2 rounded-full transition-colors"
+                className={`h-2 w-2 rounded-full transition-colors ${justHit100 && filled ? "animate-celebrate-glow" : ""}`}
                 style={{ backgroundColor: filled ? DOT_FILLED_COLORS[i] : DOT_EMPTY }}
               />
             );
           })}
-          {completedRounds > 0 && (
-            <span
-              key={completedRounds}
-              className="ml-1 min-w-[20px] h-[18px] px-1.5 rounded-full text-[10px] font-bold text-white inline-flex items-center justify-center animate-pop"
-              style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)", boxShadow: "0 2px 6px rgba(255,109,0,0.35)" }}
-            >
-              +{completedRounds}
-            </span>
-          )}
+          {/* Бейдж +N — фикс. ширина, чтобы лейбл не прыгал */}
+          <span className="ml-1 inline-flex items-center justify-start" style={{ width: 30, height: 18 }}>
+            {badgeCount > 0 && (
+              <span
+                key={badgeCount}
+                className="min-w-[22px] h-[18px] px-1.5 rounded-full text-[10px] font-bold text-white inline-flex items-center justify-center animate-pop"
+                style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)", boxShadow: "0 2px 6px rgba(255,109,0,0.35)" }}
+              >
+                +{badgeCount}
+              </span>
+            )}
+          </span>
         </span>
-        <span
-          key={total}
-          className="text-[12px] font-medium leading-none animate-pop"
-          style={{ color }}
-        >
-          {label}
+        {/* Фиксированная высота строки лейбла */}
+        <span className="block leading-none" style={{ minHeight: 14 }}>
+          <span
+            key={total}
+            className={`text-[12px] font-medium leading-none inline-block ${justHit100 ? "animate-celebrate" : "animate-pop"}`}
+            style={{ color }}
+          >
+            {label}
+          </span>
         </span>
       </span>
+
+      {/* Конфетти при 100% */}
+      {justHit100 && (
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+          {[
+            { c: "#FF6D00", x: -22, y: -28 },
+            { c: "#FFB300", x: 18,  y: -30 },
+            { c: "#FF9100", x: -28, y: 6   },
+            { c: "#E64A19", x: 24,  y: 10  },
+            { c: "#FFD180", x: 0,   y: -34 },
+            { c: "#FF6D00", x: -10, y: 22  },
+            { c: "#FFB300", x: 14,  y: 24  },
+          ].map((p, i) => (
+            <span
+              key={`${total}-${i}`}
+              className="absolute h-1.5 w-1.5 rounded-full"
+              style={{
+                background: p.c,
+                left: 0,
+                top: 0,
+                ["--cx" as never]: `${p.x}px`,
+                ["--cy" as never]: `${p.y}px`,
+                animation: "confetti-burst 800ms ease-out both",
+              }}
+            />
+          ))}
+        </span>
+      )}
     </button>
   );
 }
@@ -1177,38 +1215,56 @@ function EditWishScreen({
 
       {/* Bottom save */}
       <div className="fixed bottom-0 inset-x-0 bg-background/95 backdrop-blur-md border-t border-border/50 px-4 py-3 safe-bottom">
-        {confirmDelete ? (
-          <div className="flex items-center gap-2">
-            <span className="text-[12px] text-foreground/80 flex-1">Удалить желание?</span>
-            <button
-              onClick={() => setConfirmDelete(false)}
-              className="tap rounded-full px-3.5 py-2 text-[12px] font-medium bg-secondary text-muted-foreground hairline"
-            >
-              Отмена
-            </button>
-            <button
-              onClick={onDelete}
-              className="tap rounded-full px-3.5 py-2 text-[12px] font-semibold inline-flex items-center gap-1.5"
-              style={{ background: "#E53935", color: "#fff" }}
-            >
-              <Trash2 className="h-3.5 w-3.5" /> Удалить
-            </button>
-          </div>
-        ) : (
-          <div className="flex gap-2">
-            <button
-              onClick={() => setConfirmDelete(true)}
-              className="tap rounded-full px-3.5 h-10 inline-flex items-center justify-center gap-1.5 text-[13px] font-medium shrink-0"
-              style={{ background: "rgba(229,57,53,0.08)", color: "#E53935", border: "1px solid rgba(229,57,53,0.25)" }}
-            >
-              <Trash2 className="h-4 w-4" /> Удалить
-            </button>
-            <button onClick={handleSave} className="tap btn-pill-orange flex-1">
-              Сохранить изменения
-            </button>
-          </div>
-        )}
+        <div className="flex gap-2">
+          <button
+            onClick={() => setConfirmDelete(true)}
+            className="tap rounded-full px-3.5 h-10 inline-flex items-center justify-center gap-1.5 text-[13px] font-medium shrink-0"
+            style={{ background: "rgba(229,57,53,0.08)", color: "#E53935", border: "1px solid rgba(229,57,53,0.25)" }}
+          >
+            <Trash2 className="h-4 w-4" /> Удалить
+          </button>
+          <button onClick={handleSave} className="tap btn-pill-orange flex-1">
+            Сохранить изменения
+          </button>
+        </div>
       </div>
+
+      {/* Модалка подтверждения удаления */}
+      {confirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-6 animate-fade-up" style={{ background: "rgba(0,0,0,0.45)" }}>
+          <div className="w-full max-w-sm rounded-2xl bg-background p-5 shadow-card">
+            <div className="flex items-start gap-3">
+              <div
+                className="h-10 w-10 shrink-0 rounded-full inline-flex items-center justify-center"
+                style={{ background: "rgba(229,57,53,0.12)", color: "#E53935" }}
+              >
+                <Trash2 className="h-5 w-5" />
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-[15px] font-semibold leading-snug">Удалить желание?</h3>
+                <p className="mt-1 text-[12.5px] text-muted-foreground leading-snug">
+                  «{title}» будет удалено навсегда. Это действие нельзя отменить.
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 flex gap-2">
+              <button
+                onClick={() => setConfirmDelete(false)}
+                className="tap flex-1 rounded-full px-3.5 py-2.5 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
+              >
+                Отмена
+              </button>
+              <button
+                onClick={onDelete}
+                className="tap flex-1 rounded-full px-3.5 py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5"
+                style={{ background: "#E53935", color: "#fff" }}
+              >
+                <Trash2 className="h-4 w-4" /> Удалить
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
