@@ -2072,7 +2072,20 @@ function CreateGoalWizard({
 /* ============================================================
    =================  РЕДАКТИРОВАНИЕ ЦЕЛИ  ==================== */
 
-type GoalEditTab = "title" | "reasons" | "image" | "criteria" | "plan" | "progress";
+type GoalEditTab = "title" | "deadline" | "reasons" | "image" | "criteria" | "plan" | "progress";
+
+function parseDeadline(s: string): { d: number; m: number; y: number } {
+  // Ожидаем формат "31 декабря 2026"
+  const parts = s.trim().split(/\s+/);
+  const today = new Date();
+  if (parts.length === 3) {
+    const d = parseInt(parts[0], 10);
+    const m = MONTHS_RU.indexOf(parts[1].toLowerCase());
+    const y = parseInt(parts[2], 10);
+    if (!isNaN(d) && m >= 0 && !isNaN(y)) return { d, m, y };
+  }
+  return { d: 31, m: 11, y: today.getFullYear() };
+}
 
 function EditGoalScreen({
   goal,
@@ -2093,10 +2106,16 @@ function EditGoalScreen({
   const [progress, setProgress] = useState(goal.progress);
   const [gradient, setGradient] = useState(goal.gradient);
 
+  const initDl = parseDeadline(goal.deadline);
+  const [dlDay, setDlDay] = useState<number>(initDl.d);
+  const [dlMonth, setDlMonth] = useState<number>(initDl.m);
+  const [dlYear, setDlYear] = useState<number>(initDl.y);
+
   const handleSave = () => {
     onSave({
       ...goal,
       title: title.trim() || goal.title,
+      deadline: formatDeadline(dlDay, dlMonth, dlYear),
       reasons: reasons.map((r) => r.trim()).filter(Boolean),
       criteria: criteria.trim() || goal.criteria,
       plan: plan.trim() || goal.plan,
@@ -2107,6 +2126,7 @@ function EditGoalScreen({
 
   const tabs: { id: GoalEditTab; label: string }[] = [
     { id: "title",    label: "✏️ Название"  },
+    { id: "deadline", label: "📅 Срок"      },
     { id: "reasons",  label: "💡 Причины"  },
     { id: "image",    label: "🖼 Картинка"  },
     { id: "criteria", label: "✅ Критерий" },
