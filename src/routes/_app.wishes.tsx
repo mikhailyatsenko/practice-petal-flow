@@ -470,10 +470,11 @@ function HotelkaItem({
           </button>
           <button
             onClick={onDelete}
-            className="tap rounded-full px-3.5 py-1.5 text-[12px] font-medium inline-flex items-center justify-center gap-1.5"
+            aria-label="Удалить хотелку"
+            className="tap inline-flex items-center justify-center h-9 w-9 rounded-full shrink-0"
             style={{ background: "rgba(229,57,53,0.08)", color: "#E53935", border: "1px solid rgba(229,57,53,0.25)" }}
           >
-            <Trash2 className="h-3.5 w-3.5" /> Удалить
+            <Trash2 className="h-4 w-4" />
           </button>
           <button
             onClick={submit}
