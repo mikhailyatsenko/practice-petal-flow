@@ -127,6 +127,17 @@ const GOAL_GRADIENTS = [
 
 const pickGradient = (i: number) => GOAL_GRADIENTS[i % GOAL_GRADIENTS.length];
 
+const MONTHS_RU = [
+  "января", "февраля", "марта", "апреля", "мая", "июня",
+  "июля", "августа", "сентября", "октября", "ноября", "декабря",
+];
+
+const daysInMonth = (monthIdx: number, year: number) =>
+  new Date(year, monthIdx + 1, 0).getDate();
+
+const formatDeadline = (d: number, m: number, y: number) =>
+  `${d} ${MONTHS_RU[m]} ${y}`;
+
 const INITIAL_GOALS: Goal[] = [
   {
     id: "g1",
