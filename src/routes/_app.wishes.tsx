@@ -254,7 +254,7 @@ function WishesScreen() {
       )}
 
       {activeTab === "wants" && (
-        <div className="px-4 pt-3 space-y-2">
+        <div className="px-4 pt-3">
           {adding ? (
             <InlineHotelkaForm
               value={hotelkaText}
@@ -268,23 +268,23 @@ function WishesScreen() {
           ) : (
             <button
               onClick={() => setAdding(true)}
-              className="tap btn-pill-orange w-full inline-flex items-center justify-center gap-1.5 mb-1"
+              className="tap btn-pill-orange w-full inline-flex items-center justify-center gap-1.5"
             >
               <Plus className="h-4 w-4" /> Добавить хотелку
             </button>
           )}
-          {hotelki.map((h, i) => (
-            <div
-              key={i}
-              className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 animate-fade-up"
-            >
-              <div className="h-7 w-7 shrink-0 rounded-full bg-secondary flex items-center justify-center text-[12px] font-medium text-muted-foreground">
-                {i + 1}
-              </div>
-              <p className="text-[14px] leading-snug text-foreground/90 flex-1">{h}</p>
-            </div>
-          ))}
-          <div className="text-center text-[11px] text-muted-foreground pt-2 pb-1">
+          <div className="mt-5 space-y-2">
+            {hotelki.map((h, i) => (
+              <HotelkaItem
+                key={i}
+                index={i + 1}
+                text={h}
+                onSave={(v) => handleEditHotelka(i, v)}
+                onDelete={() => handleDeleteHotelka(i)}
+              />
+            ))}
+          </div>
+          <div className="text-center text-[11px] text-muted-foreground pt-3 pb-1">
             Маленькие хотелки — большие радости 🌿
           </div>
         </div>
