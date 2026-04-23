@@ -2159,13 +2159,15 @@ function EditGoalScreen({
 
       {/* Live превью */}
       <div className="px-4 pt-3">
-        <div className="relative rounded-2xl overflow-hidden" style={{ height: 100, background: gradient }}>
+        <div className="relative rounded-2xl overflow-hidden" style={{ height: 110 }}>
+          <img src={image} alt={title} className="absolute inset-0 h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 px-3 py-2">
             <div className="text-white text-[15px] font-semibold drop-shadow">{title}</div>
           </div>
           <div
             className="absolute top-2 right-2 text-white text-[12px] font-semibold px-2 py-0.5 rounded-full"
-            style={{ background: "rgba(0,0,0,0.25)", backdropFilter: "blur(4px)" }}
+            style={{ background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)" }}
           >
             {progress}%
           </div>
