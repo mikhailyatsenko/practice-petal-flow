@@ -1023,6 +1023,14 @@ function EditWishScreen({
             <ArrowLeft className="h-4 w-4" /> К желанию
           </button>
           <h2 className="flex-1 text-center text-[15px] font-semibold">Изменить</h2>
+          <button
+            onClick={() => setConfirmDelete(true)}
+            aria-label="Удалить желание"
+            className="tap inline-flex items-center justify-center h-8 w-8 rounded-full"
+            style={{ background: "rgba(229,57,53,0.1)", color: "#E53935", border: "1px solid rgba(229,57,53,0.25)" }}
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
           <button onClick={handleSave} className="tap btn-pill-orange btn-sm">Сохранить</button>
         </div>
       </div>
