@@ -1849,8 +1849,9 @@ function CreateGoalWizard({
 
   // Какой логический шаг сейчас
   const isPickWish = !startFromWish && step === 1;
-  const isCriteria = startFromWish ? step === 1 : step === 2;
-  const isPlan = startFromWish ? step === 2 : step === 3;
+  const isDeadline = startFromWish ? step === 1 : step === 2;
+  const isCriteria = startFromWish ? step === 2 : step === 3;
+  const isPlan = startFromWish ? step === 3 : step === 4;
 
   return (
     <div className="min-h-screen bg-background pb-8">
