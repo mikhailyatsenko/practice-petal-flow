@@ -1993,16 +1993,6 @@ function CreateGoalWizard({
             </ul>
           </div>
 
-          {selectedWish && (
-            <div className="mt-4 bg-card rounded-xl px-3 py-2.5 shadow-card flex items-center gap-3 hairline">
-              <div
-                className="h-10 w-10 shrink-0 rounded-lg"
-                style={{ background: GOAL_GRADIENTS[0] }}
-              />
-              <p className="text-[13px] font-medium text-foreground/85">{selectedWish.title}</p>
-            </div>
-          )}
-
           <textarea
             value={criteria}
             onChange={(e) => setCriteria(e.target.value)}
