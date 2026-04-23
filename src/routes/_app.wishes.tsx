@@ -607,20 +607,11 @@ function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
       aria-label="Заряд желания"
       className="tap flex items-center gap-2.5 min-w-0 select-none -mx-1 px-1 py-1 rounded-lg disabled:opacity-100"
     >
-      <span className="relative text-[22px] leading-none transition-transform active:scale-90">
+      <span className="text-[22px] leading-none transition-transform active:scale-90">
         ❤️
-        {dots > 0 && (
-          <span
-            key={dots}
-            className="absolute -top-1.5 -right-2 min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold text-white inline-flex items-center justify-center animate-pop"
-            style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)", boxShadow: "0 2px 6px rgba(255,109,0,0.35)" }}
-          >
-            +{dots}
-          </span>
-        )}
       </span>
       <span className="flex flex-col gap-1 min-w-0 text-left">
-        <span className="flex items-center gap-1">
+        <span className="flex items-center gap-1.5">
           {Array.from({ length: 5 }).map((_, i) => {
             const filled = i < dots;
             return (
@@ -631,6 +622,15 @@ function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
               />
             );
           })}
+          {dots > 0 && (
+            <span
+              key={dots}
+              className="ml-1 min-w-[20px] h-[18px] px-1.5 rounded-full text-[10px] font-bold text-white inline-flex items-center justify-center animate-pop"
+              style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)", boxShadow: "0 2px 6px rgba(255,109,0,0.35)" }}
+            >
+              +{dots}
+            </span>
+          )}
         </span>
         <span
           key={dots}
