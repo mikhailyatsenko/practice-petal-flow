@@ -153,7 +153,7 @@ function WishesScreen() {
   const [editingWish, setEditingWish] = useState<Wish | null>(null);
 
   const handleInspire = (id: string) => {
-    setInspires((prev) => ({ ...prev, [id]: Math.min(5, (prev[id] ?? 0) + 1) }));
+    setInspires((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
   };
 
   const handleAddHotelka = () => {
