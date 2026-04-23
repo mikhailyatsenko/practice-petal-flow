@@ -770,11 +770,24 @@ function CreateWishWizard({
   const filledReasons = reasons.map((r) => r.trim()).filter(Boolean);
 
   const handleCreate = () => {
+    if (fromHotelkaIdx !== null) {
+      onConsumeHotelka(fromHotelkaIdx);
+    }
     onCreate({
       title: title.trim(),
       reasons: filledReasons,
       image,
     });
+  };
+
+  const handlePickHotelka = (i: number, text: string) => {
+    if (fromHotelkaIdx === i) {
+      setFromHotelkaIdx(null);
+      setTitle("");
+    } else {
+      setFromHotelkaIdx(i);
+      setTitle(text.slice(0, 80));
+    }
   };
 
   if (step === 4) {
