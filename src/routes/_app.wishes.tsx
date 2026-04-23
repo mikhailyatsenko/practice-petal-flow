@@ -1611,6 +1611,147 @@ function GoalStepIndicator({
   );
 }
 
+function WheelColumn({
+  values,
+  index,
+  onChange,
+  width,
+}: {
+  values: (string | number)[];
+  index: number;
+  onChange: (i: number) => void;
+  width: number;
+}) {
+  const ITEM_H = 40;
+  const ref = useRef<HTMLDivElement>(null);
+  const scrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Sync external index → scroll position
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const target = index * ITEM_H;
+    if (Math.abs(el.scrollTop - target) > 1) {
+      el.scrollTo({ top: target, behavior: "smooth" });
+    }
+  }, [index]);
+
+  const handleScroll = () => {
+    const el = ref.current;
+    if (!el) return;
+    if (scrollTimer.current) clearTimeout(scrollTimer.current);
+    scrollTimer.current = setTimeout(() => {
+      const i = Math.round(el.scrollTop / ITEM_H);
+      const clamped = Math.max(0, Math.min(values.length - 1, i));
+      const snap = clamped * ITEM_H;
+      if (Math.abs(el.scrollTop - snap) > 1) {
+        el.scrollTo({ top: snap, behavior: "smooth" });
+      }
+      if (clamped !== index) onChange(clamped);
+    }, 90);
+  };
+
+  return (
+    <div
+      ref={ref}
+      onScroll={handleScroll}
+      className="relative overflow-y-scroll snap-y snap-mandatory no-scrollbar"
+      style={{
+        height: ITEM_H * 5,
+        width,
+        scrollbarWidth: "none",
+        WebkitOverflowScrolling: "touch",
+      }}
+    >
+      <div style={{ height: ITEM_H * 2 }} />
+      {values.map((v, i) => (
+        <div
+          key={i}
+          className="snap-center flex items-center justify-center text-[16px] transition-all"
+          style={{
+            height: ITEM_H,
+            color: i === index ? "#1a1a1a" : "rgba(0,0,0,0.35)",
+            fontWeight: i === index ? 600 : 400,
+            transform: i === index ? "scale(1.05)" : "scale(1)",
+          }}
+        >
+          {v}
+        </div>
+      ))}
+      <div style={{ height: ITEM_H * 2 }} />
+    </div>
+  );
+}
+
+function DateWheelPicker({
+  day,
+  month,
+  year,
+  onChange,
+}: {
+  day: number;
+  month: number;
+  year: number;
+  onChange: (d: number, m: number, y: number) => void;
+}) {
+  const ITEM_H = 40;
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 11 }, (_, i) => currentYear + i);
+  const maxDay = daysInMonth(month, year);
+  const days = Array.from({ length: maxDay }, (_, i) => i + 1);
+
+  return (
+    <div className="relative mt-5 rounded-2xl bg-card hairline overflow-hidden">
+      {/* Selection highlight */}
+      <div
+        className="pointer-events-none absolute left-0 right-0 top-1/2 -translate-y-1/2 rounded-xl"
+        style={{
+          height: ITEM_H,
+          background: "rgba(255,109,0,0.08)",
+          border: "1px solid rgba(255,109,0,0.25)",
+          margin: "0 8px",
+        }}
+      />
+      {/* Top + bottom fade */}
+      <div
+        className="pointer-events-none absolute top-0 left-0 right-0"
+        style={{ height: ITEM_H * 2, background: "linear-gradient(180deg, #fff, rgba(255,255,255,0))" }}
+      />
+      <div
+        className="pointer-events-none absolute bottom-0 left-0 right-0"
+        style={{ height: ITEM_H * 2, background: "linear-gradient(0deg, #fff, rgba(255,255,255,0))" }}
+      />
+      <div className="flex items-center justify-center gap-2 px-3">
+        <WheelColumn
+          values={days}
+          index={Math.min(day - 1, days.length - 1)}
+          onChange={(i) => onChange(i + 1, month, year)}
+          width={64}
+        />
+        <WheelColumn
+          values={MONTHS_RU}
+          index={month}
+          onChange={(i) => {
+            const newMax = daysInMonth(i, year);
+            onChange(Math.min(day, newMax), i, year);
+          }}
+          width={130}
+        />
+        <WheelColumn
+          values={years}
+          index={Math.max(0, years.indexOf(year))}
+          onChange={(i) => {
+            const y = years[i];
+            const newMax = daysInMonth(month, y);
+            onChange(Math.min(day, newMax), month, y);
+          }}
+          width={80}
+        />
+      </div>
+    </div>
+  );
+}
+
 function CreateGoalWizard({
   wishes,
   fromWish,
