@@ -187,6 +187,7 @@ const INITIAL_GOALS: Goal[] = [
     id: "g3",
     title: "Накопить финансовую подушку",
     image: goalSavings,
+    aspect: "square",
     deadline: "31 декабря 2026",
     progress: 45,
     reasons: [
