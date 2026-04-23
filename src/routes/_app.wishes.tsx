@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useRef, useEffect } from "react";
-import { Plus, X, ArrowLeft, Check, ImageIcon, FolderOpen, Pencil, RotateCw, Sparkles } from "lucide-react";
+import { Plus, X, ArrowLeft, Check, ImageIcon, FolderOpen, Pencil, RotateCw, Sparkles, Trash2 } from "lucide-react";
 import wishHouse from "@/assets/wish-house.jpg";
 import wishBali from "@/assets/wish-bali.jpg";
 import wishBody from "@/assets/wish-body.jpg";
@@ -153,7 +153,7 @@ function WishesScreen() {
   const [editingWish, setEditingWish] = useState<Wish | null>(null);
 
   const handleInspire = (id: string) => {
-    setInspires((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
+    setInspires((prev) => ({ ...prev, [id]: Math.min(5, (prev[id] ?? 0) + 1) }));
   };
 
   const handleAddHotelka = () => {
@@ -175,6 +175,21 @@ function WishesScreen() {
     setEditingWish(null);
   };
 
+  const handleDeleteWish = (id: string) => {
+    setWishes((prev) => prev.filter((w) => w.id !== id));
+    setEditingWish(null);
+  };
+
+  const handleEditHotelka = (i: number, v: string) => {
+    const t = v.trim();
+    if (!t) return;
+    setHotelki((prev) => prev.map((h, j) => (j === i ? t : h)));
+  };
+
+  const handleDeleteHotelka = (i: number) => {
+    setHotelki((prev) => prev.filter((_, j) => j !== i));
+  };
+
   if (creating) {
     return <CreateWishWizard onClose={() => setCreating(false)} onCreate={handleCreateWish} />;
   }
@@ -185,6 +200,7 @@ function WishesScreen() {
         wish={editingWish}
         onClose={() => setEditingWish(null)}
         onSave={handleSaveEdit}
+        onDelete={() => handleDeleteWish(editingWish.id)}
       />
     );
   }
@@ -238,7 +254,7 @@ function WishesScreen() {
       )}
 
       {activeTab === "wants" && (
-        <div className="px-4 pt-3 space-y-2">
+        <div className="px-4 pt-3">
           {adding ? (
             <InlineHotelkaForm
               value={hotelkaText}
@@ -252,23 +268,23 @@ function WishesScreen() {
           ) : (
             <button
               onClick={() => setAdding(true)}
-              className="tap btn-pill-orange w-full inline-flex items-center justify-center gap-1.5 mb-1"
+              className="tap btn-pill-orange w-full inline-flex items-center justify-center gap-1.5"
             >
               <Plus className="h-4 w-4" /> Добавить хотелку
             </button>
           )}
-          {hotelki.map((h, i) => (
-            <div
-              key={i}
-              className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 animate-fade-up"
-            >
-              <div className="h-7 w-7 shrink-0 rounded-full bg-secondary flex items-center justify-center text-[12px] font-medium text-muted-foreground">
-                {i + 1}
-              </div>
-              <p className="text-[14px] leading-snug text-foreground/90 flex-1">{h}</p>
-            </div>
-          ))}
-          <div className="text-center text-[11px] text-muted-foreground pt-2 pb-1">
+          <div className="mt-5 space-y-2">
+            {hotelki.map((h, i) => (
+              <HotelkaItem
+                key={i}
+                index={i + 1}
+                text={h}
+                onSave={(v) => handleEditHotelka(i, v)}
+                onDelete={() => handleDeleteHotelka(i)}
+              />
+            ))}
+          </div>
+          <div className="text-center text-[11px] text-muted-foreground pt-3 pb-1">
             Маленькие хотелки — большие радости 🌿
           </div>
         </div>
@@ -383,6 +399,114 @@ function InlineHotelkaForm({
   );
 }
 
+/* ---------------- Хотелка с редактированием ---------------- */
+
+function HotelkaItem({
+  index,
+  text,
+  onSave,
+  onDelete,
+}: {
+  index: number;
+  text: string;
+  onSave: (v: string) => void;
+  onDelete: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(text);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editing) {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    }
+  }, [editing]);
+
+  const filled = value.trim().length > 0;
+
+  const submit = () => {
+    if (!filled) return;
+    onSave(value);
+    setEditing(false);
+  };
+
+  if (editing) {
+    return (
+      <div
+        className="bg-card rounded-xl px-3.5 py-3 shadow-card animate-fade-up"
+        style={{ border: `1px solid ${filled ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
+      >
+        <div className="flex items-center gap-3">
+          <div className="h-7 w-7 shrink-0 rounded-full bg-secondary flex items-center justify-center text-[12px] font-medium text-muted-foreground">
+            {index}
+          </div>
+          <input
+            ref={inputRef}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                submit();
+              } else if (e.key === "Escape") {
+                e.preventDefault();
+                setValue(text);
+                setEditing(false);
+              }
+            }}
+            className="flex-1 bg-transparent outline-none text-[14px] text-foreground"
+          />
+        </div>
+        <div className="mt-3 flex gap-2">
+          <button
+            onClick={() => {
+              setValue(text);
+              setEditing(false);
+            }}
+            className="tap flex-1 rounded-full px-3.5 py-1.5 text-[12px] font-medium bg-secondary text-muted-foreground hairline"
+          >
+            Отмена
+          </button>
+          <button
+            onClick={onDelete}
+            className="tap rounded-full px-3.5 py-1.5 text-[12px] font-medium inline-flex items-center justify-center gap-1.5"
+            style={{ background: "rgba(229,57,53,0.08)", color: "#E53935", border: "1px solid rgba(229,57,53,0.25)" }}
+          >
+            <Trash2 className="h-3.5 w-3.5" /> Удалить
+          </button>
+          <button
+            onClick={submit}
+            disabled={!filled}
+            className="tap btn-pill-orange btn-sm flex-1 disabled:opacity-40"
+          >
+            Сохранить
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 animate-fade-up">
+      <div className="h-7 w-7 shrink-0 rounded-full bg-secondary flex items-center justify-center text-[12px] font-medium text-muted-foreground">
+        {index}
+      </div>
+      <p className="text-[14px] leading-snug text-foreground/90 flex-1">{text}</p>
+      <button
+        onClick={() => {
+          setValue(text);
+          setEditing(true);
+        }}
+        aria-label="Изменить хотелку"
+        className="tap h-7 w-7 shrink-0 rounded-full bg-secondary text-muted-foreground inline-flex items-center justify-center"
+      >
+        <Pencil className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  );
+}
+
 /* ---------------- Карточка желания ---------------- */
 
 function WishCard({
@@ -467,63 +591,44 @@ function EmptyTab({ tab }: { tab: string }) {
 
 /* ---------------- Заряд желания ---------------- */
 
-const CHARGE_WORDS = [
-  { label: "Нравится",      color: "#9c8f7a" },
-  { label: "Вдохновляет",   color: "#FFB300" },
-  { label: "Зажигает",      color: "#FF9100" },
-  { label: "Манит",         color: "#FF7A00" },
-  { label: "Жажду",         color: "#FF5722" },
-  { label: "Горю желанием", color: "#E64A19" },
-] as const;
-
+const CHARGE_COLORS = ["#9c8f7a", "#FFB300", "#FF9100", "#FF7A00", "#FF5722", "#E64A19"];
 const DOT_FILLED_COLORS = ["#FFD180", "#FFB300", "#FF9100", "#FF6D00", "#E64A19"];
 const DOT_EMPTY = "#e0d8cc";
 
 function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
-  const inCycle = level % 5;
-  const displayDots = level > 0 && inCycle === 0 ? 5 : inCycle;
-  const badge = level > 0 ? 1 + Math.floor((level - 1) / 5) : 0;
-  const wordIdx = Math.min(5, displayDots);
-  const word = CHARGE_WORDS[wordIdx];
+  const dots = Math.min(5, Math.max(0, level));
+  const label = dots === 0 ? "Заряжает" : `Зарядил на ${dots * 20}%`;
+  const color = CHARGE_COLORS[dots];
 
   return (
     <button
       onClick={onTap}
+      disabled={dots >= 5}
       aria-label="Заряд желания"
-      className="tap flex items-center gap-2.5 min-w-0 select-none -mx-1 px-1 py-1 rounded-lg"
+      className="tap flex items-center gap-2.5 min-w-0 select-none -mx-1 px-1 py-1 rounded-lg disabled:opacity-100"
     >
       <span className="text-[22px] leading-none transition-transform active:scale-90">
         ❤️
       </span>
       <span className="flex flex-col gap-1 min-w-0 text-left">
-        <span className="flex items-center gap-1.5">
-          <span className="flex items-center gap-1">
-            {Array.from({ length: 5 }).map((_, i) => {
-              const filled = i < displayDots;
-              return (
-                <span
-                  key={i}
-                  className="h-2 w-2 rounded-full transition-colors"
-                  style={{ backgroundColor: filled ? DOT_FILLED_COLORS[i] : DOT_EMPTY }}
-                />
-              );
-            })}
-          </span>
-          {badge > 0 && (
-            <span
-              key={badge}
-              className="min-w-[20px] h-[18px] px-1.5 rounded-full bg-[#FF6D00] text-white text-[10px] font-bold flex items-center justify-center animate-pop"
-            >
-              +{badge}
-            </span>
-          )}
+        <span className="flex items-center gap-1">
+          {Array.from({ length: 5 }).map((_, i) => {
+            const filled = i < dots;
+            return (
+              <span
+                key={i}
+                className="h-2 w-2 rounded-full transition-colors"
+                style={{ backgroundColor: filled ? DOT_FILLED_COLORS[i] : DOT_EMPTY }}
+              />
+            );
+          })}
         </span>
         <span
-          key={`${badge}-${displayDots}`}
+          key={dots}
           className="text-[12px] font-medium leading-none animate-pop"
-          style={{ color: word.color }}
+          style={{ color }}
         >
-          {word.label}
+          {label}
         </span>
       </span>
     </button>
@@ -876,11 +981,14 @@ function EditWishScreen({
   wish,
   onClose,
   onSave,
+  onDelete,
 }: {
   wish: Wish;
   onClose: () => void;
   onSave: (w: Wish) => void;
+  onDelete: () => void;
 }) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [tab, setTab] = useState<EditTab>("title");
   const [title, setTitle] = useState(wish.title);
   const [reasons, setReasons] = useState<string[]>(wish.reasons.length ? wish.reasons : [""]);
@@ -1050,9 +1158,38 @@ function EditWishScreen({
 
       {/* Bottom save */}
       <div className="fixed bottom-0 inset-x-0 bg-background/95 backdrop-blur-md border-t border-border/50 px-4 py-3 safe-bottom">
-        <button onClick={handleSave} className="tap btn-pill-orange w-full">
-          Сохранить изменения
-        </button>
+        {confirmDelete ? (
+          <div className="flex items-center gap-2">
+            <span className="text-[12px] text-foreground/80 flex-1">Удалить желание?</span>
+            <button
+              onClick={() => setConfirmDelete(false)}
+              className="tap rounded-full px-3.5 py-2 text-[12px] font-medium bg-secondary text-muted-foreground hairline"
+            >
+              Отмена
+            </button>
+            <button
+              onClick={onDelete}
+              className="tap rounded-full px-3.5 py-2 text-[12px] font-semibold inline-flex items-center gap-1.5"
+              style={{ background: "#E53935", color: "#fff" }}
+            >
+              <Trash2 className="h-3.5 w-3.5" /> Удалить
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <button
+              onClick={() => setConfirmDelete(true)}
+              aria-label="Удалить желание"
+              className="tap h-10 w-10 shrink-0 rounded-full inline-flex items-center justify-center"
+              style={{ background: "rgba(229,57,53,0.08)", color: "#E53935", border: "1px solid rgba(229,57,53,0.25)" }}
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+            <button onClick={handleSave} className="tap btn-pill-orange flex-1">
+              Сохранить изменения
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
