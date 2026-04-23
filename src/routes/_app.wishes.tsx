@@ -1916,7 +1916,55 @@ function CreateGoalWizard({
         </div>
       )}
 
-      {isCriteria && (
+      {isDeadline && (
+        <div className="px-4 animate-fade-up">
+          <h2 className="text-[18px] font-bold leading-tight">До какого числа?</h2>
+          <p className="mt-1.5 text-[14px] text-muted-foreground">
+            Выбери дату, до которой хочешь достичь цели. Конкретный срок помогает двигаться.
+          </p>
+
+          {selectedWish && (
+            <div className="mt-4 bg-card rounded-xl px-3 py-2.5 shadow-card flex items-center gap-3 hairline">
+              <div
+                className="h-10 w-10 shrink-0 rounded-lg"
+                style={{ background: GOAL_GRADIENTS[0] }}
+              />
+              <p className="text-[13px] font-medium text-foreground/85">{selectedWish.title}</p>
+            </div>
+          )}
+
+          <DateWheelPicker
+            day={dlDay}
+            month={dlMonth}
+            year={dlYear}
+            onChange={(d, m, y) => {
+              setDlDay(d);
+              setDlMonth(m);
+              setDlYear(y);
+            }}
+          />
+
+          <p className="mt-3 text-center text-[13px] text-foreground/70">
+            📅 до <span className="font-semibold text-foreground">{formatDeadline(dlDay, dlMonth, dlYear)}</span>
+          </p>
+
+          <div className="mt-6 flex gap-2">
+            <button
+              onClick={handleBack}
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
+            >
+              ← Назад
+            </button>
+            <button
+              onClick={() => setStep(step + 1)}
+              className="tap btn-pill-orange flex-1"
+            >
+              Далее → Критерий
+            </button>
+          </div>
+        </div>
+      )}
+
         <div className="px-4 animate-fade-up">
           <h2 className="text-[18px] font-bold leading-tight">Напиши критерий готовности</h2>
           <p className="mt-1.5 text-[14px] text-muted-foreground">
