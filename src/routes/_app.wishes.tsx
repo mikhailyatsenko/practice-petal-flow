@@ -153,7 +153,7 @@ function WishesScreen() {
   const [editingWish, setEditingWish] = useState<Wish | null>(null);
 
   const handleInspire = (id: string) => {
-    setInspires((prev) => ({ ...prev, [id]: Math.min(5, (prev[id] ?? 0) + 1) }));
+    setInspires((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
   };
 
   const handleAddHotelka = () => {
@@ -596,16 +596,18 @@ const DOT_FILLED_COLORS = ["#FFD180", "#FFB300", "#FF9100", "#FF6D00", "#E64A19"
 const DOT_EMPTY = "#e0d8cc";
 
 function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
-  const dots = Math.min(5, Math.max(0, level));
-  const label = dots === 0 ? "Заряжает" : `Зарядился на ${dots * 20}%`;
-  const color = CHARGE_COLORS[dots];
+  const total = Math.max(0, level);
+  // dots внутри текущего круга: 1..5, после полного круга снова 1..5
+  const inRound = total === 0 ? 0 : ((total - 1) % 5) + 1;
+  const completedRounds = total === 0 ? 0 : Math.floor((total - 1) / 5);
+  const label = total === 0 ? "Заряжает" : `Зарядился на ${inRound * 20}%`;
+  const color = CHARGE_COLORS[inRound];
 
   return (
     <button
       onClick={onTap}
-      disabled={dots >= 5}
       aria-label="Заряд желания"
-      className="tap flex items-center gap-2.5 min-w-0 select-none -mx-1 px-1 py-1 rounded-lg disabled:opacity-100"
+      className="tap flex items-center gap-2.5 min-w-0 select-none -mx-1 px-1 py-1 rounded-lg"
     >
       <span className="text-[22px] leading-none transition-transform active:scale-90">
         ❤️
@@ -613,7 +615,7 @@ function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
       <span className="flex flex-col gap-1 min-w-0 text-left">
         <span className="flex items-center gap-1.5">
           {Array.from({ length: 5 }).map((_, i) => {
-            const filled = i < dots;
+            const filled = i < inRound;
             return (
               <span
                 key={i}
@@ -622,18 +624,18 @@ function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
               />
             );
           })}
-          {dots > 0 && (
+          {completedRounds > 0 && (
             <span
-              key={dots}
+              key={completedRounds}
               className="ml-1 min-w-[20px] h-[18px] px-1.5 rounded-full text-[10px] font-bold text-white inline-flex items-center justify-center animate-pop"
               style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)", boxShadow: "0 2px 6px rgba(255,109,0,0.35)" }}
             >
-              +{dots}
+              +{completedRounds}
             </span>
           )}
         </span>
         <span
-          key={dots}
+          key={total}
           className="text-[12px] font-medium leading-none animate-pop"
           style={{ color }}
         >
@@ -1023,6 +1025,14 @@ function EditWishScreen({
             <ArrowLeft className="h-4 w-4" /> К желанию
           </button>
           <h2 className="flex-1 text-center text-[15px] font-semibold">Изменить</h2>
+          <button
+            onClick={() => setConfirmDelete(true)}
+            aria-label="Удалить желание"
+            className="tap inline-flex items-center justify-center h-8 w-8 rounded-full"
+            style={{ background: "rgba(229,57,53,0.1)", color: "#E53935", border: "1px solid rgba(229,57,53,0.25)" }}
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
           <button onClick={handleSave} className="tap btn-pill-orange btn-sm">Сохранить</button>
         </div>
       </div>
