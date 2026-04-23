@@ -1764,11 +1764,21 @@ function CreateGoalWizard({
   onCreate: (g: Omit<Goal, "id" | "gradient">, openInGoals: boolean) => void;
 }) {
   const startFromWish = !!fromWish;
-  // Шаги: если из желания — 1: Критерий, 2: План, 3: Готово
-  // Если с нуля — 1: Желание, 2: Критерий, 3: План, 4: Готово
-  const labels = startFromWish ? ["Критерий", "План"] : ["Желание", "Критерий", "План"];
+  // Шаги:
+  // Если из желания — 1: Срок, 2: Критерий, 3: План
+  // Если с нуля — 1: Желание, 2: Срок, 3: Критерий, 4: План
+  const labels = startFromWish
+    ? ["Срок", "Критерий", "План"]
+    : ["Желание", "Срок", "Критерий", "План"];
   const [step, setStep] = useState<number>(1);
   const [selectedWish, setSelectedWish] = useState<Wish | null>(fromWish ?? null);
+
+  // Дедлайн по умолчанию: 31 декабря текущего года
+  const today = new Date();
+  const [dlDay, setDlDay] = useState<number>(31);
+  const [dlMonth, setDlMonth] = useState<number>(11); // декабрь
+  const [dlYear, setDlYear] = useState<number>(today.getFullYear());
+
   const [criteria, setCriteria] = useState("");
   const [plan, setPlan] = useState("");
   const [done, setDone] = useState(false);
@@ -1780,7 +1790,7 @@ function CreateGoalWizard({
     onCreate(
       {
         title: selectedWish.title,
-        deadline: "31 декабря 2026",
+        deadline: formatDeadline(dlDay, dlMonth, dlYear),
         progress: 0,
         reasons: selectedWish.reasons,
         criteria: criteria.trim(),
