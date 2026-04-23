@@ -1911,7 +1911,7 @@ function CreateGoalWizard({
             onClick={() => setStep(2)}
             className="tap btn-pill-orange w-full mt-6 disabled:opacity-40"
           >
-            Далее → Критерий готовности
+            Далее → Срок цели
           </button>
         </div>
       )}
