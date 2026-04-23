@@ -1762,7 +1762,7 @@ function CreateGoalWizard({
   wishes: Wish[];
   fromWish?: Wish;
   onClose: () => void;
-  onCreate: (g: Omit<Goal, "id" | "gradient">, openInGoals: boolean) => void;
+  onCreate: (g: Omit<Goal, "id">, openInGoals: boolean, sourceWishId?: string) => void;
 }) {
   const startFromWish = !!fromWish;
   // Шаги:
@@ -1784,13 +1784,12 @@ function CreateGoalWizard({
   const [plan, setPlan] = useState("");
   const [done, setDone] = useState(false);
 
-  const totalSteps = labels.length;
-
   const finalize = () => {
     if (!selectedWish) return;
     onCreate(
       {
         title: selectedWish.title,
+        image: selectedWish.image,
         deadline: formatDeadline(dlDay, dlMonth, dlYear),
         progress: 0,
         reasons: selectedWish.reasons,
@@ -1798,7 +1797,8 @@ function CreateGoalWizard({
         plan: plan.trim(),
         tasks: [],
       },
-      !startFromWish, // если создавали из ленты целей — открыть цели; если из желания — вернуться в желания
+      true,
+      startFromWish ? selectedWish.id : undefined,
     );
   };
 
@@ -1819,13 +1819,15 @@ function CreateGoalWizard({
 
           {selectedWish && (
             <article className="mt-6 mx-auto max-w-sm bg-card hairline rounded-[20px] overflow-hidden shadow-card text-left">
-              <div
-                className="w-full"
-                style={{ aspectRatio: "16 / 9", background: GOAL_GRADIENTS[0] }}
-              />
+              <div className="relative w-full" style={{ aspectRatio: "16 / 9" }}>
+                <img src={selectedWish.image} alt={selectedWish.title} className="absolute inset-0 h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                <div className="absolute left-3 bottom-2 text-white text-[15px] font-semibold drop-shadow">
+                  {selectedWish.title}
+                </div>
+              </div>
               <div className="px-4 py-3.5">
-                <h3 className="text-[18px] font-bold">{selectedWish.title}</h3>
-                <div className="mt-2 h-1.5 w-full rounded-full" style={{ background: "#ede8df" }} />
+                <div className="h-1.5 w-full rounded-full" style={{ background: "#ede8df" }} />
                 <p className="mt-1 text-right text-[11px] text-muted-foreground">0%</p>
               </div>
             </article>
@@ -1835,7 +1837,7 @@ function CreateGoalWizard({
             onClick={finalize}
             className="tap btn-pill-orange mt-6 inline-flex items-center justify-center gap-1.5 px-6"
           >
-            {startFromWish ? "Вернуться в Желания" : "Посмотреть в ленте целей"}
+            Посмотреть в ленте целей
           </button>
         </div>
       </div>
@@ -1854,6 +1856,9 @@ function CreateGoalWizard({
   const isCriteria = startFromWish ? step === 2 : step === 3;
   const isPlan = startFromWish ? step === 3 : step === 4;
 
+  // Превью карточки (название + картинка) — показываем на всех шагах после выбора желания
+  const showPreview = !!selectedWish && !isPickWish;
+
   return (
     <div className="min-h-screen bg-background pb-8">
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50">
@@ -1866,6 +1871,18 @@ function CreateGoalWizard({
       </div>
 
       <GoalStepIndicator step={step} labels={labels} />
+
+      {showPreview && selectedWish && (
+        <div className="px-4 pt-1 pb-1">
+          <div className="relative rounded-2xl overflow-hidden" style={{ height: 110 }}>
+            <img src={selectedWish.image} alt={selectedWish.title} className="absolute inset-0 h-full w-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+            <div className="absolute left-3 bottom-2 right-3 text-white text-[16px] font-semibold drop-shadow leading-tight">
+              {selectedWish.title}
+            </div>
+          </div>
+        </div>
+      )}
 
       {isPickWish && (
         <div className="px-4 animate-fade-up">
@@ -1880,7 +1897,7 @@ function CreateGoalWizard({
                 Сначала создай желание во вкладке «Желания»
               </p>
             )}
-            {wishes.map((w, i) => {
+            {wishes.map((w) => {
               const active = selectedWish?.id === w.id;
               return (
                 <button
@@ -1889,9 +1906,10 @@ function CreateGoalWizard({
                   className="tap w-full text-left bg-card rounded-xl px-3 py-3 shadow-card flex items-center gap-3 transition-colors"
                   style={{ border: `1.5px solid ${active ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
                 >
-                  <div
-                    className="h-12 w-12 shrink-0 rounded-xl"
-                    style={{ background: pickGradient(i) }}
+                  <img
+                    src={w.image}
+                    alt={w.title}
+                    className="h-12 w-12 shrink-0 rounded-xl object-cover"
                   />
                   <p className="flex-1 text-[14px] font-medium text-foreground/90">{w.title}</p>
                   {active && (
@@ -1919,20 +1937,10 @@ function CreateGoalWizard({
 
       {isDeadline && (
         <div className="px-4 animate-fade-up">
-          <h2 className="text-[18px] font-bold leading-tight">До какого числа?</h2>
+          <h2 className="text-[18px] font-bold leading-tight">До какого числа хочешь достичь цели?</h2>
           <p className="mt-1.5 text-[14px] text-muted-foreground">
-            Выбери дату, до которой хочешь достичь цели. Конкретный срок помогает двигаться.
+            Выбери дату — конкретный срок помогает двигаться.
           </p>
-
-          {selectedWish && (
-            <div className="mt-4 bg-card rounded-xl px-3 py-2.5 shadow-card flex items-center gap-3 hairline">
-              <div
-                className="h-10 w-10 shrink-0 rounded-lg"
-                style={{ background: GOAL_GRADIENTS[0] }}
-              />
-              <p className="text-[13px] font-medium text-foreground/85">{selectedWish.title}</p>
-            </div>
-          )}
 
           <DateWheelPicker
             day={dlDay}
