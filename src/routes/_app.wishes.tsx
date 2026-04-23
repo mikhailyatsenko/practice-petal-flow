@@ -981,11 +981,14 @@ function EditWishScreen({
   wish,
   onClose,
   onSave,
+  onDelete,
 }: {
   wish: Wish;
   onClose: () => void;
   onSave: (w: Wish) => void;
+  onDelete: () => void;
 }) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [tab, setTab] = useState<EditTab>("title");
   const [title, setTitle] = useState(wish.title);
   const [reasons, setReasons] = useState<string[]>(wish.reasons.length ? wish.reasons : [""]);
