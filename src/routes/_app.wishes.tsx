@@ -30,11 +30,17 @@ const TABS = [
 
 type TabId = typeof TABS[number]["id"];
 
+type ImageAspect = "portrait" | "landscape" | "square";
+
+const aspectClass = (a?: ImageAspect) =>
+  a === "landscape" ? "aspect-[16/10]" : a === "square" ? "aspect-square" : "aspect-[4/5]";
+
 interface Wish {
   id: string;
   image: string;
   title: string;
   reasons: string[];
+  aspect?: ImageAspect;
 }
 
 const INITIAL_WISHES: Wish[] = [
@@ -42,6 +48,7 @@ const INITIAL_WISHES: Wish[] = [
     id: "w1",
     image: wishHouse,
     title: "Дом у океана",
+    aspect: "portrait",
     reasons: [
       "Просыпаться под шум волн и встречать рассветы у воды",
       "Свобода и пространство для семьи и творчества",
@@ -52,6 +59,7 @@ const INITIAL_WISHES: Wish[] = [
     id: "w2",
     image: wishBali,
     title: "Зимовка на Бали",
+    aspect: "landscape",
     reasons: [
       "Сменить обстановку и перезагрузить голову",
       "Жить среди природы, тепла и спокойствия",
@@ -62,6 +70,7 @@ const INITIAL_WISHES: Wish[] = [
     id: "w3",
     image: wishBody,
     title: "Тело, в котором энергия",
+    aspect: "square",
     reasons: [
       "Чувствовать лёгкость и силу каждый день",
       "Уверенность в себе и в зеркале",
@@ -72,6 +81,7 @@ const INITIAL_WISHES: Wish[] = [
     id: "w4",
     image: wishBook,
     title: "Написать свою книгу",
+    aspect: "landscape",
     reasons: [
       "Оставить след и поделиться опытом с другими",
       "Структурировать свои мысли и путь",
@@ -82,6 +92,7 @@ const INITIAL_WISHES: Wish[] = [
     id: "w5",
     image: wishBusiness,
     title: "Своё дело, которое вдохновляет",
+    aspect: "portrait",
     reasons: [
       "Заниматься тем, что зажигает по утрам",
       "Финансовая свобода и контроль над временем",
@@ -119,6 +130,7 @@ interface Goal {
   criteria: string;
   plan: string;
   tasks: GoalTask[];
+  aspect?: ImageAspect;
 }
 
 const MONTHS_RU = [
@@ -138,6 +150,7 @@ const INITIAL_GOALS: Goal[] = [
     id: "g1",
     title: "Пробежать первый марафон",
     image: goalMarathon,
+    aspect: "landscape",
     deadline: "1 октября 2026",
     progress: 35,
     reasons: [
@@ -156,6 +169,7 @@ const INITIAL_GOALS: Goal[] = [
     id: "g2",
     title: "Выучить испанский до B1",
     image: goalLanguage,
+    aspect: "portrait",
     deadline: "1 июня 2027",
     progress: 20,
     reasons: [
@@ -173,6 +187,7 @@ const INITIAL_GOALS: Goal[] = [
     id: "g3",
     title: "Накопить финансовую подушку",
     image: goalSavings,
+    aspect: "square",
     deadline: "31 декабря 2026",
     progress: 45,
     reasons: [
@@ -630,7 +645,7 @@ function WishCard({
 }) {
   return (
     <article className="bg-card hairline rounded-2xl overflow-hidden shadow-card animate-fade-up">
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted">
+      <div className={`relative ${aspectClass(wish.aspect)} w-full overflow-hidden bg-muted`}>
         <img
           src={wish.image}
           alt={wish.title}
@@ -1451,7 +1466,7 @@ function GoalCard({
 
   return (
     <article className="bg-card hairline rounded-[20px] overflow-hidden shadow-card animate-fade-up">
-      <div className="relative w-full" style={{ aspectRatio: "16 / 9" }}>
+      <div className={`relative w-full ${aspectClass(goal.aspect)}`}>
         <img src={goal.image} alt={goal.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
         <button
