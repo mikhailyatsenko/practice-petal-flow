@@ -645,7 +645,7 @@ function WishCard({
 }) {
   return (
     <article className="bg-card hairline rounded-2xl overflow-hidden shadow-card animate-fade-up">
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted">
+      <div className={`relative ${aspectClass(wish.aspect)} w-full overflow-hidden bg-muted`}>
         <img
           src={wish.image}
           alt={wish.title}
