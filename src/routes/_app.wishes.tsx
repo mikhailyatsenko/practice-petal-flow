@@ -127,6 +127,17 @@ const GOAL_GRADIENTS = [
 
 const pickGradient = (i: number) => GOAL_GRADIENTS[i % GOAL_GRADIENTS.length];
 
+const MONTHS_RU = [
+  "января", "февраля", "марта", "апреля", "мая", "июня",
+  "июля", "августа", "сентября", "октября", "ноября", "декабря",
+];
+
+const daysInMonth = (monthIdx: number, year: number) =>
+  new Date(year, monthIdx + 1, 0).getDate();
+
+const formatDeadline = (d: number, m: number, y: number) =>
+  `${d} ${MONTHS_RU[m]} ${y}`;
+
 const INITIAL_GOALS: Goal[] = [
   {
     id: "g1",
@@ -1600,6 +1611,147 @@ function GoalStepIndicator({
   );
 }
 
+function WheelColumn({
+  values,
+  index,
+  onChange,
+  width,
+}: {
+  values: (string | number)[];
+  index: number;
+  onChange: (i: number) => void;
+  width: number;
+}) {
+  const ITEM_H = 40;
+  const ref = useRef<HTMLDivElement>(null);
+  const scrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Sync external index → scroll position
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const target = index * ITEM_H;
+    if (Math.abs(el.scrollTop - target) > 1) {
+      el.scrollTo({ top: target, behavior: "smooth" });
+    }
+  }, [index]);
+
+  const handleScroll = () => {
+    const el = ref.current;
+    if (!el) return;
+    if (scrollTimer.current) clearTimeout(scrollTimer.current);
+    scrollTimer.current = setTimeout(() => {
+      const i = Math.round(el.scrollTop / ITEM_H);
+      const clamped = Math.max(0, Math.min(values.length - 1, i));
+      const snap = clamped * ITEM_H;
+      if (Math.abs(el.scrollTop - snap) > 1) {
+        el.scrollTo({ top: snap, behavior: "smooth" });
+      }
+      if (clamped !== index) onChange(clamped);
+    }, 90);
+  };
+
+  return (
+    <div
+      ref={ref}
+      onScroll={handleScroll}
+      className="relative overflow-y-scroll snap-y snap-mandatory no-scrollbar"
+      style={{
+        height: ITEM_H * 5,
+        width,
+        scrollbarWidth: "none",
+        WebkitOverflowScrolling: "touch",
+      }}
+    >
+      <div style={{ height: ITEM_H * 2 }} />
+      {values.map((v, i) => (
+        <div
+          key={i}
+          className="snap-center flex items-center justify-center text-[16px] transition-all"
+          style={{
+            height: ITEM_H,
+            color: i === index ? "#1a1a1a" : "rgba(0,0,0,0.35)",
+            fontWeight: i === index ? 600 : 400,
+            transform: i === index ? "scale(1.05)" : "scale(1)",
+          }}
+        >
+          {v}
+        </div>
+      ))}
+      <div style={{ height: ITEM_H * 2 }} />
+    </div>
+  );
+}
+
+function DateWheelPicker({
+  day,
+  month,
+  year,
+  onChange,
+}: {
+  day: number;
+  month: number;
+  year: number;
+  onChange: (d: number, m: number, y: number) => void;
+}) {
+  const ITEM_H = 40;
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 11 }, (_, i) => currentYear + i);
+  const maxDay = daysInMonth(month, year);
+  const days = Array.from({ length: maxDay }, (_, i) => i + 1);
+
+  return (
+    <div className="relative mt-5 rounded-2xl bg-card hairline overflow-hidden">
+      {/* Selection highlight */}
+      <div
+        className="pointer-events-none absolute left-0 right-0 top-1/2 -translate-y-1/2 rounded-xl"
+        style={{
+          height: ITEM_H,
+          background: "rgba(255,109,0,0.08)",
+          border: "1px solid rgba(255,109,0,0.25)",
+          margin: "0 8px",
+        }}
+      />
+      {/* Top + bottom fade */}
+      <div
+        className="pointer-events-none absolute top-0 left-0 right-0"
+        style={{ height: ITEM_H * 2, background: "linear-gradient(180deg, #fff, rgba(255,255,255,0))" }}
+      />
+      <div
+        className="pointer-events-none absolute bottom-0 left-0 right-0"
+        style={{ height: ITEM_H * 2, background: "linear-gradient(0deg, #fff, rgba(255,255,255,0))" }}
+      />
+      <div className="flex items-center justify-center gap-2 px-3">
+        <WheelColumn
+          values={days}
+          index={Math.min(day - 1, days.length - 1)}
+          onChange={(i) => onChange(i + 1, month, year)}
+          width={64}
+        />
+        <WheelColumn
+          values={MONTHS_RU}
+          index={month}
+          onChange={(i) => {
+            const newMax = daysInMonth(i, year);
+            onChange(Math.min(day, newMax), i, year);
+          }}
+          width={130}
+        />
+        <WheelColumn
+          values={years}
+          index={Math.max(0, years.indexOf(year))}
+          onChange={(i) => {
+            const y = years[i];
+            const newMax = daysInMonth(month, y);
+            onChange(Math.min(day, newMax), month, y);
+          }}
+          width={80}
+        />
+      </div>
+    </div>
+  );
+}
+
 function CreateGoalWizard({
   wishes,
   fromWish,
@@ -1612,11 +1764,21 @@ function CreateGoalWizard({
   onCreate: (g: Omit<Goal, "id" | "gradient">, openInGoals: boolean) => void;
 }) {
   const startFromWish = !!fromWish;
-  // Шаги: если из желания — 1: Критерий, 2: План, 3: Готово
-  // Если с нуля — 1: Желание, 2: Критерий, 3: План, 4: Готово
-  const labels = startFromWish ? ["Критерий", "План"] : ["Желание", "Критерий", "План"];
+  // Шаги:
+  // Если из желания — 1: Срок, 2: Критерий, 3: План
+  // Если с нуля — 1: Желание, 2: Срок, 3: Критерий, 4: План
+  const labels = startFromWish
+    ? ["Срок", "Критерий", "План"]
+    : ["Желание", "Срок", "Критерий", "План"];
   const [step, setStep] = useState<number>(1);
   const [selectedWish, setSelectedWish] = useState<Wish | null>(fromWish ?? null);
+
+  // Дедлайн по умолчанию: 31 декабря текущего года
+  const today = new Date();
+  const [dlDay, setDlDay] = useState<number>(31);
+  const [dlMonth, setDlMonth] = useState<number>(11); // декабрь
+  const [dlYear, setDlYear] = useState<number>(today.getFullYear());
+
   const [criteria, setCriteria] = useState("");
   const [plan, setPlan] = useState("");
   const [done, setDone] = useState(false);
@@ -1628,7 +1790,7 @@ function CreateGoalWizard({
     onCreate(
       {
         title: selectedWish.title,
-        deadline: "31 декабря 2026",
+        deadline: formatDeadline(dlDay, dlMonth, dlYear),
         progress: 0,
         reasons: selectedWish.reasons,
         criteria: criteria.trim(),
@@ -1687,8 +1849,9 @@ function CreateGoalWizard({
 
   // Какой логический шаг сейчас
   const isPickWish = !startFromWish && step === 1;
-  const isCriteria = startFromWish ? step === 1 : step === 2;
-  const isPlan = startFromWish ? step === 2 : step === 3;
+  const isDeadline = startFromWish ? step === 1 : step === 2;
+  const isCriteria = startFromWish ? step === 2 : step === 3;
+  const isPlan = startFromWish ? step === 3 : step === 4;
 
   return (
     <div className="min-h-screen bg-background pb-8">
@@ -1748,8 +1911,57 @@ function CreateGoalWizard({
             onClick={() => setStep(2)}
             className="tap btn-pill-orange w-full mt-6 disabled:opacity-40"
           >
-            Далее → Критерий готовности
+            Далее → Срок цели
           </button>
+        </div>
+      )}
+
+      {isDeadline && (
+        <div className="px-4 animate-fade-up">
+          <h2 className="text-[18px] font-bold leading-tight">До какого числа?</h2>
+          <p className="mt-1.5 text-[14px] text-muted-foreground">
+            Выбери дату, до которой хочешь достичь цели. Конкретный срок помогает двигаться.
+          </p>
+
+          {selectedWish && (
+            <div className="mt-4 bg-card rounded-xl px-3 py-2.5 shadow-card flex items-center gap-3 hairline">
+              <div
+                className="h-10 w-10 shrink-0 rounded-lg"
+                style={{ background: GOAL_GRADIENTS[0] }}
+              />
+              <p className="text-[13px] font-medium text-foreground/85">{selectedWish.title}</p>
+            </div>
+          )}
+
+          <DateWheelPicker
+            day={dlDay}
+            month={dlMonth}
+            year={dlYear}
+            onChange={(d, m, y) => {
+              setDlDay(d);
+              setDlMonth(m);
+              setDlYear(y);
+            }}
+          />
+
+          <p className="mt-3 text-center text-[13px] text-foreground/70">
+            📅 до <span className="font-semibold text-foreground">{formatDeadline(dlDay, dlMonth, dlYear)}</span>
+          </p>
+
+          <div className="mt-6 flex gap-2">
+            <button
+              onClick={handleBack}
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
+            >
+              ← Назад
+            </button>
+            <button
+              onClick={() => setStep(step + 1)}
+              className="tap btn-pill-orange flex-1"
+            >
+              Далее → Критерий
+            </button>
+          </div>
         </div>
       )}
 
@@ -1860,7 +2072,20 @@ function CreateGoalWizard({
 /* ============================================================
    =================  РЕДАКТИРОВАНИЕ ЦЕЛИ  ==================== */
 
-type GoalEditTab = "title" | "reasons" | "image" | "criteria" | "plan" | "progress";
+type GoalEditTab = "title" | "deadline" | "reasons" | "image" | "criteria" | "plan" | "progress";
+
+function parseDeadline(s: string): { d: number; m: number; y: number } {
+  // Ожидаем формат "31 декабря 2026"
+  const parts = s.trim().split(/\s+/);
+  const today = new Date();
+  if (parts.length === 3) {
+    const d = parseInt(parts[0], 10);
+    const m = MONTHS_RU.indexOf(parts[1].toLowerCase());
+    const y = parseInt(parts[2], 10);
+    if (!isNaN(d) && m >= 0 && !isNaN(y)) return { d, m, y };
+  }
+  return { d: 31, m: 11, y: today.getFullYear() };
+}
 
 function EditGoalScreen({
   goal,
@@ -1881,10 +2106,16 @@ function EditGoalScreen({
   const [progress, setProgress] = useState(goal.progress);
   const [gradient, setGradient] = useState(goal.gradient);
 
+  const initDl = parseDeadline(goal.deadline);
+  const [dlDay, setDlDay] = useState<number>(initDl.d);
+  const [dlMonth, setDlMonth] = useState<number>(initDl.m);
+  const [dlYear, setDlYear] = useState<number>(initDl.y);
+
   const handleSave = () => {
     onSave({
       ...goal,
       title: title.trim() || goal.title,
+      deadline: formatDeadline(dlDay, dlMonth, dlYear),
       reasons: reasons.map((r) => r.trim()).filter(Boolean),
       criteria: criteria.trim() || goal.criteria,
       plan: plan.trim() || goal.plan,
@@ -1895,6 +2126,7 @@ function EditGoalScreen({
 
   const tabs: { id: GoalEditTab; label: string }[] = [
     { id: "title",    label: "✏️ Название"  },
+    { id: "deadline", label: "📅 Срок"      },
     { id: "reasons",  label: "💡 Причины"  },
     { id: "image",    label: "🖼 Картинка"  },
     { id: "criteria", label: "✅ Критерий" },
@@ -1971,6 +2203,27 @@ function EditGoalScreen({
               style={{ border: `1px solid ${title.trim() ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
             />
             <div className="mt-1.5 text-right text-[11px] text-muted-foreground">{title.length}/80</div>
+          </div>
+        )}
+
+        {tab === "deadline" && (
+          <div className="animate-fade-up">
+            <p className="text-[13px] text-muted-foreground">
+              До какого числа нужно достичь цели
+            </p>
+            <DateWheelPicker
+              day={dlDay}
+              month={dlMonth}
+              year={dlYear}
+              onChange={(d, m, y) => {
+                setDlDay(d);
+                setDlMonth(m);
+                setDlYear(y);
+              }}
+            />
+            <p className="mt-3 text-center text-[13px] text-foreground/70">
+              📅 до <span className="font-semibold text-foreground">{formatDeadline(dlDay, dlMonth, dlYear)}</span>
+            </p>
           </div>
         )}
 
