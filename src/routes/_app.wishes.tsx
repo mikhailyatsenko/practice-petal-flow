@@ -130,6 +130,7 @@ interface Goal {
   criteria: string;
   plan: string;
   tasks: GoalTask[];
+  aspect?: ImageAspect;
 }
 
 const MONTHS_RU = [
