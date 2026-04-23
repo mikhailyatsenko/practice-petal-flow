@@ -1158,9 +1158,38 @@ function EditWishScreen({
 
       {/* Bottom save */}
       <div className="fixed bottom-0 inset-x-0 bg-background/95 backdrop-blur-md border-t border-border/50 px-4 py-3 safe-bottom">
-        <button onClick={handleSave} className="tap btn-pill-orange w-full">
-          Сохранить изменения
-        </button>
+        {confirmDelete ? (
+          <div className="flex items-center gap-2">
+            <span className="text-[12px] text-foreground/80 flex-1">Удалить желание?</span>
+            <button
+              onClick={() => setConfirmDelete(false)}
+              className="tap rounded-full px-3.5 py-2 text-[12px] font-medium bg-secondary text-muted-foreground hairline"
+            >
+              Отмена
+            </button>
+            <button
+              onClick={onDelete}
+              className="tap rounded-full px-3.5 py-2 text-[12px] font-semibold inline-flex items-center gap-1.5"
+              style={{ background: "#E53935", color: "#fff" }}
+            >
+              <Trash2 className="h-3.5 w-3.5" /> Удалить
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <button
+              onClick={() => setConfirmDelete(true)}
+              aria-label="Удалить желание"
+              className="tap h-10 w-10 shrink-0 rounded-full inline-flex items-center justify-center"
+              style={{ background: "rgba(229,57,53,0.08)", color: "#E53935", border: "1px solid rgba(229,57,53,0.25)" }}
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+            <button onClick={handleSave} className="tap btn-pill-orange flex-1">
+              Сохранить изменения
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
