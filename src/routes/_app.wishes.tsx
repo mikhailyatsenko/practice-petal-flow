@@ -2282,30 +2282,11 @@ function EditGoalScreen({
 
         {tab === "image" && (
           <div className="animate-fade-up">
-            <p className="text-[12px] text-muted-foreground mb-3">
-              У целей нет фото — выбери цвет фона:
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {GOAL_GRADIENTS.map((g) => {
-                const active = g === gradient;
-                return (
-                  <button
-                    key={g}
-                    onClick={() => setGradient(g)}
-                    className="tap h-20 rounded-xl relative overflow-hidden"
-                    style={{ background: g, border: `2px solid ${active ? "#FF6D00" : "transparent"}` }}
-                  >
-                    {active && (
-                      <span className="absolute top-1.5 right-1.5 h-5 w-5 rounded-full bg-white inline-flex items-center justify-center" style={{ color: "#FF6D00" }}>
-                        <Check className="h-3.5 w-3.5" />
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
+            <div className="rounded-2xl overflow-hidden mb-3" style={{ aspectRatio: "16 / 9" }}>
+              <img src={image} alt={title} className="h-full w-full object-cover" />
             </div>
             <label
-              className="tap mt-4 block cursor-pointer rounded-[18px] bg-card px-4 py-6 text-center"
+              className="tap block cursor-pointer rounded-[18px] bg-card px-4 py-6 text-center"
               style={{ border: "1.5px dashed #ede8df" }}
             >
               <div className="mx-auto h-12 w-12 rounded-2xl flex items-center justify-center text-2xl" style={{ background: "linear-gradient(135deg, #FFE0B2, #FFB300)" }}>
@@ -2319,7 +2300,7 @@ function EditGoalScreen({
                 hidden
                 onChange={(e) => {
                   const f = e.target.files?.[0];
-                  if (f) setGradient(`url(${URL.createObjectURL(f)}) center/cover no-repeat`);
+                  if (f) setImage(URL.createObjectURL(f));
                 }}
               />
             </label>
