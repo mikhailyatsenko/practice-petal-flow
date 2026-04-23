@@ -2206,7 +2206,27 @@ function EditGoalScreen({
           </div>
         )}
 
-        {tab === "reasons" && (
+        {tab === "deadline" && (
+          <div className="animate-fade-up">
+            <p className="text-[13px] text-muted-foreground">
+              До какого числа нужно достичь цели
+            </p>
+            <DateWheelPicker
+              day={dlDay}
+              month={dlMonth}
+              year={dlYear}
+              onChange={(d, m, y) => {
+                setDlDay(d);
+                setDlMonth(m);
+                setDlYear(y);
+              }}
+            />
+            <p className="mt-3 text-center text-[13px] text-foreground/70">
+              📅 до <span className="font-semibold text-foreground">{formatDeadline(dlDay, dlMonth, dlYear)}</span>
+            </p>
+          </div>
+        )}
+
           <div className="animate-fade-up space-y-2.5">
             {reasons.map((r, i) => {
               const filled = r.trim().length > 0;
