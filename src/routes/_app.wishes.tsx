@@ -753,14 +753,19 @@ function WizardHeader({ title, onBack }: { title: string; onBack: () => void }) 
 function CreateWishWizard({
   onClose,
   onCreate,
+  hotelki,
+  onConsumeHotelka,
 }: {
   onClose: () => void;
   onCreate: (wish: Omit<Wish, "id">) => void;
+  hotelki: string[];
+  onConsumeHotelka: (idx: number) => void;
 }) {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [title, setTitle] = useState("");
   const [reasons, setReasons] = useState<string[]>(["", "", ""]);
   const [image, setImage] = useState<string>("");
+  const [fromHotelkaIdx, setFromHotelkaIdx] = useState<number | null>(null);
 
   const filledReasons = reasons.map((r) => r.trim()).filter(Boolean);
 
