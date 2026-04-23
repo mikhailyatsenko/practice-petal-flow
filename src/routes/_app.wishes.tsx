@@ -188,6 +188,12 @@ function WishesScreen() {
   const [wishes, setWishes] = useState<Wish[]>(INITIAL_WISHES);
   const [hotelki, setHotelki] = useState<string[]>(INITIAL_HOTELKI);
 
+  // Цели
+  const [goals, setGoals] = useState<Goal[]>(INITIAL_GOALS);
+  const [goalInspires, setGoalInspires] = useState<Record<string, number>>({});
+  const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
+  const [creatingGoal, setCreatingGoal] = useState<null | { fromWish?: Wish; returnTo?: TabId }>(null);
+
   // Inline-форма для хотелки
   const [adding, setAdding] = useState(false);
   const [hotelkaText, setHotelkaText] = useState("");
@@ -200,6 +206,9 @@ function WishesScreen() {
 
   const handleInspire = (id: string) => {
     setInspires((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
+  };
+  const handleGoalInspire = (id: string) => {
+    setGoalInspires((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
   };
 
   const handleAddHotelka = () => {
@@ -235,6 +244,56 @@ function WishesScreen() {
   const handleDeleteHotelka = (i: number) => {
     setHotelki((prev) => prev.filter((_, j) => j !== i));
   };
+
+  const handleCreateGoal = (g: Omit<Goal, "id" | "gradient">) => {
+    const newGoal: Goal = {
+      ...g,
+      id: `g${Date.now()}`,
+      gradient: pickGradient(goals.length),
+    };
+    setGoals((prev) => [newGoal, ...prev]);
+  };
+
+  const handleSaveGoal = (updated: Goal) => {
+    setGoals((prev) => prev.map((g) => (g.id === updated.id ? updated : g)));
+    setEditingGoal(null);
+  };
+  const handleDeleteGoal = (id: string) => {
+    setGoals((prev) => prev.filter((g) => g.id !== id));
+    setEditingGoal(null);
+  };
+
+  if (creatingGoal) {
+    return (
+      <CreateGoalWizard
+        wishes={wishes}
+        fromWish={creatingGoal.fromWish}
+        onClose={() => {
+          const ret = creatingGoal.returnTo;
+          setCreatingGoal(null);
+          if (ret) setActiveTab(ret);
+        }}
+        onCreate={(g, openInGoals) => {
+          handleCreateGoal(g);
+          const ret = creatingGoal.returnTo;
+          setCreatingGoal(null);
+          if (openInGoals) setActiveTab("goals");
+          else if (ret) setActiveTab(ret);
+        }}
+      />
+    );
+  }
+
+  if (editingGoal) {
+    return (
+      <EditGoalScreen
+        goal={editingGoal}
+        onClose={() => setEditingGoal(null)}
+        onSave={handleSaveGoal}
+        onDelete={() => handleDeleteGoal(editingGoal.id)}
+      />
+    );
+  }
 
   if (creating) {
     return (
