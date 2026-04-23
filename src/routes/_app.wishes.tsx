@@ -1965,6 +1965,7 @@ function CreateGoalWizard({
         </div>
       )}
 
+      {isCriteria && (
         <div className="px-4 animate-fade-up">
           <h2 className="text-[18px] font-bold leading-tight">Напиши критерий готовности</h2>
           <p className="mt-1.5 text-[14px] text-muted-foreground">
