@@ -251,11 +251,10 @@ function WishesScreen() {
     setHotelki((prev) => prev.filter((_, j) => j !== i));
   };
 
-  const handleCreateGoal = (g: Omit<Goal, "id" | "gradient">) => {
+  const handleCreateGoal = (g: Omit<Goal, "id">) => {
     const newGoal: Goal = {
       ...g,
       id: `g${Date.now()}`,
-      gradient: pickGradient(goals.length),
     };
     setGoals((prev) => [newGoal, ...prev]);
   };
@@ -279,12 +278,17 @@ function WishesScreen() {
           setCreatingGoal(null);
           if (ret) setActiveTab(ret);
         }}
-        onCreate={(g, openInGoals) => {
+        onCreate={(g, openInGoals, sourceWishId) => {
           handleCreateGoal(g);
+          // Желание превратилось в цель — убираем его из ленты желаний
+          if (sourceWishId) {
+            setWishes((prev) => prev.filter((w) => w.id !== sourceWishId));
+          }
           const ret = creatingGoal.returnTo;
           setCreatingGoal(null);
           if (openInGoals) setActiveTab("goals");
-          else if (ret) setActiveTab(ret);
+          else setActiveTab("goals"); // всегда показываем созданную цель
+          void ret;
         }}
       />
     );
