@@ -169,6 +169,7 @@ const INITIAL_GOALS: Goal[] = [
     id: "g2",
     title: "Выучить испанский до B1",
     image: goalLanguage,
+    aspect: "portrait",
     deadline: "1 июня 2027",
     progress: 20,
     reasons: [
