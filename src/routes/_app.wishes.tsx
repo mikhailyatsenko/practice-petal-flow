@@ -2103,7 +2103,7 @@ function EditGoalScreen({
   const [criteria, setCriteria] = useState(goal.criteria);
   const [plan, setPlan] = useState(goal.plan);
   const [progress, setProgress] = useState(goal.progress);
-  const [gradient, setGradient] = useState(goal.gradient);
+  const [image, setImage] = useState(goal.image);
 
   const initDl = parseDeadline(goal.deadline);
   const [dlDay, setDlDay] = useState<number>(initDl.d);
@@ -2119,15 +2119,16 @@ function EditGoalScreen({
       criteria: criteria.trim() || goal.criteria,
       plan: plan.trim() || goal.plan,
       progress,
-      gradient,
+      image,
     });
   };
 
+  // Порядок: Название → Причины → Картинка → Срок → Критерий → План → Прогресс
   const tabs: { id: GoalEditTab; label: string }[] = [
     { id: "title",    label: "✏️ Название"  },
-    { id: "deadline", label: "📅 Срок"      },
     { id: "reasons",  label: "💡 Причины"  },
     { id: "image",    label: "🖼 Картинка"  },
+    { id: "deadline", label: "📅 Срок"      },
     { id: "criteria", label: "✅ Критерий" },
     { id: "plan",     label: "🗺 План"      },
     { id: "progress", label: "📊 Прогресс" },
