@@ -692,6 +692,8 @@ function WishCard({
   onInspire,
   onEdit,
   onMakeGoal,
+  isDone,
+  onToggleDone,
 }: {
   wish: Wish;
   priority?: boolean;
@@ -699,6 +701,8 @@ function WishCard({
   onInspire: () => void;
   onEdit: () => void;
   onMakeGoal: () => void;
+  isDone: boolean;
+  onToggleDone: () => void;
 }) {
   return (
     <article className="bg-card hairline rounded-2xl overflow-hidden shadow-card animate-fade-up">
