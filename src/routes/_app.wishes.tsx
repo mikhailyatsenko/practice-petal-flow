@@ -2570,7 +2570,9 @@ function RealizedConfirmSheet({
     };
   }, [onCancel]);
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <div
       className="fixed inset-0 z-[60] flex items-end justify-center"
       style={{ background: "rgba(0,0,0,0.4)" }}
@@ -2623,7 +2625,8 @@ function RealizedConfirmSheet({
           Отмена
         </button>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
