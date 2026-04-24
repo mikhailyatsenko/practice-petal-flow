@@ -3010,7 +3010,7 @@ function WishesDeck({
     );
   }
 
-  const topId = visibleIds[0];
+  
   const THRESHOLD = 90;
 
   const commitSwipe = (dir: "left" | "right") => {
@@ -3150,7 +3150,7 @@ function WishesDeck({
           Смахни карточку ← →
         </div>
       )}
-      {void topId}
+      
     </div>
   );
 }
