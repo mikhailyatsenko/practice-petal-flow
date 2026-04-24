@@ -659,7 +659,7 @@ function HotelkaItem({
   }
 
   return (
-    <div className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 animate-fade-up">
+    <div className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 animate-fade-up min-h-[52px]">
       <div className="h-7 w-7 shrink-0 rounded-full bg-secondary flex items-center justify-center text-[12px] font-medium text-muted-foreground">
         {index}
       </div>
@@ -674,6 +674,11 @@ function HotelkaItem({
       >
         <Pencil className="h-3.5 w-3.5" />
       </button>
+      <DoneButton
+        isDone={isDone}
+        onToggle={onToggleDone}
+        confirmText={`«${text}» будет перемещена в раздел «Воплощённые».`}
+      />
     </div>
   );
 }
