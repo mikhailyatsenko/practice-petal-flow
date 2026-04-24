@@ -2798,7 +2798,91 @@ function RealizedConfirmSheet({
   );
 }
 
-/* ---------------- Таб «Воплощённые» ---------------- */
+function DeleteConfirmSheet({
+  text,
+  onCancel,
+  onConfirm,
+}: {
+  text: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onCancel();
+    };
+    document.addEventListener("keydown", onEsc);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onEsc);
+      document.body.style.overflow = prev;
+    };
+  }, [onCancel]);
+
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[60] flex items-end justify-center px-4"
+      style={{ background: "rgba(0,0,0,0.4)" }}
+      onClick={onCancel}
+    >
+      <div
+        className="w-full animate-fade-up"
+        style={{
+          maxWidth: "calc(28rem - 2rem)",
+          background: "#fff",
+          borderRadius: 24,
+          padding: "24px 20px 28px",
+          marginBottom: 16,
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div
+          className="mx-auto mb-4"
+          style={{ width: 40, height: 4, borderRadius: 2, background: "#ede8df" }}
+        />
+        <div className="text-center text-[48px] leading-none">🗑️</div>
+        <h3 className="mt-2 text-center text-[18px] font-bold text-foreground">Удалить?</h3>
+        <p
+          className="mt-2 text-center text-[14px] text-muted-foreground"
+          style={{ lineHeight: 1.6 }}
+        >
+          {text}
+        </p>
+        <button
+          type="button"
+          onClick={onConfirm}
+          className="tap mt-5 w-full font-bold text-white"
+          style={{
+            background: "#E53935",
+            borderRadius: 14,
+            padding: 14,
+          }}
+        >
+          Да, удалить
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="tap mt-2 w-full text-muted-foreground"
+          style={{
+            background: "transparent",
+            border: "1px solid #ede8df",
+            borderRadius: 14,
+            padding: 13,
+          }}
+        >
+          Отмена
+        </button>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+
 
 function RealizedTab({
   hotelki,
