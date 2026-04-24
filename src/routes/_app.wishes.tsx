@@ -750,6 +750,11 @@ function WishCard({
 
         <div className="mt-3 flex items-center justify-between gap-3">
           <DesireCharge level={count} onTap={onInspire} />
+          <DoneButton
+            isDone={isDone}
+            onToggle={onToggleDone}
+            confirmText={`«${wish.title}» будет перемещено в раздел «Воплощённые».`}
+          />
           <button onClick={onMakeGoal} className="tap btn-pill-orange btn-sm shrink-0">
             Сделать целью →
           </button>
