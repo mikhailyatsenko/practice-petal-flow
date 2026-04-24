@@ -373,7 +373,7 @@ function WishesScreen() {
     );
   }
 
-  const touchRef = useRef<{ x: number; y: number; active: boolean }>({ x: 0, y: 0, active: false });
+  
   const handleTouchStart = (e: React.TouchEvent) => {
     const t = e.touches[0];
     touchRef.current = { x: t.clientX, y: t.clientY, active: true };
