@@ -2531,11 +2531,128 @@ function EditGoalScreen({
 /* ============================================================
    ===========  Кнопка «Воплощено» + поп-ап =================== */
 
+function ActionsMenu({
+  onDone,
+  onEdit,
+  onDelete,
+  doneConfirmText,
+  deleteConfirmText,
+}: {
+  onDone: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+  doneConfirmText: string;
+  deleteConfirmText: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [confirmDone, setConfirmDone] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDocClick = (e: MouseEvent) => {
+      if (!btnRef.current) return;
+      if (!btnRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, [open]);
+
+  return (
+    <div className="relative shrink-0">
+      <button
+        ref={btnRef}
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-label="Действия"
+        className="tap inline-flex items-center justify-center"
+        style={{
+          width: 32,
+          height: 32,
+          borderRadius: 999,
+          background: "rgba(0,0,0,0.04)",
+          border: "1px solid rgba(0,0,0,0.08)",
+          color: "#6b6b6b",
+        }}
+      >
+        <MoreVertical className="h-4 w-4" />
+      </button>
+      {open && (
+        <div
+          className="absolute right-0 mt-1 z-20 animate-fade-up"
+          style={{
+            minWidth: 160,
+            background: "#fff",
+            border: "1px solid rgba(0,0,0,0.08)",
+            borderRadius: 12,
+            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+            overflow: "hidden",
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              setConfirmDone(true);
+            }}
+            className="tap w-full flex items-center gap-2 px-3.5 py-2.5 text-[13px] font-medium text-left"
+            style={{ color: "#16a34a" }}
+          >
+            <Check className="h-4 w-4" /> Выполнить
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              onEdit();
+            }}
+            className="tap w-full flex items-center gap-2 px-3.5 py-2.5 text-[13px] font-medium text-left text-foreground"
+            style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}
+          >
+            <Pencil className="h-4 w-4" /> Изменить
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              setConfirmDelete(true);
+            }}
+            className="tap w-full flex items-center gap-2 px-3.5 py-2.5 text-[13px] font-medium text-left"
+            style={{ color: "#E53935", borderTop: "1px solid rgba(0,0,0,0.06)" }}
+          >
+            <Trash2 className="h-4 w-4" /> Удалить
+          </button>
+        </div>
+      )}
+      {confirmDone && (
+        <RealizedConfirmSheet
+          text={doneConfirmText}
+          onCancel={() => setConfirmDone(false)}
+          onConfirm={() => {
+            setConfirmDone(false);
+            onDone();
+          }}
+        />
+      )}
+      {confirmDelete && (
+        <DeleteConfirmSheet
+          text={deleteConfirmText}
+          onCancel={() => setConfirmDelete(false)}
+          onConfirm={() => {
+            setConfirmDelete(false);
+            onDelete();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
 function DoneButton({
   isDone,
   onToggle,
   confirmText,
-  variant = "compact",
 }: {
   isDone: boolean;
   onToggle: () => void;
