@@ -444,31 +444,9 @@ function WishesScreen() {
     if (dx > 0) changeTabWithCardEffect(-1);
   };
 
-  return (
-    <div className="pb-4" style={{ touchAction: "pan-y" }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-      {/* Горизонтальные вкладки */}
-      <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-border/50">
-        <div className="flex gap-1.5 overflow-x-auto px-4 py-2.5 no-scrollbar">
-          {TABS.map((tab) => {
-            const active = tab.id === activeTab;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={
-                  active
-                    ? "tap btn-pill-orange btn-sm shrink-0"
-                    : "tap shrink-0 rounded-full px-3.5 py-1.5 text-[12px] font-medium bg-card text-muted-foreground hairline"
-                }
-              >
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {activeTab === "wishes" && (
+  const renderTabContent = (tab: TabId) => {
+    if (tab === "wishes") {
+      return (
         <div className="px-4 pt-3 space-y-4">
           <button
             onClick={() => setCreating(true)}
@@ -490,9 +468,11 @@ function WishesScreen() {
             Это все твои желания на сегодня ✨
           </div>
         </div>
-      )}
+      );
+    }
 
-      {activeTab === "wants" && (
+    if (tab === "wants") {
+      return (
         <div className="px-4 pt-3">
           {adding ? (
             <InlineHotelkaForm
@@ -532,9 +512,11 @@ function WishesScreen() {
             Маленькие хотелки — большие радости 🌿
           </div>
         </div>
-      )}
+      );
+    }
 
-      {activeTab === "goals" && (
+    if (tab === "goals") {
+      return (
         <div className="px-4 pt-3 space-y-4">
           <button
             onClick={() => setCreatingGoal({ returnTo: "goals" })}
@@ -560,19 +542,80 @@ function WishesScreen() {
             </div>
           )}
         </div>
-      )}
+      );
+    }
 
-      {activeTab === "tasks" && <EmptyTab tab="Задачи" />}
-      {activeTab === "done" && (
-        <RealizedTab
-          hotelki={hotelki.filter((h) => doneHotelki.has(h))}
-          wishes={wishes.filter((w) => doneWishes.has(w.id))}
-          goals={goals.filter((g) => doneGoals.has(g.id))}
-          onUndoHotelka={(t) => toggleDoneHotelka(t)}
-          onUndoWish={(id) => toggleDoneWish(id)}
-          onUndoGoal={(id) => toggleDoneGoal(id)}
-        />
-      )}
+    if (tab === "tasks") {
+      return <EmptyTab tab="Задачи" />;
+    }
+
+    return (
+      <RealizedTab
+        hotelki={hotelki.filter((h) => doneHotelki.has(h))}
+        wishes={wishes.filter((w) => doneWishes.has(w.id))}
+        goals={goals.filter((g) => doneGoals.has(g.id))}
+        onUndoHotelka={(t) => toggleDoneHotelka(t)}
+        onUndoWish={(id) => toggleDoneWish(id)}
+        onUndoGoal={(id) => toggleDoneGoal(id)}
+      />
+    );
+  };
+
+  return (
+    <div className="pb-4" style={{ touchAction: "pan-y" }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+      {/* Горизонтальные вкладки */}
+      <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-border/50">
+        <div className="flex gap-1.5 overflow-x-auto px-4 py-2.5 no-scrollbar">
+          {TABS.map((tab) => {
+            const active = tab.id === activeTab;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  if (tab.id === activeTab) return;
+                  const currentIndex = TABS.findIndex((item) => item.id === activeTab);
+                  const nextIndex = TABS.findIndex((item) => item.id === tab.id);
+                  changeTabWithCardEffect(nextIndex > currentIndex ? 1 : -1);
+                }}
+                className={
+                  active
+                    ? "tap btn-pill-orange btn-sm shrink-0"
+                    : "tap shrink-0 rounded-full px-3.5 py-1.5 text-[12px] font-medium bg-card text-muted-foreground hairline"
+                }
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="relative overflow-hidden">
+        <div>{renderTabContent(activeTab)}</div>
+
+        {transitionState && (
+          <>
+            <div
+              className="pointer-events-none absolute inset-0 z-10 origin-center animate-[card-screen-out_320ms_cubic-bezier(.2,.7,.2,1)_both]"
+              style={{ background: "color-mix(in oklab, var(--background) 86%, black 14%)" }}
+            >
+              <div className="h-full w-full scale-[0.94] opacity-90">{renderTabContent(transitionState.current)}</div>
+            </div>
+            <div
+              className="pointer-events-none absolute inset-0 z-20"
+              style={{
+                animation: transitionState.direction === 1
+                  ? "card-screen-in-left 320ms cubic-bezier(.2,.7,.2,1) both"
+                  : "card-screen-in-right 320ms cubic-bezier(.2,.7,.2,1) both",
+                boxShadow: "-18px 0 36px rgba(0,0,0,0.18)",
+                background: "var(--background)",
+              }}
+            >
+              {renderTabContent(transitionState.next)}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
