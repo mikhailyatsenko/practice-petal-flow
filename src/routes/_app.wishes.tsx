@@ -2483,16 +2483,18 @@ function DoneButton({
   isDone,
   onToggle,
   confirmText,
+  variant = "compact",
 }: {
   isDone: boolean;
   onToggle: () => void;
   confirmText: string;
+  variant?: "compact" | "wide";
 }) {
   const [open, setOpen] = useState(false);
 
   const handleClick = () => {
     if (isDone) {
-      onToggle(); // снимаем без подтверждения
+      onToggle();
     } else {
       setOpen(true);
     }
@@ -2503,26 +2505,65 @@ function DoneButton({
     setOpen(false);
   };
 
+  const doneStyles: React.CSSProperties = {
+    background: "rgba(22,163,74,0.10)",
+    border: "1px solid rgba(22,163,74,0.35)",
+    color: "#16a34a",
+  };
+  const idleStyles: React.CSSProperties = {
+    background: "transparent",
+    border: "1px solid rgba(0,0,0,0.10)",
+    color: "var(--muted-foreground)",
+  };
+
+  if (variant === "wide") {
+    return (
+      <>
+        <button
+          type="button"
+          onClick={handleClick}
+          aria-pressed={isDone}
+          aria-label={isDone ? "Снять отметку «Воплощено»" : "Отметить как воплощённое"}
+          className="tap inline-flex items-center justify-center gap-1.5 text-[12px] font-medium"
+          style={{
+            height: 32,
+            padding: "0 12px",
+            borderRadius: 999,
+            transition: "all 0.2s",
+            ...(isDone ? doneStyles : idleStyles),
+          }}
+        >
+          <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
+          {isDone ? "Воплощено" : "Воплотить"}
+        </button>
+        {open && (
+          <RealizedConfirmSheet
+            text={confirmText}
+            onCancel={() => setOpen(false)}
+            onConfirm={confirm}
+          />
+        )}
+      </>
+    );
+  }
+
   return (
     <>
       <button
         type="button"
         onClick={handleClick}
-        aria-label={isDone ? "Снять отметку «Воплощено»" : "Отметить как воплощённое"}
         aria-pressed={isDone}
+        aria-label={isDone ? "Снять отметку «Воплощено»" : "Отметить как воплощённое"}
         className="tap inline-flex items-center justify-center shrink-0"
         style={{
-          width: 36,
-          height: 36,
-          borderRadius: 10,
-          background: isDone ? "#16a34a" : "transparent",
-          border: `2px solid ${isDone ? "#16a34a" : "#ede8df"}`,
-          color: isDone ? "#fff" : "#ede8df",
+          width: 32,
+          height: 32,
+          borderRadius: 999,
           transition: "all 0.2s",
-          cursor: "pointer",
+          ...(isDone ? doneStyles : idleStyles),
         }}
       >
-        <Check className="h-4 w-4" strokeWidth={3} />
+        <Check className="h-4 w-4" strokeWidth={2.5} />
       </button>
       {open && (
         <RealizedConfirmSheet
