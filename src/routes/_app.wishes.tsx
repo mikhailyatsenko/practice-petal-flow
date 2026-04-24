@@ -591,29 +591,33 @@ function WishesScreen() {
       </div>
 
       <div className="relative overflow-hidden">
-        <div>{renderTabContent(activeTab)}</div>
+        {!transitionState && <div>{renderTabContent(activeTab)}</div>}
 
         {transitionState && (
-          <>
+          <div className="relative">
             <div
-              className="pointer-events-none absolute inset-0 z-10 origin-center animate-[card-screen-out_320ms_cubic-bezier(.2,.7,.2,1)_both]"
-              style={{ background: "color-mix(in oklab, var(--background) 86%, black 14%)" }}
-            >
-              <div className="h-full w-full scale-[0.94] opacity-90">{renderTabContent(transitionState.current)}</div>
-            </div>
-            <div
-              className="pointer-events-none absolute inset-0 z-20"
+              className="absolute inset-0 z-10"
               style={{
                 animation: transitionState.direction === 1
-                  ? "card-screen-in-left 320ms cubic-bezier(.2,.7,.2,1) both"
-                  : "card-screen-in-right 320ms cubic-bezier(.2,.7,.2,1) both",
-                boxShadow: "-18px 0 36px rgba(0,0,0,0.18)",
+                  ? "slide-out-left 320ms cubic-bezier(.2,.7,.2,1) both"
+                  : "slide-out-right 320ms cubic-bezier(.2,.7,.2,1) both",
+                background: "var(--background)",
+              }}
+            >
+              {renderTabContent(transitionState.current)}
+            </div>
+            <div
+              className="relative z-20"
+              style={{
+                animation: transitionState.direction === 1
+                  ? "slide-in-from-right 320ms cubic-bezier(.2,.7,.2,1) both"
+                  : "slide-in-from-left 320ms cubic-bezier(.2,.7,.2,1) both",
                 background: "var(--background)",
               }}
             >
               {renderTabContent(transitionState.next)}
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>

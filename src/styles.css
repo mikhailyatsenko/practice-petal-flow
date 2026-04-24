@@ -232,6 +232,22 @@
   from { transform: scale(1); opacity: 1; filter: brightness(1); }
   to { transform: scale(0.94); opacity: 0.92; filter: brightness(0.78); }
 }
+@keyframes slide-in-from-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+@keyframes slide-in-from-left {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+@keyframes slide-out-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+@keyframes slide-out-right {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
 
 .animate-fade-up { animation: fade-up 360ms var(--ease-soft) both; }
 .animate-pop     { animation: pop 280ms var(--ease-soft) both; }
