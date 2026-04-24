@@ -575,7 +575,7 @@ function WishesScreen() {
                   if (tab.id === activeTab) return;
                   const currentIndex = TABS.findIndex((item) => item.id === activeTab);
                   const nextIndex = TABS.findIndex((item) => item.id === tab.id);
-                  changeTabWithCardEffect(nextIndex > currentIndex ? 1 : -1);
+                  changeTabWithCardEffect(nextIndex > currentIndex ? 1 : -1, tab.id);
                 }}
                 className={
                   active
