@@ -531,6 +531,7 @@ function WishesScreen() {
               count={goalInspires[g.id] ?? 0}
               onInspire={() => handleGoalInspire(g.id)}
               onEdit={() => setEditingGoal(g)}
+              onDelete={() => handleDeleteGoal(g.id)}
               isDone={doneGoals.has(g.id)}
               onToggleDone={() => toggleDoneGoal(g.id)}
             />
