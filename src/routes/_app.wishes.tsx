@@ -1561,6 +1561,7 @@ function GoalCard({
   count,
   onInspire,
   onEdit,
+  onDelete,
   isDone,
   onToggleDone,
 }: {
@@ -1568,9 +1569,11 @@ function GoalCard({
   count: number;
   onInspire: () => void;
   onEdit: () => void;
+  onDelete: () => void;
   isDone: boolean;
   onToggleDone: () => void;
 }) {
+  void isDone;
   const openTasks = goal.tasks.filter((t) => !t.done);
   const allDone = goal.tasks.length > 0 && openTasks.length === 0;
 
@@ -1579,28 +1582,17 @@ function GoalCard({
       <div className={`relative w-full ${aspectClass(goal.aspect)}`}>
         <img src={goal.image} alt={goal.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-        <button
-          onClick={onEdit}
-          aria-label="Изменить цель"
-          className="tap absolute top-3 right-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px]"
-          style={{
-            background: "rgba(0,0,0,0.28)",
-            border: "1px solid rgba(255,255,255,0.25)",
-            color: "rgba(255,255,255,0.85)",
-            backdropFilter: "blur(4px)",
-          }}
-        >
-          <Pencil className="h-3 w-3" /> Изменить
-        </button>
       </div>
 
       <div className="px-4 py-3.5">
         <div className="flex items-start gap-3">
           <h3 className="text-[20px] font-bold leading-tight text-foreground flex-1 min-w-0">{goal.title}</h3>
-          <DoneButton
-            isDone={isDone}
-            onToggle={onToggleDone}
-            confirmText={`«${goal.title}» будет перемещена в раздел «Воплощённые». Это действие можно отменить.`}
+          <ActionsMenu
+            onDone={onToggleDone}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            doneConfirmText={`«${goal.title}» будет перемещена в раздел «Воплощённые». Это действие можно отменить.`}
+            deleteConfirmText={`«${goal.title}» будет удалена навсегда. Это действие нельзя отменить.`}
           />
         </div>
         <p className="mt-1 text-[12px] text-muted-foreground">📅 до {goal.deadline}</p>
