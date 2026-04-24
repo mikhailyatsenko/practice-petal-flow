@@ -463,6 +463,7 @@ function WishesScreen() {
               onInspire={() => handleInspire(w.id)}
               onEdit={() => setEditingWish(w)}
               onMakeGoal={() => setCreatingGoal({ fromWish: w, returnTo: "wishes" })}
+              onDelete={() => handleDeleteWish(w.id)}
               isDone={doneWishes.has(w.id)}
               onToggleDone={() => toggleDoneWish(w.id)}
             />
