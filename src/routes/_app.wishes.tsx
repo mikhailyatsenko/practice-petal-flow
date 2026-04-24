@@ -2492,13 +2492,12 @@ function ActionsMenu({
         style={{
           width: 32,
           height: 32,
-          borderRadius: 999,
-          background: "rgba(0,0,0,0.04)",
-          border: "1px solid rgba(0,0,0,0.08)",
+          background: "transparent",
+          border: "none",
           color: "#6b6b6b",
         }}
       >
-        <MoreVertical className="h-4 w-4" />
+        <MoreHorizontal className="h-5 w-5" />
       </button>
       {open && (
         <div
