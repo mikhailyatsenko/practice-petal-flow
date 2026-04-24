@@ -714,20 +714,15 @@ function HotelkaItem({
         {index}
       </div>
       <p className="text-[14px] leading-snug text-foreground/90 flex-1">{text}</p>
-      <button
-        onClick={() => {
+      <ActionsMenu
+        onDone={onToggleDone}
+        onEdit={() => {
           setValue(text);
           setEditing(true);
         }}
-        aria-label="Изменить хотелку"
-        className="tap h-7 w-7 shrink-0 rounded-full bg-secondary text-muted-foreground inline-flex items-center justify-center"
-      >
-        <Pencil className="h-3.5 w-3.5" />
-      </button>
-      <DoneButton
-        isDone={isDone}
-        onToggle={onToggleDone}
-        confirmText={`«${text}» будет перемещена в раздел «Воплощённые».`}
+        onDelete={onDelete}
+        doneConfirmText={`«${text}» будет перемещена в раздел «Воплощённые».`}
+        deleteConfirmText={`«${text}» будет удалена навсегда. Это действие нельзя отменить.`}
       />
     </div>
   );
