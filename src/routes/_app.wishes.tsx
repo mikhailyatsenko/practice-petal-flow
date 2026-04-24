@@ -454,20 +454,16 @@ function WishesScreen() {
           >
             <Plus className="h-4 w-4" /> Добавить желание
           </button>
-          {wishes.filter((w) => !doneWishes.has(w.id)).map((w, i) => (
-            <WishCard
-              key={w.id}
-              wish={w}
-              priority={i === 0}
-              count={inspires[w.id] ?? 0}
-              onInspire={() => handleInspire(w.id)}
-              onEdit={() => setEditingWish(w)}
-              onMakeGoal={() => setCreatingGoal({ fromWish: w, returnTo: "wishes" })}
-              onDelete={() => handleDeleteWish(w.id)}
-              isDone={doneWishes.has(w.id)}
-              onToggleDone={() => toggleDoneWish(w.id)}
-            />
-          ))}
+          <WishesDeck
+            wishes={wishes.filter((w) => !doneWishes.has(w.id))}
+            inspires={inspires}
+            onInspire={handleInspire}
+            onEdit={(w) => setEditingWish(w)}
+            onMakeGoal={(w) => setCreatingGoal({ fromWish: w, returnTo: "wishes" })}
+            onDelete={(id) => handleDeleteWish(id)}
+            onToggleDone={(id) => toggleDoneWish(id)}
+            doneWishes={doneWishes}
+          />
           <div className="text-center text-[11px] text-muted-foreground pt-2 pb-1">
             Это все твои желания на сегодня ✨
           </div>
