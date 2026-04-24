@@ -444,15 +444,20 @@ function WishesScreen() {
             </button>
           )}
           <div className="mt-5 space-y-2">
-            {hotelki.map((h, i) => (
-              <HotelkaItem
-                key={i}
-                index={i + 1}
-                text={h}
-                onSave={(v) => handleEditHotelka(i, v)}
-                onDelete={() => handleDeleteHotelka(i)}
-              />
-            ))}
+            {hotelki.filter((h) => !doneHotelki.has(h)).map((h) => {
+              const realIdx = hotelki.indexOf(h);
+              return (
+                <HotelkaItem
+                  key={`${realIdx}-${h}`}
+                  index={realIdx + 1}
+                  text={h}
+                  onSave={(v) => handleEditHotelka(realIdx, v)}
+                  onDelete={() => handleDeleteHotelka(realIdx)}
+                  isDone={doneHotelki.has(h)}
+                  onToggleDone={() => toggleDoneHotelka(h)}
+                />
+              );
+            })}
           </div>
           <div className="text-center text-[11px] text-muted-foreground pt-3 pb-1">
             Маленькие хотелки — большие радости 🌿
@@ -468,16 +473,18 @@ function WishesScreen() {
           >
             <Plus className="h-4 w-4" /> Добавить цель
           </button>
-          {goals.map((g) => (
+          {goals.filter((g) => !doneGoals.has(g.id)).map((g) => (
             <GoalCard
               key={g.id}
               goal={g}
               count={goalInspires[g.id] ?? 0}
               onInspire={() => handleGoalInspire(g.id)}
               onEdit={() => setEditingGoal(g)}
+              isDone={doneGoals.has(g.id)}
+              onToggleDone={() => toggleDoneGoal(g.id)}
             />
           ))}
-          {goals.length === 0 && (
+          {goals.filter((g) => !doneGoals.has(g.id)).length === 0 && (
             <div className="text-center text-[12px] text-muted-foreground pt-6">
               Пока нет целей. Создай первую — вырасти её из желания 🎯
             </div>
@@ -486,7 +493,16 @@ function WishesScreen() {
       )}
 
       {activeTab === "tasks" && <EmptyTab tab="Задачи" />}
-      {activeTab === "done" && <EmptyTab tab="Воплощённые" />}
+      {activeTab === "done" && (
+        <RealizedTab
+          hotelki={hotelki.filter((h) => doneHotelki.has(h))}
+          wishes={wishes.filter((w) => doneWishes.has(w.id))}
+          goals={goals.filter((g) => doneGoals.has(g.id))}
+          onUndoHotelka={(t) => toggleDoneHotelka(t)}
+          onUndoWish={(id) => toggleDoneWish(id)}
+          onUndoGoal={(id) => toggleDoneGoal(id)}
+        />
+      )}
     </div>
   );
 }
