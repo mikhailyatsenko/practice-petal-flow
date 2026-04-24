@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Plus, X, ArrowLeft, Check, ImageIcon, FolderOpen, Pencil, RotateCw, Sparkles, Trash2, Trophy } from "lucide-react";
 import wishHouse from "@/assets/wish-house.jpg";
 import wishBali from "@/assets/wish-bali.jpg";
@@ -2569,7 +2570,9 @@ function RealizedConfirmSheet({
     };
   }, [onCancel]);
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <div
       className="fixed inset-0 z-[60] flex items-end justify-center"
       style={{ background: "rgba(0,0,0,0.4)" }}
@@ -2622,7 +2625,8 @@ function RealizedConfirmSheet({
           Отмена
         </button>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
