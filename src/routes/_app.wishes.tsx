@@ -1521,11 +1521,15 @@ function GoalCard({
   count,
   onInspire,
   onEdit,
+  isDone,
+  onToggleDone,
 }: {
   goal: Goal;
   count: number;
   onInspire: () => void;
   onEdit: () => void;
+  isDone: boolean;
+  onToggleDone: () => void;
 }) {
   const openTasks = goal.tasks.filter((t) => !t.done);
   const allDone = goal.tasks.length > 0 && openTasks.length === 0;
@@ -1551,7 +1555,14 @@ function GoalCard({
       </div>
 
       <div className="px-4 py-3.5">
-        <h3 className="text-[20px] font-bold leading-tight text-foreground">{goal.title}</h3>
+        <div className="flex items-start gap-3">
+          <h3 className="text-[20px] font-bold leading-tight text-foreground flex-1 min-w-0">{goal.title}</h3>
+          <DoneButton
+            isDone={isDone}
+            onToggle={onToggleDone}
+            confirmText={`«${goal.title}» будет перемещена в раздел «Воплощённые». Это действие можно отменить.`}
+          />
+        </div>
         <p className="mt-1 text-[12px] text-muted-foreground">📅 до {goal.deadline}</p>
 
         <div className="mt-3">
