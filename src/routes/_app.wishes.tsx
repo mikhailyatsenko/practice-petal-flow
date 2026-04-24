@@ -912,14 +912,14 @@ const STEP_LABELS = ["Название", "Причины", "Картинка"] a
 function StepIndicator({ step }: { step: 1 | 2 | 3 | 4 }) {
   return (
     <div className="px-4 pt-3 pb-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between max-w-[420px] mx-auto">
         {STEP_LABELS.map((label, i) => {
           const idx = i + 1;
           const done = step > idx;
           const active = step === idx;
           return (
-            <div key={label} className="flex-1 flex items-center">
-              <div className="flex flex-col items-center gap-1.5 min-w-0">
+            <React.Fragment key={label}>
+              <div className="flex flex-col items-center gap-1.5 min-w-0 shrink-0">
                 <div
                   className="h-7 w-7 rounded-full flex items-center justify-center text-[12px] font-semibold transition-colors"
                   style={
@@ -938,10 +938,10 @@ function StepIndicator({ step }: { step: 1 | 2 | 3 | 4 }) {
                 </span>
               </div>
               {i < STEP_LABELS.length - 1 && (
-                <div className="flex-1 h-[2px] mx-1 -mt-4 rounded"
+                <div className="flex-1 h-[2px] mx-1 mt-3 rounded"
                      style={{ background: step > idx ? "#FF6D00" : "var(--secondary)" }} />
               )}
-            </div>
+            </React.Fragment>
           );
         })}
       </div>
