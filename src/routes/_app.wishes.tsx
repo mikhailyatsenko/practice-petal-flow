@@ -225,6 +225,36 @@ function WishesScreen() {
   // Редактирование желания
   const [editingWish, setEditingWish] = useState<Wish | null>(null);
 
+  // Воплощённые
+  const [doneHotelki, setDoneHotelki] = useState<Set<string>>(new Set());
+  const [doneWishes, setDoneWishes] = useState<Set<string>>(new Set());
+  const [doneGoals, setDoneGoals] = useState<Set<string>>(new Set());
+
+  const toggleDoneHotelka = (text: string) => {
+    setDoneHotelki((prev) => {
+      const next = new Set(prev);
+      if (next.has(text)) next.delete(text);
+      else next.add(text);
+      return next;
+    });
+  };
+  const toggleDoneWish = (id: string) => {
+    setDoneWishes((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+  const toggleDoneGoal = (id: string) => {
+    setDoneGoals((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
   const handleInspire = (id: string) => {
     setInspires((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
   };
