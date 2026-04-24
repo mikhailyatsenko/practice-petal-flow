@@ -2469,16 +2469,55 @@ function ActionsMenu({
   const [open, setOpen] = useState(false);
   const [confirmDone, setConfirmDone] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
-    const onDocClick = (e: MouseEvent) => {
-      if (!btnRef.current) return;
-      if (!btnRef.current.contains(e.target as Node)) setOpen(false);
+
+    const updatePosition = () => {
+      const rect = btnRef.current?.getBoundingClientRect();
+      if (!rect) return;
+
+      const menuWidth = 172;
+      const menuHeight = 136;
+      const gap = 8;
+      const viewportPadding = 12;
+
+      const left = Math.min(
+        window.innerWidth - menuWidth - viewportPadding,
+        Math.max(viewportPadding, rect.right - menuWidth),
+      );
+
+      const belowTop = rect.bottom + gap;
+      const aboveTop = rect.top - menuHeight - gap;
+      const top = belowTop + menuHeight <= window.innerHeight - viewportPadding
+        ? belowTop
+        : Math.max(viewportPadding, aboveTop);
+
+      setMenuPos({ top, left });
     };
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
+
+    const onDocPointerDown = (e: MouseEvent | TouchEvent) => {
+      const target = e.target as Node | null;
+      if (!target) return;
+      if (btnRef.current?.contains(target) || menuRef.current?.contains(target)) return;
+      setOpen(false);
+    };
+
+    updatePosition();
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("scroll", updatePosition, true);
+    document.addEventListener("mousedown", onDocPointerDown);
+    document.addEventListener("touchstart", onDocPointerDown);
+
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
+      document.removeEventListener("mousedown", onDocPointerDown);
+      document.removeEventListener("touchstart", onDocPointerDown);
+    };
   }, [open]);
 
   return (
@@ -2499,11 +2538,14 @@ function ActionsMenu({
       >
         <MoreHorizontal className="h-5 w-5" />
       </button>
-      {open && (
+      {open && typeof document !== "undefined" && createPortal(
         <div
-          className="absolute right-0 mt-1 z-20 animate-fade-up"
+          ref={menuRef}
+          className="fixed z-[70] animate-fade-up"
           style={{
-            minWidth: 160,
+            top: menuPos?.top ?? 0,
+            left: menuPos?.left ?? 0,
+            width: 172,
             background: "#fff",
             border: "1px solid rgba(0,0,0,0.08)",
             borderRadius: 12,
@@ -2517,7 +2559,7 @@ function ActionsMenu({
               setOpen(false);
               setConfirmDone(true);
             }}
-            className="tap w-full flex items-center gap-2 px-3.5 py-2.5 text-[13px] font-medium text-left"
+            className="tap flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-[13px] font-medium"
             style={{ color: "#16a34a" }}
           >
             <Check className="h-4 w-4" /> Выполнить
@@ -2528,7 +2570,7 @@ function ActionsMenu({
               setOpen(false);
               onEdit();
             }}
-            className="tap w-full flex items-center gap-2 px-3.5 py-2.5 text-[13px] font-medium text-left text-foreground"
+            className="tap flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-[13px] font-medium text-foreground"
             style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}
           >
             <Pencil className="h-4 w-4" /> Изменить
@@ -2539,12 +2581,13 @@ function ActionsMenu({
               setOpen(false);
               setConfirmDelete(true);
             }}
-            className="tap w-full flex items-center gap-2 px-3.5 py-2.5 text-[13px] font-medium text-left"
+            className="tap flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-[13px] font-medium"
             style={{ color: "#E53935", borderTop: "1px solid rgba(0,0,0,0.06)" }}
           >
             <Trash2 className="h-4 w-4" /> Удалить
           </button>
-        </div>
+        </div>,
+        document.body,
       )}
       {confirmDone && (
         <RealizedConfirmSheet
