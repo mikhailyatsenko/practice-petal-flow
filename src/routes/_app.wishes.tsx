@@ -2592,16 +2592,18 @@ function RealizedConfirmSheet({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[60] flex items-end justify-center"
+      className="fixed inset-0 z-[60] flex items-end justify-center px-4"
       style={{ background: "rgba(0,0,0,0.4)" }}
       onClick={onCancel}
     >
       <div
-        className="w-full max-w-md animate-fade-up"
+        className="w-full animate-fade-up"
         style={{
+          maxWidth: "calc(28rem - 2rem)",
           background: "#fff",
-          borderRadius: "24px 24px 0 0",
-          padding: "24px 20px 36px",
+          borderRadius: "24px 24px 24px 24px",
+          padding: "24px 20px 28px",
+          marginBottom: "16px",
         }}
         onClick={(e) => e.stopPropagation()}
       >
