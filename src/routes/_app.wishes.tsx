@@ -731,9 +731,16 @@ function WishCard({
       </div>
 
       <div className="px-4 py-3.5">
-        <h3 className="text-[16px] font-semibold leading-tight text-foreground">
-          {wish.title}
-        </h3>
+        <div className="flex items-start gap-3">
+          <h3 className="text-[16px] font-semibold leading-tight text-foreground flex-1 min-w-0">
+            {wish.title}
+          </h3>
+          <DoneButton
+            isDone={isDone}
+            onToggle={onToggleDone}
+            confirmText={`«${wish.title}» будет перемещено в раздел «Воплощённые».`}
+          />
+        </div>
 
         <p className="mt-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
           Почему это важно
@@ -750,17 +757,9 @@ function WishCard({
 
         <div className="mt-3 flex items-center justify-between gap-3">
           <DesireCharge level={count} onTap={onInspire} />
-          <div className="flex items-center gap-2 shrink-0">
-            <DoneButton
-              isDone={isDone}
-              onToggle={onToggleDone}
-              confirmText={`«${wish.title}» будет перемещено в раздел «Воплощённые».`}
-              variant="wide"
-            />
-            <button onClick={onMakeGoal} className="tap btn-pill-orange btn-sm shrink-0">
-              Сделать целью →
-            </button>
-          </div>
+          <button onClick={onMakeGoal} className="tap btn-pill-orange btn-sm shrink-0">
+            Сделать целью →
+          </button>
         </div>
       </div>
     </article>
