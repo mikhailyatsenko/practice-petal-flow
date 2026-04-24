@@ -418,20 +418,30 @@ function WishesScreen() {
   }
 
   
+  const changeTabWithCardEffect = (direction: -1 | 1) => {
+    if (transitionState) return;
+    const next = getAdjacentTab(activeTab, direction);
+    if (!next) return;
+    setTransitionState({ current: activeTab, next, direction, stage: "animating" });
+    window.setTimeout(() => {
+      setActiveTab(next);
+      setTransitionState(null);
+    }, 320);
+  };
+
   const handleTouchStart = (e: React.TouchEvent) => {
     const t = e.touches[0];
     touchRef.current = { x: t.clientX, y: t.clientY, active: true };
   };
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!touchRef.current.active) return;
+    if (!touchRef.current.active || transitionState) return;
     touchRef.current.active = false;
     const t = e.changedTouches[0];
     const dx = t.clientX - touchRef.current.x;
     const dy = t.clientY - touchRef.current.y;
     if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    const idx = TABS.findIndex((tb) => tb.id === activeTab);
-    if (dx < 0 && idx < TABS.length - 1) setActiveTab(TABS[idx + 1].id);
-    if (dx > 0 && idx > 0) setActiveTab(TABS[idx - 1].id);
+    if (dx < 0) changeTabWithCardEffect(1);
+    if (dx > 0) changeTabWithCardEffect(-1);
   };
 
   return (
