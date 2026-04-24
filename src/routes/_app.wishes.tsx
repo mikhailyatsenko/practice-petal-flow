@@ -2597,7 +2597,7 @@ function RealizedConfirmSheet({
       onClick={onCancel}
     >
       <div
-        className="w-full max-w-[560px] animate-fade-up"
+        className="w-full max-w-md animate-fade-up"
         style={{
           background: "#fff",
           borderRadius: "24px 24px 0 0",
