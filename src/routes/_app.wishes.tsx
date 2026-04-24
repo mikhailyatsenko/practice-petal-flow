@@ -2962,3 +2962,195 @@ function RealizedTab({
     </div>
   );
 }
+
+/* ---------------- Deck свайп-карточек желаний ---------------- */
+
+function WishesDeck({
+  wishes,
+  inspires,
+  onInspire,
+  onEdit,
+  onMakeGoal,
+  onDelete,
+  onToggleDone,
+  doneWishes,
+}: {
+  wishes: Wish[];
+  inspires: Record<string, number>;
+  onInspire: (id: string) => void;
+  onEdit: (w: Wish) => void;
+  onMakeGoal: (w: Wish) => void;
+  onDelete: (id: string) => void;
+  onToggleDone: (id: string) => void;
+  doneWishes: Set<string>;
+}) {
+  const [order, setOrder] = useState<string[]>(() => wishes.map((w) => w.id));
+  const [dx, setDx] = useState(0);
+  const [flying, setFlying] = useState<null | "left" | "right">(null);
+  const startRef = useRef<{ x: number; y: number; active: boolean; locked: boolean }>({ x: 0, y: 0, active: false, locked: false });
+
+  // Sync order with incoming wishes (add new / remove deleted), preserving current order for existing ids.
+  useEffect(() => {
+    setOrder((prev) => {
+      const ids = new Set(wishes.map((w) => w.id));
+      const kept = prev.filter((id) => ids.has(id));
+      const added = wishes.map((w) => w.id).filter((id) => !kept.includes(id));
+      return [...added, ...kept];
+    });
+  }, [wishes]);
+
+  const byId = new Map(wishes.map((w) => [w.id, w]));
+  const visibleIds = order.filter((id) => byId.has(id));
+
+  if (visibleIds.length === 0) {
+    return (
+      <div className="text-center text-[13px] text-muted-foreground py-10">
+        Пока нет желаний. Добавь первое ✨
+      </div>
+    );
+  }
+
+  const topId = visibleIds[0];
+  const THRESHOLD = 90;
+
+  const commitSwipe = (dir: "left" | "right") => {
+    setFlying(dir);
+    window.setTimeout(() => {
+      setOrder((prev) => {
+        if (prev.length <= 1) return prev;
+        const [first, ...rest] = prev;
+        return [...rest, first];
+      });
+      setDx(0);
+      setFlying(null);
+    }, 280);
+  };
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    startRef.current = { x: t.clientX, y: t.clientY, active: true, locked: false };
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    const s = startRef.current;
+    if (!s.active || flying) return;
+    const t = e.touches[0];
+    const deltaX = t.clientX - s.x;
+    const deltaY = t.clientY - s.y;
+    if (!s.locked) {
+      if (Math.abs(deltaX) < 8 && Math.abs(deltaY) < 8) return;
+      if (Math.abs(deltaY) > Math.abs(deltaX)) {
+        s.active = false;
+        return;
+      }
+      s.locked = true;
+    }
+    setDx(deltaX);
+  };
+  const onTouchEnd = () => {
+    const s = startRef.current;
+    startRef.current = { x: 0, y: 0, active: false, locked: false };
+    if (flying) return;
+    if (!s.locked) {
+      setDx(0);
+      return;
+    }
+    if (Math.abs(dx) > THRESHOLD) {
+      commitSwipe(dx < 0 ? "left" : "right");
+    } else {
+      setDx(0);
+    }
+  };
+
+  return (
+    <div
+      className="relative"
+      style={{
+        // Reserve space based on first card; cards are absolutely positioned.
+        minHeight: 520,
+      }}
+    >
+      {visibleIds.slice(0, 3).reverse().map((id, idxFromBottom, arr) => {
+        const w = byId.get(id)!;
+        const depth = arr.length - 1 - idxFromBottom; // 0 = top
+        const isTop = depth === 0;
+        const progress = isTop ? Math.min(Math.abs(dx) / 160, 1) : 0;
+
+        // Behind cards: scale + darken; as top is dragged, they rise toward 1.
+        const baseScale = depth === 0 ? 1 : depth === 1 ? 0.94 : 0.88;
+        const baseY = depth === 0 ? 0 : depth === 1 ? 10 : 20;
+        const nextScale = depth === 1 ? baseScale + (1 - baseScale) * progress : baseScale;
+        const nextY = depth === 1 ? baseY - baseY * progress : baseY;
+        const darken = depth === 0 ? 0 : depth === 1 ? 0.18 - 0.18 * progress : 0.28;
+
+        let transform = `translate3d(0, ${nextY}px, 0) scale(${nextScale})`;
+        let transition = flying && isTop
+          ? "transform 280ms cubic-bezier(.2,.7,.2,1), opacity 280ms ease"
+          : startRef.current.active && isTop
+            ? "none"
+            : "transform 260ms cubic-bezier(.2,.7,.2,1)";
+        let opacity = 1;
+        let zIndex = 10 - depth;
+        let boxShadow = isTop
+          ? "0 20px 40px -12px rgba(0,0,0,0.25), 0 8px 16px -8px rgba(0,0,0,0.15)"
+          : "0 8px 20px -10px rgba(0,0,0,0.15)";
+
+        if (isTop) {
+          if (flying) {
+            const out = flying === "left" ? -window.innerWidth : window.innerWidth;
+            transform = `translate3d(${out}px, 0, 0) rotate(${flying === "left" ? -12 : 12}deg)`;
+            opacity = 0;
+          } else {
+            const rot = dx / 20;
+            transform = `translate3d(${dx}px, 0, 0) rotate(${rot}deg)`;
+          }
+        }
+
+        return (
+          <div
+            key={id}
+            className="absolute inset-x-0 top-0"
+            style={{
+              transform,
+              transition,
+              opacity,
+              zIndex,
+              willChange: "transform, opacity",
+              touchAction: "pan-y",
+            }}
+            onTouchStart={isTop ? onTouchStart : undefined}
+            onTouchMove={isTop ? onTouchMove : undefined}
+            onTouchEnd={isTop ? onTouchEnd : undefined}
+            onTouchCancel={isTop ? onTouchEnd : undefined}
+          >
+            <div className="relative rounded-2xl" style={{ boxShadow }}>
+              <WishCard
+                wish={w}
+                priority={isTop}
+                count={inspires[w.id] ?? 0}
+                onInspire={() => onInspire(w.id)}
+                onEdit={() => onEdit(w)}
+                onMakeGoal={() => onMakeGoal(w)}
+                onDelete={() => onDelete(w.id)}
+                isDone={doneWishes.has(w.id)}
+                onToggleDone={() => onToggleDone(w.id)}
+              />
+              {darken > 0 && (
+                <div
+                  className="pointer-events-none absolute inset-0 rounded-2xl"
+                  style={{ background: `rgba(0,0,0,${darken})`, transition: "background 260ms ease" }}
+                />
+              )}
+            </div>
+          </div>
+        );
+      })}
+      {/* Подсказка */}
+      {visibleIds.length > 1 && (
+        <div className="absolute left-0 right-0 -bottom-2 text-center text-[11px] text-muted-foreground/70 pointer-events-none select-none">
+          Смахни карточку ← →
+        </div>
+      )}
+      {void topId}
+    </div>
+  );
+}
