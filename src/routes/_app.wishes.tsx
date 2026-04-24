@@ -454,16 +454,27 @@ function WishesScreen() {
           >
             <Plus className="h-4 w-4" /> Добавить желание
           </button>
-          <WishesDeck
-            wishes={wishes.filter((w) => !doneWishes.has(w.id))}
-            inspires={inspires}
-            onInspire={handleInspire}
-            onEdit={(w) => setEditingWish(w)}
-            onMakeGoal={(w) => setCreatingGoal({ fromWish: w, returnTo: "wishes" })}
-            onDelete={(id) => handleDeleteWish(id)}
-            onToggleDone={(id) => toggleDoneWish(id)}
-            doneWishes={doneWishes}
-          />
+          <div className="space-y-4">
+            {wishes.filter((w) => !doneWishes.has(w.id)).map((w) => (
+              <WishCard
+                key={w.id}
+                wish={w}
+                priority={false}
+                count={inspires[w.id] ?? 0}
+                onInspire={() => handleInspire(w.id)}
+                onEdit={() => setEditingWish(w)}
+                onMakeGoal={() => setCreatingGoal({ fromWish: w, returnTo: "wishes" })}
+                onDelete={() => handleDeleteWish(w.id)}
+                isDone={doneWishes.has(w.id)}
+                onToggleDone={() => toggleDoneWish(w.id)}
+              />
+            ))}
+            {wishes.filter((w) => !doneWishes.has(w.id)).length === 0 && (
+              <div className="text-center text-[13px] text-muted-foreground py-10">
+                Пока нет желаний. Добавь первое ✨
+              </div>
+            )}
+          </div>
           <div className="text-center text-[11px] text-muted-foreground pt-2 pb-1">
             Это все твои желания на сегодня ✨
           </div>
@@ -594,25 +605,29 @@ function WishesScreen() {
         {!transitionState && <div>{renderTabContent(activeTab)}</div>}
 
         {transitionState && (
-          <div className="relative">
+          <div className="relative grid" style={{ gridTemplateAreas: '"stack"' }}>
             <div
-              className="absolute inset-0 z-10"
+              className="min-w-0"
               style={{
+                gridArea: "stack",
                 animation: transitionState.direction === 1
                   ? "slide-out-left 320ms cubic-bezier(.2,.7,.2,1) both"
                   : "slide-out-right 320ms cubic-bezier(.2,.7,.2,1) both",
                 background: "var(--background)",
+                zIndex: 10,
               }}
             >
               {renderTabContent(transitionState.current)}
             </div>
             <div
-              className="relative z-20"
+              className="min-w-0"
               style={{
+                gridArea: "stack",
                 animation: transitionState.direction === 1
                   ? "slide-in-from-right 320ms cubic-bezier(.2,.7,.2,1) both"
                   : "slide-in-from-left 320ms cubic-bezier(.2,.7,.2,1) both",
                 background: "var(--background)",
+                zIndex: 20,
               }}
             >
               {renderTabContent(transitionState.next)}
