@@ -418,10 +418,10 @@ function WishesScreen() {
   }
 
   
-  const changeTabWithCardEffect = (direction: -1 | 1) => {
+  const changeTabWithCardEffect = (direction: -1 | 1, targetTab?: TabId) => {
     if (transitionState) return;
-    const next = getAdjacentTab(activeTab, direction);
-    if (!next) return;
+    const next = targetTab ?? getAdjacentTab(activeTab, direction);
+    if (!next || next === activeTab) return;
     setTransitionState({ current: activeTab, next, direction, stage: "animating" });
     window.setTimeout(() => {
       setActiveTab(next);
