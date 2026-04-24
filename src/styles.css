@@ -193,6 +193,12 @@
   0%, 100% { box-shadow: 0 6px 20px rgba(255,109,0,0.40); }
   50%      { box-shadow: 0 6px 28px rgba(255,109,0,0.55); }
 }
+@keyframes done-pulse {
+  0%, 100% { box-shadow: 0 2px 8px -2px rgba(22,163,74,0.25), 0 0 0 0 rgba(22,163,74,0.35); transform: scale(1); }
+  50%      { box-shadow: 0 4px 14px -2px rgba(22,163,74,0.45), 0 0 0 6px rgba(22,163,74,0); transform: scale(1.06); }
+}
+.animate-done-pulse { animation: done-pulse 2.2s ease-in-out infinite; }
+
 
 @keyframes celebrate {
   0%   { transform: scale(1); filter: brightness(1); }
