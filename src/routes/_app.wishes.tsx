@@ -1493,56 +1493,10 @@ function EditWishScreen({
 
       {/* Bottom save */}
       <div className="fixed bottom-0 inset-x-0 bg-background/95 backdrop-blur-md border-t border-border/50 px-4 py-3 safe-bottom">
-        <div className="flex gap-2">
-          <button
-            onClick={() => setConfirmDelete(true)}
-            className="tap rounded-full px-3.5 h-10 inline-flex items-center justify-center gap-1.5 text-[13px] font-medium shrink-0"
-            style={{ background: "rgba(229,57,53,0.08)", color: "#E53935", border: "1px solid rgba(229,57,53,0.25)" }}
-          >
-            <Trash2 className="h-4 w-4" /> Удалить
-          </button>
-          <button onClick={handleSave} className="tap btn-pill-orange flex-1">
-            Сохранить изменения
-          </button>
-        </div>
+        <button onClick={handleSave} className="tap btn-pill-orange w-full">
+          Сохранить изменения
+        </button>
       </div>
-
-      {/* Модалка подтверждения удаления */}
-      {confirmDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-6 animate-fade-up" style={{ background: "rgba(0,0,0,0.45)" }}>
-          <div className="w-full max-w-sm rounded-2xl bg-background p-5 shadow-card">
-            <div className="flex items-start gap-3">
-              <div
-                className="h-10 w-10 shrink-0 rounded-full inline-flex items-center justify-center"
-                style={{ background: "rgba(229,57,53,0.12)", color: "#E53935" }}
-              >
-                <Trash2 className="h-5 w-5" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="text-[15px] font-semibold leading-snug">Удалить желание?</h3>
-                <p className="mt-1 text-[12.5px] text-muted-foreground leading-snug">
-                  «{title}» будет удалено навсегда. Это действие нельзя отменить.
-                </p>
-              </div>
-            </div>
-            <div className="mt-4 flex gap-2">
-              <button
-                onClick={() => setConfirmDelete(false)}
-                className="tap flex-1 rounded-full px-3.5 py-2.5 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
-              >
-                Отмена
-              </button>
-              <button
-                onClick={onDelete}
-                className="tap flex-1 rounded-full px-3.5 py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5"
-                style={{ background: "#E53935", color: "#fff" }}
-              >
-                <Trash2 className="h-4 w-4" /> Удалить
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
