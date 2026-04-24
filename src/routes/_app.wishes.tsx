@@ -737,6 +737,7 @@ function WishCard({
   onInspire,
   onEdit,
   onMakeGoal,
+  onDelete,
   isDone,
   onToggleDone,
 }: {
@@ -746,9 +747,11 @@ function WishCard({
   onInspire: () => void;
   onEdit: () => void;
   onMakeGoal: () => void;
+  onDelete: () => void;
   isDone: boolean;
   onToggleDone: () => void;
 }) {
+  void isDone;
   return (
     <article className="bg-card hairline rounded-2xl overflow-hidden shadow-card animate-fade-up">
       <div className={`relative ${aspectClass(wish.aspect)} w-full overflow-hidden bg-muted`}>
@@ -760,19 +763,6 @@ function WishCard({
           loading={priority ? "eager" : "lazy"}
           className="h-full w-full object-cover"
         />
-        <button
-          onClick={onEdit}
-          aria-label="Изменить желание"
-          className="tap absolute top-3 right-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px]"
-          style={{
-            background: "rgba(0,0,0,0.08)",
-            border: "1px solid rgba(255,255,255,0.25)",
-            color: "rgba(255,255,255,0.45)",
-            backdropFilter: "blur(4px)",
-          }}
-        >
-          <Pencil className="h-3 w-3" /> Изменить
-        </button>
       </div>
 
       <div className="px-4 py-3.5">
@@ -780,10 +770,12 @@ function WishCard({
           <h3 className="text-[16px] font-semibold leading-tight text-foreground flex-1 min-w-0">
             {wish.title}
           </h3>
-          <DoneButton
-            isDone={isDone}
-            onToggle={onToggleDone}
-            confirmText={`«${wish.title}» будет перемещено в раздел «Воплощённые».`}
+          <ActionsMenu
+            onDone={onToggleDone}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            doneConfirmText={`«${wish.title}» будет перемещено в раздел «Воплощённые».`}
+            deleteConfirmText={`«${wish.title}» будет удалено навсегда. Это действие нельзя отменить.`}
           />
         </div>
 
