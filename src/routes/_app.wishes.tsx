@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Plus, X, ArrowLeft, Check, ImageIcon, FolderOpen, Pencil, RotateCw, Sparkles, Trash2, Trophy, MoreVertical } from "lucide-react";
+import { Plus, X, ArrowLeft, Check, ImageIcon, FolderOpen, Pencil, RotateCw, Sparkles, Trash2, Trophy, MoreHorizontal } from "lucide-react";
 import wishHouse from "@/assets/wish-house.jpg";
 import wishBali from "@/assets/wish-bali.jpg";
 import wishBody from "@/assets/wish-body.jpg";
@@ -2492,13 +2492,12 @@ function ActionsMenu({
         style={{
           width: 32,
           height: 32,
-          borderRadius: 999,
-          background: "rgba(0,0,0,0.04)",
-          border: "1px solid rgba(0,0,0,0.08)",
+          background: "transparent",
+          border: "none",
           color: "#6b6b6b",
         }}
       >
-        <MoreVertical className="h-4 w-4" />
+        <MoreHorizontal className="h-5 w-5" />
       </button>
       {open && (
         <div
