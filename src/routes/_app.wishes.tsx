@@ -3065,9 +3065,11 @@ function WishesDeck({
     <div
       className="relative"
       style={{
-        // Reserve space based on first card; cards are absolutely positioned.
         minHeight: 520,
       }}
+      onTouchStartCapture={(e) => e.stopPropagation()}
+      onTouchMoveCapture={(e) => e.stopPropagation()}
+      onTouchEndCapture={(e) => e.stopPropagation()}
     >
       {visibleIds.slice(0, 3).reverse().map((id, idxFromBottom, arr) => {
         const w = byId.get(id)!;
