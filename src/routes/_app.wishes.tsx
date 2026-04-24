@@ -2188,6 +2188,7 @@ function EditGoalScreen({
   onSave: (g: Goal) => void;
   onDelete: () => void;
 }) {
+  void onDelete;
   const [tab, setTab] = useState<GoalEditTab>("title");
   const [title, setTitle] = useState(goal.title);
   const [reasons, setReasons] = useState<string[]>(goal.reasons.length ? goal.reasons : [""]);
