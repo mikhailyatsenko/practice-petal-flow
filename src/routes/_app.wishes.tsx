@@ -2508,14 +2508,14 @@ function DoneButton({
   };
 
   const doneStyles: React.CSSProperties = {
-    background: "rgba(22,163,74,0.10)",
-    border: "1px solid rgba(22,163,74,0.35)",
-    color: "#16a34a",
+    background: "#16a34a",
+    border: "1px solid #16a34a",
+    color: "#ffffff",
   };
   const idleStyles: React.CSSProperties = {
-    background: "transparent",
-    border: "1px solid rgba(0,0,0,0.10)",
-    color: "var(--muted-foreground)",
+    background: "rgba(22,163,74,0.14)",
+    border: "1px solid rgba(22,163,74,0.35)",
+    color: "#16a34a",
   };
 
   return (
@@ -2525,7 +2525,7 @@ function DoneButton({
         onClick={handleClick}
         aria-pressed={isDone}
         aria-label={isDone ? "Снять отметку «Воплощено»" : "Отметить как воплощённое"}
-        className={`tap inline-flex items-center justify-center shrink-0 ${!isDone ? "animate-done-pulse" : ""}`}
+        className="tap inline-flex items-center justify-center shrink-0"
         style={{
           width: 32,
           height: 32,
