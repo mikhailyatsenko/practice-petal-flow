@@ -2508,16 +2508,14 @@ function DoneButton({
   };
 
   const doneStyles: React.CSSProperties = {
-    background: "linear-gradient(135deg, #4CAF50, #16a34a)",
-    border: "1px solid #16a34a",
-    color: "#ffffff",
-    boxShadow: "0 4px 12px -3px rgba(22,163,74,0.45)",
+    background: "rgba(22,163,74,0.10)",
+    border: "1px solid rgba(22,163,74,0.35)",
+    color: "#16a34a",
   };
   const idleStyles: React.CSSProperties = {
-    background: "linear-gradient(135deg, rgba(76,175,80,0.12), rgba(22,163,74,0.16))",
-    border: "1.5px dashed #16a34a",
-    color: "#16a34a",
-    boxShadow: "0 2px 8px -2px rgba(22,163,74,0.25)",
+    background: "transparent",
+    border: "1px solid rgba(0,0,0,0.10)",
+    color: "var(--muted-foreground)",
   };
 
   return (
@@ -2527,21 +2525,16 @@ function DoneButton({
         onClick={handleClick}
         aria-pressed={isDone}
         aria-label={isDone ? "Снять отметку «Воплощено»" : "Отметить как воплощённое"}
-        title={isDone ? "Воплощено — нажми, чтобы снять" : "Отметить как воплощённое"}
         className={`tap inline-flex items-center justify-center shrink-0 ${!isDone ? "animate-done-pulse" : ""}`}
         style={{
-          width: 34,
-          height: 34,
-          borderRadius: 10,
+          width: 32,
+          height: 32,
+          borderRadius: 999,
           transition: "all 0.2s",
           ...(isDone ? doneStyles : idleStyles),
         }}
       >
-        {isDone ? (
-          <Check className="h-[18px] w-[18px]" strokeWidth={3} />
-        ) : (
-          <Trophy className="h-[17px] w-[17px]" strokeWidth={2.25} />
-        )}
+        <Check className="h-4 w-4" strokeWidth={2.5} />
       </button>
       {open && (
         <RealizedConfirmSheet
