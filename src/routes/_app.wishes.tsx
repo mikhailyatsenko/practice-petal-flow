@@ -206,6 +206,7 @@ const INITIAL_GOALS: Goal[] = [
 
 function WishesScreen() {
   const [activeTab, setActiveTab] = useState<TabId>("wishes");
+  const touchRef = useRef<{ x: number; y: number; active: boolean }>({ x: 0, y: 0, active: false });
   const [inspires, setInspires] = useState<Record<string, number>>({});
   const [wishes, setWishes] = useState<Wish[]>(INITIAL_WISHES);
   const [hotelki, setHotelki] = useState<string[]>(INITIAL_HOTELKI);
@@ -373,8 +374,25 @@ function WishesScreen() {
     );
   }
 
+  
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touchRef.current = { x: t.clientX, y: t.clientY, active: true };
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchRef.current.active) return;
+    touchRef.current.active = false;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touchRef.current.x;
+    const dy = t.clientY - touchRef.current.y;
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    const idx = TABS.findIndex((tb) => tb.id === activeTab);
+    if (dx < 0 && idx < TABS.length - 1) setActiveTab(TABS[idx + 1].id);
+    if (dx > 0 && idx > 0) setActiveTab(TABS[idx - 1].id);
+  };
+
   return (
-    <div className="pb-4">
+    <div className="pb-4" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       {/* Горизонтальные вкладки */}
       <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-border/50">
         <div className="flex gap-1.5 overflow-x-auto px-4 py-2.5 no-scrollbar">
