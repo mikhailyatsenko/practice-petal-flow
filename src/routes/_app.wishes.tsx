@@ -31,6 +31,12 @@ const TABS = [
 
 type TabId = typeof TABS[number]["id"];
 
+const getAdjacentTab = (tab: TabId, step: -1 | 1): TabId | null => {
+  const idx = TABS.findIndex((item) => item.id === tab);
+  const next = TABS[idx + step];
+  return next ? next.id : null;
+};
+
 type ImageAspect = "portrait" | "landscape" | "square";
 
 const aspectClass = (a?: ImageAspect) =>
