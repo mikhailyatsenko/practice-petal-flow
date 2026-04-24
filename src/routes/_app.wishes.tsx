@@ -31,6 +31,12 @@ const TABS = [
 
 type TabId = typeof TABS[number]["id"];
 
+const getAdjacentTab = (tab: TabId, step: -1 | 1): TabId | null => {
+  const idx = TABS.findIndex((item) => item.id === tab);
+  const next = TABS[idx + step];
+  return next ? next.id : null;
+};
+
 type ImageAspect = "portrait" | "landscape" | "square";
 
 const aspectClass = (a?: ImageAspect) =>
@@ -206,6 +212,12 @@ const INITIAL_GOALS: Goal[] = [
 
 function WishesScreen() {
   const [activeTab, setActiveTab] = useState<TabId>("wishes");
+  const [transitionState, setTransitionState] = useState<{
+    current: TabId;
+    next: TabId;
+    direction: -1 | 1;
+    stage: "animating";
+  } | null>(null);
   const touchRef = useRef<{ x: number; y: number; active: boolean }>({ x: 0, y: 0, active: false });
   const [inspires, setInspires] = useState<Record<string, number>>({});
   const [wishes, setWishes] = useState<Wish[]>(INITIAL_WISHES);
@@ -406,47 +418,35 @@ function WishesScreen() {
   }
 
   
+  const changeTabWithCardEffect = (direction: -1 | 1, targetTab?: TabId) => {
+    if (transitionState) return;
+    const next = targetTab ?? getAdjacentTab(activeTab, direction);
+    if (!next || next === activeTab) return;
+    setTransitionState({ current: activeTab, next, direction, stage: "animating" });
+    window.setTimeout(() => {
+      setActiveTab(next);
+      setTransitionState(null);
+    }, 320);
+  };
+
   const handleTouchStart = (e: React.TouchEvent) => {
     const t = e.touches[0];
     touchRef.current = { x: t.clientX, y: t.clientY, active: true };
   };
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!touchRef.current.active) return;
+    if (!touchRef.current.active || transitionState) return;
     touchRef.current.active = false;
     const t = e.changedTouches[0];
     const dx = t.clientX - touchRef.current.x;
     const dy = t.clientY - touchRef.current.y;
     if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    const idx = TABS.findIndex((tb) => tb.id === activeTab);
-    if (dx < 0 && idx < TABS.length - 1) setActiveTab(TABS[idx + 1].id);
-    if (dx > 0 && idx > 0) setActiveTab(TABS[idx - 1].id);
+    if (dx < 0) changeTabWithCardEffect(1);
+    if (dx > 0) changeTabWithCardEffect(-1);
   };
 
-  return (
-    <div className="pb-4" style={{ touchAction: "pan-y" }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-      {/* Горизонтальные вкладки */}
-      <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-border/50">
-        <div className="flex gap-1.5 overflow-x-auto px-4 py-2.5 no-scrollbar">
-          {TABS.map((tab) => {
-            const active = tab.id === activeTab;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={
-                  active
-                    ? "tap btn-pill-orange btn-sm shrink-0"
-                    : "tap shrink-0 rounded-full px-3.5 py-1.5 text-[12px] font-medium bg-card text-muted-foreground hairline"
-                }
-              >
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {activeTab === "wishes" && (
+  const renderTabContent = (tab: TabId) => {
+    if (tab === "wishes") {
+      return (
         <div className="px-4 pt-3 space-y-4">
           <button
             onClick={() => setCreating(true)}
@@ -468,9 +468,11 @@ function WishesScreen() {
             Это все твои желания на сегодня ✨
           </div>
         </div>
-      )}
+      );
+    }
 
-      {activeTab === "wants" && (
+    if (tab === "wants") {
+      return (
         <div className="px-4 pt-3">
           {adding ? (
             <InlineHotelkaForm
@@ -510,9 +512,11 @@ function WishesScreen() {
             Маленькие хотелки — большие радости 🌿
           </div>
         </div>
-      )}
+      );
+    }
 
-      {activeTab === "goals" && (
+    if (tab === "goals") {
+      return (
         <div className="px-4 pt-3 space-y-4">
           <button
             onClick={() => setCreatingGoal({ returnTo: "goals" })}
@@ -538,19 +542,80 @@ function WishesScreen() {
             </div>
           )}
         </div>
-      )}
+      );
+    }
 
-      {activeTab === "tasks" && <EmptyTab tab="Задачи" />}
-      {activeTab === "done" && (
-        <RealizedTab
-          hotelki={hotelki.filter((h) => doneHotelki.has(h))}
-          wishes={wishes.filter((w) => doneWishes.has(w.id))}
-          goals={goals.filter((g) => doneGoals.has(g.id))}
-          onUndoHotelka={(t) => toggleDoneHotelka(t)}
-          onUndoWish={(id) => toggleDoneWish(id)}
-          onUndoGoal={(id) => toggleDoneGoal(id)}
-        />
-      )}
+    if (tab === "tasks") {
+      return <EmptyTab tab="Задачи" />;
+    }
+
+    return (
+      <RealizedTab
+        hotelki={hotelki.filter((h) => doneHotelki.has(h))}
+        wishes={wishes.filter((w) => doneWishes.has(w.id))}
+        goals={goals.filter((g) => doneGoals.has(g.id))}
+        onUndoHotelka={(t) => toggleDoneHotelka(t)}
+        onUndoWish={(id) => toggleDoneWish(id)}
+        onUndoGoal={(id) => toggleDoneGoal(id)}
+      />
+    );
+  };
+
+  return (
+    <div className="pb-4" style={{ touchAction: "pan-y" }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+      {/* Горизонтальные вкладки */}
+      <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-border/50">
+        <div className="flex gap-1.5 overflow-x-auto px-4 py-2.5 no-scrollbar">
+          {TABS.map((tab) => {
+            const active = tab.id === activeTab;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  if (tab.id === activeTab) return;
+                  const currentIndex = TABS.findIndex((item) => item.id === activeTab);
+                  const nextIndex = TABS.findIndex((item) => item.id === tab.id);
+                  changeTabWithCardEffect(nextIndex > currentIndex ? 1 : -1, tab.id);
+                }}
+                className={
+                  active
+                    ? "tap btn-pill-orange btn-sm shrink-0"
+                    : "tap shrink-0 rounded-full px-3.5 py-1.5 text-[12px] font-medium bg-card text-muted-foreground hairline"
+                }
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="relative overflow-hidden">
+        <div>{renderTabContent(activeTab)}</div>
+
+        {transitionState && (
+          <>
+            <div
+              className="pointer-events-none absolute inset-0 z-10 origin-center animate-[card-screen-out_320ms_cubic-bezier(.2,.7,.2,1)_both]"
+              style={{ background: "color-mix(in oklab, var(--background) 86%, black 14%)" }}
+            >
+              <div className="h-full w-full scale-[0.94] opacity-90">{renderTabContent(transitionState.current)}</div>
+            </div>
+            <div
+              className="pointer-events-none absolute inset-0 z-20"
+              style={{
+                animation: transitionState.direction === 1
+                  ? "card-screen-in-left 320ms cubic-bezier(.2,.7,.2,1) both"
+                  : "card-screen-in-right 320ms cubic-bezier(.2,.7,.2,1) both",
+                boxShadow: "-18px 0 36px rgba(0,0,0,0.18)",
+                background: "var(--background)",
+              }}
+            >
+              {renderTabContent(transitionState.next)}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -3067,9 +3132,6 @@ function WishesDeck({
       style={{
         minHeight: 520,
       }}
-      onTouchStartCapture={(e) => e.stopPropagation()}
-      onTouchMoveCapture={(e) => e.stopPropagation()}
-      onTouchEndCapture={(e) => e.stopPropagation()}
     >
       {visibleIds.slice(0, 3).reverse().map((id, idxFromBottom, arr) => {
         const w = byId.get(id)!;
@@ -3147,11 +3209,6 @@ function WishesDeck({
         );
       })}
       {/* Подсказка */}
-      {visibleIds.length > 1 && (
-        <div className="absolute left-0 right-0 -bottom-2 text-center text-[11px] text-muted-foreground/70 pointer-events-none select-none">
-          Смахни карточку ← →
-        </div>
-      )}
       
     </div>
   );
