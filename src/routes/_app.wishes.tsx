@@ -572,11 +572,15 @@ function HotelkaItem({
   text,
   onSave,
   onDelete,
+  isDone,
+  onToggleDone,
 }: {
   index: number;
   text: string;
   onSave: (v: string) => void;
   onDelete: () => void;
+  isDone: boolean;
+  onToggleDone: () => void;
 }) {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(text);
