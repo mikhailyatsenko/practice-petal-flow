@@ -232,6 +232,37 @@ function WishesScreen() {
   const [doneWishes, setDoneWishes] = useState<Set<string>>(new Set());
   const [doneGoals, setDoneGoals] = useState<Set<string>>(new Set());
 
+  useEffect(() => {
+    const onTouchMove = (event: TouchEvent) => {
+      const state = touchRef.current;
+      if (!state.active) return;
+
+      const touch = event.touches[0];
+      if (!touch) return;
+
+      const dx = touch.clientX - state.x;
+      const dy = touch.clientY - state.y;
+      const startedNearEdge = state.x <= 32 || state.x >= window.innerWidth - 32;
+      const isHorizontalSwipe = Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.1;
+
+      if (startedNearEdge && isHorizontalSwipe) {
+        event.preventDefault();
+      }
+    };
+
+    const resetTouch = () => {
+      touchRef.current.active = false;
+    };
+
+    document.addEventListener("touchmove", onTouchMove, { passive: false });
+    document.addEventListener("touchcancel", resetTouch);
+
+    return () => {
+      document.removeEventListener("touchmove", onTouchMove);
+      document.removeEventListener("touchcancel", resetTouch);
+    };
+  }, []);
+
   const toggleDoneHotelka = (text: string) => {
     setDoneHotelki((prev) => {
       const next = new Set(prev);
@@ -392,7 +423,7 @@ function WishesScreen() {
   };
 
   return (
-    <div className="pb-4" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+    <div className="pb-4" style={{ touchAction: "pan-y" }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       {/* Горизонтальные вкладки */}
       <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-border/50">
         <div className="flex gap-1.5 overflow-x-auto px-4 py-2.5 no-scrollbar">
