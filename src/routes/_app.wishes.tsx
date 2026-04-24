@@ -605,25 +605,29 @@ function WishesScreen() {
         {!transitionState && <div>{renderTabContent(activeTab)}</div>}
 
         {transitionState && (
-          <div className="relative">
+          <div className="relative grid" style={{ gridTemplateAreas: '"stack"' }}>
             <div
-              className="absolute inset-0 z-10"
+              className="min-w-0"
               style={{
+                gridArea: "stack",
                 animation: transitionState.direction === 1
                   ? "slide-out-left 320ms cubic-bezier(.2,.7,.2,1) both"
                   : "slide-out-right 320ms cubic-bezier(.2,.7,.2,1) both",
                 background: "var(--background)",
+                zIndex: 10,
               }}
             >
               {renderTabContent(transitionState.current)}
             </div>
             <div
-              className="relative z-20"
+              className="min-w-0"
               style={{
+                gridArea: "stack",
                 animation: transitionState.direction === 1
                   ? "slide-in-from-right 320ms cubic-bezier(.2,.7,.2,1) both"
                   : "slide-in-from-left 320ms cubic-bezier(.2,.7,.2,1) both",
                 background: "var(--background)",
+                zIndex: 20,
               }}
             >
               {renderTabContent(transitionState.next)}
