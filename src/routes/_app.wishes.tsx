@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Plus, X, ArrowLeft, Check, ImageIcon, FolderOpen, Pencil, RotateCw, Sparkles, Trash2, Trophy } from "lucide-react";
+import { Plus, X, ArrowLeft, Check, ImageIcon, FolderOpen, Pencil, RotateCw, Sparkles, Trash2, Trophy, MoreVertical } from "lucide-react";
 import wishHouse from "@/assets/wish-house.jpg";
 import wishBali from "@/assets/wish-bali.jpg";
 import wishBody from "@/assets/wish-body.jpg";
@@ -463,6 +463,7 @@ function WishesScreen() {
               onInspire={() => handleInspire(w.id)}
               onEdit={() => setEditingWish(w)}
               onMakeGoal={() => setCreatingGoal({ fromWish: w, returnTo: "wishes" })}
+              onDelete={() => handleDeleteWish(w.id)}
               isDone={doneWishes.has(w.id)}
               onToggleDone={() => toggleDoneWish(w.id)}
             />
@@ -530,6 +531,7 @@ function WishesScreen() {
               count={goalInspires[g.id] ?? 0}
               onInspire={() => handleGoalInspire(g.id)}
               onEdit={() => setEditingGoal(g)}
+              onDelete={() => handleDeleteGoal(g.id)}
               isDone={doneGoals.has(g.id)}
               onToggleDone={() => toggleDoneGoal(g.id)}
             />
@@ -714,20 +716,15 @@ function HotelkaItem({
         {index}
       </div>
       <p className="text-[14px] leading-snug text-foreground/90 flex-1">{text}</p>
-      <button
-        onClick={() => {
+      <ActionsMenu
+        onDone={onToggleDone}
+        onEdit={() => {
           setValue(text);
           setEditing(true);
         }}
-        aria-label="Изменить хотелку"
-        className="tap h-7 w-7 shrink-0 rounded-full bg-secondary text-muted-foreground inline-flex items-center justify-center"
-      >
-        <Pencil className="h-3.5 w-3.5" />
-      </button>
-      <DoneButton
-        isDone={isDone}
-        onToggle={onToggleDone}
-        confirmText={`«${text}» будет перемещена в раздел «Воплощённые».`}
+        onDelete={onDelete}
+        doneConfirmText={`«${text}» будет перемещена в раздел «Воплощённые».`}
+        deleteConfirmText={`«${text}» будет удалена навсегда. Это действие нельзя отменить.`}
       />
     </div>
   );
@@ -742,6 +739,7 @@ function WishCard({
   onInspire,
   onEdit,
   onMakeGoal,
+  onDelete,
   isDone,
   onToggleDone,
 }: {
@@ -751,9 +749,11 @@ function WishCard({
   onInspire: () => void;
   onEdit: () => void;
   onMakeGoal: () => void;
+  onDelete: () => void;
   isDone: boolean;
   onToggleDone: () => void;
 }) {
+  void isDone;
   return (
     <article className="bg-card hairline rounded-2xl overflow-hidden shadow-card animate-fade-up">
       <div className={`relative ${aspectClass(wish.aspect)} w-full overflow-hidden bg-muted`}>
@@ -765,19 +765,6 @@ function WishCard({
           loading={priority ? "eager" : "lazy"}
           className="h-full w-full object-cover"
         />
-        <button
-          onClick={onEdit}
-          aria-label="Изменить желание"
-          className="tap absolute top-3 right-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px]"
-          style={{
-            background: "rgba(0,0,0,0.08)",
-            border: "1px solid rgba(255,255,255,0.25)",
-            color: "rgba(255,255,255,0.45)",
-            backdropFilter: "blur(4px)",
-          }}
-        >
-          <Pencil className="h-3 w-3" /> Изменить
-        </button>
       </div>
 
       <div className="px-4 py-3.5">
@@ -785,10 +772,12 @@ function WishCard({
           <h3 className="text-[16px] font-semibold leading-tight text-foreground flex-1 min-w-0">
             {wish.title}
           </h3>
-          <DoneButton
-            isDone={isDone}
-            onToggle={onToggleDone}
-            confirmText={`«${wish.title}» будет перемещено в раздел «Воплощённые».`}
+          <ActionsMenu
+            onDone={onToggleDone}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            doneConfirmText={`«${wish.title}» будет перемещено в раздел «Воплощённые».`}
+            deleteConfirmText={`«${wish.title}» будет удалено навсегда. Это действие нельзя отменить.`}
           />
         </div>
 
@@ -1333,7 +1322,7 @@ function EditWishScreen({
   onSave: (w: Wish) => void;
   onDelete: () => void;
 }) {
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  void onDelete;
   const [tab, setTab] = useState<EditTab>("title");
   const [title, setTitle] = useState(wish.title);
   const [reasons, setReasons] = useState<string[]>(wish.reasons.length ? wish.reasons : [""]);
@@ -1359,14 +1348,7 @@ function EditWishScreen({
             <ArrowLeft className="h-4 w-4" /> К желанию
           </button>
           <h2 className="flex-1 text-center text-[15px] font-semibold">Изменить</h2>
-          <button
-            onClick={() => setConfirmDelete(true)}
-            aria-label="Удалить желание"
-            className="tap inline-flex items-center justify-center h-8 w-8 rounded-full"
-            style={{ background: "rgba(229,57,53,0.1)", color: "#E53935", border: "1px solid rgba(229,57,53,0.25)" }}
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
+          
           <button onClick={handleSave} className="tap btn-pill-orange btn-sm">Сохранить</button>
         </div>
       </div>
@@ -1511,56 +1493,10 @@ function EditWishScreen({
 
       {/* Bottom save */}
       <div className="fixed bottom-0 inset-x-0 bg-background/95 backdrop-blur-md border-t border-border/50 px-4 py-3 safe-bottom">
-        <div className="flex gap-2">
-          <button
-            onClick={() => setConfirmDelete(true)}
-            className="tap rounded-full px-3.5 h-10 inline-flex items-center justify-center gap-1.5 text-[13px] font-medium shrink-0"
-            style={{ background: "rgba(229,57,53,0.08)", color: "#E53935", border: "1px solid rgba(229,57,53,0.25)" }}
-          >
-            <Trash2 className="h-4 w-4" /> Удалить
-          </button>
-          <button onClick={handleSave} className="tap btn-pill-orange flex-1">
-            Сохранить изменения
-          </button>
-        </div>
+        <button onClick={handleSave} className="tap btn-pill-orange w-full">
+          Сохранить изменения
+        </button>
       </div>
-
-      {/* Модалка подтверждения удаления */}
-      {confirmDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-6 animate-fade-up" style={{ background: "rgba(0,0,0,0.45)" }}>
-          <div className="w-full max-w-sm rounded-2xl bg-background p-5 shadow-card">
-            <div className="flex items-start gap-3">
-              <div
-                className="h-10 w-10 shrink-0 rounded-full inline-flex items-center justify-center"
-                style={{ background: "rgba(229,57,53,0.12)", color: "#E53935" }}
-              >
-                <Trash2 className="h-5 w-5" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="text-[15px] font-semibold leading-snug">Удалить желание?</h3>
-                <p className="mt-1 text-[12.5px] text-muted-foreground leading-snug">
-                  «{title}» будет удалено навсегда. Это действие нельзя отменить.
-                </p>
-              </div>
-            </div>
-            <div className="mt-4 flex gap-2">
-              <button
-                onClick={() => setConfirmDelete(false)}
-                className="tap flex-1 rounded-full px-3.5 py-2.5 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
-              >
-                Отмена
-              </button>
-              <button
-                onClick={onDelete}
-                className="tap flex-1 rounded-full px-3.5 py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5"
-                style={{ background: "#E53935", color: "#fff" }}
-              >
-                <Trash2 className="h-4 w-4" /> Удалить
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -1573,6 +1509,7 @@ function GoalCard({
   count,
   onInspire,
   onEdit,
+  onDelete,
   isDone,
   onToggleDone,
 }: {
@@ -1580,9 +1517,11 @@ function GoalCard({
   count: number;
   onInspire: () => void;
   onEdit: () => void;
+  onDelete: () => void;
   isDone: boolean;
   onToggleDone: () => void;
 }) {
+  void isDone;
   const openTasks = goal.tasks.filter((t) => !t.done);
   const allDone = goal.tasks.length > 0 && openTasks.length === 0;
 
@@ -1591,28 +1530,17 @@ function GoalCard({
       <div className={`relative w-full ${aspectClass(goal.aspect)}`}>
         <img src={goal.image} alt={goal.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-        <button
-          onClick={onEdit}
-          aria-label="Изменить цель"
-          className="tap absolute top-3 right-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px]"
-          style={{
-            background: "rgba(0,0,0,0.28)",
-            border: "1px solid rgba(255,255,255,0.25)",
-            color: "rgba(255,255,255,0.85)",
-            backdropFilter: "blur(4px)",
-          }}
-        >
-          <Pencil className="h-3 w-3" /> Изменить
-        </button>
       </div>
 
       <div className="px-4 py-3.5">
         <div className="flex items-start gap-3">
           <h3 className="text-[20px] font-bold leading-tight text-foreground flex-1 min-w-0">{goal.title}</h3>
-          <DoneButton
-            isDone={isDone}
-            onToggle={onToggleDone}
-            confirmText={`«${goal.title}» будет перемещена в раздел «Воплощённые». Это действие можно отменить.`}
+          <ActionsMenu
+            onDone={onToggleDone}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            doneConfirmText={`«${goal.title}» будет перемещена в раздел «Воплощённые». Это действие можно отменить.`}
+            deleteConfirmText={`«${goal.title}» будет удалена навсегда. Это действие нельзя отменить.`}
           />
         </div>
         <p className="mt-1 text-[12px] text-muted-foreground">📅 до {goal.deadline}</p>
@@ -2260,6 +2188,7 @@ function EditGoalScreen({
   onSave: (g: Goal) => void;
   onDelete: () => void;
 }) {
+  void onDelete;
   const [tab, setTab] = useState<GoalEditTab>("title");
   const [title, setTitle] = useState(goal.title);
   const [reasons, setReasons] = useState<string[]>(goal.reasons.length ? goal.reasons : [""]);
@@ -2308,14 +2237,7 @@ function EditGoalScreen({
             <ArrowLeft className="h-4 w-4" /> К цели
           </button>
           <h2 className="flex-1 text-center text-[15px] font-semibold">Изменить</h2>
-          <button
-            onClick={onDelete}
-            aria-label="Удалить цель"
-            className="tap inline-flex items-center justify-center h-8 w-8 rounded-full"
-            style={{ background: "#fff0f0", color: "#E53935", border: "1px solid rgba(229,57,53,0.25)" }}
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
+          
           <button onClick={handleSave} className="tap btn-pill-orange btn-sm">Сохранить</button>
         </div>
       </div>
@@ -2531,11 +2453,128 @@ function EditGoalScreen({
 /* ============================================================
    ===========  Кнопка «Воплощено» + поп-ап =================== */
 
+function ActionsMenu({
+  onDone,
+  onEdit,
+  onDelete,
+  doneConfirmText,
+  deleteConfirmText,
+}: {
+  onDone: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+  doneConfirmText: string;
+  deleteConfirmText: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [confirmDone, setConfirmDone] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDocClick = (e: MouseEvent) => {
+      if (!btnRef.current) return;
+      if (!btnRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, [open]);
+
+  return (
+    <div className="relative shrink-0">
+      <button
+        ref={btnRef}
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-label="Действия"
+        className="tap inline-flex items-center justify-center"
+        style={{
+          width: 32,
+          height: 32,
+          borderRadius: 999,
+          background: "rgba(0,0,0,0.04)",
+          border: "1px solid rgba(0,0,0,0.08)",
+          color: "#6b6b6b",
+        }}
+      >
+        <MoreVertical className="h-4 w-4" />
+      </button>
+      {open && (
+        <div
+          className="absolute right-0 mt-1 z-20 animate-fade-up"
+          style={{
+            minWidth: 160,
+            background: "#fff",
+            border: "1px solid rgba(0,0,0,0.08)",
+            borderRadius: 12,
+            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+            overflow: "hidden",
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              setConfirmDone(true);
+            }}
+            className="tap w-full flex items-center gap-2 px-3.5 py-2.5 text-[13px] font-medium text-left"
+            style={{ color: "#16a34a" }}
+          >
+            <Check className="h-4 w-4" /> Выполнить
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              onEdit();
+            }}
+            className="tap w-full flex items-center gap-2 px-3.5 py-2.5 text-[13px] font-medium text-left text-foreground"
+            style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}
+          >
+            <Pencil className="h-4 w-4" /> Изменить
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              setConfirmDelete(true);
+            }}
+            className="tap w-full flex items-center gap-2 px-3.5 py-2.5 text-[13px] font-medium text-left"
+            style={{ color: "#E53935", borderTop: "1px solid rgba(0,0,0,0.06)" }}
+          >
+            <Trash2 className="h-4 w-4" /> Удалить
+          </button>
+        </div>
+      )}
+      {confirmDone && (
+        <RealizedConfirmSheet
+          text={doneConfirmText}
+          onCancel={() => setConfirmDone(false)}
+          onConfirm={() => {
+            setConfirmDone(false);
+            onDone();
+          }}
+        />
+      )}
+      {confirmDelete && (
+        <DeleteConfirmSheet
+          text={deleteConfirmText}
+          onCancel={() => setConfirmDelete(false)}
+          onConfirm={() => {
+            setConfirmDelete(false);
+            onDelete();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
 function DoneButton({
   isDone,
   onToggle,
   confirmText,
-  variant = "compact",
 }: {
   isDone: boolean;
   onToggle: () => void;
@@ -2681,7 +2720,91 @@ function RealizedConfirmSheet({
   );
 }
 
-/* ---------------- Таб «Воплощённые» ---------------- */
+function DeleteConfirmSheet({
+  text,
+  onCancel,
+  onConfirm,
+}: {
+  text: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onCancel();
+    };
+    document.addEventListener("keydown", onEsc);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onEsc);
+      document.body.style.overflow = prev;
+    };
+  }, [onCancel]);
+
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[60] flex items-end justify-center px-4"
+      style={{ background: "rgba(0,0,0,0.4)" }}
+      onClick={onCancel}
+    >
+      <div
+        className="w-full animate-fade-up"
+        style={{
+          maxWidth: "calc(28rem - 2rem)",
+          background: "#fff",
+          borderRadius: 24,
+          padding: "24px 20px 28px",
+          marginBottom: 16,
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div
+          className="mx-auto mb-4"
+          style={{ width: 40, height: 4, borderRadius: 2, background: "#ede8df" }}
+        />
+        <div className="text-center text-[48px] leading-none">🗑️</div>
+        <h3 className="mt-2 text-center text-[18px] font-bold text-foreground">Удалить?</h3>
+        <p
+          className="mt-2 text-center text-[14px] text-muted-foreground"
+          style={{ lineHeight: 1.6 }}
+        >
+          {text}
+        </p>
+        <button
+          type="button"
+          onClick={onConfirm}
+          className="tap mt-5 w-full font-bold text-white"
+          style={{
+            background: "#E53935",
+            borderRadius: 14,
+            padding: 14,
+          }}
+        >
+          Да, удалить
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="tap mt-2 w-full text-muted-foreground"
+          style={{
+            background: "transparent",
+            border: "1px solid #ede8df",
+            borderRadius: 14,
+            padding: 13,
+          }}
+        >
+          Отмена
+        </button>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+
 
 function RealizedTab({
   hotelki,
