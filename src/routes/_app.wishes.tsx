@@ -225,6 +225,36 @@ function WishesScreen() {
   // Редактирование желания
   const [editingWish, setEditingWish] = useState<Wish | null>(null);
 
+  // Воплощённые
+  const [doneHotelki, setDoneHotelki] = useState<Set<string>>(new Set());
+  const [doneWishes, setDoneWishes] = useState<Set<string>>(new Set());
+  const [doneGoals, setDoneGoals] = useState<Set<string>>(new Set());
+
+  const toggleDoneHotelka = (text: string) => {
+    setDoneHotelki((prev) => {
+      const next = new Set(prev);
+      if (next.has(text)) next.delete(text);
+      else next.add(text);
+      return next;
+    });
+  };
+  const toggleDoneWish = (id: string) => {
+    setDoneWishes((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+  const toggleDoneGoal = (id: string) => {
+    setDoneGoals((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
   const handleInspire = (id: string) => {
     setInspires((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
   };
@@ -374,7 +404,7 @@ function WishesScreen() {
           >
             <Plus className="h-4 w-4" /> Добавить желание
           </button>
-          {wishes.map((w, i) => (
+          {wishes.filter((w) => !doneWishes.has(w.id)).map((w, i) => (
             <WishCard
               key={w.id}
               wish={w}
@@ -383,6 +413,8 @@ function WishesScreen() {
               onInspire={() => handleInspire(w.id)}
               onEdit={() => setEditingWish(w)}
               onMakeGoal={() => setCreatingGoal({ fromWish: w, returnTo: "wishes" })}
+              isDone={doneWishes.has(w.id)}
+              onToggleDone={() => toggleDoneWish(w.id)}
             />
           ))}
           <div className="text-center text-[11px] text-muted-foreground pt-2 pb-1">
@@ -412,15 +444,20 @@ function WishesScreen() {
             </button>
           )}
           <div className="mt-5 space-y-2">
-            {hotelki.map((h, i) => (
-              <HotelkaItem
-                key={i}
-                index={i + 1}
-                text={h}
-                onSave={(v) => handleEditHotelka(i, v)}
-                onDelete={() => handleDeleteHotelka(i)}
-              />
-            ))}
+            {hotelki.filter((h) => !doneHotelki.has(h)).map((h) => {
+              const realIdx = hotelki.indexOf(h);
+              return (
+                <HotelkaItem
+                  key={`${realIdx}-${h}`}
+                  index={realIdx + 1}
+                  text={h}
+                  onSave={(v) => handleEditHotelka(realIdx, v)}
+                  onDelete={() => handleDeleteHotelka(realIdx)}
+                  isDone={doneHotelki.has(h)}
+                  onToggleDone={() => toggleDoneHotelka(h)}
+                />
+              );
+            })}
           </div>
           <div className="text-center text-[11px] text-muted-foreground pt-3 pb-1">
             Маленькие хотелки — большие радости 🌿
@@ -436,16 +473,18 @@ function WishesScreen() {
           >
             <Plus className="h-4 w-4" /> Добавить цель
           </button>
-          {goals.map((g) => (
+          {goals.filter((g) => !doneGoals.has(g.id)).map((g) => (
             <GoalCard
               key={g.id}
               goal={g}
               count={goalInspires[g.id] ?? 0}
               onInspire={() => handleGoalInspire(g.id)}
               onEdit={() => setEditingGoal(g)}
+              isDone={doneGoals.has(g.id)}
+              onToggleDone={() => toggleDoneGoal(g.id)}
             />
           ))}
-          {goals.length === 0 && (
+          {goals.filter((g) => !doneGoals.has(g.id)).length === 0 && (
             <div className="text-center text-[12px] text-muted-foreground pt-6">
               Пока нет целей. Создай первую — вырасти её из желания 🎯
             </div>
@@ -454,7 +493,16 @@ function WishesScreen() {
       )}
 
       {activeTab === "tasks" && <EmptyTab tab="Задачи" />}
-      {activeTab === "done" && <EmptyTab tab="Воплощённые" />}
+      {activeTab === "done" && (
+        <RealizedTab
+          hotelki={hotelki.filter((h) => doneHotelki.has(h))}
+          wishes={wishes.filter((w) => doneWishes.has(w.id))}
+          goals={goals.filter((g) => doneGoals.has(g.id))}
+          onUndoHotelka={(t) => toggleDoneHotelka(t)}
+          onUndoWish={(id) => toggleDoneWish(id)}
+          onUndoGoal={(id) => toggleDoneGoal(id)}
+        />
+      )}
     </div>
   );
 }
@@ -524,11 +572,15 @@ function HotelkaItem({
   text,
   onSave,
   onDelete,
+  isDone,
+  onToggleDone,
 }: {
   index: number;
   text: string;
   onSave: (v: string) => void;
   onDelete: () => void;
+  isDone: boolean;
+  onToggleDone: () => void;
 }) {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(text);
@@ -607,7 +659,7 @@ function HotelkaItem({
   }
 
   return (
-    <div className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 animate-fade-up">
+    <div className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 animate-fade-up min-h-[52px]">
       <div className="h-7 w-7 shrink-0 rounded-full bg-secondary flex items-center justify-center text-[12px] font-medium text-muted-foreground">
         {index}
       </div>
@@ -622,6 +674,11 @@ function HotelkaItem({
       >
         <Pencil className="h-3.5 w-3.5" />
       </button>
+      <DoneButton
+        isDone={isDone}
+        onToggle={onToggleDone}
+        confirmText={`«${text}» будет перемещена в раздел «Воплощённые».`}
+      />
     </div>
   );
 }
@@ -635,6 +692,8 @@ function WishCard({
   onInspire,
   onEdit,
   onMakeGoal,
+  isDone,
+  onToggleDone,
 }: {
   wish: Wish;
   priority?: boolean;
@@ -642,6 +701,8 @@ function WishCard({
   onInspire: () => void;
   onEdit: () => void;
   onMakeGoal: () => void;
+  isDone: boolean;
+  onToggleDone: () => void;
 }) {
   return (
     <article className="bg-card hairline rounded-2xl overflow-hidden shadow-card animate-fade-up">
@@ -689,6 +750,11 @@ function WishCard({
 
         <div className="mt-3 flex items-center justify-between gap-3">
           <DesireCharge level={count} onTap={onInspire} />
+          <DoneButton
+            isDone={isDone}
+            onToggle={onToggleDone}
+            confirmText={`«${wish.title}» будет перемещено в раздел «Воплощённые».`}
+          />
           <button onClick={onMakeGoal} className="tap btn-pill-orange btn-sm shrink-0">
             Сделать целью →
           </button>
@@ -1455,11 +1521,15 @@ function GoalCard({
   count,
   onInspire,
   onEdit,
+  isDone,
+  onToggleDone,
 }: {
   goal: Goal;
   count: number;
   onInspire: () => void;
   onEdit: () => void;
+  isDone: boolean;
+  onToggleDone: () => void;
 }) {
   const openTasks = goal.tasks.filter((t) => !t.done);
   const allDone = goal.tasks.length > 0 && openTasks.length === 0;
@@ -1485,7 +1555,14 @@ function GoalCard({
       </div>
 
       <div className="px-4 py-3.5">
-        <h3 className="text-[20px] font-bold leading-tight text-foreground">{goal.title}</h3>
+        <div className="flex items-start gap-3">
+          <h3 className="text-[20px] font-bold leading-tight text-foreground flex-1 min-w-0">{goal.title}</h3>
+          <DoneButton
+            isDone={isDone}
+            onToggle={onToggleDone}
+            confirmText={`«${goal.title}» будет перемещена в раздел «Воплощённые». Это действие можно отменить.`}
+          />
+        </div>
         <p className="mt-1 text-[12px] text-muted-foreground">📅 до {goal.deadline}</p>
 
         <div className="mt-3">
@@ -2395,6 +2472,273 @@ function EditGoalScreen({
           Сохранить изменения
         </button>
       </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   ===========  Кнопка «Воплощено» + поп-ап =================== */
+
+function DoneButton({
+  isDone,
+  onToggle,
+  confirmText,
+}: {
+  isDone: boolean;
+  onToggle: () => void;
+  confirmText: string;
+}) {
+  const [open, setOpen] = useState(false);
+
+  const handleClick = () => {
+    if (isDone) {
+      onToggle(); // снимаем без подтверждения
+    } else {
+      setOpen(true);
+    }
+  };
+
+  const confirm = () => {
+    onToggle();
+    setOpen(false);
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={handleClick}
+        aria-label={isDone ? "Снять отметку «Воплощено»" : "Отметить как воплощённое"}
+        aria-pressed={isDone}
+        className="tap inline-flex items-center justify-center shrink-0"
+        style={{
+          width: 36,
+          height: 36,
+          borderRadius: 10,
+          background: isDone ? "#16a34a" : "transparent",
+          border: `2px solid ${isDone ? "#16a34a" : "#ede8df"}`,
+          color: isDone ? "#fff" : "#ede8df",
+          transition: "all 0.2s",
+          cursor: "pointer",
+        }}
+      >
+        <Check className="h-4 w-4" strokeWidth={3} />
+      </button>
+      {open && (
+        <RealizedConfirmSheet
+          text={confirmText}
+          onCancel={() => setOpen(false)}
+          onConfirm={confirm}
+        />
+      )}
+    </>
+  );
+}
+
+function RealizedConfirmSheet({
+  text,
+  onCancel,
+  onConfirm,
+}: {
+  text: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onCancel();
+    };
+    document.addEventListener("keydown", onEsc);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onEsc);
+      document.body.style.overflow = prev;
+    };
+  }, [onCancel]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] flex items-end justify-center"
+      style={{ background: "rgba(0,0,0,0.4)" }}
+      onClick={onCancel}
+    >
+      <div
+        className="w-full max-w-[560px] animate-fade-up"
+        style={{
+          background: "#fff",
+          borderRadius: "24px 24px 0 0",
+          padding: "24px 20px 36px",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div
+          className="mx-auto mb-4"
+          style={{ width: 40, height: 4, borderRadius: 2, background: "#ede8df" }}
+        />
+        <div className="text-center text-[48px] leading-none">🎉</div>
+        <h3 className="mt-2 text-center text-[18px] font-bold text-foreground">Воплощено?</h3>
+        <p
+          className="mt-2 text-center text-[14px] text-muted-foreground"
+          style={{ lineHeight: 1.6 }}
+        >
+          {text}
+        </p>
+        <button
+          type="button"
+          onClick={onConfirm}
+          className="tap mt-5 w-full font-bold text-white"
+          style={{
+            background: "linear-gradient(135deg, #4CAF50, #16a34a)",
+            borderRadius: 14,
+            padding: 14,
+          }}
+        >
+          ✅ Да, воплощено!
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="tap mt-2 w-full text-muted-foreground"
+          style={{
+            background: "transparent",
+            border: "1px solid #ede8df",
+            borderRadius: 14,
+            padding: 13,
+          }}
+        >
+          Отмена
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Таб «Воплощённые» ---------------- */
+
+function RealizedTab({
+  hotelki,
+  wishes,
+  goals,
+  onUndoHotelka,
+  onUndoWish,
+  onUndoGoal,
+}: {
+  hotelki: string[];
+  wishes: Wish[];
+  goals: Goal[];
+  onUndoHotelka: (text: string) => void;
+  onUndoWish: (id: string) => void;
+  onUndoGoal: (id: string) => void;
+}) {
+  const total = hotelki.length + wishes.length + goals.length;
+
+  if (total === 0) {
+    return (
+      <div className="px-4 pt-16 text-center">
+        <div className="text-4xl mb-3">🎉</div>
+        <h3 className="text-[15px] font-semibold text-foreground">Воплощённые</h3>
+        <p className="mt-1.5 text-[12px] text-muted-foreground max-w-[280px] mx-auto">
+          Здесь появятся хотелки, желания и цели, которые ты отметишь как воплощённые.
+        </p>
+      </div>
+    );
+  }
+
+  const undoBtn = (onClick: () => void) => (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label="Снять отметку «Воплощено»"
+      className="tap inline-flex items-center justify-center shrink-0"
+      style={{
+        width: 36,
+        height: 36,
+        borderRadius: 10,
+        background: "#16a34a",
+        border: "2px solid #16a34a",
+        color: "#fff",
+        transition: "all 0.2s",
+      }}
+    >
+      <Check className="h-4 w-4" strokeWidth={3} />
+    </button>
+  );
+
+  return (
+    <div className="px-4 pt-3 space-y-5">
+      {goals.length > 0 && (
+        <section>
+          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
+            Цели
+          </p>
+          <div className="space-y-2">
+            {goals.map((g) => (
+              <div
+                key={g.id}
+                className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3"
+              >
+                <img
+                  src={g.image}
+                  alt={g.title}
+                  className="h-10 w-10 rounded-lg object-cover shrink-0"
+                />
+                <p className="text-[14px] leading-snug text-foreground/90 flex-1 line-through opacity-70">
+                  {g.title}
+                </p>
+                {undoBtn(() => onUndoGoal(g.id))}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {wishes.length > 0 && (
+        <section>
+          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
+            Желания
+          </p>
+          <div className="space-y-2">
+            {wishes.map((w) => (
+              <div
+                key={w.id}
+                className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3"
+              >
+                <img
+                  src={w.image}
+                  alt={w.title}
+                  className="h-10 w-10 rounded-lg object-cover shrink-0"
+                />
+                <p className="text-[14px] leading-snug text-foreground/90 flex-1 line-through opacity-70">
+                  {w.title}
+                </p>
+                {undoBtn(() => onUndoWish(w.id))}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {hotelki.length > 0 && (
+        <section>
+          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
+            Хотелки
+          </p>
+          <div className="space-y-2">
+            {hotelki.map((h, i) => (
+              <div
+                key={`${i}-${h}`}
+                className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 min-h-[52px]"
+              >
+                <p className="text-[14px] leading-snug text-foreground/90 flex-1 line-through opacity-70">
+                  {h}
+                </p>
+                {undoBtn(() => onUndoHotelka(h))}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
