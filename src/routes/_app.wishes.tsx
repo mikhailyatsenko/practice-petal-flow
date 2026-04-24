@@ -3132,9 +3132,6 @@ function WishesDeck({
       style={{
         minHeight: 520,
       }}
-      onTouchStartCapture={(e) => e.stopPropagation()}
-      onTouchMoveCapture={(e) => e.stopPropagation()}
-      onTouchEndCapture={(e) => e.stopPropagation()}
     >
       {visibleIds.slice(0, 3).reverse().map((id, idxFromBottom, arr) => {
         const w = byId.get(id)!;
@@ -3212,11 +3209,6 @@ function WishesDeck({
         );
       })}
       {/* Подсказка */}
-      {visibleIds.length > 1 && (
-        <div className="absolute left-0 right-0 -bottom-2 text-center text-[11px] text-muted-foreground/70 pointer-events-none select-none">
-          Смахни карточку ← →
-        </div>
-      )}
       
     </div>
   );
