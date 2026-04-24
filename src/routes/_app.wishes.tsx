@@ -404,7 +404,7 @@ function WishesScreen() {
           >
             <Plus className="h-4 w-4" /> Добавить желание
           </button>
-          {wishes.map((w, i) => (
+          {wishes.filter((w) => !doneWishes.has(w.id)).map((w, i) => (
             <WishCard
               key={w.id}
               wish={w}
@@ -413,6 +413,8 @@ function WishesScreen() {
               onInspire={() => handleInspire(w.id)}
               onEdit={() => setEditingWish(w)}
               onMakeGoal={() => setCreatingGoal({ fromWish: w, returnTo: "wishes" })}
+              isDone={doneWishes.has(w.id)}
+              onToggleDone={() => toggleDoneWish(w.id)}
             />
           ))}
           <div className="text-center text-[11px] text-muted-foreground pt-2 pb-1">
