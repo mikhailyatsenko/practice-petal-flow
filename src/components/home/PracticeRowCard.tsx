@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
-import { Link } from "@tanstack/react-router";
 export type DayState = "done" | "missed" | "empty";
 
 export interface PracticeRow {
@@ -130,9 +129,7 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
       onToggle(id, null);
       return;
     }
-    // origin = текущая кнопка "Сделать" (если ещё не выполнена), иначе тег
     const origin = !doneToday ? buttonRef.current : tagRef.current;
-    // Сначала отдаём origin (с актуальной геометрией), потом запускаем press-эффект
     onToggle(id, origin);
     playPressEffect();
   };
@@ -172,7 +169,9 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
           {title}
         </h3>
         <div className="shrink-0 flex items-center justify-center min-h-[32px]">
-          {!doneToday ? (
+          {id === "self-prog" ? (
+            <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
+          ) : !doneToday ? (
             <div
               ref={buttonRef}
               style={{
@@ -266,18 +265,6 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
         </span>
       </div>
 
-      {/* Отдельная кнопка входа для "Программирование успеха" */}
-      {id === "self-prog" && (
-        <Link
-          to="/practice/self-prog"
-          onClick={(e) => e.stopPropagation()}
-          className="tap mt-3 flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-[14px] font-medium text-white shadow-card"
-          style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
-        >
-          Открыть «Программирование успеха»
-          <ChevronRight className="h-4 w-4" />
-        </Link>
-      )}
     </div>
   );
 }
