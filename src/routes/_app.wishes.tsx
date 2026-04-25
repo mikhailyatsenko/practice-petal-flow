@@ -677,6 +677,29 @@ function WishesScreen() {
           </div>
         )}
       </div>
+
+      {/* Быстрая постановка задачи из карточки цели */}
+      {quickTaskGoalId && createPortal(
+        <div
+          className="fixed inset-0 z-[100] overflow-y-auto animate-fade-up"
+          style={{ background: "var(--background)" }}
+        >
+          <CreateOrEditTaskScreen
+            mode="create"
+            goals={goals.filter((g) => !doneGoals.has(g.id)).map((g) => ({ id: g.id, title: g.title, plan: g.plan }))}
+            defaultGoalId={quickTaskGoalId}
+            onCancel={() => setQuickTaskGoalId(null)}
+            onSubmit={(d) => {
+              setModuleTasks((prev) => [
+                { ...d, id: `t${Date.now()}`, done: false, timeSpent: 0 },
+                ...prev,
+              ]);
+              setQuickTaskGoalId(null);
+            }}
+          />
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
