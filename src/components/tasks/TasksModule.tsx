@@ -106,9 +106,11 @@ interface TasksModuleProps {
   /** Контролируемое хранилище задач (если задано — используется вместо локального). */
   tasks?: Task[];
   onTasksChange?: (updater: (prev: Task[]) => Task[]) => void;
+  /** Обновить план реализации цели */
+  onUpdateGoalPlan?: (goalId: string, plan: string) => void;
 }
 
-export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: tasksProp, onTasksChange }: TasksModuleProps) {
+export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: tasksProp, onTasksChange, onUpdateGoalPlan }: TasksModuleProps) {
   const [internalTasks, setInternalTasks] = useState<Task[]>(() => SAMPLE_TASKS(goals));
   const tasks = tasksProp ?? internalTasks;
   const setTasks = (updater: (prev: Task[]) => Task[]) => {
