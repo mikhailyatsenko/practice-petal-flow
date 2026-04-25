@@ -358,12 +358,58 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
               >
                 <div className="h-1 w-full" style={{ background: goal.color ?? "#FF6D00" }} />
                 <div className="p-3.5">
-                  <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                    План реализации
-                  </p>
-                  <p className="mt-1.5 text-[14px] leading-[1.6] text-foreground/90 whitespace-pre-wrap">
-                    {goal.plan || "План пока не описан."}
-                  </p>
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                      План реализации
+                    </p>
+                    {editingPlanGoalId !== row.gid && (
+                      <button
+                        onClick={() => { setEditingPlanGoalId(row.gid); setPlanDraft(goal.plan ?? ""); }}
+                        aria-label="Изменить план"
+                        className="tap inline-flex items-center justify-center rounded-full"
+                        style={{ width: 26, height: 26, color: "#9a8f7e", border: "1px solid #ede8df", background: "#fff" }}
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </button>
+                    )}
+                  </div>
+
+                  {editingPlanGoalId === row.gid ? (
+                    <div className="mt-2">
+                      <textarea
+                        value={planDraft}
+                        onChange={(e) => setPlanDraft(e.target.value)}
+                        rows={5}
+                        autoFocus
+                        className="w-full rounded-xl p-2.5 text-[14px] leading-[1.6] text-foreground/90 outline-none"
+                        style={{ border: "1px solid #ede8df", background: "#fff", resize: "vertical" }}
+                        placeholder="Опиши план реализации…"
+                      />
+                      <div className="mt-2 flex gap-2 justify-end">
+                        <button
+                          onClick={() => setEditingPlanGoalId(null)}
+                          className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium"
+                          style={{ background: "#fff", color: "#8a8a8a", border: "1px solid #ede8df" }}
+                        >
+                          <X className="h-3.5 w-3.5" /> Отмена
+                        </button>
+                        <button
+                          onClick={() => {
+                            onUpdateGoalPlan?.(row.gid, planDraft);
+                            setEditingPlanGoalId(null);
+                          }}
+                          className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium text-white"
+                          style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
+                        >
+                          <Check className="h-3.5 w-3.5" /> Сохранить
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="mt-1.5 text-[14px] leading-[1.6] text-foreground/90 whitespace-pre-wrap">
+                      {goal.plan || "План пока не описан."}
+                    </p>
+                  )}
                 </div>
               </article>
             )}
