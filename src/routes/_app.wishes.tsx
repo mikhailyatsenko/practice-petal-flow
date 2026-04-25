@@ -963,6 +963,7 @@ function WishCard({
             doneConfirmText={`«${wish.title}» будет перемещено в раздел «Воплощённые».`}
             deleteConfirmText={`«${wish.title}» будет удалено навсегда. Это действие нельзя отменить.`}
           />
+          )}
         </div>
 
         <p className="mt-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
