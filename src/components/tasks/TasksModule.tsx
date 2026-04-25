@@ -437,16 +437,6 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                   onComplete={() => handleMarkDone(t.id)}
                 />
               ))}
-              <div className="flex justify-center">
-                <button
-                  onClick={() => { setCreateForGoalId(row.gid); setCreating(true); }}
-                  aria-label="Добавить задачу к этой цели"
-                  className="tap inline-flex items-center justify-center rounded-full"
-                  style={{ width: 28, height: 28, color: "#9a8f7e", border: "1px solid #ede8df", background: "#fff" }}
-                >
-                  <Plus className="h-4 w-4" />
-                </button>
-              </div>
             </div>
           </div>
         );
