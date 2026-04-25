@@ -307,11 +307,11 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                 {goal?.title ?? "Без цели"}
               </span>
               <span
-                className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full px-2.5 py-1 shrink-0 shadow-sm"
+                className="inline-flex items-center gap-1 text-[11px] font-medium rounded-full px-2 py-0.5 shrink-0"
                 style={
                   isOpen
-                    ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff", border: "1px solid transparent" }
-                    : { background: "#fff", color: "#FF6D00", border: "1px solid #FF6D00" }
+                    ? { background: "rgba(255,109,0,0.10)", color: "#FF6D00" }
+                    : { background: "transparent", color: "#9a8f7e" }
                 }
               >
                 {isOpen ? "Закрыть план" : "Открыть план"}

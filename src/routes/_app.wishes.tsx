@@ -1781,11 +1781,8 @@ function GoalCard({
             ))}
           </ul>
         )}
-        <div
-          className="mt-2.5 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-[11px] text-muted-foreground"
-          style={{ background: "#FAF6EF" }}
-        >
-          <span>✅ Сделано задач:</span>
+        <div className="mt-2 flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
+          <span>Сделано задач:</span>
           <span className="font-semibold tabular-nums" style={{ color: "#16a34a" }}>{tasksDoneCount}</span>
         </div>
 
