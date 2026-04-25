@@ -484,11 +484,13 @@ function TaskRow({
   task,
   isTimerActive,
   liveSeconds,
+  isShattering,
   onOpen,
 }: {
   task: Task;
   isTimerActive: boolean;
   liveSeconds: number;
+  isShattering?: boolean;
   onOpen: () => void;
 }) {
   const c = DEADLINE_COLORS[task.deadline];
@@ -496,9 +498,9 @@ function TaskRow({
   return (
     <button
       onClick={onOpen}
-      className="tap w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card animate-fade-up transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed]"
+      className={`tap w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed] ${isShattering ? "animate-task-shatter" : "animate-fade-up"}`}
       style={{
-        border: isTimerActive ? "2px solid #FF6D00" : "1px solid #ede8df",
+        border: isShattering ? "2px solid #16a34a" : (isTimerActive ? "2px solid #FF6D00" : "1px solid #ede8df"),
       }}
     >
       <div className="flex items-center gap-2.5">
