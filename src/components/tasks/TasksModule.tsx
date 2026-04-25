@@ -206,13 +206,17 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
   };
   const handleDelete = (id: string) => {
     setTasks((prev) => prev.filter((t) => t.id !== id));
-    if (activeTimerId === id) setActiveTimerId(null);
+    if (activeTimerIds.has(id)) {
+      setActiveTimerIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
+    }
     setEditingTask(null);
     setOpenTaskId(null);
   };
   const handleMarkDone = (id: string) => {
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
-    if (activeTimerId === id) setActiveTimerId(null);
+    if (activeTimerIds.has(id)) {
+      setActiveTimerIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
+    }
     setOpenTaskId(null);
   };
 
