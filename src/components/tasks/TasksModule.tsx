@@ -583,7 +583,7 @@ function TaskDetailScreen({
 
 /* ---------------- Создание / редактирование задачи ---------------- */
 
-function CreateOrEditTaskScreen({
+export function CreateOrEditTaskScreen({
   mode, goals, task, defaultGoalId, onCancel, onSubmit,
 }: {
   mode: "create" | "edit";
