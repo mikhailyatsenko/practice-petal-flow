@@ -219,7 +219,7 @@ function HomeScreen() {
             }, i * STAR_GAP),
           );
         });
-      }, 0),
+      }, INITIAL_DELAY),
     );
 
     // Когда долетит последняя звезда
