@@ -437,12 +437,14 @@ function TaskRow({
         </span>
       </div>
       {isTimerActive && (
-        <div
-          className="mt-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
-          style={{ background: "#fff3e0", color: "#FF6D00" }}
-        >
-          <span className="inline-block h-1.5 w-1.5 rounded-full bg-current task-pulse" />
-          ▶ {fmtTime(task.timeSpent + liveSeconds)}
+        <div className="mt-2 flex justify-center">
+          <div
+            className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
+            style={{ background: "#fff3e0", color: "#FF6D00" }}
+          >
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-current task-pulse" />
+            ▶ {fmtTime(task.timeSpent + liveSeconds)}
+          </div>
         </div>
       )}
       <style>{`
