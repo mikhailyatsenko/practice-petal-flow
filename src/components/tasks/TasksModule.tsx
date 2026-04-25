@@ -375,6 +375,13 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                   onOpen={() => setOpenTaskId(t.id)}
                 />
               ))}
+              <button
+                onClick={() => { setCreateForGoalId(row.gid); setCreating(true); }}
+                className="tap w-full inline-flex items-center justify-center gap-1 py-1.5 text-[12px] font-medium"
+                style={{ color: "#9a8f7e" }}
+              >
+                <Plus className="h-3.5 w-3.5" /> Добавить задачу
+              </button>
             </div>
           </div>
         );
