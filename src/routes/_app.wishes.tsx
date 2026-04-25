@@ -3095,6 +3095,7 @@ function RealizedTab({
 }) {
   const [proudWishes, setProudWishes] = useState<Record<string, number>>({});
   const [proudGoals, setProudGoals] = useState<Record<string, number>>({});
+  const [proudHotelki, setProudHotelki] = useState<Record<string, number>>({});
 
   const total = hotelki.length + wishes.length + goals.length;
 
