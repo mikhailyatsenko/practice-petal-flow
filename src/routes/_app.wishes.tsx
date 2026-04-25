@@ -1602,6 +1602,7 @@ function GoalCard({
   onDelete,
   isDone,
   onToggleDone,
+  onOpenTasks,
 }: {
   goal: Goal;
   count: number;
@@ -1610,6 +1611,7 @@ function GoalCard({
   onDelete: () => void;
   isDone: boolean;
   onToggleDone: () => void;
+  onOpenTasks?: () => void;
 }) {
   void isDone;
   const openTasks = goal.tasks.filter((t) => !t.done);
