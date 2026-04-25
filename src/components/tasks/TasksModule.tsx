@@ -125,6 +125,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
   const [editingPlanGoalId, setEditingPlanGoalId] = useState<string | null>(null);
   const [planDraft, setPlanDraft] = useState("");
+  const [shatteringId, setShatteringId] = useState<string | null>(null);
 
   // Таймеры — поддерживаем несколько активных параллельно
   const [activeTimerIds, setActiveTimerIds] = useState<Set<string>>(new Set());
@@ -219,11 +220,20 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
     setOpenTaskId(null);
   };
   const handleMarkDone = (id: string) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
     if (activeTimerIds.has(id)) {
       setActiveTimerIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
     }
+    // 1) Возвращаемся в список — пользователь видит свою задачу
     setOpenTaskId(null);
+    // 2) Через короткую задержку запускаем анимацию «расщепления»
+    window.setTimeout(() => {
+      setShatteringId(id);
+      // 3) После завершения анимации помечаем задачу выполненной (она исчезает из ленты)
+      window.setTimeout(() => {
+        setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
+        setShatteringId((curr) => (curr === id ? null : curr));
+      }, 720);
+    }, 220);
   };
 
   // ===== Рендер экранов =====
@@ -422,6 +432,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                   task={t}
                   isTimerActive={activeTimerIds.has(t.id)}
                   liveSeconds={elapsedMap[t.id] ?? 0}
+                  isShattering={shatteringId === t.id}
                   onOpen={() => setOpenTaskId(t.id)}
                 />
               ))}
@@ -473,11 +484,13 @@ function TaskRow({
   task,
   isTimerActive,
   liveSeconds,
+  isShattering,
   onOpen,
 }: {
   task: Task;
   isTimerActive: boolean;
   liveSeconds: number;
+  isShattering?: boolean;
   onOpen: () => void;
 }) {
   const c = DEADLINE_COLORS[task.deadline];
@@ -485,9 +498,9 @@ function TaskRow({
   return (
     <button
       onClick={onOpen}
-      className="tap w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card animate-fade-up transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed]"
+      className={`tap w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed] ${isShattering ? "animate-task-shatter" : "animate-fade-up"}`}
       style={{
-        border: isTimerActive ? "2px solid #FF6D00" : "1px solid #ede8df",
+        border: isShattering ? "2px solid #16a34a" : (isTimerActive ? "2px solid #FF6D00" : "1px solid #ede8df"),
       }}
     >
       <div className="flex items-center gap-2.5">
