@@ -220,11 +220,20 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
     setOpenTaskId(null);
   };
   const handleMarkDone = (id: string) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
     if (activeTimerIds.has(id)) {
       setActiveTimerIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
     }
+    // 1) Возвращаемся в список — пользователь видит свою задачу
     setOpenTaskId(null);
+    // 2) Через короткую задержку запускаем анимацию «расщепления»
+    window.setTimeout(() => {
+      setShatteringId(id);
+      // 3) После завершения анимации помечаем задачу выполненной (она исчезает из ленты)
+      window.setTimeout(() => {
+        setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
+        setShatteringId((curr) => (curr === id ? null : curr));
+      }, 720);
+    }, 220);
   };
 
   // ===== Рендер экранов =====
