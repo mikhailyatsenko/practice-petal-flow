@@ -229,8 +229,8 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
       <CreateOrEditTaskScreen
         mode="create"
         goals={goals}
-        defaultGoalId={initialGoalId ?? null}
-        onCancel={() => setCreating(false)}
+        defaultGoalId={createForGoalId ?? initialGoalId ?? null}
+        onCancel={() => { setCreating(false); setCreateForGoalId(null); }}
         onSubmit={(d) => handleCreate(d)}
       />
     );
