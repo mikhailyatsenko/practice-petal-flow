@@ -307,14 +307,18 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                 {goal?.title ?? "Без цели"}
               </span>
               <span
-                className="text-[10.5px] font-medium uppercase tracking-wider rounded-full px-2 py-0.5 shrink-0"
+                className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full px-2.5 py-1 shrink-0 shadow-sm"
                 style={
                   isOpen
-                    ? { background: "#FF6D00", color: "#fff" }
-                    : { background: "#ede8df", color: "#8a8a8a" }
+                    ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff", border: "1px solid transparent" }
+                    : { background: "#fff", color: "#FF6D00", border: "1px solid #FF6D00" }
                 }
               >
                 {isOpen ? "Закрыть план" : "План"}
+                <ChevronDown
+                  className="h-3 w-3 transition-transform"
+                  style={{ transform: isOpen ? "rotate(180deg)" : "none" }}
+                />
               </span>
               <span className="text-[11px] text-muted-foreground shrink-0">
                 {row.items.length} {pluralTasks(row.items.length)}
