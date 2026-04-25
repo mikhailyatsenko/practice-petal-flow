@@ -193,12 +193,12 @@ function HomeScreen() {
 
   // Авто-запуск всех анимаций при заходе на главную
   useEffect(() => {
-    if (autoplayedRef.current) return;
-    autoplayedRef.current = true;
+    void autoplayedRef.current;
 
     const timeouts: number[] = [];
     const STAR_FLIGHT = 1200;
     const STAR_GAP = 200;
+    const INITIAL_DELAY = 350;
 
     // 1) Звёздочки от 3 выполненных практик летят сразу (слева направо)
     timeouts.push(
@@ -219,11 +219,11 @@ function HomeScreen() {
             }, i * STAR_GAP),
           );
         });
-      }, 0),
+      }, INITIAL_DELAY),
     );
 
     // Когда долетит последняя звезда
-    const LAST_STAR_AT = STAR_FLIGHT + 2 * STAR_GAP; // 1600
+    const LAST_STAR_AT = INITIAL_DELAY + STAR_FLIGHT + 2 * STAR_GAP;
 
     // 2) 🔥 Хит — после звёзд
     const HIT_AT = LAST_STAR_AT + 400;
