@@ -56,7 +56,7 @@ const DURATIONS = [
 
 const FEELINGS: { value: number; emoji: string; label: string }[] = [
   { value: 10, emoji: "💜", label: "Эйфория" },
-  { value: 9,  emoji: "💗", label: "Страсть" },
+  { value: 9,  emoji: "🩷", label: "Страсть" },
   { value: 8,  emoji: "❤️", label: "Энтузиазм" },
   { value: 7,  emoji: "💚", label: "Воодушевление" },
   { value: 6,  emoji: "🧡", label: "Интерес" },
@@ -310,8 +310,8 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                 className="inline-flex items-center gap-1 text-[11px] font-medium rounded-full px-2 py-0.5 shrink-0"
                 style={
                   isOpen
-                    ? { background: "rgba(255,109,0,0.10)", color: "#FF6D00" }
-                    : { background: "transparent", color: "#9a8f7e" }
+                    ? { background: "rgba(255,109,0,0.10)", color: "#FF6D00", border: "1px solid rgba(255,109,0,0.35)" }
+                    : { background: "transparent", color: "#9a8f7e", border: "1px solid #ede8df" }
                 }
               >
                 {isOpen ? "Закрыть план" : "Открыть план"}
@@ -319,9 +319,6 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                   className="h-3 w-3 transition-transform"
                   style={{ transform: isOpen ? "rotate(180deg)" : "none" }}
                 />
-              </span>
-              <span className="text-[11px] text-muted-foreground shrink-0">
-                {row.items.length} {pluralTasks(row.items.length)}
               </span>
             </button>
 
@@ -426,19 +423,9 @@ function TaskRow({
           {task.title}
         </span>
         {task.duration && task.duration !== "—" && (
-          <span className="text-[11px] text-muted-foreground shrink-0">{task.duration}</span>
+          <span className="text-[11px] text-muted-foreground shrink-0 ml-auto">{task.duration}</span>
         )}
         <span className="text-[17px] leading-none shrink-0" aria-label={f.label}>{f.emoji}</span>
-        <span
-          className="shrink-0 rounded-full flex items-center justify-center"
-          style={{
-            width: 26, height: 26,
-            background: task.done ? "#16a34a" : "transparent",
-            border: task.done ? "none" : "1.5px solid #c8c0b0",
-          }}
-        >
-          {task.done && <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />}
-        </span>
       </div>
       {isTimerActive && (
         <div className="mt-2 flex justify-center">
