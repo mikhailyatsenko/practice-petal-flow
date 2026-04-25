@@ -1749,25 +1749,20 @@ function GoalCard({
           <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
             Задачи
           </p>
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] text-muted-foreground">
-              Сделано задач: <span className="font-semibold" style={{ color: "#16a34a" }}>{tasksDoneCount}</span>
-            </span>
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); onAddTask?.(); }}
-              aria-label="Добавить задачу"
-              className="tap inline-flex items-center justify-center rounded-full shrink-0"
-              style={{
-                width: 26, height: 26,
-                background: "linear-gradient(135deg,#FFB300,#FF6D00)",
-                color: "#fff",
-                boxShadow: "0 2px 6px rgba(255,109,0,0.35)",
-              }}
-            >
-              <Plus className="h-4 w-4" strokeWidth={2.5} />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onAddTask?.(); }}
+            aria-label="Добавить задачу"
+            className="tap inline-flex items-center justify-center rounded-full shrink-0"
+            style={{
+              width: 26, height: 26,
+              background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+              color: "#fff",
+              boxShadow: "0 2px 6px rgba(255,109,0,0.35)",
+            }}
+          >
+            <Plus className="h-4 w-4" strokeWidth={2.5} />
+          </button>
         </div>
         {totalTasks === 0 ? (
           <p className="mt-1.5 text-[12.5px] text-muted-foreground">Задач пока нет — добавь первую кнопкой +</p>
@@ -1786,6 +1781,13 @@ function GoalCard({
             ))}
           </ul>
         )}
+        <div
+          className="mt-2.5 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-[11px] text-muted-foreground"
+          style={{ background: "#FAF6EF" }}
+        >
+          <span>✅ Сделано задач:</span>
+          <span className="font-semibold tabular-nums" style={{ color: "#16a34a" }}>{tasksDoneCount}</span>
+        </div>
 
         <div className="mt-4 flex items-center justify-between gap-3">
           <DesireCharge level={count} onTap={onInspire} />
