@@ -323,7 +323,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
               className="tap w-full rounded-xl px-3 py-2.5 flex items-center justify-between gap-2 text-left transition-colors"
               style={{ background: "transparent", border: "1px solid transparent" }}
             >
-              <span className="text-[14px] font-semibold truncate flex-1 text-foreground">
+              <span className="text-[14px] font-semibold leading-snug flex-1 min-w-0 break-words text-foreground">
                 {goal?.title ?? "Без цели"}
               </span>
               <span
