@@ -553,22 +553,30 @@ function WishesScreen() {
           >
             <Plus className="h-4 w-4" /> Добавить цель
           </button>
-          {goals.filter((g) => !doneGoals.has(g.id)).map((g) => (
-            <GoalCard
-              key={g.id}
-              goal={g}
-              count={goalInspires[g.id] ?? 0}
-              onInspire={() => handleGoalInspire(g.id)}
-              onEdit={() => setEditingGoal(g)}
-              onDelete={() => handleDeleteGoal(g.id)}
-              isDone={doneGoals.has(g.id)}
-              onToggleDone={() => toggleDoneGoal(g.id)}
-              onOpenTasks={() => {
-                setTasksFromGoalId(g.id);
-                changeTabWithCardEffect(1, "tasks");
-              }}
-            />
-          ))}
+          {goals.filter((g) => !doneGoals.has(g.id)).map((g) => {
+            const goalTasks = moduleTasks.filter((t) => t.goalId === g.id);
+            const goalDone = goalTasks.filter((t) => t.done).length;
+            return (
+              <GoalCard
+                key={g.id}
+                goal={g}
+                count={goalInspires[g.id] ?? 0}
+                onInspire={() => handleGoalInspire(g.id)}
+                onEdit={() => setEditingGoal(g)}
+                onDelete={() => handleDeleteGoal(g.id)}
+                isDone={doneGoals.has(g.id)}
+                onToggleDone={() => toggleDoneGoal(g.id)}
+                tasksAll={goalTasks}
+                tasksDoneCount={goalDone}
+                onAddTask={() => setQuickTaskGoalId(g.id)}
+                onOpenTasks={() => {
+                  // По правке: при переходе из «Цели» фильтр НЕ ставим — показываем все задачи всех целей.
+                  setTasksFromGoalId(null);
+                  changeTabWithCardEffect(1, "tasks");
+                }}
+              />
+            );
+          })}
           {goals.filter((g) => !doneGoals.has(g.id)).length === 0 && (
             <div className="text-center text-[12px] text-muted-foreground pt-6">
               Пока нет целей. Создай первую — вырасти её из желания 🎯
@@ -588,6 +596,8 @@ function WishesScreen() {
           }))}
           initialGoalId={tasksFromGoalId}
           onClearGoalFilter={() => setTasksFromGoalId(null)}
+          tasks={moduleTasks}
+          onTasksChange={(updater) => setModuleTasks(updater)}
         />
       );
     }
