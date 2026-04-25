@@ -366,7 +366,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                 <TaskRow
                   key={t.id}
                   task={t}
-                  isTimerActive={activeTimerId === t.id}
+                  isTimerActive={activeTimerIds.has(t.id)}
                   liveSeconds={elapsedMap[t.id] ?? 0}
                   onOpen={() => setOpenTaskId(t.id)}
                 />
