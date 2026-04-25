@@ -138,8 +138,18 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   const [editingNotesGoalId, setEditingNotesGoalId] = useState<string | null>(null);
   const [notesDraft, setNotesDraft] = useState("");
   const [answersByGoal, setAnswersByGoal] = useState<Record<string, Record<number, string>>>({});
-  const [brainstormGoalId, setBrainstormGoalId] = useState<string | null>(null);
+  const [brainstormGoalId, setBrainstormGoalId] = useState<string | null>(initialBrainstormGoalId ?? null);
   const [brainstormQuestion, setBrainstormQuestion] = useState<number | null>(null);
+
+  // Применяем initialBrainstormGoalId при изменении (если открыли из меню цели)
+  useEffect(() => {
+    if (initialBrainstormGoalId) {
+      setBrainstormGoalId(initialBrainstormGoalId);
+      setBrainstormQuestion(null);
+      onClearBrainstormGoalId?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialBrainstormGoalId]);
 
   // Таймеры — поддерживаем несколько активных параллельно
   const [activeTimerIds, setActiveTimerIds] = useState<Set<string>>(new Set());
