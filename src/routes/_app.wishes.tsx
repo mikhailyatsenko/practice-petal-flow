@@ -10,6 +10,7 @@ import wishBusiness from "@/assets/wish-business.jpg";
 import goalMarathon from "@/assets/goal-marathon.jpg";
 import goalLanguage from "@/assets/goal-language.jpg";
 import goalSavings from "@/assets/goal-savings.jpg";
+import { TasksModule } from "@/components/tasks/TasksModule";
 
 export const Route = createFileRoute("/_app/wishes")({
   head: () => ({
