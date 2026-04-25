@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 export type DayState = "done" | "missed" | "empty";
 
 export interface PracticeRow {
@@ -264,6 +265,19 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
           {progressValue}/30
         </span>
       </div>
+
+      {/* Отдельная кнопка входа для "Программирование успеха" */}
+      {id === "self-prog" && (
+        <Link
+          to="/practice/self-prog"
+          onClick={(e) => e.stopPropagation()}
+          className="tap mt-3 flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-[14px] font-medium text-white shadow-card"
+          style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
+        >
+          Открыть «Программирование успеха»
+          <ChevronRight className="h-4 w-4" />
+        </Link>
+      )}
     </div>
   );
 }
