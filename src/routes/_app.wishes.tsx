@@ -783,6 +783,7 @@ function HotelkaItem({
   onDelete,
   isDone,
   onToggleDone,
+  readOnly = false,
 }: {
   index: number;
   text: string;
@@ -790,6 +791,7 @@ function HotelkaItem({
   onDelete: () => void;
   isDone: boolean;
   onToggleDone: () => void;
+  readOnly?: boolean;
 }) {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(text);
