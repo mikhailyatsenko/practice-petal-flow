@@ -2863,12 +2863,21 @@ function ActionsMenu({
           >
             <Pencil className="h-4 w-4" /> Изменить
           </button>
+          {onBrainstorm && (
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                onBrainstorm();
+              }}
+              className="tap flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-[13px] font-medium text-foreground"
+              style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}
+            >
+              🧠 Мозговой штурм
+            </button>
+          )}
           <button
             type="button"
-            onClick={() => {
-              setOpen(false);
-              setConfirmDelete(true);
-            }}
             className="tap flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-[13px] font-medium"
             style={{ color: "#E53935", borderTop: "1px solid rgba(0,0,0,0.06)" }}
           >
