@@ -1766,6 +1766,7 @@ function GoalCard({
   isDone,
   onToggleDone,
   onOpenTasks,
+  onBrainstorm,
   tasksAll = [],
   tasksDoneCount = 0,
   onAddTask,
@@ -1779,6 +1780,7 @@ function GoalCard({
   isDone: boolean;
   onToggleDone: () => void;
   onOpenTasks?: () => void;
+  onBrainstorm?: () => void;
   tasksAll?: ModuleTask[];
   tasksDoneCount?: number;
   onAddTask?: () => void;
