@@ -10,6 +10,7 @@ import wishBusiness from "@/assets/wish-business.jpg";
 import goalMarathon from "@/assets/goal-marathon.jpg";
 import goalLanguage from "@/assets/goal-language.jpg";
 import goalSavings from "@/assets/goal-savings.jpg";
+import { TasksModule } from "@/components/tasks/TasksModule";
 
 export const Route = createFileRoute("/_app/wishes")({
   head: () => ({
@@ -243,6 +244,9 @@ function WishesScreen() {
   const [doneHotelki, setDoneHotelki] = useState<Set<string>>(new Set());
   const [doneWishes, setDoneWishes] = useState<Set<string>>(new Set());
   const [doneGoals, setDoneGoals] = useState<Set<string>>(new Set());
+
+  // Раздел «Задачи»: фильтр по конкретной цели (когда переходим из «Цели → К задачам»)
+  const [tasksFromGoalId, setTasksFromGoalId] = useState<string | null>(null);
 
   useEffect(() => {
     const onTouchMove = (event: TouchEvent) => {
@@ -545,6 +549,10 @@ function WishesScreen() {
               onDelete={() => handleDeleteGoal(g.id)}
               isDone={doneGoals.has(g.id)}
               onToggleDone={() => toggleDoneGoal(g.id)}
+              onOpenTasks={() => {
+                setTasksFromGoalId(g.id);
+                changeTabWithCardEffect(1, "tasks");
+              }}
             />
           ))}
           {goals.filter((g) => !doneGoals.has(g.id)).length === 0 && (
@@ -557,7 +565,17 @@ function WishesScreen() {
     }
 
     if (tab === "tasks") {
-      return <EmptyTab tab="Задачи" />;
+      return (
+        <TasksModule
+          goals={goals.filter((g) => !doneGoals.has(g.id)).map((g) => ({
+            id: g.id,
+            title: g.title,
+            plan: g.plan,
+          }))}
+          initialGoalId={tasksFromGoalId}
+          onClearGoalFilter={() => setTasksFromGoalId(null)}
+        />
+      );
     }
 
     return (
@@ -1584,6 +1602,7 @@ function GoalCard({
   onDelete,
   isDone,
   onToggleDone,
+  onOpenTasks,
 }: {
   goal: Goal;
   count: number;
@@ -1592,6 +1611,7 @@ function GoalCard({
   onDelete: () => void;
   isDone: boolean;
   onToggleDone: () => void;
+  onOpenTasks?: () => void;
 }) {
   void isDone;
   const openTasks = goal.tasks.filter((t) => !t.done);
@@ -1694,6 +1714,7 @@ function GoalCard({
         <div className="mt-4 flex items-center justify-between gap-3">
           <DesireCharge level={count} onTap={onInspire} />
           <button
+            onClick={onOpenTasks}
             className="tap btn-pill-orange btn-sm shrink-0"
             style={{ borderRadius: 12 }}
           >
