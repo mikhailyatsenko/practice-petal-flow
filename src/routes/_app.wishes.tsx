@@ -1710,6 +1710,7 @@ function GoalCard({
   tasksAll = [],
   tasksDoneCount = 0,
   onAddTask,
+  readOnly = false,
 }: {
   goal: Goal;
   count: number;
@@ -1722,6 +1723,7 @@ function GoalCard({
   tasksAll?: ModuleTask[];
   tasksDoneCount?: number;
   onAddTask?: () => void;
+  readOnly?: boolean;
 }) {
   void isDone;
   const openTasks = tasksAll.filter((t) => !t.done);
