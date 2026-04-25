@@ -476,7 +476,6 @@ function TaskDetailScreen({
   onStopTimer: () => void;
   onMarkDone: () => void;
 }) {
-  const [menuOpen, setMenuOpen] = useState(false);
   const f = feelingOf(task.feeling);
   const total = task.timeSpent + (isTimerActive ? liveSeconds : 0);
 
@@ -486,31 +485,6 @@ function TaskDetailScreen({
         <button onClick={onBack} className="tap inline-flex items-center gap-1.5 text-[14px] text-muted-foreground">
           <ArrowLeft className="h-4 w-4" /> К задачам
         </button>
-        <div className="relative">
-          <button onClick={() => setMenuOpen((v) => !v)} className="tap h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
-            <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-          </button>
-          {menuOpen && (
-            <>
-              <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
-              <div className="absolute right-0 mt-1 z-20 w-44 rounded-xl bg-card shadow-lg overflow-hidden" style={{ border: "1px solid #ede8df" }}>
-                <button
-                  onClick={() => { setMenuOpen(false); onEdit(); }}
-                  className="w-full px-3 py-2.5 text-left text-[13px] flex items-center gap-2 hover:bg-secondary"
-                >
-                  <Pencil className="h-4 w-4" /> Изменить
-                </button>
-                <button
-                  onClick={() => { setMenuOpen(false); onDelete(); }}
-                  className="w-full px-3 py-2.5 text-left text-[13px] flex items-center gap-2 hover:bg-secondary"
-                  style={{ color: "#e53e3e" }}
-                >
-                  <Trash2 className="h-4 w-4" /> Удалить
-                </button>
-              </div>
-            </>
-          )}
-        </div>
       </div>
 
       <div className="space-y-2">
@@ -520,11 +494,6 @@ function TaskDetailScreen({
           </span>
         )}
         <h1 className="text-[22px] font-bold leading-tight text-foreground">{task.title}</h1>
-        <div className="text-[13px] text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1">
-          <span>📅 {task.deadline}</span>
-          <span>⏱ {task.duration}</span>
-          <span>{f.emoji} {f.label}</span>
-        </div>
       </div>
 
       {/* Таймер */}
@@ -564,6 +533,23 @@ function TaskDetailScreen({
       >
         ✅ Задача сделана!
       </button>
+
+      <div className="flex gap-2">
+        <button
+          onClick={onEdit}
+          className="tap flex-1 inline-flex items-center justify-center gap-2 rounded-full py-2.5 text-[13px] font-medium bg-card"
+          style={{ border: "1px solid #ede8df", color: "#1a1a1a" }}
+        >
+          <Pencil className="h-4 w-4" /> Изменить
+        </button>
+        <button
+          onClick={onDelete}
+          className="tap flex-1 inline-flex items-center justify-center gap-2 rounded-full py-2.5 text-[13px] font-medium bg-card"
+          style={{ border: "1px solid #f5c5c5", color: "#e53e3e" }}
+        >
+          <Trash2 className="h-4 w-4" /> Удалить
+        </button>
+      </div>
     </div>
   );
 }
