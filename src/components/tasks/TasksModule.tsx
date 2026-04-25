@@ -200,6 +200,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
     const newTask: Task = { ...data, id: `t${Date.now()}`, done: false, timeSpent: 0 };
     setTasks((prev) => [newTask, ...prev]);
     setCreating(false);
+    setCreateForGoalId(null);
   };
   const handleSaveEdit = (updated: Task) => {
     setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
