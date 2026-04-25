@@ -414,7 +414,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                     boxShadow: "0 2px 6px rgba(255,109,0,0.25)",
                   }}
                 >
-                  🧠 Мозговой штурм
+                  🧠 Мозговой штурм <span style={{ marginLeft: 2 }}>→</span>
                 </button>
               </div>
             )}
