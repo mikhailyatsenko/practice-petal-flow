@@ -134,11 +134,10 @@ export function BrainstormAnswerScreen({
   }, [text]);
 
   const len = text.length;
-  const enough = len >= MIN_LEN;
-  const remaining = Math.max(0, MIN_LEN - len);
+  const canSave = text.trim().length > 0;
 
   const handleSave = () => {
-    if (!enough) return;
+    if (!canSave) return;
     onSave(text);
     setSavedFlash(true);
     window.setTimeout(() => setSavedFlash(false), 2000);
