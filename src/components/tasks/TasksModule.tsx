@@ -421,7 +421,7 @@ function TaskRow({
   return (
     <button
       onClick={onOpen}
-      className="tap w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card animate-fade-up transition-colors"
+      className="tap w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card animate-fade-up transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed]"
       style={{
         border: isTimerActive ? "2px solid #FF6D00" : "1px solid #ede8df",
       }}
