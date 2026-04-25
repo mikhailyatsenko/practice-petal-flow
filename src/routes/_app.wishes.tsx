@@ -681,22 +681,24 @@ function WishesScreen() {
       {/* Быстрая постановка задачи из карточки цели */}
       {quickTaskGoalId && createPortal(
         <div
-          className="fixed inset-0 z-[100] overflow-y-auto animate-fade-up"
+          className="fixed inset-0 z-[100] overflow-y-auto animate-fade-up flex justify-center"
           style={{ background: "var(--background)" }}
         >
-          <CreateOrEditTaskScreen
-            mode="create"
-            goals={goals.filter((g) => !doneGoals.has(g.id)).map((g) => ({ id: g.id, title: g.title, plan: g.plan }))}
-            defaultGoalId={quickTaskGoalId}
-            onCancel={() => setQuickTaskGoalId(null)}
-            onSubmit={(d) => {
-              setModuleTasks((prev) => [
-                { ...d, id: `t${Date.now()}`, done: false, timeSpent: 0 },
-                ...prev,
-              ]);
-              setQuickTaskGoalId(null);
-            }}
-          />
+          <div className="w-full max-w-[480px]">
+            <CreateOrEditTaskScreen
+              mode="create"
+              goals={goals.filter((g) => !doneGoals.has(g.id)).map((g) => ({ id: g.id, title: g.title, plan: g.plan }))}
+              defaultGoalId={quickTaskGoalId}
+              onCancel={() => setQuickTaskGoalId(null)}
+              onSubmit={(d) => {
+                setModuleTasks((prev) => [
+                  { ...d, id: `t${Date.now()}`, done: false, timeSpent: 0 },
+                  ...prev,
+                ]);
+                setQuickTaskGoalId(null);
+              }}
+            />
+          </div>
         </div>,
         document.body
       )}
@@ -1749,7 +1751,7 @@ function GoalCard({
           </p>
           <div className="flex items-center gap-2">
             <span className="text-[11px] text-muted-foreground">
-              Сделано: <span className="font-semibold" style={{ color: "#16a34a" }}>{tasksDoneCount}</span> / {totalTasks}
+              Сделано задач: <span className="font-semibold" style={{ color: "#16a34a" }}>{tasksDoneCount}</span>
             </span>
             <button
               type="button"
