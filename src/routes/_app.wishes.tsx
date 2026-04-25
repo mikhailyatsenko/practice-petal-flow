@@ -2743,12 +2743,14 @@ function ActionsMenu({
   onDone,
   onEdit,
   onDelete,
+  onBrainstorm,
   doneConfirmText,
   deleteConfirmText,
 }: {
   onDone: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onBrainstorm?: () => void;
   doneConfirmText: string;
   deleteConfirmText: string;
 }) {
