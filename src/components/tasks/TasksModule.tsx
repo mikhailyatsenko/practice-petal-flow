@@ -459,36 +459,57 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
                   </div>
 
                   {editingPlanGoalId === row.gid ? (
-                    <div className="mt-2">
-                      <textarea
-                        value={planDraft}
-                        onChange={(e) => setPlanDraft(e.target.value)}
-                        rows={5}
-                        autoFocus
-                        className="w-full rounded-xl p-2.5 text-[14px] leading-[1.6] text-foreground/90 outline-none"
-                        style={{ border: "1px solid #ede8df", background: "#fff", resize: "vertical" }}
-                        placeholder="Опиши план реализации…"
-                      />
-                      <div className="mt-2 flex gap-2 justify-end">
-                        <button
-                          onClick={() => setEditingPlanGoalId(null)}
-                          className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium"
-                          style={{ background: "#fff", color: "#8a8a8a", border: "1px solid #ede8df" }}
-                        >
-                          <X className="h-3.5 w-3.5" /> Отмена
-                        </button>
-                        <button
-                          onClick={() => {
-                            onUpdateGoalPlan?.(row.gid, planDraft);
-                            setEditingPlanGoalId(null);
-                          }}
-                          className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium text-white"
-                          style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
-                        >
-                          <Check className="h-3.5 w-3.5" /> Сохранить
-                        </button>
-                      </div>
-                    </div>
+                    (() => {
+                      const original = goal.plan ?? "";
+                      const isDirty = planDraft !== original;
+                      const canSave = isDirty && planDraft.trim().length > 0;
+                      return (
+                        <div className="mt-2">
+                          <textarea
+                            value={planDraft}
+                            onChange={(e) => setPlanDraft(e.target.value)}
+                            rows={5}
+                            autoFocus
+                            className="w-full rounded-xl p-2.5 text-[14px] leading-[1.6] text-foreground/90 outline-none"
+                            style={{ border: "1px solid #ede8df", background: "#fff", resize: "vertical" }}
+                            placeholder="Опиши план реализации…"
+                          />
+                          <div className="mt-2 flex items-center justify-between gap-2">
+                            <span
+                              className="text-[11.5px]"
+                              style={{ color: isDirty ? "#FF6D00" : "#a8a8a8", fontWeight: isDirty ? 600 : 400 }}
+                            >
+                              {isDirty ? "● Несохранённые изменения" : "✓ Сохранено"}
+                            </span>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => setEditingPlanGoalId(null)}
+                                className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium"
+                                style={{ background: "#fff", color: "#8a8a8a", border: "1px solid #ede8df" }}
+                              >
+                                <X className="h-3.5 w-3.5" /> Отмена
+                              </button>
+                              <button
+                                disabled={!canSave}
+                                onClick={() => {
+                                  if (!canSave) return;
+                                  onUpdateGoalPlan?.(row.gid, planDraft);
+                                  setEditingPlanGoalId(null);
+                                }}
+                                className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium transition-all"
+                                style={
+                                  canSave
+                                    ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff", boxShadow: "0 2px 8px rgba(255,109,0,0.35)" }
+                                    : { background: "#f3f4f6", color: "#9ca3af", border: "1px solid #e5e7eb", cursor: "not-allowed" }
+                                }
+                              >
+                                <Check className="h-3.5 w-3.5" /> Сохранить
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()
                   ) : (
                     <p className="mt-1.5 text-[14px] leading-[1.6] text-foreground/90 whitespace-pre-wrap">
                       {goal.plan || "План пока не описан."}
@@ -980,6 +1001,7 @@ function Section({ title, subtitle, children }: { title: string; subtitle?: stri
 function NotesCard({
   value, isEditing, draft, onStartEdit, onChangeDraft, onCancel, onSave,
 }: {
+
   value: string;
   isEditing: boolean;
   draft: string;
@@ -1034,21 +1056,34 @@ function NotesCard({
               className="w-full rounded-xl p-2.5 text-[14px] leading-[1.6] text-foreground/90 outline-none resize-none placeholder:text-muted-foreground"
               style={{ border: "1px solid #ede8df", background: "#fff", minHeight: 60 }}
             />
-            <div className="mt-2 flex gap-2 justify-end">
-              <button
-                onClick={onCancel}
-                className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium"
-                style={{ background: "#fff", color: "#8a8a8a", border: "1px solid #ede8df" }}
+            <div className="mt-2 flex items-center justify-between gap-2">
+              <span
+                className="text-[11.5px]"
+                style={{ color: draft !== value ? "#FF6D00" : "#a8a8a8", fontWeight: draft !== value ? 600 : 400 }}
               >
-                <X className="h-3.5 w-3.5" /> Отмена
-              </button>
-              <button
-                onClick={onSave}
-                className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium text-white"
-                style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
-              >
-                <Check className="h-3.5 w-3.5" /> Сохранить
-              </button>
+                {draft !== value ? "● Несохранённые изменения" : "✓ Сохранено"}
+              </span>
+              <div className="flex gap-2">
+                <button
+                  onClick={onCancel}
+                  className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium"
+                  style={{ background: "#fff", color: "#8a8a8a", border: "1px solid #ede8df" }}
+                >
+                  <X className="h-3.5 w-3.5" /> Отмена
+                </button>
+                <button
+                  disabled={draft === value}
+                  onClick={onSave}
+                  className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium transition-all"
+                  style={
+                    draft !== value
+                      ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff", boxShadow: "0 2px 8px rgba(255,109,0,0.35)" }
+                      : { background: "#f3f4f6", color: "#9ca3af", border: "1px solid #e5e7eb", cursor: "not-allowed" }
+                  }
+                >
+                  <Check className="h-3.5 w-3.5" /> Сохранить
+                </button>
+              </div>
             </div>
           </div>
         ) : (
