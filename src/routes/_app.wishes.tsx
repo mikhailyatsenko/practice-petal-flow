@@ -1714,6 +1714,7 @@ function GoalCard({
         <div className="mt-4 flex items-center justify-between gap-3">
           <DesireCharge level={count} onTap={onInspire} />
           <button
+            onClick={onOpenTasks}
             className="tap btn-pill-orange btn-sm shrink-0"
             style={{ borderRadius: 12 }}
           >
