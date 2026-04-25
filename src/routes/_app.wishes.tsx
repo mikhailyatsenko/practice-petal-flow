@@ -1069,8 +1069,8 @@ function DesireCharge({ level, onTap, mode = "inspire" }: { level: number; onTap
       >
         ❤️
       </span>
-      <span className="flex flex-col gap-1 min-w-0 text-left">
-        <span className="flex items-center gap-1.5">
+      <span className="flex flex-col gap-0.5 min-w-0 text-left">
+        <span className="flex items-end gap-1.5" style={{ height: 16 }}>
           {Array.from({ length: 5 }).map((_, i) => {
             const filled = i < inRound;
             return (
@@ -1081,13 +1081,13 @@ function DesireCharge({ level, onTap, mode = "inspire" }: { level: number; onTap
               />
             );
           })}
-          {/* Бейдж +N — фикс. ширина, чтобы лейбл не прыгал */}
-          <span className="ml-1 inline-flex items-center justify-start" style={{ width: 30, height: 18 }}>
+          {/* Бейдж +N — фикс. ширина, чтобы лейбл не прыгал. Выровнен по низу кружочков */}
+          <span className="ml-1 inline-flex items-end justify-start" style={{ width: 30, height: 16 }}>
             {badgeCount > 0 && (
               <span
                 key={badgeCount}
-                className="min-w-[22px] h-[18px] px-1.5 rounded-full text-[10px] font-bold text-white inline-flex items-center justify-center animate-pop"
-                style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)", boxShadow: "0 2px 6px rgba(255,109,0,0.35)" }}
+                className="min-w-[18px] h-[14px] px-1 rounded-full text-[9px] font-bold text-white inline-flex items-center justify-center animate-pop"
+                style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)", boxShadow: "0 2px 6px rgba(255,109,0,0.35)", transform: "translateY(2px)" }}
               >
                 {badgeCount}
               </span>
@@ -1095,7 +1095,7 @@ function DesireCharge({ level, onTap, mode = "inspire" }: { level: number; onTap
           </span>
         </span>
         {/* Фиксированная высота строки лейбла */}
-        <span className="block leading-none" style={{ minHeight: 14 }}>
+        <span className="block leading-none" style={{ minHeight: 12 }}>
           <span
             key={total}
             className={`text-[12px] font-medium leading-none inline-block ${justHit100 ? "animate-celebrate" : "animate-pop"}`}
