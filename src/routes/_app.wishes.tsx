@@ -469,9 +469,11 @@ function WishesScreen() {
     if (transitionState) return;
     const next = targetTab ?? getAdjacentTab(activeTab, direction);
     if (!next || next === activeTab) return;
-    setTransitionState({ current: activeTab, next, direction, stage: "animating" });
+    // Уходящий таб показываем оверлеем, а активный сразу переключаем — чтобы не было ремоунта/мерцания.
+    const outgoing = activeTab;
+    setActiveTab(next);
+    setTransitionState({ current: outgoing, next, direction, stage: "animating" });
     window.setTimeout(() => {
-      setActiveTab(next);
       setTransitionState(null);
     }, 320);
   };
@@ -685,36 +687,23 @@ function WishesScreen() {
       </div>
 
       <div className="relative overflow-hidden">
-        {!transitionState && <div>{renderTabContent(activeTab)}</div>}
+        {/* Активная вкладка остаётся смонтированной всегда — никаких мерцаний на смене таба */}
+        <div>{renderTabContent(activeTab)}</div>
 
+        {/* Уходящая вкладка показывается поверх только во время анимации */}
         {transitionState && (
-          <div className="relative grid" style={{ gridTemplateAreas: '"stack"' }}>
-            <div
-              className="min-w-0"
-              style={{
-                gridArea: "stack",
-                animation: transitionState.direction === 1
-                  ? "slide-out-left 320ms cubic-bezier(.2,.7,.2,1) both"
-                  : "slide-out-right 320ms cubic-bezier(.2,.7,.2,1) both",
-                background: "var(--background)",
-                zIndex: 10,
-              }}
-            >
-              {renderTabContent(transitionState.current)}
-            </div>
-            <div
-              className="min-w-0"
-              style={{
-                gridArea: "stack",
-                animation: transitionState.direction === 1
-                  ? "slide-in-from-right 320ms cubic-bezier(.2,.7,.2,1) both"
-                  : "slide-in-from-left 320ms cubic-bezier(.2,.7,.2,1) both",
-                background: "var(--background)",
-                zIndex: 20,
-              }}
-            >
-              {renderTabContent(transitionState.next)}
-            </div>
+          <div
+            className="absolute inset-0 min-w-0"
+            style={{
+              animation: transitionState.direction === 1
+                ? "slide-out-left 320ms cubic-bezier(.2,.7,.2,1) both"
+                : "slide-out-right 320ms cubic-bezier(.2,.7,.2,1) both",
+              background: "var(--background)",
+              zIndex: 20,
+              pointerEvents: "none",
+            }}
+          >
+            {renderTabContent(transitionState.current)}
           </div>
         )}
       </div>
