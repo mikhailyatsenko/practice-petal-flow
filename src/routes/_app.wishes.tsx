@@ -866,17 +866,34 @@ function HotelkaItem({
       <div className="h-7 w-7 shrink-0 rounded-full bg-secondary flex items-center justify-center text-[12px] font-medium text-muted-foreground">
         {index}
       </div>
-      <p className="text-[14px] leading-snug text-foreground/90 flex-1">{text}</p>
-      <ActionsMenu
-        onDone={onToggleDone}
-        onEdit={() => {
-          setValue(text);
-          setEditing(true);
-        }}
-        onDelete={onDelete}
-        doneConfirmText={`«${text}» будет перемещена в раздел «Воплощённые».`}
-        deleteConfirmText={`«${text}» будет удалена навсегда. Это действие нельзя отменить.`}
-      />
+      <p
+        className="text-[14px] leading-snug text-foreground/90 flex-1"
+        style={readOnly ? { textDecoration: "line-through", opacity: 0.7 } : undefined}
+      >
+        {text}
+      </p>
+      {readOnly ? (
+        <button
+          type="button"
+          onClick={onToggleDone}
+          aria-label="Снять отметку «Воплощено»"
+          className="tap inline-flex items-center justify-center shrink-0"
+          style={{ width: 32, height: 32, borderRadius: 10, background: "#16a34a", color: "#fff" }}
+        >
+          <Check className="h-4 w-4" strokeWidth={3} />
+        </button>
+      ) : (
+        <ActionsMenu
+          onDone={onToggleDone}
+          onEdit={() => {
+            setValue(text);
+            setEditing(true);
+          }}
+          onDelete={onDelete}
+          doneConfirmText={`«${text}» будет перемещена в раздел «Воплощённые».`}
+          deleteConfirmText={`«${text}» будет удалена навсегда. Это действие нельзя отменить.`}
+        />
+      )}
     </div>
   );
 }
