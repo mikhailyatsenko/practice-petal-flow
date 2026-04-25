@@ -124,6 +124,11 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
   };
 
   const handleActivate = () => {
+    // Для "Программирование успеха" — только переход, без анимаций/тогглов
+    if (id === "self-prog") {
+      onToggle(id, null);
+      return;
+    }
     // origin = текущая кнопка "Сделать" (если ещё не выполнена), иначе тег
     const origin = !doneToday ? buttonRef.current : tagRef.current;
     // Сначала отдаём origin (с актуальной геометрией), потом запускаем press-эффект
