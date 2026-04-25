@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Plus, Pencil, Trash2, Check, Play, Square, ChevronDown, X } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, Check, Play, Square, ChevronDown, X, Brain } from "lucide-react";
+import { BrainstormListScreen, BrainstormAnswerScreen } from "./Brainstorm";
 
 /* =====================================================================
    Раздел «Задачи». Самодостаточный модуль — НЕ трогает существующий код.
@@ -127,6 +128,14 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
   const [planDraft, setPlanDraft] = useState("");
   const [shatteringId, setShatteringId] = useState<string | null>(null);
 
+  // Заметки по целям и ответы мозгового штурма (локальное хранилище модуля)
+  const [notesByGoal, setNotesByGoal] = useState<Record<string, string>>({});
+  const [editingNotesGoalId, setEditingNotesGoalId] = useState<string | null>(null);
+  const [notesDraft, setNotesDraft] = useState("");
+  const [answersByGoal, setAnswersByGoal] = useState<Record<string, Record<number, string>>>({});
+  const [brainstormGoalId, setBrainstormGoalId] = useState<string | null>(null);
+  const [brainstormQuestion, setBrainstormQuestion] = useState<number | null>(null);
+
   // Таймеры — поддерживаем несколько активных параллельно
   const [activeTimerIds, setActiveTimerIds] = useState<Set<string>>(new Set());
   const [elapsedMap, setElapsedMap] = useState<Record<string, number>>({});
@@ -237,6 +246,34 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
   };
 
   // ===== Рендер экранов =====
+
+  if (brainstormGoalId) {
+    const g = goals.find((x) => x.id === brainstormGoalId);
+    const goalAnswers = answersByGoal[brainstormGoalId] ?? {};
+    if (brainstormQuestion != null) {
+      return (
+        <BrainstormAnswerScreen
+          questionNumber={brainstormQuestion}
+          initialAnswer={goalAnswers[brainstormQuestion] ?? ""}
+          onBack={() => setBrainstormQuestion(null)}
+          onSave={(text) =>
+            setAnswersByGoal((prev) => ({
+              ...prev,
+              [brainstormGoalId]: { ...(prev[brainstormGoalId] ?? {}), [brainstormQuestion]: text },
+            }))
+          }
+        />
+      );
+    }
+    return (
+      <BrainstormListScreen
+        goalTitle={g?.title ?? "—"}
+        answers={goalAnswers}
+        onBack={() => setBrainstormGoalId(null)}
+        onOpenQuestion={(idx) => setBrainstormQuestion(idx)}
+      />
+    );
+  }
 
   if (creating) {
     return (
@@ -422,6 +459,41 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                   )}
                 </div>
               </article>
+            )}
+
+            {/* Заметки */}
+            {isOpen && goal && (
+              <NotesCard
+                value={notesByGoal[row.gid] ?? ""}
+                isEditing={editingNotesGoalId === row.gid}
+                draft={notesDraft}
+                onStartEdit={() => { setEditingNotesGoalId(row.gid); setNotesDraft(notesByGoal[row.gid] ?? ""); }}
+                onChangeDraft={setNotesDraft}
+                onCancel={() => setEditingNotesGoalId(null)}
+                onSave={() => {
+                  setNotesByGoal((prev) => ({ ...prev, [row.gid]: notesDraft }));
+                  setEditingNotesGoalId(null);
+                }}
+              />
+            )}
+
+            {/* Кнопка Мозговой штурм */}
+            {isOpen && goal && (
+              <button
+                onClick={() => { setBrainstormGoalId(row.gid); setBrainstormQuestion(null); }}
+                className="tap w-full inline-flex items-center justify-center gap-2 animate-fade-up"
+                style={{
+                  background: "#fff",
+                  border: "1.5px solid #FF6D00",
+                  color: "#FF6D00",
+                  borderRadius: 12,
+                  padding: "12px",
+                  fontSize: 14,
+                  fontWeight: 600,
+                }}
+              >
+                🧠 Мозговой штурм
+              </button>
             )}
 
             {/* Задачи */}
@@ -880,5 +952,94 @@ function Section({ title, subtitle, children }: { title: string; subtitle?: stri
       {subtitle && <p className="text-[11.5px] text-muted-foreground">{subtitle}</p>}
       <div className="pt-1">{children}</div>
     </section>
+  );
+}
+
+/* ---------------- Карточка «Заметки» ---------------- */
+
+function NotesCard({
+  value, isEditing, draft, onStartEdit, onChangeDraft, onCancel, onSave,
+}: {
+  value: string;
+  isEditing: boolean;
+  draft: string;
+  onStartEdit: () => void;
+  onChangeDraft: (v: string) => void;
+  onCancel: () => void;
+  onSave: () => void;
+}) {
+  const taRef = useRef<HTMLTextAreaElement | null>(null);
+  useEffect(() => {
+    if (!isEditing) return;
+    const ta = taRef.current;
+    if (!ta) return;
+    ta.style.height = "auto";
+    ta.style.height = ta.scrollHeight + "px";
+  }, [draft, isEditing]);
+
+  return (
+    <article
+      className="bg-card rounded-2xl overflow-hidden animate-fade-up"
+      style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: "1px solid #ede8df" }}
+    >
+      <div className="p-3.5">
+        <div className="flex items-center justify-between gap-2">
+          <p
+            className="text-[11px] font-medium uppercase"
+            style={{ color: "#8a8a8a", letterSpacing: "0.5px" }}
+          >
+            Заметки
+          </p>
+          {!isEditing && (
+            <button
+              onClick={onStartEdit}
+              aria-label="Изменить заметки"
+              className="tap inline-flex items-center justify-center rounded-full"
+              style={{ width: 26, height: 26, color: "#9a8f7e", border: "1px solid #ede8df", background: "#fff" }}
+            >
+              <Pencil className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+
+        {isEditing ? (
+          <div className="mt-2">
+            <textarea
+              ref={taRef}
+              value={draft}
+              onChange={(e) => onChangeDraft(e.target.value)}
+              rows={2}
+              autoFocus
+              placeholder="Добавьте заметки по этой цели..."
+              className="w-full rounded-xl p-2.5 text-[14px] leading-[1.6] text-foreground/90 outline-none resize-none placeholder:text-muted-foreground"
+              style={{ border: "1px solid #ede8df", background: "#fff", minHeight: 60 }}
+            />
+            <div className="mt-2 flex gap-2 justify-end">
+              <button
+                onClick={onCancel}
+                className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium"
+                style={{ background: "#fff", color: "#8a8a8a", border: "1px solid #ede8df" }}
+              >
+                <X className="h-3.5 w-3.5" /> Отмена
+              </button>
+              <button
+                onClick={onSave}
+                className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium text-white"
+                style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
+              >
+                <Check className="h-3.5 w-3.5" /> Сохранить
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p
+            className="mt-1.5 text-[14px] leading-[1.6] whitespace-pre-wrap"
+            style={{ color: value ? undefined : "#a8a8a8" }}
+          >
+            {value || "Добавьте заметки по этой цели..."}
+          </p>
+        )}
+      </div>
+    </article>
   );
 }
