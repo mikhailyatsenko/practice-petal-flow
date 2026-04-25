@@ -248,6 +248,20 @@ function WishesScreen() {
   // Раздел «Задачи»: фильтр по конкретной цели (когда переходим из «Цели → К задачам»)
   const [tasksFromGoalId, setTasksFromGoalId] = useState<string | null>(null);
 
+  // Центральное хранилище задач (используется и в TasksModule, и в карточке цели)
+  const [moduleTasks, setModuleTasks] = useState<ModuleTask[]>([
+    { id: "t1", goalId: "g-marathon", title: "Купить кроссовки для длинных дистанций", deadline: "🟧 На день", duration: "1 час", feeling: 8, done: false, timeSpent: 0 },
+    { id: "t2", goalId: "g-marathon", title: "Составить план тренировок на месяц", deadline: "🟥 Главная задача", duration: "2 часа", feeling: 7, done: false, timeSpent: 0 },
+    { id: "t3", goalId: "g-marathon", title: "Зарегистрироваться на полумарафон", deadline: "🟪 На месяц", duration: "30 мин", feeling: 9, done: false, timeSpent: 0 },
+    { id: "t4", goalId: "g-spanish",  title: "Найти преподавателя испанского", deadline: "🟦 На неделю", duration: "1 час", feeling: 6, done: false, timeSpent: 0 },
+    { id: "t5", goalId: "g-spanish",  title: "Пройти базовый курс грамматики", deadline: "🟥 Главная задача", duration: "Более 10 часов", feeling: 5, done: false, timeSpent: 0 },
+    { id: "t6", goalId: "g-savings",  title: "Открыть накопительный счёт", deadline: "🟧 На день", duration: "30 мин", feeling: 7, done: false, timeSpent: 0 },
+    { id: "t7", goalId: "g-savings",  title: "Настроить автоперевод 20% от дохода", deadline: "⬜ Не определён", duration: "15 мин", feeling: 8, done: false, timeSpent: 0 },
+  ]);
+
+  // Быстрая постановка задачи из карточки цели
+  const [quickTaskGoalId, setQuickTaskGoalId] = useState<string | null>(null);
+
   useEffect(() => {
     const onTouchMove = (event: TouchEvent) => {
       const state = touchRef.current;
