@@ -106,6 +106,9 @@ interface TasksModuleProps {
   /** Фильтр по конкретной цели (когда пришли из «Цели → К задачам»). */
   initialGoalId?: string | null;
   onClearGoalFilter?: () => void;
+  /** Сразу открыть мозговой штурм для цели. */
+  initialBrainstormGoalId?: string | null;
+  onClearBrainstormGoalId?: () => void;
   /** Контролируемое хранилище задач (если задано — используется вместо локального). */
   tasks?: Task[];
   onTasksChange?: (updater: (prev: Task[]) => Task[]) => void;
@@ -113,7 +116,7 @@ interface TasksModuleProps {
   onUpdateGoalPlan?: (goalId: string, plan: string) => void;
 }
 
-export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: tasksProp, onTasksChange, onUpdateGoalPlan }: TasksModuleProps) {
+export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBrainstormGoalId, onClearBrainstormGoalId, tasks: tasksProp, onTasksChange, onUpdateGoalPlan }: TasksModuleProps) {
   const [internalTasks, setInternalTasks] = useState<Task[]>(() => SAMPLE_TASKS(goals));
   const tasks = tasksProp ?? internalTasks;
   const setTasks = (updater: (prev: Task[]) => Task[]) => {
@@ -135,8 +138,18 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
   const [editingNotesGoalId, setEditingNotesGoalId] = useState<string | null>(null);
   const [notesDraft, setNotesDraft] = useState("");
   const [answersByGoal, setAnswersByGoal] = useState<Record<string, Record<number, string>>>({});
-  const [brainstormGoalId, setBrainstormGoalId] = useState<string | null>(null);
+  const [brainstormGoalId, setBrainstormGoalId] = useState<string | null>(initialBrainstormGoalId ?? null);
   const [brainstormQuestion, setBrainstormQuestion] = useState<number | null>(null);
+
+  // Применяем initialBrainstormGoalId при изменении (если открыли из меню цели)
+  useEffect(() => {
+    if (initialBrainstormGoalId) {
+      setBrainstormGoalId(initialBrainstormGoalId);
+      setBrainstormQuestion(null);
+      onClearBrainstormGoalId?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialBrainstormGoalId]);
 
   // Таймеры — поддерживаем несколько активных параллельно
   const [activeTimerIds, setActiveTimerIds] = useState<Set<string>>(new Set());
@@ -416,7 +429,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                     boxShadow: "0 2px 6px rgba(255,109,0,0.25)",
                   }}
                 >
-                  🧠 Перейти в мозговой штурм <span style={{ marginLeft: 2 }}>→</span>
+                  🧠 Мозговой штурм <span style={{ marginLeft: 2 }}>→</span>
                 </button>
               </div>
             )}
@@ -838,19 +851,11 @@ export function CreateOrEditTaskScreen({
                 className="tap w-full flex items-center gap-3 rounded-xl px-3 py-2.5 bg-card transition-colors text-left"
                 style={{ border: `1px solid ${active ? "#FF6D00" : "#ede8df"}` }}
               >
-                {g.image ? (
-                  <img
-                    src={g.image}
-                    alt=""
-                    className="shrink-0 rounded-lg object-cover"
-                    style={{ width: 36, height: 36 }}
-                  />
-                ) : (
-                  <span
-                    className="shrink-0 rounded-lg"
-                    style={{ width: 36, height: 36, background: g.color ?? "linear-gradient(135deg,#FFB300,#FF6D00)" }}
-                  />
-                )}
+                <span
+                  className="shrink-0 rounded-lg"
+                  style={{ width: 36, height: 36, background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
+                />
+
                 <span className="flex-1 text-[14px] font-medium">{g.title}</span>
                 {active && <Check className="h-4 w-4" style={{ color: "#FF6D00" }} />}
               </button>

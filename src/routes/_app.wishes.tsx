@@ -275,6 +275,7 @@ function WishesScreen() {
 
   // Раздел «Задачи»: фильтр по конкретной цели (когда переходим из «Цели → К задачам»)
   const [tasksFromGoalId, setTasksFromGoalId] = useState<string | null>(null);
+  const [brainstormFromGoalId, setBrainstormFromGoalId] = useState<string | null>(null);
 
   // Центральное хранилище задач (используется и в TasksModule, и в карточке цели)
   const [moduleTasks, setModuleTasks] = useState<ModuleTask[]>([
@@ -602,6 +603,11 @@ function WishesScreen() {
                   setTasksFromGoalId(null);
                   changeTabWithCardEffect(1, "tasks");
                 }}
+                onBrainstorm={() => {
+                  setTasksFromGoalId(null);
+                  setBrainstormFromGoalId(g.id);
+                  changeTabWithCardEffect(1, "tasks");
+                }}
               />
             );
           })}
@@ -625,6 +631,8 @@ function WishesScreen() {
           }))}
           initialGoalId={tasksFromGoalId}
           onClearGoalFilter={() => setTasksFromGoalId(null)}
+          initialBrainstormGoalId={brainstormFromGoalId}
+          onClearBrainstormGoalId={() => setBrainstormFromGoalId(null)}
           tasks={moduleTasks}
           onTasksChange={(updater) => setModuleTasks(updater)}
           onUpdateGoalPlan={(goalId, plan) =>
@@ -1760,6 +1768,7 @@ function GoalCard({
   isDone,
   onToggleDone,
   onOpenTasks,
+  onBrainstorm,
   tasksAll = [],
   tasksDoneCount = 0,
   onAddTask,
@@ -1773,6 +1782,7 @@ function GoalCard({
   isDone: boolean;
   onToggleDone: () => void;
   onOpenTasks?: () => void;
+  onBrainstorm?: () => void;
   tasksAll?: ModuleTask[];
   tasksDoneCount?: number;
   onAddTask?: () => void;
@@ -1799,6 +1809,7 @@ function GoalCard({
               onDone={onToggleDone}
               onEdit={onEdit}
               onDelete={onDelete}
+              onBrainstorm={onBrainstorm}
               doneConfirmText={`«${goal.title}» будет перемещена в раздел «Воплощённые». Это действие можно отменить.`}
               deleteConfirmText={`«${goal.title}» будет удалена навсегда. Это действие нельзя отменить.`}
             />
@@ -2743,12 +2754,14 @@ function ActionsMenu({
   onDone,
   onEdit,
   onDelete,
+  onBrainstorm,
   doneConfirmText,
   deleteConfirmText,
 }: {
   onDone: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onBrainstorm?: () => void;
   doneConfirmText: string;
   deleteConfirmText: string;
 }) {
@@ -2861,6 +2874,19 @@ function ActionsMenu({
           >
             <Pencil className="h-4 w-4" /> Изменить
           </button>
+          {onBrainstorm && (
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                onBrainstorm();
+              }}
+              className="tap flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-[13px] font-medium text-foreground"
+              style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}
+            >
+              🧠 Мозговой штурм
+            </button>
+          )}
           <button
             type="button"
             onClick={() => {
