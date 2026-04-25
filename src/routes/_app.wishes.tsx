@@ -1807,6 +1807,7 @@ function GoalCard({
               onDone={onToggleDone}
               onEdit={onEdit}
               onDelete={onDelete}
+              onBrainstorm={onBrainstorm}
               doneConfirmText={`«${goal.title}» будет перемещена в раздел «Воплощённые». Это действие можно отменить.`}
               deleteConfirmText={`«${goal.title}» будет удалена навсегда. Это действие нельзя отменить.`}
             />
