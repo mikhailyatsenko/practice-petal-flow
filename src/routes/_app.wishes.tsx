@@ -1738,14 +1738,31 @@ function GoalCard({
 
       <div className="px-4 py-3.5">
         <div className="flex items-start gap-3">
-          <h3 className="text-[20px] font-bold leading-tight text-foreground flex-1 min-w-0">{goal.title}</h3>
-          <ActionsMenu
-            onDone={onToggleDone}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            doneConfirmText={`«${goal.title}» будет перемещена в раздел «Воплощённые». Это действие можно отменить.`}
-            deleteConfirmText={`«${goal.title}» будет удалена навсегда. Это действие нельзя отменить.`}
-          />
+          <h3
+            className="text-[20px] font-bold leading-tight text-foreground flex-1 min-w-0"
+            style={readOnly ? { textDecoration: "line-through", opacity: 0.75 } : undefined}
+          >
+            {goal.title}
+          </h3>
+          {readOnly ? (
+            <button
+              type="button"
+              onClick={onToggleDone}
+              aria-label="Снять отметку «Воплощено»"
+              className="tap inline-flex items-center justify-center shrink-0"
+              style={{ width: 32, height: 32, borderRadius: 10, background: "#16a34a", color: "#fff" }}
+            >
+              <Check className="h-4 w-4" strokeWidth={3} />
+            </button>
+          ) : (
+            <ActionsMenu
+              onDone={onToggleDone}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              doneConfirmText={`«${goal.title}» будет перемещена в раздел «Воплощённые». Это действие можно отменить.`}
+              deleteConfirmText={`«${goal.title}» будет удалена навсегда. Это действие нельзя отменить.`}
+            />
+          )}
         </div>
         <p className="mt-1 text-[12px] text-muted-foreground">📅 до {goal.deadline}</p>
 
