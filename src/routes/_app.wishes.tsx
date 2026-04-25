@@ -1021,6 +1021,31 @@ function DesireCharge({ level, onTap, mode = "inspire" }: { level: number; onTap
         : `Зарядился на ${inRound * 20}%`;
   const color = CHARGE_COLORS[inRound];
 
+  if (mode === "proud") {
+    const liked = total > 0;
+    return (
+      <button
+        onClick={onTap}
+        aria-label="Горжусь"
+        className="tap flex items-center gap-2 select-none -mx-1 px-1 py-1 rounded-lg"
+      >
+        <span
+          key={`proud-${total}`}
+          className={`text-[22px] leading-none transition-transform active:scale-90 ${liked ? "animate-pop" : ""}`}
+          style={liked ? undefined : { WebkitTextStroke: "1px #c8c0b0", color: "transparent" }}
+        >
+          {liked ? "❤️" : "🤍"}
+        </span>
+        <span
+          className="text-[13px] font-medium leading-none"
+          style={{ color: liked ? "#FF6D00" : "#9c8f7a" }}
+        >
+          {total === 0 ? "Горжусь" : `Горжусь · ${total}`}
+        </span>
+      </button>
+    );
+  }
+
   return (
     <button
       onClick={onTap}
