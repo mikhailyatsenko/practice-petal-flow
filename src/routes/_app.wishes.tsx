@@ -2878,6 +2878,10 @@ function ActionsMenu({
           )}
           <button
             type="button"
+            onClick={() => {
+              setOpen(false);
+              setConfirmDelete(true);
+            }}
             className="tap flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-[13px] font-medium"
             style={{ color: "#E53935", borderTop: "1px solid rgba(0,0,0,0.06)" }}
           >
