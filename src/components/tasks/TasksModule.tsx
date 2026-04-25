@@ -125,6 +125,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
   const [editingPlanGoalId, setEditingPlanGoalId] = useState<string | null>(null);
   const [planDraft, setPlanDraft] = useState("");
+  const [shatteringId, setShatteringId] = useState<string | null>(null);
 
   // Таймеры — поддерживаем несколько активных параллельно
   const [activeTimerIds, setActiveTimerIds] = useState<Set<string>>(new Set());
