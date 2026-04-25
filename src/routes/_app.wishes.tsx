@@ -2858,10 +2858,11 @@ function ActionsMenu({
               setOpen(false);
               setConfirmDone(true);
             }}
-            className="tap flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-[13px] font-medium"
+            className="tap flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[13px] font-medium"
             style={{ color: "#16a34a" }}
           >
-            <Check className="h-4 w-4" /> Выполнить
+            <span className="inline-flex w-5 justify-center text-[15px] leading-none">✅</span>
+            <span>Выполнить</span>
           </button>
           <button
             type="button"
@@ -2869,10 +2870,11 @@ function ActionsMenu({
               setOpen(false);
               onEdit();
             }}
-            className="tap flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-[13px] font-medium text-foreground"
+            className="tap flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[13px] font-medium text-foreground"
             style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}
           >
-            <Pencil className="h-4 w-4" /> Изменить
+            <span className="inline-flex w-5 justify-center text-[15px] leading-none">✏️</span>
+            <span>Изменить</span>
           </button>
           {onBrainstorm && (
             <button
@@ -2881,10 +2883,11 @@ function ActionsMenu({
                 setOpen(false);
                 onBrainstorm();
               }}
-              className="tap flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-[13px] font-medium text-foreground"
+              className="tap flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[13px] font-medium text-foreground"
               style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}
             >
-              🧠 Мозговой штурм
+              <span className="inline-flex w-5 justify-center text-[15px] leading-none">🧠</span>
+              <span>Мозговой штурм</span>
             </button>
           )}
           <button
@@ -2893,10 +2896,11 @@ function ActionsMenu({
               setOpen(false);
               setConfirmDelete(true);
             }}
-            className="tap flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-[13px] font-medium"
+            className="tap flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[13px] font-medium"
             style={{ color: "#E53935", borderTop: "1px solid rgba(0,0,0,0.06)" }}
           >
-            <Trash2 className="h-4 w-4" /> Удалить
+            <span className="inline-flex w-5 justify-center text-[15px] leading-none">🗑️</span>
+            <span>Удалить</span>
           </button>
         </div>,
         document.body,
