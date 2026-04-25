@@ -561,7 +561,17 @@ function WishesScreen() {
     }
 
     if (tab === "tasks") {
-      return <EmptyTab tab="Задачи" />;
+      return (
+        <TasksModule
+          goals={goals.filter((g) => !doneGoals.has(g.id)).map((g) => ({
+            id: g.id,
+            title: g.title,
+            plan: g.plan,
+          }))}
+          initialGoalId={tasksFromGoalId}
+          onClearGoalFilter={() => setTasksFromGoalId(null)}
+        />
+      );
     }
 
     return (
