@@ -122,6 +122,7 @@ export function BrainstormAnswerScreen({
 }) {
   const question = BRAINSTORM_QUESTIONS[questionNumber - 1];
   const [text, setText] = useState(initialAnswer);
+  const [savedText, setSavedText] = useState(initialAnswer);
   const [savedFlash, setSavedFlash] = useState(false);
   const taRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -134,11 +135,13 @@ export function BrainstormAnswerScreen({
   }, [text]);
 
   const len = text.length;
-  const canSave = text.trim().length > 0;
+  const isDirty = text !== savedText;
+  const canSave = text.trim().length > 0 && isDirty;
 
   const handleSave = () => {
     if (!canSave) return;
     onSave(text);
+    setSavedText(text);
     setSavedFlash(true);
     window.setTimeout(() => setSavedFlash(false), 2000);
   };
@@ -167,7 +170,10 @@ export function BrainstormAnswerScreen({
           className="w-full text-[15px] leading-[1.55] outline-none resize-none bg-transparent text-foreground placeholder:text-muted-foreground"
           style={{ minHeight: 72, border: "none" }}
         />
-        <div className="mt-2 pt-2 flex items-center justify-end text-[11.5px]" style={{ borderTop: "1px solid #ede8df" }}>
+        <div className="mt-2 pt-2 flex items-center justify-between text-[11.5px]" style={{ borderTop: "1px solid #ede8df" }}>
+          <span style={{ color: isDirty && text.trim().length > 0 ? "#FF6D00" : "#8a8a8a", fontWeight: isDirty ? 600 : 400 }}>
+            {isDirty && text.trim().length > 0 ? "● Несохранённые изменения" : savedText.length > 0 ? "✓ Сохранено" : ""}
+          </span>
           <span style={{ color: "#8a8a8a" }}>{len} / {MAX_LEN}</span>
         </div>
       </div>
@@ -184,14 +190,25 @@ export function BrainstormAnswerScreen({
       <button
         disabled={!canSave}
         onClick={handleSave}
-        className="tap w-full rounded-[14px] py-4 text-[15px] font-bold transition-colors"
+        className="tap w-full rounded-[14px] py-4 text-[15px] font-bold transition-all"
         style={
           canSave
-            ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }
+            ? {
+                background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+                color: "#fff",
+                boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
+              }
+            : !isDirty && savedText.length > 0
+            ? {
+                background: "#fff",
+                color: "#9ca3af",
+                border: "1.5px solid #e5e7eb",
+                cursor: "not-allowed",
+              }
             : { background: "#d1d5db", color: "#9ca3af", cursor: "not-allowed" }
         }
       >
-        Сохранить ответ
+        {!isDirty && savedText.length > 0 ? "✓ Сохранено" : "Сохранить ответ"}
       </button>
     </div>
   );
