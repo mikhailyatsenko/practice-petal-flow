@@ -617,6 +617,7 @@ function WishesScreen() {
         hotelki={hotelki.filter((h) => doneHotelki.has(h))}
         wishes={wishes.filter((w) => doneWishes.has(w.id))}
         goals={goals.filter((g) => doneGoals.has(g.id))}
+        moduleTasks={moduleTasks}
         onUndoHotelka={(t) => toggleDoneHotelka(t)}
         onUndoWish={(id) => toggleDoneWish(id)}
         onUndoGoal={(id) => toggleDoneGoal(id)}
@@ -783,6 +784,7 @@ function HotelkaItem({
   onDelete,
   isDone,
   onToggleDone,
+  readOnly = false,
 }: {
   index: number;
   text: string;
@@ -790,6 +792,7 @@ function HotelkaItem({
   onDelete: () => void;
   isDone: boolean;
   onToggleDone: () => void;
+  readOnly?: boolean;
 }) {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(text);
@@ -864,17 +867,34 @@ function HotelkaItem({
       <div className="h-7 w-7 shrink-0 rounded-full bg-secondary flex items-center justify-center text-[12px] font-medium text-muted-foreground">
         {index}
       </div>
-      <p className="text-[14px] leading-snug text-foreground/90 flex-1">{text}</p>
-      <ActionsMenu
-        onDone={onToggleDone}
-        onEdit={() => {
-          setValue(text);
-          setEditing(true);
-        }}
-        onDelete={onDelete}
-        doneConfirmText={`«${text}» будет перемещена в раздел «Воплощённые».`}
-        deleteConfirmText={`«${text}» будет удалена навсегда. Это действие нельзя отменить.`}
-      />
+      <p
+        className="text-[14px] leading-snug text-foreground/90 flex-1"
+        style={readOnly ? { textDecoration: "line-through", opacity: 0.7 } : undefined}
+      >
+        {text}
+      </p>
+      {readOnly ? (
+        <button
+          type="button"
+          onClick={onToggleDone}
+          aria-label="Снять отметку «Воплощено»"
+          className="tap inline-flex items-center justify-center shrink-0"
+          style={{ width: 32, height: 32, borderRadius: 10, background: "#16a34a", color: "#fff" }}
+        >
+          <Check className="h-4 w-4" strokeWidth={3} />
+        </button>
+      ) : (
+        <ActionsMenu
+          onDone={onToggleDone}
+          onEdit={() => {
+            setValue(text);
+            setEditing(true);
+          }}
+          onDelete={onDelete}
+          doneConfirmText={`«${text}» будет перемещена в раздел «Воплощённые».`}
+          deleteConfirmText={`«${text}» будет удалена навсегда. Это действие нельзя отменить.`}
+        />
+      )}
     </div>
   );
 }
@@ -891,6 +911,7 @@ function WishCard({
   onDelete,
   isDone,
   onToggleDone,
+  readOnly = false,
 }: {
   wish: Wish;
   priority?: boolean;
@@ -901,6 +922,7 @@ function WishCard({
   onDelete: () => void;
   isDone: boolean;
   onToggleDone: () => void;
+  readOnly?: boolean;
 }) {
   void isDone;
   return (
@@ -918,16 +940,31 @@ function WishCard({
 
       <div className="px-4 py-3.5">
         <div className="flex items-start gap-3">
-          <h3 className="text-[16px] font-semibold leading-tight text-foreground flex-1 min-w-0">
+          <h3
+            className="text-[16px] font-semibold leading-tight text-foreground flex-1 min-w-0"
+            style={readOnly ? { textDecoration: "line-through", opacity: 0.75 } : undefined}
+          >
             {wish.title}
           </h3>
-          <ActionsMenu
+          {readOnly ? (
+            <button
+              type="button"
+              onClick={onToggleDone}
+              aria-label="Снять отметку «Воплощено»"
+              className="tap inline-flex items-center justify-center shrink-0"
+              style={{ width: 32, height: 32, borderRadius: 10, background: "#16a34a", color: "#fff" }}
+            >
+              <Check className="h-4 w-4" strokeWidth={3} />
+            </button>
+          ) : (
+            <ActionsMenu
             onDone={onToggleDone}
             onEdit={onEdit}
             onDelete={onDelete}
             doneConfirmText={`«${wish.title}» будет перемещено в раздел «Воплощённые».`}
             deleteConfirmText={`«${wish.title}» будет удалено навсегда. Это действие нельзя отменить.`}
           />
+          )}
         </div>
 
         <p className="mt-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
@@ -944,10 +981,12 @@ function WishCard({
         </ul>
 
         <div className="mt-3 flex items-center justify-between gap-3">
-          <DesireCharge level={count} onTap={onInspire} />
-          <button onClick={onMakeGoal} className="tap btn-pill-orange btn-sm shrink-0">
-            Сделать целью →
-          </button>
+          <DesireCharge level={count} onTap={onInspire} mode={readOnly ? "proud" : "inspire"} />
+          {!readOnly && (
+            <button onClick={onMakeGoal} className="tap btn-pill-orange btn-sm shrink-0">
+              Сделать целью →
+            </button>
+          )}
         </div>
       </div>
     </article>
@@ -972,13 +1011,20 @@ const CHARGE_COLORS = ["#9c8f7a", "#FFB300", "#FF9100", "#FF7A00", "#FF5722", "#
 const DOT_FILLED_COLORS = ["#FFD180", "#FFB300", "#FF9100", "#FF6D00", "#E64A19"];
 const DOT_EMPTY = "#e0d8cc";
 
-function DesireCharge({ level, onTap }: { level: number; onTap: () => void }) {
+function DesireCharge({ level, onTap, mode = "inspire" }: { level: number; onTap: () => void; mode?: "inspire" | "proud" }) {
   const total = Math.max(0, level);
   const inRound = total === 0 ? 0 : ((total - 1) % 5) + 1;
   // +1 — с первого тапа; +2 — когда пошёл второй круг (после 100%)
   const badgeCount = total === 0 ? 0 : Math.floor((total - 1) / 5) + 1;
   const justHit100 = total > 0 && inRound === 5;
-  const label = total === 0 ? "Заряжает" : `Зарядился на ${inRound * 20}%`;
+  const label =
+    mode === "proud"
+      ? total === 0
+        ? "Горжусь"
+        : `Горжусь · ${total}`
+      : total === 0
+        ? "Заряжает"
+        : `Зарядился на ${inRound * 20}%`;
   const color = CHARGE_COLORS[inRound];
 
   return (
@@ -1665,6 +1711,7 @@ function GoalCard({
   tasksAll = [],
   tasksDoneCount = 0,
   onAddTask,
+  readOnly = false,
 }: {
   goal: Goal;
   count: number;
@@ -1677,6 +1724,7 @@ function GoalCard({
   tasksAll?: ModuleTask[];
   tasksDoneCount?: number;
   onAddTask?: () => void;
+  readOnly?: boolean;
 }) {
   void isDone;
   const openTasks = tasksAll.filter((t) => !t.done);
@@ -1691,14 +1739,31 @@ function GoalCard({
 
       <div className="px-4 py-3.5">
         <div className="flex items-start gap-3">
-          <h3 className="text-[20px] font-bold leading-tight text-foreground flex-1 min-w-0">{goal.title}</h3>
-          <ActionsMenu
-            onDone={onToggleDone}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            doneConfirmText={`«${goal.title}» будет перемещена в раздел «Воплощённые». Это действие можно отменить.`}
-            deleteConfirmText={`«${goal.title}» будет удалена навсегда. Это действие нельзя отменить.`}
-          />
+          <h3
+            className="text-[20px] font-bold leading-tight text-foreground flex-1 min-w-0"
+            style={readOnly ? { textDecoration: "line-through", opacity: 0.75 } : undefined}
+          >
+            {goal.title}
+          </h3>
+          {readOnly ? (
+            <button
+              type="button"
+              onClick={onToggleDone}
+              aria-label="Снять отметку «Воплощено»"
+              className="tap inline-flex items-center justify-center shrink-0"
+              style={{ width: 32, height: 32, borderRadius: 10, background: "#16a34a", color: "#fff" }}
+            >
+              <Check className="h-4 w-4" strokeWidth={3} />
+            </button>
+          ) : (
+            <ActionsMenu
+              onDone={onToggleDone}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              doneConfirmText={`«${goal.title}» будет перемещена в раздел «Воплощённые». Это действие можно отменить.`}
+              deleteConfirmText={`«${goal.title}» будет удалена навсегда. Это действие нельзя отменить.`}
+            />
+          )}
         </div>
         <p className="mt-1 text-[12px] text-muted-foreground">📅 до {goal.deadline}</p>
 
@@ -1759,20 +1824,22 @@ function GoalCard({
           <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
             Задачи
           </p>
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onAddTask?.(); }}
-            aria-label="Добавить задачу"
-            className="tap inline-flex items-center justify-center rounded-full shrink-0"
-            style={{
-              width: 26, height: 26,
-              background: "linear-gradient(135deg,#FFB300,#FF6D00)",
-              color: "#fff",
-              boxShadow: "0 2px 6px rgba(255,109,0,0.35)",
-            }}
-          >
-            <Plus className="h-4 w-4" strokeWidth={2.5} />
-          </button>
+          {!readOnly && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onAddTask?.(); }}
+              aria-label="Добавить задачу"
+              className="tap inline-flex items-center justify-center rounded-full shrink-0"
+              style={{
+                width: 26, height: 26,
+                background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+                color: "#fff",
+                boxShadow: "0 2px 6px rgba(255,109,0,0.35)",
+              }}
+            >
+              <Plus className="h-4 w-4" strokeWidth={2.5} />
+            </button>
+          )}
         </div>
         {totalTasks === 0 ? (
           <p className="mt-1.5 text-[12.5px] text-muted-foreground">Задач пока нет — добавь первую кнопкой +</p>
@@ -1797,14 +1864,16 @@ function GoalCard({
         </div>
 
         <div className="mt-4 flex items-center justify-between gap-3">
-          <DesireCharge level={count} onTap={onInspire} />
-          <button
-            onClick={onOpenTasks}
-            className="tap btn-pill-orange btn-sm shrink-0"
-            style={{ borderRadius: 12 }}
-          >
-            К задачам →
-          </button>
+          <DesireCharge level={count} onTap={onInspire} mode={readOnly ? "proud" : "inspire"} />
+          {!readOnly && (
+            <button
+              onClick={onOpenTasks}
+              className="tap btn-pill-orange btn-sm shrink-0"
+              style={{ borderRadius: 12 }}
+            >
+              К задачам →
+            </button>
+          )}
         </div>
       </div>
     </article>
@@ -3030,6 +3099,7 @@ function RealizedTab({
   hotelki,
   wishes,
   goals,
+  moduleTasks,
   onUndoHotelka,
   onUndoWish,
   onUndoGoal,
@@ -3037,10 +3107,14 @@ function RealizedTab({
   hotelki: string[];
   wishes: Wish[];
   goals: Goal[];
+  moduleTasks: ModuleTask[];
   onUndoHotelka: (text: string) => void;
   onUndoWish: (id: string) => void;
   onUndoGoal: (id: string) => void;
 }) {
+  const [proudWishes, setProudWishes] = useState<Record<string, number>>({});
+  const [proudGoals, setProudGoals] = useState<Record<string, number>>({});
+
   const total = hotelki.length + wishes.length + goals.length;
 
   if (total === 0) {
@@ -3055,87 +3129,78 @@ function RealizedTab({
     );
   }
 
-  const undoBtn = (onClick: () => void) => (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label="Снять отметку «Воплощено»"
-      className="tap inline-flex items-center justify-center shrink-0"
-      style={{
-        width: 36,
-        height: 36,
-        borderRadius: 10,
-        background: "#16a34a",
-        border: "2px solid #16a34a",
-        color: "#fff",
-        transition: "all 0.2s",
-      }}
-    >
-      <Check className="h-4 w-4" strokeWidth={3} />
-    </button>
-  );
-
   type MixedItem =
-    | { kind: "hotelka"; key: string; text: string; onUndo: () => void }
-    | { kind: "wish"; key: string; text: string; image: string; onUndo: () => void }
-    | { kind: "goal"; key: string; text: string; image: string; onUndo: () => void };
+    | { kind: "hotelka"; key: string; node: React.ReactNode }
+    | { kind: "wish"; key: string; node: React.ReactNode }
+    | { kind: "goal"; key: string; node: React.ReactNode };
 
   const items: MixedItem[] = [
-    ...goals.map((g) => ({
-      kind: "goal" as const, key: `g-${g.id}`, text: g.title, image: g.image,
-      onUndo: () => onUndoGoal(g.id),
+    ...goals.map((g): MixedItem => {
+      const goalTasks = moduleTasks.filter((t) => t.goalId === g.id);
+      const goalDone = goalTasks.filter((t) => t.done).length;
+      return {
+        kind: "goal",
+        key: `g-${g.id}`,
+        node: (
+          <GoalCard
+            goal={g}
+            count={proudGoals[g.id] ?? 0}
+            onInspire={() => setProudGoals((p) => ({ ...p, [g.id]: (p[g.id] ?? 0) + 1 }))}
+            onEdit={() => {}}
+            onDelete={() => {}}
+            isDone
+            onToggleDone={() => onUndoGoal(g.id)}
+            tasksAll={goalTasks}
+            tasksDoneCount={goalDone}
+            readOnly
+          />
+        ),
+      };
+    }),
+    ...wishes.map((w): MixedItem => ({
+      kind: "wish",
+      key: `w-${w.id}`,
+      node: (
+        <WishCard
+          wish={w}
+          count={proudWishes[w.id] ?? 0}
+          onInspire={() => setProudWishes((p) => ({ ...p, [w.id]: (p[w.id] ?? 0) + 1 }))}
+          onEdit={() => {}}
+          onMakeGoal={() => {}}
+          onDelete={() => {}}
+          isDone
+          onToggleDone={() => onUndoWish(w.id)}
+          readOnly
+        />
+      ),
     })),
-    ...wishes.map((w) => ({
-      kind: "wish" as const, key: `w-${w.id}`, text: w.title, image: w.image,
-      onUndo: () => onUndoWish(w.id),
-    })),
-    ...hotelki.map((h, i) => ({
-      kind: "hotelka" as const, key: `h-${i}-${h}`, text: h,
-      onUndo: () => onUndoHotelka(h),
+    ...hotelki.map((h, i): MixedItem => ({
+      kind: "hotelka",
+      key: `h-${i}-${h}`,
+      node: (
+        <HotelkaItem
+          index={i + 1}
+          text={h}
+          onSave={() => {}}
+          onDelete={() => {}}
+          isDone
+          onToggleDone={() => onUndoHotelka(h)}
+          readOnly
+        />
+      ),
     })),
   ];
 
-  // Перемешать детерминированно (стабильный порядок между рендерами)
+  // Перемешать детерминированно
   const mixed = items
     .map((it, i) => ({ it, sort: ((it.key.length * 31 + i * 17) % 97) }))
     .sort((a, b) => a.sort - b.sort)
     .map((x) => x.it);
 
-  const badge = (kind: MixedItem["kind"]) => {
-    const map = {
-      hotelka: { label: "Хотелка", bg: "#fff3e0", color: "#FF6D00" },
-      wish:    { label: "Желание", bg: "#fce7f3", color: "#db2777" },
-      goal:    { label: "Цель",    bg: "#dcfce7", color: "#16a34a" },
-    } as const;
-    const m = map[kind];
-    return (
-      <span
-        className="inline-block rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider"
-        style={{ background: m.bg, color: m.color }}
-      >
-        {m.label}
-      </span>
-    );
-  };
-
   return (
-    <div className="px-4 pt-3 space-y-2">
+    <div className="px-4 pt-3 space-y-4">
       {mixed.map((it) => (
-        <div
-          key={it.key}
-          className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 min-h-[52px]"
-        >
-          {"image" in it && (
-            <img src={it.image} alt={it.text} className="h-10 w-10 rounded-lg object-cover shrink-0" />
-          )}
-          <div className="flex-1 min-w-0 space-y-1">
-            {badge(it.kind)}
-            <p className="text-[14px] leading-snug text-foreground/90 line-through opacity-70 break-words">
-              {it.text}
-            </p>
-          </div>
-          {undoBtn(it.onUndo)}
-        </div>
+        <div key={it.key}>{it.node}</div>
       ))}
     </div>
   );
