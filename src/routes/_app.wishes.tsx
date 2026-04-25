@@ -3099,6 +3099,7 @@ function RealizedTab({
   hotelki,
   wishes,
   goals,
+  moduleTasks,
   onUndoHotelka,
   onUndoWish,
   onUndoGoal,
@@ -3106,10 +3107,14 @@ function RealizedTab({
   hotelki: string[];
   wishes: Wish[];
   goals: Goal[];
+  moduleTasks: ModuleTask[];
   onUndoHotelka: (text: string) => void;
   onUndoWish: (id: string) => void;
   onUndoGoal: (id: string) => void;
 }) {
+  const [proudWishes, setProudWishes] = useState<Record<string, number>>({});
+  const [proudGoals, setProudGoals] = useState<Record<string, number>>({});
+
   const total = hotelki.length + wishes.length + goals.length;
 
   if (total === 0) {
@@ -3124,87 +3129,78 @@ function RealizedTab({
     );
   }
 
-  const undoBtn = (onClick: () => void) => (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label="Снять отметку «Воплощено»"
-      className="tap inline-flex items-center justify-center shrink-0"
-      style={{
-        width: 36,
-        height: 36,
-        borderRadius: 10,
-        background: "#16a34a",
-        border: "2px solid #16a34a",
-        color: "#fff",
-        transition: "all 0.2s",
-      }}
-    >
-      <Check className="h-4 w-4" strokeWidth={3} />
-    </button>
-  );
-
   type MixedItem =
-    | { kind: "hotelka"; key: string; text: string; onUndo: () => void }
-    | { kind: "wish"; key: string; text: string; image: string; onUndo: () => void }
-    | { kind: "goal"; key: string; text: string; image: string; onUndo: () => void };
+    | { kind: "hotelka"; key: string; node: React.ReactNode }
+    | { kind: "wish"; key: string; node: React.ReactNode }
+    | { kind: "goal"; key: string; node: React.ReactNode };
 
   const items: MixedItem[] = [
-    ...goals.map((g) => ({
-      kind: "goal" as const, key: `g-${g.id}`, text: g.title, image: g.image,
-      onUndo: () => onUndoGoal(g.id),
+    ...goals.map((g): MixedItem => {
+      const goalTasks = moduleTasks.filter((t) => t.goalId === g.id);
+      const goalDone = goalTasks.filter((t) => t.done).length;
+      return {
+        kind: "goal",
+        key: `g-${g.id}`,
+        node: (
+          <GoalCard
+            goal={g}
+            count={proudGoals[g.id] ?? 0}
+            onInspire={() => setProudGoals((p) => ({ ...p, [g.id]: (p[g.id] ?? 0) + 1 }))}
+            onEdit={() => {}}
+            onDelete={() => {}}
+            isDone
+            onToggleDone={() => onUndoGoal(g.id)}
+            tasksAll={goalTasks}
+            tasksDoneCount={goalDone}
+            readOnly
+          />
+        ),
+      };
+    }),
+    ...wishes.map((w): MixedItem => ({
+      kind: "wish",
+      key: `w-${w.id}`,
+      node: (
+        <WishCard
+          wish={w}
+          count={proudWishes[w.id] ?? 0}
+          onInspire={() => setProudWishes((p) => ({ ...p, [w.id]: (p[w.id] ?? 0) + 1 }))}
+          onEdit={() => {}}
+          onMakeGoal={() => {}}
+          onDelete={() => {}}
+          isDone
+          onToggleDone={() => onUndoWish(w.id)}
+          readOnly
+        />
+      ),
     })),
-    ...wishes.map((w) => ({
-      kind: "wish" as const, key: `w-${w.id}`, text: w.title, image: w.image,
-      onUndo: () => onUndoWish(w.id),
-    })),
-    ...hotelki.map((h, i) => ({
-      kind: "hotelka" as const, key: `h-${i}-${h}`, text: h,
-      onUndo: () => onUndoHotelka(h),
+    ...hotelki.map((h, i): MixedItem => ({
+      kind: "hotelka",
+      key: `h-${i}-${h}`,
+      node: (
+        <HotelkaItem
+          index={i + 1}
+          text={h}
+          onSave={() => {}}
+          onDelete={() => {}}
+          isDone
+          onToggleDone={() => onUndoHotelka(h)}
+          readOnly
+        />
+      ),
     })),
   ];
 
-  // Перемешать детерминированно (стабильный порядок между рендерами)
+  // Перемешать детерминированно
   const mixed = items
     .map((it, i) => ({ it, sort: ((it.key.length * 31 + i * 17) % 97) }))
     .sort((a, b) => a.sort - b.sort)
     .map((x) => x.it);
 
-  const badge = (kind: MixedItem["kind"]) => {
-    const map = {
-      hotelka: { label: "Хотелка", bg: "#fff3e0", color: "#FF6D00" },
-      wish:    { label: "Желание", bg: "#fce7f3", color: "#db2777" },
-      goal:    { label: "Цель",    bg: "#dcfce7", color: "#16a34a" },
-    } as const;
-    const m = map[kind];
-    return (
-      <span
-        className="inline-block rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider"
-        style={{ background: m.bg, color: m.color }}
-      >
-        {m.label}
-      </span>
-    );
-  };
-
   return (
-    <div className="px-4 pt-3 space-y-2">
+    <div className="px-4 pt-3 space-y-4">
       {mixed.map((it) => (
-        <div
-          key={it.key}
-          className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 min-h-[52px]"
-        >
-          {"image" in it && (
-            <img src={it.image} alt={it.text} className="h-10 w-10 rounded-lg object-cover shrink-0" />
-          )}
-          <div className="flex-1 min-w-0 space-y-1">
-            {badge(it.kind)}
-            <p className="text-[14px] leading-snug text-foreground/90 line-through opacity-70 break-words">
-              {it.text}
-            </p>
-          </div>
-          {undoBtn(it.onUndo)}
-        </div>
+        <div key={it.key}>{it.node}</div>
       ))}
     </div>
   );
