@@ -785,6 +785,8 @@ function HotelkaItem({
   isDone,
   onToggleDone,
   readOnly = false,
+  proudCount = 0,
+  onProud,
 }: {
   index: number;
   text: string;
@@ -793,6 +795,8 @@ function HotelkaItem({
   isDone: boolean;
   onToggleDone: () => void;
   readOnly?: boolean;
+  proudCount?: number;
+  onProud?: () => void;
 }) {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(text);
@@ -862,39 +866,42 @@ function HotelkaItem({
     );
   }
 
+  if (readOnly) {
+    return (
+      <div className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card animate-fade-up">
+        <div className="flex items-center gap-3 min-h-[40px]">
+          <div className="h-7 w-7 shrink-0 rounded-full bg-secondary flex items-center justify-center text-[12px] font-medium text-muted-foreground">
+            {index}
+          </div>
+          <p className="text-[14px] leading-snug text-foreground/90 flex-1">
+            {text}
+          </p>
+        </div>
+        <div className="mt-2 pl-10">
+          <DesireCharge level={proudCount} onTap={() => onProud?.()} mode="proud" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 animate-fade-up min-h-[52px]">
       <div className="h-7 w-7 shrink-0 rounded-full bg-secondary flex items-center justify-center text-[12px] font-medium text-muted-foreground">
         {index}
       </div>
-      <p
-        className="text-[14px] leading-snug text-foreground/90 flex-1"
-        style={readOnly ? { textDecoration: "line-through", opacity: 0.7 } : undefined}
-      >
+      <p className="text-[14px] leading-snug text-foreground/90 flex-1">
         {text}
       </p>
-      {readOnly ? (
-        <button
-          type="button"
-          onClick={onToggleDone}
-          aria-label="Снять отметку «Воплощено»"
-          className="tap inline-flex items-center justify-center shrink-0"
-          style={{ width: 32, height: 32, borderRadius: 10, background: "#16a34a", color: "#fff" }}
-        >
-          <Check className="h-4 w-4" strokeWidth={3} />
-        </button>
-      ) : (
-        <ActionsMenu
-          onDone={onToggleDone}
-          onEdit={() => {
-            setValue(text);
-            setEditing(true);
-          }}
-          onDelete={onDelete}
-          doneConfirmText={`«${text}» будет перемещена в раздел «Воплощённые».`}
-          deleteConfirmText={`«${text}» будет удалена навсегда. Это действие нельзя отменить.`}
-        />
-      )}
+      <ActionsMenu
+        onDone={onToggleDone}
+        onEdit={() => {
+          setValue(text);
+          setEditing(true);
+        }}
+        onDelete={onDelete}
+        doneConfirmText={`«${text}» будет перемещена в раздел «Воплощённые».`}
+        deleteConfirmText={`«${text}» будет удалена навсегда. Это действие нельзя отменить.`}
+      />
     </div>
   );
 }
@@ -940,30 +947,17 @@ function WishCard({
 
       <div className="px-4 py-3.5">
         <div className="flex items-start gap-3">
-          <h3
-            className="text-[16px] font-semibold leading-tight text-foreground flex-1 min-w-0"
-            style={readOnly ? { textDecoration: "line-through", opacity: 0.75 } : undefined}
-          >
+          <h3 className="text-[16px] font-semibold leading-tight text-foreground flex-1 min-w-0">
             {wish.title}
           </h3>
-          {readOnly ? (
-            <button
-              type="button"
-              onClick={onToggleDone}
-              aria-label="Снять отметку «Воплощено»"
-              className="tap inline-flex items-center justify-center shrink-0"
-              style={{ width: 32, height: 32, borderRadius: 10, background: "#16a34a", color: "#fff" }}
-            >
-              <Check className="h-4 w-4" strokeWidth={3} />
-            </button>
-          ) : (
+          {!readOnly && (
             <ActionsMenu
-            onDone={onToggleDone}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            doneConfirmText={`«${wish.title}» будет перемещено в раздел «Воплощённые».`}
-            deleteConfirmText={`«${wish.title}» будет удалено навсегда. Это действие нельзя отменить.`}
-          />
+              onDone={onToggleDone}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              doneConfirmText={`«${wish.title}» будет перемещено в раздел «Воплощённые».`}
+              deleteConfirmText={`«${wish.title}» будет удалено навсегда. Это действие нельзя отменить.`}
+            />
           )}
         </div>
 
@@ -1739,23 +1733,10 @@ function GoalCard({
 
       <div className="px-4 py-3.5">
         <div className="flex items-start gap-3">
-          <h3
-            className="text-[20px] font-bold leading-tight text-foreground flex-1 min-w-0"
-            style={readOnly ? { textDecoration: "line-through", opacity: 0.75 } : undefined}
-          >
+          <h3 className="text-[20px] font-bold leading-tight text-foreground flex-1 min-w-0">
             {goal.title}
           </h3>
-          {readOnly ? (
-            <button
-              type="button"
-              onClick={onToggleDone}
-              aria-label="Снять отметку «Воплощено»"
-              className="tap inline-flex items-center justify-center shrink-0"
-              style={{ width: 32, height: 32, borderRadius: 10, background: "#16a34a", color: "#fff" }}
-            >
-              <Check className="h-4 w-4" strokeWidth={3} />
-            </button>
-          ) : (
+          {!readOnly && (
             <ActionsMenu
               onDone={onToggleDone}
               onEdit={onEdit}
@@ -3114,6 +3095,7 @@ function RealizedTab({
 }) {
   const [proudWishes, setProudWishes] = useState<Record<string, number>>({});
   const [proudGoals, setProudGoals] = useState<Record<string, number>>({});
+  const [proudHotelki, setProudHotelki] = useState<Record<string, number>>({});
 
   const total = hotelki.length + wishes.length + goals.length;
 
@@ -3186,6 +3168,8 @@ function RealizedTab({
           isDone
           onToggleDone={() => onUndoHotelka(h)}
           readOnly
+          proudCount={proudHotelki[h] ?? 0}
+          onProud={() => setProudHotelki((p) => ({ ...p, [h]: (p[h] ?? 0) + 1 }))}
         />
       ),
     })),
