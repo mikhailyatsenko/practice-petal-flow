@@ -297,13 +297,9 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
             <button
               onClick={() => setOpenGoalId(isOpen ? null : row.gid)}
               className="tap w-full rounded-xl px-3 py-2.5 flex items-center justify-between gap-2 text-left transition-colors"
-              style={
-                isOpen
-                  ? { background: "#fff3e0", border: "1px solid #FF6D00", color: "#FF6D00" }
-                  : { background: "transparent", border: "1px solid transparent" }
-              }
+              style={{ background: "transparent", border: "1px solid transparent" }}
             >
-              <span className="text-[14px] font-semibold truncate flex-1">
+              <span className="text-[14px] font-semibold truncate flex-1 text-foreground">
                 {goal?.title ?? "Без цели"}
               </span>
               <span
