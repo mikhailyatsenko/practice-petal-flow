@@ -1749,7 +1749,7 @@ function GoalCard({
           </p>
           <div className="flex items-center gap-2">
             <span className="text-[11px] text-muted-foreground">
-              Сделано: <span className="font-semibold" style={{ color: "#16a34a" }}>{tasksDoneCount}</span> / {totalTasks}
+              Сделано задач: <span className="font-semibold" style={{ color: "#16a34a" }}>{tasksDoneCount}</span>
             </span>
             <button
               type="button"
