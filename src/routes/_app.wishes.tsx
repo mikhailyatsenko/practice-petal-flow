@@ -241,9 +241,19 @@ function WishesScreen() {
   const [editingWish, setEditingWish] = useState<Wish | null>(null);
 
   // Воплощённые
-  const [doneHotelki, setDoneHotelki] = useState<Set<string>>(new Set());
-  const [doneWishes, setDoneWishes] = useState<Set<string>>(new Set());
-  const [doneGoals, setDoneGoals] = useState<Set<string>>(new Set());
+  const [doneHotelki, setDoneHotelki] = useState<Set<string>>(
+    () => new Set([
+      "Купить красивую кружку для кофе",
+      "Научиться готовить пасту карбонара",
+      "Завести растение на рабочий стол",
+    ]),
+  );
+  const [doneWishes, setDoneWishes] = useState<Set<string>>(
+    () => new Set(["w2", "w4"]),
+  );
+  const [doneGoals, setDoneGoals] = useState<Set<string>>(
+    () => new Set(["g3"]),
+  );
 
   // Раздел «Задачи»: фильтр по конкретной цели (когда переходим из «Цели → К задачам»)
   const [tasksFromGoalId, setTasksFromGoalId] = useState<string | null>(null);
