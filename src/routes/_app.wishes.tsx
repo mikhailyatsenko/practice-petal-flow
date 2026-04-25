@@ -1089,7 +1089,7 @@ function DesireCharge({ level, onTap, mode = "inspire" }: { level: number; onTap
                 className="min-w-[22px] h-[18px] px-1.5 rounded-full text-[10px] font-bold text-white inline-flex items-center justify-center animate-pop"
                 style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)", boxShadow: "0 2px 6px rgba(255,109,0,0.35)" }}
               >
-                +{badgeCount}
+                {badgeCount}
               </span>
             )}
           </span>
