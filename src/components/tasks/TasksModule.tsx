@@ -560,42 +560,46 @@ function TaskRow({
             >
               {task.title}
             </span>
-            {task.duration && task.duration !== "—" && (
-              <span className="text-[11px] text-muted-foreground shrink-0">{task.duration}</span>
-            )}
-            <span className="text-[17px] leading-none shrink-0" aria-label={f.label}>{f.emoji}</span>
-            <button
-              type="button"
-              aria-label={checked ? "Задача выполнена" : "Отметить выполненной"}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (checked) return;
-                onComplete();
-              }}
-              className="shrink-0 inline-flex items-center justify-center rounded-full"
-              style={{
-                width: 22,
-                height: 22,
-                background: checked ? "#16a34a" : "transparent",
-                border: checked ? "2px solid #16a34a" : "2px solid #d1d5db",
-                transition: "background 0.2s ease, border-color 0.2s ease",
-              }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M5 12.5l4.5 4.5L19 7.5"
-                  stroke="#ffffff"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  style={{
-                    strokeDasharray: 20,
-                    strokeDashoffset: checked ? 0 : 20,
-                    transition: "stroke-dashoffset 0.25s ease",
+            <div className="shrink-0 flex flex-col items-end gap-1">
+              <span className="text-[15px] leading-none" aria-label={f.label}>{f.emoji}</span>
+              <div className="flex items-center gap-1.5">
+                {task.duration && task.duration !== "—" && (
+                  <span className="text-[11px] text-muted-foreground leading-none">{task.duration}</span>
+                )}
+                <button
+                  type="button"
+                  aria-label={checked ? "Задача выполнена" : "Отметить выполненной"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (checked) return;
+                    onComplete();
                   }}
-                />
-              </svg>
-            </button>
+                  className="inline-flex items-center justify-center rounded-full"
+                  style={{
+                    width: 22,
+                    height: 22,
+                    background: checked ? "#16a34a" : "transparent",
+                    border: checked ? "2px solid #16a34a" : "2px solid #d1d5db",
+                    transition: "background 0.2s ease, border-color 0.2s ease",
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M5 12.5l4.5 4.5L19 7.5"
+                      stroke="#ffffff"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      style={{
+                        strokeDasharray: 20,
+                        strokeDashoffset: checked ? 0 : 20,
+                        transition: "stroke-dashoffset 0.25s ease",
+                      }}
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
           {isTimerActive && (
             <div className="mt-2 flex justify-center">
