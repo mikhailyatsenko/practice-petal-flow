@@ -1848,13 +1848,13 @@ function GoalCard({
               aria-label="Добавить задачу"
               className="tap inline-flex items-center justify-center rounded-full shrink-0"
               style={{
-                width: 26, height: 26,
-                background: "linear-gradient(135deg,#FFB300,#FF6D00)",
-                color: "#fff",
-                boxShadow: "0 2px 6px rgba(255,109,0,0.35)",
+                width: 28, height: 28,
+                background: "#fff",
+                color: "#9a8f7e",
+                border: "1px solid #ede8df",
               }}
             >
-              <Plus className="h-4 w-4" strokeWidth={2.5} />
+              <Plus className="h-4 w-4" />
             </button>
           )}
         </div>
