@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Plus, MoreHorizontal, Pencil, Trash2, Check, Play, Square } from "lucide-react";
+import { ArrowLeft, Plus, MoreHorizontal, Pencil, Trash2, Check, Play, Square, ChevronDown } from "lucide-react";
 
 /* =====================================================================
    Раздел «Задачи». Самодостаточный модуль — НЕ трогает существующий код.
@@ -103,10 +103,18 @@ interface TasksModuleProps {
   /** Фильтр по конкретной цели (когда пришли из «Цели → К задачам»). */
   initialGoalId?: string | null;
   onClearGoalFilter?: () => void;
+  /** Контролируемое хранилище задач (если задано — используется вместо локального). */
+  tasks?: Task[];
+  onTasksChange?: (updater: (prev: Task[]) => Task[]) => void;
 }
 
-export function TasksModule({ goals, initialGoalId, onClearGoalFilter }: TasksModuleProps) {
-  const [tasks, setTasks] = useState<Task[]>(() => SAMPLE_TASKS(goals));
+export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: tasksProp, onTasksChange }: TasksModuleProps) {
+  const [internalTasks, setInternalTasks] = useState<Task[]>(() => SAMPLE_TASKS(goals));
+  const tasks = tasksProp ?? internalTasks;
+  const setTasks = (updater: (prev: Task[]) => Task[]) => {
+    if (onTasksChange) onTasksChange(updater);
+    else setInternalTasks(updater);
+  };
   const [filter, setFilter] = useState<FilterId>("all");
   const [openGoalId, setOpenGoalId] = useState<string | null>(initialGoalId ?? null);
   const [creating, setCreating] = useState(false);
@@ -299,14 +307,18 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter }: TasksMo
                 {goal?.title ?? "Без цели"}
               </span>
               <span
-                className="text-[10.5px] font-medium uppercase tracking-wider rounded-full px-2 py-0.5 shrink-0"
+                className="inline-flex items-center gap-1 text-[11px] font-semibold rounded-full px-2.5 py-1 shrink-0 shadow-sm"
                 style={
                   isOpen
-                    ? { background: "#FF6D00", color: "#fff" }
-                    : { background: "#ede8df", color: "#8a8a8a" }
+                    ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff", border: "1px solid transparent" }
+                    : { background: "#fff", color: "#FF6D00", border: "1px solid #FF6D00" }
                 }
               >
                 {isOpen ? "Закрыть план" : "План"}
+                <ChevronDown
+                  className="h-3 w-3 transition-transform"
+                  style={{ transform: isOpen ? "rotate(180deg)" : "none" }}
+                />
               </span>
               <span className="text-[11px] text-muted-foreground shrink-0">
                 {row.items.length} {pluralTasks(row.items.length)}
@@ -429,12 +441,14 @@ function TaskRow({
         </span>
       </div>
       {isTimerActive && (
-        <div
-          className="mt-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
-          style={{ background: "#fff3e0", color: "#FF6D00" }}
-        >
-          <span className="inline-block h-1.5 w-1.5 rounded-full bg-current task-pulse" />
-          ▶ {fmtTime(task.timeSpent + liveSeconds)}
+        <div className="mt-2 flex justify-center">
+          <div
+            className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
+            style={{ background: "#fff3e0", color: "#FF6D00" }}
+          >
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-current task-pulse" />
+            ▶ {fmtTime(task.timeSpent + liveSeconds)}
+          </div>
         </div>
       )}
       <style>{`
@@ -569,7 +583,7 @@ function TaskDetailScreen({
 
 /* ---------------- Создание / редактирование задачи ---------------- */
 
-function CreateOrEditTaskScreen({
+export function CreateOrEditTaskScreen({
   mode, goals, task, defaultGoalId, onCancel, onSubmit,
 }: {
   mode: "create" | "edit";

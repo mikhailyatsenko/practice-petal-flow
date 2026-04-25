@@ -10,7 +10,7 @@ import wishBusiness from "@/assets/wish-business.jpg";
 import goalMarathon from "@/assets/goal-marathon.jpg";
 import goalLanguage from "@/assets/goal-language.jpg";
 import goalSavings from "@/assets/goal-savings.jpg";
-import { TasksModule } from "@/components/tasks/TasksModule";
+import { TasksModule, CreateOrEditTaskScreen, type Task as ModuleTask } from "@/components/tasks/TasksModule";
 
 export const Route = createFileRoute("/_app/wishes")({
   head: () => ({
@@ -247,6 +247,20 @@ function WishesScreen() {
 
   // Раздел «Задачи»: фильтр по конкретной цели (когда переходим из «Цели → К задачам»)
   const [tasksFromGoalId, setTasksFromGoalId] = useState<string | null>(null);
+
+  // Центральное хранилище задач (используется и в TasksModule, и в карточке цели)
+  const [moduleTasks, setModuleTasks] = useState<ModuleTask[]>([
+    { id: "t1", goalId: "g1", title: "Купить кроссовки для длинных дистанций", deadline: "🟧 На день", duration: "1 час", feeling: 8, done: false, timeSpent: 0 },
+    { id: "t2", goalId: "g1", title: "Составить план тренировок на месяц", deadline: "🟥 Главная задача", duration: "2 часа", feeling: 7, done: false, timeSpent: 0 },
+    { id: "t3", goalId: "g1", title: "Зарегистрироваться на полумарафон", deadline: "🟪 На месяц", duration: "30 мин", feeling: 9, done: false, timeSpent: 0 },
+    { id: "t4", goalId: "g2", title: "Найти преподавателя испанского", deadline: "🟦 На неделю", duration: "1 час", feeling: 6, done: false, timeSpent: 0 },
+    { id: "t5", goalId: "g2", title: "Пройти базовый курс грамматики", deadline: "🟥 Главная задача", duration: "Более 10 часов", feeling: 5, done: false, timeSpent: 0 },
+    { id: "t6", goalId: "g3", title: "Открыть накопительный счёт", deadline: "🟧 На день", duration: "30 мин", feeling: 7, done: false, timeSpent: 0 },
+    { id: "t7", goalId: "g3", title: "Настроить автоперевод 20% от дохода", deadline: "⬜ Не определён", duration: "15 мин", feeling: 8, done: false, timeSpent: 0 },
+  ]);
+
+  // Быстрая постановка задачи из карточки цели
+  const [quickTaskGoalId, setQuickTaskGoalId] = useState<string | null>(null);
 
   useEffect(() => {
     const onTouchMove = (event: TouchEvent) => {
@@ -539,22 +553,30 @@ function WishesScreen() {
           >
             <Plus className="h-4 w-4" /> Добавить цель
           </button>
-          {goals.filter((g) => !doneGoals.has(g.id)).map((g) => (
-            <GoalCard
-              key={g.id}
-              goal={g}
-              count={goalInspires[g.id] ?? 0}
-              onInspire={() => handleGoalInspire(g.id)}
-              onEdit={() => setEditingGoal(g)}
-              onDelete={() => handleDeleteGoal(g.id)}
-              isDone={doneGoals.has(g.id)}
-              onToggleDone={() => toggleDoneGoal(g.id)}
-              onOpenTasks={() => {
-                setTasksFromGoalId(g.id);
-                changeTabWithCardEffect(1, "tasks");
-              }}
-            />
-          ))}
+          {goals.filter((g) => !doneGoals.has(g.id)).map((g) => {
+            const goalTasks = moduleTasks.filter((t) => t.goalId === g.id);
+            const goalDone = goalTasks.filter((t) => t.done).length;
+            return (
+              <GoalCard
+                key={g.id}
+                goal={g}
+                count={goalInspires[g.id] ?? 0}
+                onInspire={() => handleGoalInspire(g.id)}
+                onEdit={() => setEditingGoal(g)}
+                onDelete={() => handleDeleteGoal(g.id)}
+                isDone={doneGoals.has(g.id)}
+                onToggleDone={() => toggleDoneGoal(g.id)}
+                tasksAll={goalTasks}
+                tasksDoneCount={goalDone}
+                onAddTask={() => setQuickTaskGoalId(g.id)}
+                onOpenTasks={() => {
+                  // По правке: при переходе из «Цели» фильтр НЕ ставим — показываем все задачи всех целей.
+                  setTasksFromGoalId(null);
+                  changeTabWithCardEffect(1, "tasks");
+                }}
+              />
+            );
+          })}
           {goals.filter((g) => !doneGoals.has(g.id)).length === 0 && (
             <div className="text-center text-[12px] text-muted-foreground pt-6">
               Пока нет целей. Создай первую — вырасти её из желания 🎯
@@ -574,6 +596,8 @@ function WishesScreen() {
           }))}
           initialGoalId={tasksFromGoalId}
           onClearGoalFilter={() => setTasksFromGoalId(null)}
+          tasks={moduleTasks}
+          onTasksChange={(updater) => setModuleTasks(updater)}
         />
       );
     }
@@ -653,6 +677,29 @@ function WishesScreen() {
           </div>
         )}
       </div>
+
+      {/* Быстрая постановка задачи из карточки цели */}
+      {quickTaskGoalId && createPortal(
+        <div
+          className="fixed inset-0 z-[100] overflow-y-auto animate-fade-up"
+          style={{ background: "var(--background)" }}
+        >
+          <CreateOrEditTaskScreen
+            mode="create"
+            goals={goals.filter((g) => !doneGoals.has(g.id)).map((g) => ({ id: g.id, title: g.title, plan: g.plan }))}
+            defaultGoalId={quickTaskGoalId}
+            onCancel={() => setQuickTaskGoalId(null)}
+            onSubmit={(d) => {
+              setModuleTasks((prev) => [
+                { ...d, id: `t${Date.now()}`, done: false, timeSpent: 0 },
+                ...prev,
+              ]);
+              setQuickTaskGoalId(null);
+            }}
+          />
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
@@ -1603,6 +1650,9 @@ function GoalCard({
   isDone,
   onToggleDone,
   onOpenTasks,
+  tasksAll = [],
+  tasksDoneCount = 0,
+  onAddTask,
 }: {
   goal: Goal;
   count: number;
@@ -1612,10 +1662,13 @@ function GoalCard({
   isDone: boolean;
   onToggleDone: () => void;
   onOpenTasks?: () => void;
+  tasksAll?: ModuleTask[];
+  tasksDoneCount?: number;
+  onAddTask?: () => void;
 }) {
   void isDone;
-  const openTasks = goal.tasks.filter((t) => !t.done);
-  const allDone = goal.tasks.length > 0 && openTasks.length === 0;
+  const openTasks = tasksAll.filter((t) => !t.done);
+  const totalTasks = tasksAll.length;
 
   return (
     <article className="bg-card hairline rounded-[20px] overflow-hidden shadow-card animate-fade-up">
@@ -1690,13 +1743,34 @@ function GoalCard({
 
         <div className="my-3 h-px bg-border/60" />
 
-        <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-          Главные задачи
-        </p>
-        {allDone ? (
-          <p className="mt-1.5 text-[13px] text-foreground/85">✅ Все задачи выполнены!</p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            Задачи
+          </p>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] text-muted-foreground">
+              Сделано: <span className="font-semibold" style={{ color: "#16a34a" }}>{tasksDoneCount}</span> / {totalTasks}
+            </span>
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onAddTask?.(); }}
+              aria-label="Добавить задачу"
+              className="tap inline-flex items-center justify-center rounded-full shrink-0"
+              style={{
+                width: 26, height: 26,
+                background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+                color: "#fff",
+                boxShadow: "0 2px 6px rgba(255,109,0,0.35)",
+              }}
+            >
+              <Plus className="h-4 w-4" strokeWidth={2.5} />
+            </button>
+          </div>
+        </div>
+        {totalTasks === 0 ? (
+          <p className="mt-1.5 text-[12.5px] text-muted-foreground">Задач пока нет — добавь первую кнопкой +</p>
         ) : openTasks.length === 0 ? (
-          <p className="mt-1.5 text-[12.5px] text-muted-foreground">Задач пока нет</p>
+          <p className="mt-1.5 text-[13px] text-foreground/85">✅ Все задачи выполнены!</p>
         ) : (
           <ul className="mt-1.5 space-y-1.5">
             {openTasks.map((t) => (
@@ -1705,7 +1779,7 @@ function GoalCard({
                   className="mt-0.5 inline-block h-4 w-4 rounded-[4px] shrink-0"
                   style={{ border: "1.5px solid #c8c0b0", background: "#fff" }}
                 />
-                <span>{t.text}</span>
+                <span className="flex-1">{t.title}</span>
               </li>
             ))}
           </ul>
