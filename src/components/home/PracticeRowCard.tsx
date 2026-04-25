@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
-import { Link } from "@tanstack/react-router";
 export type DayState = "done" | "missed" | "empty";
 
 export interface PracticeRow {
