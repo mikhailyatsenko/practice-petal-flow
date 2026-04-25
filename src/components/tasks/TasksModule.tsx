@@ -103,10 +103,18 @@ interface TasksModuleProps {
   /** Фильтр по конкретной цели (когда пришли из «Цели → К задачам»). */
   initialGoalId?: string | null;
   onClearGoalFilter?: () => void;
+  /** Контролируемое хранилище задач (если задано — используется вместо локального). */
+  tasks?: Task[];
+  onTasksChange?: (updater: (prev: Task[]) => Task[]) => void;
 }
 
-export function TasksModule({ goals, initialGoalId, onClearGoalFilter }: TasksModuleProps) {
-  const [tasks, setTasks] = useState<Task[]>(() => SAMPLE_TASKS(goals));
+export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: tasksProp, onTasksChange }: TasksModuleProps) {
+  const [internalTasks, setInternalTasks] = useState<Task[]>(() => SAMPLE_TASKS(goals));
+  const tasks = tasksProp ?? internalTasks;
+  const setTasks = (updater: (prev: Task[]) => Task[]) => {
+    if (onTasksChange) onTasksChange(updater);
+    else setInternalTasks(updater);
+  };
   const [filter, setFilter] = useState<FilterId>("all");
   const [openGoalId, setOpenGoalId] = useState<string | null>(initialGoalId ?? null);
   const [creating, setCreating] = useState(false);
