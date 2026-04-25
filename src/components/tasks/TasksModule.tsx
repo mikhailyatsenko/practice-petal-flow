@@ -141,14 +141,14 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   const [brainstormGoalId, setBrainstormGoalId] = useState<string | null>(initialBrainstormGoalId ?? null);
   const [brainstormQuestion, setBrainstormQuestion] = useState<number | null>(null);
 
-  // Применяем initialBrainstormGoalId при изменении (если открыли из меню цели)
+  // Применяем initialBrainstormGoalId при изменении (если открыли из меню цели).
+  // Не вызываем onClearBrainstormGoalId сразу — иначе при анимации перехода вкладок
+  // компонент перемонтируется и получит уже null. Сбрасываем при выходе (onBack).
   useEffect(() => {
     if (initialBrainstormGoalId) {
       setBrainstormGoalId(initialBrainstormGoalId);
       setBrainstormQuestion(null);
-      onClearBrainstormGoalId?.();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialBrainstormGoalId]);
 
   // Таймеры — поддерживаем несколько активных параллельно
@@ -284,7 +284,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       <BrainstormListScreen
         goalTitle={g?.title ?? "—"}
         answers={goalAnswers}
-        onBack={() => setBrainstormGoalId(null)}
+        onBack={() => { setBrainstormGoalId(null); onClearBrainstormGoalId?.(); }}
         onOpenQuestion={(idx) => setBrainstormQuestion(idx)}
       />
     );
