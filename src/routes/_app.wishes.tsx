@@ -3168,6 +3168,8 @@ function RealizedTab({
           isDone
           onToggleDone={() => onUndoHotelka(h)}
           readOnly
+          proudCount={proudHotelki[h] ?? 0}
+          onProud={() => setProudHotelki((p) => ({ ...p, [h]: (p[h] ?? 0) + 1 }))}
         />
       ),
     })),
