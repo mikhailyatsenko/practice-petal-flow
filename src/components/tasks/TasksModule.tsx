@@ -437,6 +437,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                   liveSeconds={elapsedMap[t.id] ?? 0}
                   isShattering={shatteringId === t.id}
                   onOpen={() => setOpenTaskId(t.id)}
+                  onComplete={() => handleMarkDone(t.id)}
                 />
               ))}
               <div className="flex justify-center">
