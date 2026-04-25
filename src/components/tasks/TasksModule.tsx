@@ -247,7 +247,34 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
 
   // ===== Рендер экранов =====
 
-  if (creating) {
+  if (brainstormGoalId) {
+    const g = goals.find((x) => x.id === brainstormGoalId);
+    const goalAnswers = answersByGoal[brainstormGoalId] ?? {};
+    if (brainstormQuestion != null) {
+      return (
+        <BrainstormAnswerScreen
+          questionNumber={brainstormQuestion}
+          initialAnswer={goalAnswers[brainstormQuestion] ?? ""}
+          onBack={() => setBrainstormQuestion(null)}
+          onSave={(text) =>
+            setAnswersByGoal((prev) => ({
+              ...prev,
+              [brainstormGoalId]: { ...(prev[brainstormGoalId] ?? {}), [brainstormQuestion]: text },
+            }))
+          }
+        />
+      );
+    }
+    return (
+      <BrainstormListScreen
+        goalTitle={g?.title ?? "—"}
+        answers={goalAnswers}
+        onBack={() => setBrainstormGoalId(null)}
+        onOpenQuestion={(idx) => setBrainstormQuestion(idx)}
+      />
+    );
+  }
+
     return (
       <CreateOrEditTaskScreen
         mode="create"
