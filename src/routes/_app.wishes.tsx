@@ -283,8 +283,8 @@ function WishesScreen() {
     { id: "t3", goalId: "g1", title: "Зарегистрироваться на полумарафон", deadline: "🟪 На месяц", duration: "30 мин", feeling: 9, done: false, timeSpent: 0 },
     { id: "t4", goalId: "g2", title: "Найти преподавателя испанского", deadline: "🟦 На неделю", duration: "1 час", feeling: 6, done: false, timeSpent: 0 },
     { id: "t5", goalId: "g2", title: "Пройти базовый курс грамматики", deadline: "🟥 Главная задача", duration: "Более 10 часов", feeling: 5, done: false, timeSpent: 0 },
-    { id: "t6", goalId: "g3", title: "Открыть накопительный счёт", deadline: "🟧 На день", duration: "30 мин", feeling: 7, done: false, timeSpent: 0 },
-    { id: "t7", goalId: "g3", title: "Настроить автоперевод 20% от дохода", deadline: "⬜ Не определён", duration: "15 мин", feeling: 8, done: false, timeSpent: 0 },
+    { id: "t6", goalId: "g4", title: "Составить список из 24 книг на год", deadline: "🟧 На день", duration: "30 мин", feeling: 7, done: false, timeSpent: 0 },
+    { id: "t7", goalId: "g4", title: "Завести читательский дневник", deadline: "⬜ Не определён", duration: "15 мин", feeling: 8, done: false, timeSpent: 0 },
   ]);
 
   // Быстрая постановка задачи из карточки цели
