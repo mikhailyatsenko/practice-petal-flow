@@ -241,9 +241,19 @@ function WishesScreen() {
   const [editingWish, setEditingWish] = useState<Wish | null>(null);
 
   // Воплощённые
-  const [doneHotelki, setDoneHotelki] = useState<Set<string>>(new Set());
-  const [doneWishes, setDoneWishes] = useState<Set<string>>(new Set());
-  const [doneGoals, setDoneGoals] = useState<Set<string>>(new Set());
+  const [doneHotelki, setDoneHotelki] = useState<Set<string>>(
+    () => new Set([
+      "Купить красивую кружку для кофе",
+      "Научиться готовить пасту карбонара",
+      "Завести растение на рабочий стол",
+    ]),
+  );
+  const [doneWishes, setDoneWishes] = useState<Set<string>>(
+    () => new Set(["w2", "w4"]),
+  );
+  const [doneGoals, setDoneGoals] = useState<Set<string>>(
+    () => new Set(["g3"]),
+  );
 
   // Раздел «Задачи»: фильтр по конкретной цели (когда переходим из «Цели → К задачам»)
   const [tasksFromGoalId, setTasksFromGoalId] = useState<string | null>(null);
@@ -3065,80 +3075,68 @@ function RealizedTab({
     </button>
   );
 
+  type MixedItem =
+    | { kind: "hotelka"; key: string; text: string; onUndo: () => void }
+    | { kind: "wish"; key: string; text: string; image: string; onUndo: () => void }
+    | { kind: "goal"; key: string; text: string; image: string; onUndo: () => void };
+
+  const items: MixedItem[] = [
+    ...goals.map((g) => ({
+      kind: "goal" as const, key: `g-${g.id}`, text: g.title, image: g.image,
+      onUndo: () => onUndoGoal(g.id),
+    })),
+    ...wishes.map((w) => ({
+      kind: "wish" as const, key: `w-${w.id}`, text: w.title, image: w.image,
+      onUndo: () => onUndoWish(w.id),
+    })),
+    ...hotelki.map((h, i) => ({
+      kind: "hotelka" as const, key: `h-${i}-${h}`, text: h,
+      onUndo: () => onUndoHotelka(h),
+    })),
+  ];
+
+  // Перемешать детерминированно (стабильный порядок между рендерами)
+  const mixed = items
+    .map((it, i) => ({ it, sort: ((it.key.length * 31 + i * 17) % 97) }))
+    .sort((a, b) => a.sort - b.sort)
+    .map((x) => x.it);
+
+  const badge = (kind: MixedItem["kind"]) => {
+    const map = {
+      hotelka: { label: "Хотелка", bg: "#fff3e0", color: "#FF6D00" },
+      wish:    { label: "Желание", bg: "#fce7f3", color: "#db2777" },
+      goal:    { label: "Цель",    bg: "#dcfce7", color: "#16a34a" },
+    } as const;
+    const m = map[kind];
+    return (
+      <span
+        className="inline-block rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider"
+        style={{ background: m.bg, color: m.color }}
+      >
+        {m.label}
+      </span>
+    );
+  };
+
   return (
-    <div className="px-4 pt-3 space-y-5">
-      {goals.length > 0 && (
-        <section>
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
-            Цели
-          </p>
-          <div className="space-y-2">
-            {goals.map((g) => (
-              <div
-                key={g.id}
-                className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3"
-              >
-                <img
-                  src={g.image}
-                  alt={g.title}
-                  className="h-10 w-10 rounded-lg object-cover shrink-0"
-                />
-                <p className="text-[14px] leading-snug text-foreground/90 flex-1 line-through opacity-70">
-                  {g.title}
-                </p>
-                {undoBtn(() => onUndoGoal(g.id))}
-              </div>
-            ))}
+    <div className="px-4 pt-3 space-y-2">
+      {mixed.map((it) => (
+        <div
+          key={it.key}
+          className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 min-h-[52px]"
+        >
+          {"image" in it && (
+            <img src={it.image} alt={it.text} className="h-10 w-10 rounded-lg object-cover shrink-0" />
+          )}
+          <div className="flex-1 min-w-0 space-y-1">
+            {badge(it.kind)}
+            <p className="text-[14px] leading-snug text-foreground/90 line-through opacity-70 break-words">
+              {it.text}
+            </p>
           </div>
-        </section>
-      )}
-
-      {wishes.length > 0 && (
-        <section>
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
-            Желания
-          </p>
-          <div className="space-y-2">
-            {wishes.map((w) => (
-              <div
-                key={w.id}
-                className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3"
-              >
-                <img
-                  src={w.image}
-                  alt={w.title}
-                  className="h-10 w-10 rounded-lg object-cover shrink-0"
-                />
-                <p className="text-[14px] leading-snug text-foreground/90 flex-1 line-through opacity-70">
-                  {w.title}
-                </p>
-                {undoBtn(() => onUndoWish(w.id))}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {hotelki.length > 0 && (
-        <section>
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
-            Хотелки
-          </p>
-          <div className="space-y-2">
-            {hotelki.map((h, i) => (
-              <div
-                key={`${i}-${h}`}
-                className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 min-h-[52px]"
-              >
-                <p className="text-[14px] leading-snug text-foreground/90 flex-1 line-through opacity-70">
-                  {h}
-                </p>
-                {undoBtn(() => onUndoHotelka(h))}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+          {undoBtn(it.onUndo)}
+        </div>
+      ))}
     </div>
   );
 }
