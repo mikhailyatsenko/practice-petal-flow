@@ -254,13 +254,13 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
         <TaskDetailScreen
           task={t}
           goal={g}
-          isTimerActive={activeTimerId === t.id}
+          isTimerActive={activeTimerIds.has(t.id)}
           liveSeconds={elapsedMap[t.id] ?? 0}
           onBack={() => setOpenTaskId(null)}
           onEdit={() => { setOpenTaskId(null); setEditingTask(t); }}
           onDelete={() => handleDelete(t.id)}
           onStartTimer={() => startTimer(t.id)}
-          onStopTimer={stopTimer}
+          onStopTimer={() => stopTimer(t.id)}
           onMarkDone={() => handleMarkDone(t.id)}
         />
       );
