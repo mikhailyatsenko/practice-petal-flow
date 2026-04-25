@@ -167,10 +167,7 @@ export function BrainstormAnswerScreen({
           className="w-full text-[15px] leading-[1.55] outline-none resize-none bg-transparent text-foreground placeholder:text-muted-foreground"
           style={{ minHeight: 72, border: "none" }}
         />
-        <div className="mt-2 pt-2 flex items-center justify-between text-[11.5px]" style={{ borderTop: "1px solid #ede8df" }}>
-          <span style={{ color: enough ? "#16a34a" : "#8a8a8a" }}>
-            {enough ? "✓ Достаточно для сохранения" : `Нужно ещё ${remaining} символов`}
-          </span>
+        <div className="mt-2 pt-2 flex items-center justify-end text-[11.5px]" style={{ borderTop: "1px solid #ede8df" }}>
           <span style={{ color: "#8a8a8a" }}>{len} / {MAX_LEN}</span>
         </div>
       </div>
