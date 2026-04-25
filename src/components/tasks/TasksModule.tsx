@@ -1,0 +1,733 @@
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, Plus, MoreHorizontal, Pencil, Trash2, Check, Play, Square } from "lucide-react";
+
+/* =====================================================================
+   Раздел «Задачи». Самодостаточный модуль — НЕ трогает существующий код.
+   Подключается из _app.wishes.tsx в ветке tab === "tasks".
+   ===================================================================== */
+
+export interface TaskGoalRef {
+  id: string;
+  title: string;
+  plan: string;
+  /** опциональный цветовой акцент цели (hex). Если не задан — оранжевый. */
+  color?: string;
+}
+
+export type TaskDeadline =
+  | "⬜ Не определён"
+  | "🟧 На день"
+  | "🟦 На неделю"
+  | "🟪 На месяц"
+  | "🟥 Главная задача";
+
+export interface Task {
+  id: string;
+  goalId: string;
+  title: string;
+  deadline: TaskDeadline;
+  duration: string;
+  feeling: number; // 1..10
+  done: boolean;
+  timeSpent: number; // секунды
+}
+
+const DEADLINES: { value: TaskDeadline; label: string }[] = [
+  { value: "⬜ Не определён",   label: "⬜ Не определён" },
+  { value: "🟧 На день",        label: "🟧 На день" },
+  { value: "🟦 На неделю",      label: "🟦 На неделю" },
+  { value: "🟪 На месяц",       label: "🟪 На месяц" },
+  { value: "🟥 Главная задача", label: "🏁 Главная задача" },
+];
+
+const DEADLINE_COLORS: Record<TaskDeadline, { bg: string; border?: string }> = {
+  "⬜ Не определён":   { bg: "#d1d5db", border: "#b8b8b8" },
+  "🟧 На день":        { bg: "#FF6D00" },
+  "🟦 На неделю":      { bg: "#2563eb" },
+  "🟪 На месяц":       { bg: "#7c3aed" },
+  "🟥 Главная задача": { bg: "#e53e3e" },
+};
+
+const DURATIONS = [
+  "3 мин","5 мин","10 мин","15 мин","20 мин","30 мин",
+  "1 час","1.5 часа","2 часа","3 часа","4 часа","5 часов",
+  "6 часов","7 часов","8 часов","9 часов","10 часов","Более 10 часов",
+];
+
+const FEELINGS: { value: number; emoji: string; label: string }[] = [
+  { value: 10, emoji: "💜", label: "Эйфория" },
+  { value: 9,  emoji: "💗", label: "Страсть" },
+  { value: 8,  emoji: "❤️", label: "Энтузиазм" },
+  { value: 7,  emoji: "💚", label: "Воодушевление" },
+  { value: 6,  emoji: "🧡", label: "Интерес" },
+  { value: 5,  emoji: "💛", label: "Спокойствие" },
+  { value: 4,  emoji: "🤍", label: "Сдержанность" },
+  { value: 3,  emoji: "🩶", label: "Тягость" },
+  { value: 2,  emoji: "🤎", label: "Неприязнь" },
+  { value: 1,  emoji: "🖤", label: "Мучение" },
+];
+
+const feelingOf = (v: number) => FEELINGS.find((f) => f.value === v) ?? FEELINGS[5];
+
+type FilterId = "all" | "open" | "main" | "day" | "week" | "month";
+
+const FILTERS_ROW1: { id: FilterId; label: string }[] = [
+  { id: "all",   label: "📋 Все задачи" },
+  { id: "open",  label: "⬜ Открытые" },
+  { id: "main",  label: "🟥 Главные" },
+];
+const FILTERS_ROW2: { id: FilterId; label: string }[] = [
+  { id: "day",   label: "🟧 На день" },
+  { id: "week",  label: "🟦 На неделю" },
+  { id: "month", label: "🟪 На месяц" },
+];
+
+const SAMPLE_TASKS = (goals: TaskGoalRef[]): Task[] => {
+  if (goals.length === 0) return [];
+  const g0 = goals[0]?.id ?? "";
+  const g1 = goals[1]?.id ?? g0;
+  const g2 = goals[2]?.id ?? g0;
+  return [
+    { id: "t1", goalId: g0, title: "Купить кроссовки для длинных дистанций", deadline: "🟧 На день", duration: "1 час", feeling: 8, done: false, timeSpent: 0 },
+    { id: "t2", goalId: g0, title: "Составить план тренировок на месяц", deadline: "🟥 Главная задача", duration: "2 часа", feeling: 7, done: false, timeSpent: 0 },
+    { id: "t3", goalId: g0, title: "Зарегистрироваться на ближайший полумарафон", deadline: "🟪 На месяц", duration: "30 мин", feeling: 9, done: false, timeSpent: 0 },
+    { id: "t4", goalId: g1, title: "Найти преподавателя испанского", deadline: "🟦 На неделю", duration: "1 час", feeling: 6, done: false, timeSpent: 0 },
+    { id: "t5", goalId: g1, title: "Пройти базовый курс грамматики", deadline: "🟥 Главная задача", duration: "Более 10 часов", feeling: 5, done: false, timeSpent: 0 },
+    { id: "t6", goalId: g2, title: "Открыть накопительный счёт", deadline: "🟧 На день", duration: "30 мин", feeling: 7, done: false, timeSpent: 0 },
+    { id: "t7", goalId: g2, title: "Настроить автоперевод 20% от дохода", deadline: "⬜ Не определён", duration: "15 мин", feeling: 8, done: false, timeSpent: 0 },
+  ];
+};
+
+interface TasksModuleProps {
+  goals: TaskGoalRef[];
+  /** Фильтр по конкретной цели (когда пришли из «Цели → К задачам»). */
+  initialGoalId?: string | null;
+  onClearGoalFilter?: () => void;
+}
+
+export function TasksModule({ goals, initialGoalId, onClearGoalFilter }: TasksModuleProps) {
+  const [tasks, setTasks] = useState<Task[]>(() => SAMPLE_TASKS(goals));
+  const [filter, setFilter] = useState<FilterId>("all");
+  const [openGoalId, setOpenGoalId] = useState<string | null>(initialGoalId ?? null);
+  const [creating, setCreating] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [openTaskId, setOpenTaskId] = useState<string | null>(null);
+
+  // Таймеры
+  const [activeTimerId, setActiveTimerId] = useState<string | null>(null);
+  const [elapsedMap, setElapsedMap] = useState<Record<string, number>>({});
+
+  // Применяем initialGoalId при изменении (если перешли из «Цели»)
+  useEffect(() => {
+    if (initialGoalId) setOpenGoalId(initialGoalId);
+  }, [initialGoalId]);
+
+  // Таймер: тикает каждую секунду
+  useEffect(() => {
+    if (!activeTimerId) return;
+    const id = window.setInterval(() => {
+      setElapsedMap((prev) => ({ ...prev, [activeTimerId]: (prev[activeTimerId] ?? 0) + 1 }));
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, [activeTimerId]);
+
+  const startTimer = (taskId: string) => setActiveTimerId(taskId);
+  const stopTimer = () => {
+    if (!activeTimerId) return;
+    const id = activeTimerId;
+    setActiveTimerId(null);
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, timeSpent: t.timeSpent + (elapsedMap[id] ?? 0) } : t)));
+  };
+
+  const visibleTasks = useMemo(() => {
+    let list = tasks.filter((t) => !t.done);
+    if (initialGoalId) list = list.filter((t) => t.goalId === initialGoalId);
+    switch (filter) {
+      case "open":  list = list.filter((t) => t.deadline === "⬜ Не определён"); break;
+      case "main":  list = list.filter((t) => t.deadline === "🟥 Главная задача"); break;
+      case "day":   list = list.filter((t) => t.deadline === "🟧 На день"); break;
+      case "week":  list = list.filter((t) => t.deadline === "🟦 На неделю"); break;
+      case "month": list = list.filter((t) => t.deadline === "🟪 На месяц"); break;
+    }
+    return list;
+  }, [tasks, filter, initialGoalId]);
+
+  // Группировка по целям (с сохранением порядка целей)
+  const grouped = useMemo(() => {
+    const map = new Map<string, Task[]>();
+    for (const g of goals) map.set(g.id, []);
+    for (const t of visibleTasks) {
+      if (!map.has(t.goalId)) map.set(t.goalId, []);
+      map.get(t.goalId)!.push(t);
+    }
+    const order = goals.map((g) => g.id);
+    for (const k of map.keys()) if (!order.includes(k)) order.push(k);
+    return order
+      .map((gid) => ({ goal: goals.find((g) => g.id === gid), gid, items: map.get(gid) ?? [] }))
+      .filter((row) => row.items.length > 0);
+  }, [visibleTasks, goals]);
+
+  const handleCreate = (data: Omit<Task, "id" | "done" | "timeSpent">) => {
+    const newTask: Task = { ...data, id: `t${Date.now()}`, done: false, timeSpent: 0 };
+    setTasks((prev) => [newTask, ...prev]);
+    setCreating(false);
+  };
+  const handleSaveEdit = (updated: Task) => {
+    setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+    setEditingTask(null);
+  };
+  const handleDelete = (id: string) => {
+    setTasks((prev) => prev.filter((t) => t.id !== id));
+    if (activeTimerId === id) setActiveTimerId(null);
+    setEditingTask(null);
+    setOpenTaskId(null);
+  };
+  const handleMarkDone = (id: string) => {
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
+    if (activeTimerId === id) setActiveTimerId(null);
+    setOpenTaskId(null);
+  };
+
+  // ===== Рендер экранов =====
+
+  if (creating) {
+    return (
+      <CreateOrEditTaskScreen
+        mode="create"
+        goals={goals}
+        defaultGoalId={initialGoalId ?? null}
+        onCancel={() => setCreating(false)}
+        onSubmit={(d) => handleCreate(d)}
+      />
+    );
+  }
+
+  if (editingTask) {
+    return (
+      <CreateOrEditTaskScreen
+        mode="edit"
+        goals={goals}
+        task={editingTask}
+        onCancel={() => setEditingTask(null)}
+        onSubmit={(d) => handleSaveEdit({ ...editingTask, ...d })}
+      />
+    );
+  }
+
+  if (openTaskId) {
+    const t = tasks.find((x) => x.id === openTaskId);
+    if (t) {
+      const g = goals.find((x) => x.id === t.goalId);
+      return (
+        <TaskDetailScreen
+          task={t}
+          goal={g}
+          isTimerActive={activeTimerId === t.id}
+          liveSeconds={elapsedMap[t.id] ?? 0}
+          onBack={() => setOpenTaskId(null)}
+          onEdit={() => { setOpenTaskId(null); setEditingTask(t); }}
+          onDelete={() => handleDelete(t.id)}
+          onStartTimer={() => startTimer(t.id)}
+          onStopTimer={stopTimer}
+          onMarkDone={() => handleMarkDone(t.id)}
+        />
+      );
+    }
+  }
+
+  // ===== Лента =====
+  return (
+    <div className="px-4 pt-3 pb-2 space-y-3">
+      <button
+        onClick={() => setCreating(true)}
+        className="tap btn-pill-orange w-full inline-flex items-center justify-center gap-1.5"
+      >
+        <Plus className="h-4 w-4" /> Добавить задачу
+      </button>
+
+      {/* Активный фильтр по цели (когда пришли из «Цели») */}
+      {initialGoalId && (
+        <div
+          className="rounded-xl px-3.5 py-2.5 flex items-center justify-between text-[13px]"
+          style={{ background: "#fff3e0", border: "1px solid #FF6D00", color: "#FF6D00" }}
+        >
+          <span>
+            Фильтр по цели: <b>{goals.find((g) => g.id === initialGoalId)?.title ?? "—"}</b>
+          </span>
+          <button onClick={onClearGoalFilter} className="tap text-[12px] underline">
+            Сбросить
+          </button>
+        </div>
+      )}
+
+      {/* Фильтры — 2 ряда по центру */}
+      <div className="space-y-1.5">
+        <div className="flex justify-center gap-1.5 flex-wrap">
+          {FILTERS_ROW1.map((f) => (
+            <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
+          ))}
+        </div>
+        <div className="flex justify-center gap-1.5 flex-wrap">
+          {FILTERS_ROW2.map((f) => (
+            <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
+          ))}
+        </div>
+      </div>
+
+      {grouped.length === 0 && (
+        <div className="text-center text-[13px] text-muted-foreground py-10">
+          Пока нет задач по выбранному фильтру. Добавь первую ✨
+        </div>
+      )}
+
+      {grouped.map((row) => {
+        const isOpen = openGoalId === row.gid;
+        const goal = row.goal;
+        return (
+          <div key={row.gid} className="space-y-2">
+            {/* Заголовок группы */}
+            <button
+              onClick={() => setOpenGoalId(isOpen ? null : row.gid)}
+              className="tap w-full rounded-xl px-3 py-2.5 flex items-center justify-between gap-2 text-left transition-colors"
+              style={
+                isOpen
+                  ? { background: "#fff3e0", border: "1px solid #FF6D00", color: "#FF6D00" }
+                  : { background: "transparent", border: "1px solid transparent" }
+              }
+            >
+              <span className="text-[14px] font-semibold truncate flex-1">
+                {goal?.title ?? "Без цели"}
+              </span>
+              <span
+                className="text-[10.5px] font-medium uppercase tracking-wider rounded-full px-2 py-0.5 shrink-0"
+                style={
+                  isOpen
+                    ? { background: "#FF6D00", color: "#fff" }
+                    : { background: "#ede8df", color: "#8a8a8a" }
+                }
+              >
+                {isOpen ? "Закрыть план" : "План"}
+              </span>
+              <span className="text-[11px] text-muted-foreground shrink-0">
+                {row.items.length} {pluralTasks(row.items.length)}
+              </span>
+            </button>
+
+            {/* План реализации */}
+            {isOpen && goal && (
+              <article
+                className="bg-card rounded-2xl overflow-hidden shadow-card animate-fade-up"
+                style={{ border: "1px solid #ede8df" }}
+              >
+                <div className="h-1 w-full" style={{ background: goal.color ?? "#FF6D00" }} />
+                <div className="p-3.5">
+                  <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                    План реализации
+                  </p>
+                  <p className="mt-1.5 text-[14px] leading-[1.6] text-foreground/90 whitespace-pre-wrap">
+                    {goal.plan || "План пока не описан."}
+                  </p>
+                </div>
+              </article>
+            )}
+
+            {/* Задачи */}
+            <div className="space-y-2">
+              {row.items.map((t) => (
+                <TaskRow
+                  key={t.id}
+                  task={t}
+                  isTimerActive={activeTimerId === t.id}
+                  liveSeconds={elapsedMap[t.id] ?? 0}
+                  onOpen={() => setOpenTaskId(t.id)}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function pluralTasks(n: number) {
+  const m10 = n % 10;
+  const m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return "задача";
+  if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return "задачи";
+  return "задач";
+}
+
+function FilterChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="tap rounded-full px-3 py-1.5 text-[12px] font-medium whitespace-nowrap transition-colors"
+      style={
+        active
+          ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff", border: "1px solid transparent" }
+          : { background: "#fff", color: "#8a8a8a", border: "1px solid #ede8df" }
+      }
+    >
+      {label}
+    </button>
+  );
+}
+
+/* ---------------- Строка задачи в ленте ---------------- */
+
+function TaskRow({
+  task,
+  isTimerActive,
+  liveSeconds,
+  onOpen,
+}: {
+  task: Task;
+  isTimerActive: boolean;
+  liveSeconds: number;
+  onOpen: () => void;
+}) {
+  const c = DEADLINE_COLORS[task.deadline];
+  const f = feelingOf(task.feeling);
+  return (
+    <button
+      onClick={onOpen}
+      className="tap w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card animate-fade-up transition-colors"
+      style={{
+        border: isTimerActive ? "2px solid #FF6D00" : "1px solid #ede8df",
+      }}
+    >
+      <div className="flex items-center gap-2.5">
+        <span
+          className="shrink-0 rounded-[3px]"
+          style={{
+            width: 10,
+            height: 10,
+            background: c.bg,
+            border: c.border ? `1px solid ${c.border}` : "none",
+          }}
+        />
+        <span
+          className="flex-1 text-[14px] font-semibold leading-snug break-words"
+          style={task.done ? { textDecoration: "line-through", color: "#8a8a8a" } : undefined}
+        >
+          {task.title}
+        </span>
+        {task.duration && task.duration !== "—" && (
+          <span className="text-[11px] text-muted-foreground shrink-0">{task.duration}</span>
+        )}
+        <span className="text-[17px] leading-none shrink-0" aria-label={f.label}>{f.emoji}</span>
+        <span
+          className="shrink-0 rounded-full flex items-center justify-center"
+          style={{
+            width: 26, height: 26,
+            background: task.done ? "#16a34a" : "transparent",
+            border: task.done ? "none" : "1.5px solid #c8c0b0",
+          }}
+        >
+          {task.done && <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />}
+        </span>
+      </div>
+      {isTimerActive && (
+        <div
+          className="mt-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
+          style={{ background: "#fff3e0", color: "#FF6D00" }}
+        >
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-current task-pulse" />
+          ▶ {fmtTime(task.timeSpent + liveSeconds)}
+        </div>
+      )}
+      <style>{`
+        @keyframes taskPulse { 0%,100% { opacity: 1 } 50% { opacity: .25 } }
+        .task-pulse { animation: taskPulse 1.1s ease-in-out infinite; }
+      `}</style>
+    </button>
+  );
+}
+
+function fmtTime(total: number) {
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+function fmtTimeBig(total: number) {
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  if (h > 0) return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+}
+
+/* ---------------- Экран задачи ---------------- */
+
+function TaskDetailScreen({
+  task, goal, isTimerActive, liveSeconds,
+  onBack, onEdit, onDelete, onStartTimer, onStopTimer, onMarkDone,
+}: {
+  task: Task;
+  goal?: TaskGoalRef;
+  isTimerActive: boolean;
+  liveSeconds: number;
+  onBack: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+  onStartTimer: () => void;
+  onStopTimer: () => void;
+  onMarkDone: () => void;
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const f = feelingOf(task.feeling);
+  const total = task.timeSpent + (isTimerActive ? liveSeconds : 0);
+
+  return (
+    <div className="px-4 pt-3 pb-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <button onClick={onBack} className="tap inline-flex items-center gap-1.5 text-[14px] text-muted-foreground">
+          <ArrowLeft className="h-4 w-4" /> К задачам
+        </button>
+        <div className="relative">
+          <button onClick={() => setMenuOpen((v) => !v)} className="tap h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
+            <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+          </button>
+          {menuOpen && (
+            <>
+              <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
+              <div className="absolute right-0 mt-1 z-20 w-44 rounded-xl bg-card shadow-lg overflow-hidden" style={{ border: "1px solid #ede8df" }}>
+                <button
+                  onClick={() => { setMenuOpen(false); onEdit(); }}
+                  className="w-full px-3 py-2.5 text-left text-[13px] flex items-center gap-2 hover:bg-secondary"
+                >
+                  <Pencil className="h-4 w-4" /> Изменить
+                </button>
+                <button
+                  onClick={() => { setMenuOpen(false); onDelete(); }}
+                  className="w-full px-3 py-2.5 text-left text-[13px] flex items-center gap-2 hover:bg-secondary"
+                  style={{ color: "#e53e3e" }}
+                >
+                  <Trash2 className="h-4 w-4" /> Удалить
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        {goal && (
+          <span className="inline-block rounded-full px-2.5 py-1 text-[11px] font-medium" style={{ background: "#ede8df", color: "#8a8a8a" }}>
+            Цель: {goal.title}
+          </span>
+        )}
+        <h1 className="text-[22px] font-bold leading-tight text-foreground">{task.title}</h1>
+        <div className="text-[13px] text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span>📅 {task.deadline}</span>
+          <span>⏱ {task.duration}</span>
+          <span>{f.emoji} {f.label}</span>
+        </div>
+      </div>
+
+      {/* Таймер */}
+      <article className="bg-card rounded-2xl shadow-card p-5 text-center" style={{ border: "1px solid #ede8df" }}>
+        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Таймер работы</p>
+        <p className="mt-2 text-[48px] font-bold leading-none text-foreground" style={{ fontVariantNumeric: "tabular-nums" }}>
+          {fmtTimeBig(total)}
+        </p>
+        {!isTimerActive ? (
+          <button
+            onClick={onStartTimer}
+            className="tap mt-4 inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-semibold text-white"
+            style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
+          >
+            <Play className="h-4 w-4" /> Начать работу
+          </button>
+        ) : (
+          <button
+            onClick={onStopTimer}
+            className="tap mt-4 inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-semibold text-white"
+            style={{ background: "#e53e3e" }}
+          >
+            <Square className="h-4 w-4" /> Остановить
+          </button>
+        )}
+        {task.timeSpent > 0 && !isTimerActive && (
+          <p className="mt-3 text-[12px] text-muted-foreground">
+            Планировалось: {task.duration} · Факт: {fmtTimeBig(task.timeSpent)}
+          </p>
+        )}
+      </article>
+
+      <button
+        onClick={onMarkDone}
+        className="tap w-full rounded-full py-3 text-[14px] font-semibold text-white"
+        style={{ background: "linear-gradient(135deg,#34d399,#16a34a)" }}
+      >
+        ✅ Задача сделана!
+      </button>
+    </div>
+  );
+}
+
+/* ---------------- Создание / редактирование задачи ---------------- */
+
+function CreateOrEditTaskScreen({
+  mode, goals, task, defaultGoalId, onCancel, onSubmit,
+}: {
+  mode: "create" | "edit";
+  goals: TaskGoalRef[];
+  task?: Task;
+  defaultGoalId?: string | null;
+  onCancel: () => void;
+  onSubmit: (data: Omit<Task, "id" | "done" | "timeSpent">) => void;
+}) {
+  const [goalId, setGoalId] = useState<string>(task?.goalId ?? defaultGoalId ?? "");
+  const [title, setTitle] = useState<string>(task?.title ?? "");
+  const [deadline, setDeadline] = useState<TaskDeadline>(task?.deadline ?? "⬜ Не определён");
+  const [duration, setDuration] = useState<string>(task?.duration ?? "");
+  const [feeling, setFeeling] = useState<number>(task?.feeling ?? 0);
+
+  const valid = title.trim().length >= 3 && duration.length > 0 && feeling > 0;
+
+  return (
+    <div className="px-4 pt-3 pb-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <button onClick={onCancel} className="tap inline-flex items-center gap-1.5 text-[14px] text-muted-foreground">
+          <ArrowLeft className="h-4 w-4" /> Отмена
+        </button>
+        <h1 className="text-[15px] font-semibold">{mode === "create" ? "Новая задача" : "Изменить задачу"}</h1>
+        <span className="w-12" />
+      </div>
+
+      {/* Цель */}
+      <Section title="К какой цели?">
+        <div className="space-y-2">
+          {goals.map((g) => {
+            const active = goalId === g.id;
+            return (
+              <button
+                key={g.id}
+                onClick={() => setGoalId(active ? "" : g.id)}
+                className="tap w-full flex items-center gap-3 rounded-xl px-3 py-2.5 bg-card transition-colors text-left"
+                style={{ border: `1px solid ${active ? "#FF6D00" : "#ede8df"}` }}
+              >
+                <span
+                  className="shrink-0 rounded-lg"
+                  style={{ width: 32, height: 32, background: g.color ?? "linear-gradient(135deg,#FFB300,#FF6D00)" }}
+                />
+                <span className="flex-1 text-[14px] font-medium">{g.title}</span>
+                {active && <Check className="h-4 w-4" style={{ color: "#FF6D00" }} />}
+              </button>
+            );
+          })}
+          {goals.length === 0 && (
+            <p className="text-[12px] text-muted-foreground">Пока нет целей — задача будет без привязки.</p>
+          )}
+        </div>
+      </Section>
+
+      {/* Название */}
+      <Section title="Название задачи">
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Например: Написать первую главу"
+          className="w-full rounded-xl px-3.5 py-3 text-[15px] bg-card outline-none"
+          style={{ border: `1px solid ${title.trim() ? "#FF6D00" : "#ede8df"}` }}
+        />
+      </Section>
+
+      {/* Срок */}
+      <Section title="Срок выполнения">
+        <div className="flex flex-wrap gap-1.5">
+          {DEADLINES.map((d) => {
+            const active = deadline === d.value;
+            return (
+              <button
+                key={d.value}
+                onClick={() => setDeadline(d.value)}
+                className="tap rounded-full px-3 py-1.5 text-[12.5px] font-medium"
+                style={
+                  active
+                    ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff", border: "1px solid transparent" }
+                    : { background: "#fff", color: "#1a1a1a", border: "1px solid #ede8df" }
+                }
+              >
+                {d.label}
+              </button>
+            );
+          })}
+        </div>
+      </Section>
+
+      {/* Время */}
+      <Section title="Сколько времени нужно?" subtitle="Если сесть и непрерывно решать задачу — сколько уйдёт?">
+        <div className="flex flex-wrap gap-1.5">
+          {DURATIONS.map((d) => {
+            const active = duration === d;
+            return (
+              <button
+                key={d}
+                onClick={() => setDuration(d)}
+                className="tap rounded-full px-3 py-1.5 text-[12.5px] font-medium"
+                style={
+                  active
+                    ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff", border: "1px solid transparent" }
+                    : { background: "#fff", color: "#1a1a1a", border: "1px solid #ede8df" }
+                }
+              >
+                {d}
+              </button>
+            );
+          })}
+        </div>
+      </Section>
+
+      {/* Чувство */}
+      <Section title="Что чувствуешь к этой задаче?">
+        <div className="space-y-1.5">
+          {FEELINGS.map((f) => {
+            const active = feeling === f.value;
+            return (
+              <button
+                key={f.value}
+                onClick={() => setFeeling(f.value)}
+                className="tap w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-left"
+                style={
+                  active
+                    ? { background: "#fff3e0", border: "1px solid #FF6D00", color: "#FF6D00" }
+                    : { background: "#fff", border: "1px solid #ede8df", color: "#1a1a1a" }
+                }
+              >
+                <span className="text-[18px] leading-none">{f.emoji}</span>
+                <span className="flex-1 text-[14px] font-medium">{f.label}</span>
+                {active && <Check className="h-4 w-4" />}
+              </button>
+            );
+          })}
+        </div>
+      </Section>
+
+      <button
+        disabled={!valid}
+        onClick={() => valid && onSubmit({ goalId, title: title.trim(), deadline, duration, feeling })}
+        className="tap w-full rounded-full py-3 text-[14px] font-semibold transition-colors"
+        style={
+          valid
+            ? { background: "linear-gradient(135deg,#34d399,#16a34a)", color: "#fff" }
+            : { background: "#ede8df", color: "#8a8a8a", cursor: "not-allowed" }
+        }
+      >
+        ✅ {mode === "create" ? "Создать задачу" : "Сохранить"}
+      </button>
+    </div>
+  );
+}
+
+function Section({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
+  return (
+    <section className="space-y-1.5">
+      <h2 className="text-[13px] font-semibold text-foreground">{title}</h2>
+      {subtitle && <p className="text-[11.5px] text-muted-foreground">{subtitle}</p>}
+      <div className="pt-1">{children}</div>
+    </section>
+  );
+}
