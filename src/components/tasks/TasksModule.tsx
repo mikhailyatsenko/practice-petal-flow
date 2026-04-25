@@ -118,6 +118,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
   const [filter, setFilter] = useState<FilterId>("all");
   const [openGoalId, setOpenGoalId] = useState<string | null>(initialGoalId ?? null);
   const [creating, setCreating] = useState(false);
+  const [createForGoalId, setCreateForGoalId] = useState<string | null>(null);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
 
@@ -199,6 +200,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
     const newTask: Task = { ...data, id: `t${Date.now()}`, done: false, timeSpent: 0 };
     setTasks((prev) => [newTask, ...prev]);
     setCreating(false);
+    setCreateForGoalId(null);
   };
   const handleSaveEdit = (updated: Task) => {
     setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
@@ -227,8 +229,8 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
       <CreateOrEditTaskScreen
         mode="create"
         goals={goals}
-        defaultGoalId={initialGoalId ?? null}
-        onCancel={() => setCreating(false)}
+        defaultGoalId={createForGoalId ?? initialGoalId ?? null}
+        onCancel={() => { setCreating(false); setCreateForGoalId(null); }}
         onSubmit={(d) => handleCreate(d)}
       />
     );
@@ -318,16 +320,26 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
         return (
           <div key={row.gid} className="space-y-2">
             {/* Заголовок группы */}
-            <button
-              onClick={() => setOpenGoalId(isOpen ? null : row.gid)}
-              className="tap w-full rounded-xl px-3 py-2.5 flex items-center justify-between gap-2 text-left transition-colors"
-              style={{ background: "transparent", border: "1px solid transparent" }}
-            >
-              <span className="text-[14px] font-semibold leading-snug flex-1 min-w-0 break-words text-foreground">
-                {goal?.title ?? "Без цели"}
-              </span>
-              <span
-                className="inline-flex items-center gap-1 text-[11px] font-medium rounded-full px-2 py-0.5 shrink-0"
+            <div className="w-full rounded-xl px-3 py-2.5 flex items-center gap-2">
+              <button
+                onClick={() => setOpenGoalId(isOpen ? null : row.gid)}
+                className="tap flex-1 min-w-0 text-left"
+              >
+                <span className="text-[14px] font-semibold leading-snug block break-words text-foreground">
+                  {goal?.title ?? "Без цели"}
+                </span>
+              </button>
+              <button
+                onClick={() => { setCreateForGoalId(row.gid); setCreating(true); }}
+                aria-label="Добавить задачу к этой цели"
+                className="tap shrink-0 inline-flex items-center justify-center rounded-full"
+                style={{ width: 24, height: 24, background: "transparent", border: "1px solid #ede8df", color: "#9a8f7e" }}
+              >
+                <Plus className="h-3.5 w-3.5" />
+              </button>
+              <button
+                onClick={() => setOpenGoalId(isOpen ? null : row.gid)}
+                className="tap shrink-0 inline-flex items-center gap-1 text-[11px] font-medium rounded-full px-2 py-0.5"
                 style={
                   isOpen
                     ? { background: "rgba(255,109,0,0.10)", color: "#FF6D00", border: "1px solid rgba(255,109,0,0.35)" }
@@ -339,8 +351,8 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                   className="h-3 w-3 transition-transform"
                   style={{ transform: isOpen ? "rotate(180deg)" : "none" }}
                 />
-              </span>
-            </button>
+              </button>
+            </div>
 
             {/* План реализации */}
             {isOpen && goal && (
