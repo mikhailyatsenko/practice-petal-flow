@@ -1627,6 +1627,9 @@ function GoalCard({
   isDone,
   onToggleDone,
   onOpenTasks,
+  tasksAll = [],
+  tasksDoneCount = 0,
+  onAddTask,
 }: {
   goal: Goal;
   count: number;
@@ -1636,10 +1639,13 @@ function GoalCard({
   isDone: boolean;
   onToggleDone: () => void;
   onOpenTasks?: () => void;
+  tasksAll?: ModuleTask[];
+  tasksDoneCount?: number;
+  onAddTask?: () => void;
 }) {
   void isDone;
-  const openTasks = goal.tasks.filter((t) => !t.done);
-  const allDone = goal.tasks.length > 0 && openTasks.length === 0;
+  const openTasks = tasksAll.filter((t) => !t.done);
+  const totalTasks = tasksAll.length;
 
   return (
     <article className="bg-card hairline rounded-[20px] overflow-hidden shadow-card animate-fade-up">
