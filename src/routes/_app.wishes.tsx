@@ -1725,8 +1725,34 @@ function GoalCard({
         </p>
         {allDone ? (
           <p className="mt-1.5 text-[13px] text-foreground/85">✅ Все задачи выполнены!</p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            Задачи
+          </p>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] text-muted-foreground">
+              Сделано: <span className="font-semibold" style={{ color: "#16a34a" }}>{tasksDoneCount}</span> / {totalTasks}
+            </span>
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onAddTask?.(); }}
+              aria-label="Добавить задачу"
+              className="tap inline-flex items-center justify-center rounded-full shrink-0"
+              style={{
+                width: 26, height: 26,
+                background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+                color: "#fff",
+                boxShadow: "0 2px 6px rgba(255,109,0,0.35)",
+              }}
+            >
+              <Plus className="h-4 w-4" strokeWidth={2.5} />
+            </button>
+          </div>
+        </div>
+        {totalTasks === 0 ? (
+          <p className="mt-1.5 text-[12.5px] text-muted-foreground">Задач пока нет — добавь первую кнопкой +</p>
         ) : openTasks.length === 0 ? (
-          <p className="mt-1.5 text-[12.5px] text-muted-foreground">Задач пока нет</p>
+          <p className="mt-1.5 text-[13px] text-foreground/85">✅ Все задачи выполнены!</p>
         ) : (
           <ul className="mt-1.5 space-y-1.5">
             {openTasks.map((t) => (
@@ -1735,7 +1761,7 @@ function GoalCard({
                   className="mt-0.5 inline-block h-4 w-4 rounded-[4px] shrink-0"
                   style={{ border: "1.5px solid #c8c0b0", background: "#fff" }}
                 />
-                <span>{t.text}</span>
+                <span className="flex-1">{t.title}</span>
               </li>
             ))}
           </ul>
