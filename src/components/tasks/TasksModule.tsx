@@ -399,19 +399,19 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
 
             {/* Кнопка Мозговой штурм — маленькая, сверху */}
             {isOpen && goal && (
-              <div className="px-1">
+              <div className="flex justify-center">
                 <button
                   onClick={() => { setBrainstormGoalId(row.gid); setBrainstormQuestion(null); }}
                   className="tap inline-flex items-center gap-1 animate-fade-up"
                   style={{
-                    background: "#fff",
-                    border: "1.5px solid #FF6D00",
-                    color: "#FF6D00",
+                    background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+                    color: "#fff",
                     borderRadius: 999,
-                    padding: "4px 10px",
+                    padding: "5px 12px",
                     fontSize: 11.5,
                     fontWeight: 600,
                     lineHeight: 1.2,
+                    boxShadow: "0 2px 6px rgba(255,109,0,0.25)",
                   }}
                 >
                   🧠 Мозговой штурм
