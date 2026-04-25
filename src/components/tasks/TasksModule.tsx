@@ -223,17 +223,20 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
     if (activeTimerIds.has(id)) {
       setActiveTimerIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
     }
-    // 1) Возвращаемся в список — пользователь видит свою задачу
-    setOpenTaskId(null);
-    // 2) Через короткую задержку запускаем анимацию «расщепления»
-    window.setTimeout(() => {
-      setShatteringId(id);
-      // 3) После завершения анимации помечаем задачу выполненной (она исчезает из ленты)
+    // Игнорируем повторное нажатие
+    setShatteringId((curr) => {
+      if (curr === id) return curr;
+      // Возвращаемся в ленту, чтобы пользователь увидел свою карточку
+      setOpenTaskId(null);
+      // Запускаем анимацию (галочка → вылет → схлопывание) на следующий тик
+      window.setTimeout(() => setShatteringId(id), 30);
+      // 250ms прорисовка галочки + 400ms вылет + 400ms схлопывание ≈ 1050ms
       window.setTimeout(() => {
         setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
-        setShatteringId((curr) => (curr === id ? null : curr));
-      }, 720);
-    }, 220);
+        setShatteringId((c) => (c === id ? null : c));
+      }, 1100);
+      return curr;
+    });
   };
 
   // ===== Рендер экранов =====
