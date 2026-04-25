@@ -461,6 +461,41 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
               </article>
             )}
 
+            {/* Заметки */}
+            {isOpen && goal && (
+              <NotesCard
+                value={notesByGoal[row.gid] ?? ""}
+                isEditing={editingNotesGoalId === row.gid}
+                draft={notesDraft}
+                onStartEdit={() => { setEditingNotesGoalId(row.gid); setNotesDraft(notesByGoal[row.gid] ?? ""); }}
+                onChangeDraft={setNotesDraft}
+                onCancel={() => setEditingNotesGoalId(null)}
+                onSave={() => {
+                  setNotesByGoal((prev) => ({ ...prev, [row.gid]: notesDraft }));
+                  setEditingNotesGoalId(null);
+                }}
+              />
+            )}
+
+            {/* Кнопка Мозговой штурм */}
+            {isOpen && goal && (
+              <button
+                onClick={() => { setBrainstormGoalId(row.gid); setBrainstormQuestion(null); }}
+                className="tap w-full inline-flex items-center justify-center gap-2 animate-fade-up"
+                style={{
+                  background: "#fff",
+                  border: "1.5px solid #FF6D00",
+                  color: "#FF6D00",
+                  borderRadius: 12,
+                  padding: "12px",
+                  fontSize: 14,
+                  fontWeight: 600,
+                }}
+              >
+                🧠 Мозговой штурм
+              </button>
+            )}
+
             {/* Задачи */}
             <div className="space-y-2">
               {row.items.map((t) => (
