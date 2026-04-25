@@ -118,6 +118,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
   const [filter, setFilter] = useState<FilterId>("all");
   const [openGoalId, setOpenGoalId] = useState<string | null>(initialGoalId ?? null);
   const [creating, setCreating] = useState(false);
+  const [createForGoalId, setCreateForGoalId] = useState<string | null>(null);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
 
