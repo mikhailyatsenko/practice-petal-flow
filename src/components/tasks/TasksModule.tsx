@@ -13,6 +13,8 @@ export interface TaskGoalRef {
   plan: string;
   /** опциональный цветовой акцент цели (hex). Если не задан — оранжевый. */
   color?: string;
+  /** миниатюра картинки цели/желания. */
+  image?: string;
 }
 
 export type TaskDeadline =
