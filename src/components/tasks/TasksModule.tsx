@@ -380,7 +380,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                   onClick={() => { setCreateForGoalId(row.gid); setCreating(true); }}
                   aria-label="Добавить задачу к этой цели"
                   className="tap inline-flex items-center justify-center rounded-full"
-                  style={{ width: 26, height: 26, color: "#9a8f7e" }}
+                  style={{ width: 28, height: 28, color: "#9a8f7e", border: "1px solid #ede8df", background: "#fff" }}
                 >
                   <Plus className="h-4 w-4" />
                 </button>
