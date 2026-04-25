@@ -275,6 +275,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
     );
   }
 
+  if (creating) {
     return (
       <CreateOrEditTaskScreen
         mode="create"
