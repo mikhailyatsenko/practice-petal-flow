@@ -954,3 +954,92 @@ function Section({ title, subtitle, children }: { title: string; subtitle?: stri
     </section>
   );
 }
+
+/* ---------------- Карточка «Заметки» ---------------- */
+
+function NotesCard({
+  value, isEditing, draft, onStartEdit, onChangeDraft, onCancel, onSave,
+}: {
+  value: string;
+  isEditing: boolean;
+  draft: string;
+  onStartEdit: () => void;
+  onChangeDraft: (v: string) => void;
+  onCancel: () => void;
+  onSave: () => void;
+}) {
+  const taRef = useRef<HTMLTextAreaElement | null>(null);
+  useEffect(() => {
+    if (!isEditing) return;
+    const ta = taRef.current;
+    if (!ta) return;
+    ta.style.height = "auto";
+    ta.style.height = ta.scrollHeight + "px";
+  }, [draft, isEditing]);
+
+  return (
+    <article
+      className="bg-card rounded-2xl overflow-hidden animate-fade-up"
+      style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: "1px solid #ede8df" }}
+    >
+      <div className="p-3.5">
+        <div className="flex items-center justify-between gap-2">
+          <p
+            className="text-[11px] font-medium uppercase"
+            style={{ color: "#8a8a8a", letterSpacing: "0.5px" }}
+          >
+            Заметки
+          </p>
+          {!isEditing && (
+            <button
+              onClick={onStartEdit}
+              aria-label="Изменить заметки"
+              className="tap inline-flex items-center justify-center rounded-full"
+              style={{ width: 26, height: 26, color: "#9a8f7e", border: "1px solid #ede8df", background: "#fff" }}
+            >
+              <Pencil className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+
+        {isEditing ? (
+          <div className="mt-2">
+            <textarea
+              ref={taRef}
+              value={draft}
+              onChange={(e) => onChangeDraft(e.target.value)}
+              rows={2}
+              autoFocus
+              placeholder="Добавьте заметки по этой цели..."
+              className="w-full rounded-xl p-2.5 text-[14px] leading-[1.6] text-foreground/90 outline-none resize-none placeholder:text-muted-foreground"
+              style={{ border: "1px solid #ede8df", background: "#fff", minHeight: 60 }}
+            />
+            <div className="mt-2 flex gap-2 justify-end">
+              <button
+                onClick={onCancel}
+                className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium"
+                style={{ background: "#fff", color: "#8a8a8a", border: "1px solid #ede8df" }}
+              >
+                <X className="h-3.5 w-3.5" /> Отмена
+              </button>
+              <button
+                onClick={onSave}
+                className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium text-white"
+                style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
+              >
+                <Check className="h-3.5 w-3.5" /> Сохранить
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p
+            className="mt-1.5 text-[14px] leading-[1.6] whitespace-pre-wrap"
+            style={{ color: value ? undefined : "#a8a8a8" }}
+          >
+            {value || "Добавьте заметки по этой цели..."}
+          </p>
+        )}
+      </div>
+    </article>
+  );
+}
