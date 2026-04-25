@@ -220,23 +220,20 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
     setOpenTaskId(null);
   };
   const handleMarkDone = (id: string) => {
+    // Игнорируем повторное нажатие
+    if (shatteringId === id) return;
     if (activeTimerIds.has(id)) {
       setActiveTimerIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
     }
-    // Игнорируем повторное нажатие
-    setShatteringId((curr) => {
-      if (curr === id) return curr;
-      // Возвращаемся в ленту, чтобы пользователь увидел свою карточку
-      setOpenTaskId(null);
-      // Запускаем анимацию (галочка → вылет → схлопывание) на следующий тик
-      window.setTimeout(() => setShatteringId(id), 30);
-      // 250ms прорисовка галочки + 400ms вылет + 400ms схлопывание ≈ 1050ms
-      window.setTimeout(() => {
-        setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
-        setShatteringId((c) => (c === id ? null : c));
-      }, 1100);
-      return curr;
-    });
+    // Возвращаемся в ленту, чтобы пользователь увидел свою карточку
+    setOpenTaskId(null);
+    // Запускаем анимацию (галочка → вылет → схлопывание)
+    window.setTimeout(() => setShatteringId(id), 30);
+    // 250ms галочка + 400ms вылет + 400ms схлопывание ≈ 1100ms
+    window.setTimeout(() => {
+      setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
+      setShatteringId((c) => (c === id ? null : c));
+    }, 1150);
   };
 
   // ===== Рендер экранов =====
