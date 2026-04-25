@@ -182,11 +182,11 @@ export function BrainstormAnswerScreen({
       )}
 
       <button
-        disabled={!enough}
+        disabled={!canSave}
         onClick={handleSave}
         className="tap w-full rounded-[14px] py-4 text-[15px] font-bold transition-colors"
         style={
-          enough
+          canSave
             ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }
             : { background: "#d1d5db", color: "#9ca3af", cursor: "not-allowed" }
         }
