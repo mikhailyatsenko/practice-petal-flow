@@ -549,6 +549,10 @@ function WishesScreen() {
               onDelete={() => handleDeleteGoal(g.id)}
               isDone={doneGoals.has(g.id)}
               onToggleDone={() => toggleDoneGoal(g.id)}
+              onOpenTasks={() => {
+                setTasksFromGoalId(g.id);
+                changeTabWithCardEffect(1, "tasks");
+              }}
             />
           ))}
           {goals.filter((g) => !doneGoals.has(g.id)).length === 0 && (
