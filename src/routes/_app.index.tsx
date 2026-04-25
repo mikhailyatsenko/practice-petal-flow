@@ -223,7 +223,7 @@ function HomeScreen() {
     );
 
     // Когда долетит последняя звезда
-    const LAST_STAR_AT = STAR_FLIGHT + 2 * STAR_GAP; // 1600
+    const LAST_STAR_AT = INITIAL_DELAY + STAR_FLIGHT + 2 * STAR_GAP;
 
     // 2) 🔥 Хит — после звёзд
     const HIT_AT = LAST_STAR_AT + 400;
