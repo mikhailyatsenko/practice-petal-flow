@@ -227,13 +227,13 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
     }
     // Возвращаемся в ленту, чтобы пользователь увидел свою карточку
     setOpenTaskId(null);
-    // Запускаем анимацию (галочка → вылет → схлопывание)
-    window.setTimeout(() => setShatteringId(id), 30);
-    // 250ms галочка + 400ms вылет + 400ms схлопывание ≈ 1100ms
+    // Ждём, пока лента отрендерится и доскроллится к карточке
+    window.setTimeout(() => setShatteringId(id), 450);
+    // 450ms скролл + 250ms галочка + 400ms вылет + 400ms схлопывание
     window.setTimeout(() => {
       setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
       setShatteringId((c) => (c === id ? null : c));
-    }, 1150);
+    }, 1600);
   };
 
   // ===== Рендер экранов =====
