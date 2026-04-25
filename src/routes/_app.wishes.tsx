@@ -1037,18 +1037,16 @@ function DesireCharge({ level, onTap, mode = "inspire" }: { level: number; onTap
           {liked ? "❤️" : "🤍"}
         </span>
         <span
-          className="text-[13px] font-medium leading-none inline-flex items-baseline gap-1.5"
+          className="text-[13px] font-medium leading-none inline-flex items-center gap-1.5"
           style={{ color: liked ? "#FF6D00" : "#9c8f7a" }}
         >
           <span>Горжусь</span>
           {total > 0 && (
             <span
-              className="font-bold"
+              className="min-w-[22px] h-[18px] px-1.5 rounded-full text-[11px] font-bold text-white inline-flex items-center justify-center"
               style={{
                 background: "linear-gradient(135deg,#FFB300,#FF6D00)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
+                boxShadow: "0 2px 6px rgba(255,109,0,0.35)",
               }}
             >
               {total}
