@@ -220,20 +220,20 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
     setOpenTaskId(null);
   };
   const handleMarkDone = (id: string) => {
+    // Игнорируем повторное нажатие
+    if (shatteringId === id) return;
     if (activeTimerIds.has(id)) {
       setActiveTimerIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
     }
-    // 1) Возвращаемся в список — пользователь видит свою задачу
+    // Возвращаемся в ленту, чтобы пользователь увидел свою карточку
     setOpenTaskId(null);
-    // 2) Через короткую задержку запускаем анимацию «расщепления»
+    // Запускаем анимацию (галочка → вылет → схлопывание)
+    window.setTimeout(() => setShatteringId(id), 30);
+    // 250ms галочка + 400ms вылет + 400ms схлопывание ≈ 1100ms
     window.setTimeout(() => {
-      setShatteringId(id);
-      // 3) После завершения анимации помечаем задачу выполненной (она исчезает из ленты)
-      window.setTimeout(() => {
-        setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
-        setShatteringId((curr) => (curr === id ? null : curr));
-      }, 720);
-    }, 220);
+      setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
+      setShatteringId((c) => (c === id ? null : c));
+    }, 1150);
   };
 
   // ===== Рендер экранов =====
@@ -434,6 +434,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                   liveSeconds={elapsedMap[t.id] ?? 0}
                   isShattering={shatteringId === t.id}
                   onOpen={() => setOpenTaskId(t.id)}
+                  onComplete={() => handleMarkDone(t.id)}
                 />
               ))}
               <div className="flex justify-center">
@@ -486,60 +487,130 @@ function TaskRow({
   liveSeconds,
   isShattering,
   onOpen,
+  onComplete,
 }: {
   task: Task;
   isTimerActive: boolean;
   liveSeconds: number;
   isShattering?: boolean;
   onOpen: () => void;
+  onComplete: () => void;
 }) {
   const c = DEADLINE_COLORS[task.deadline];
   const f = feelingOf(task.feeling);
+
+  // Этапы анимации: tick (0-250ms) → flyOut (250-650ms) → collapse (650-1050ms)
+  const [stage, setStage] = useState<"idle" | "tick" | "flyOut" | "collapse">("idle");
+  useEffect(() => {
+    if (!isShattering) { setStage("idle"); return; }
+    setStage("tick");
+    const t1 = window.setTimeout(() => setStage("flyOut"), 250);
+    const t2 = window.setTimeout(() => setStage("collapse"), 650);
+    return () => { window.clearTimeout(t1); window.clearTimeout(t2); };
+  }, [isShattering]);
+
+  const checked = task.done || stage !== "idle";
+  const collapsing = stage === "collapse";
+  const flying = stage === "flyOut" || stage === "collapse";
+
   return (
-    <button
-      onClick={onOpen}
-      className={`tap w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed] ${isShattering ? "animate-task-shatter" : "animate-fade-up"}`}
+    <div
       style={{
-        border: isShattering ? "2px solid #16a34a" : (isTimerActive ? "2px solid #FF6D00" : "1px solid #ede8df"),
+        overflow: "hidden",
+        maxHeight: collapsing ? 0 : 200,
+        marginBottom: collapsing ? 0 : undefined,
+        transition: "max-height 0.4s cubic-bezier(0.4,0,0.2,1), margin-bottom 0.4s cubic-bezier(0.4,0,0.2,1)",
       }}
     >
-      <div className="flex items-center gap-2.5">
-        <span
-          className="shrink-0 rounded-[3px]"
+      <div
+        style={{
+          transform: flying ? "translateX(120%)" : "translateX(0)",
+          opacity: flying ? 0 : 1,
+          transition: flying
+            ? "transform 0.4s cubic-bezier(0.55,0,1,0.45), opacity 0.4s ease"
+            : undefined,
+        }}
+      >
+        <div
+          onClick={() => { if (stage === "idle") onOpen(); }}
+          role="button"
+          tabIndex={0}
+          className={`tap w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed] cursor-pointer animate-fade-up`}
           style={{
-            width: 10,
-            height: 10,
-            background: c.bg,
-            border: c.border ? `1px solid ${c.border}` : "none",
+            border: isTimerActive ? "2px solid #FF6D00" : "1px solid #ede8df",
           }}
-        />
-        <span
-          className="flex-1 text-[14px] font-semibold leading-snug break-words"
-          style={task.done ? { textDecoration: "line-through", color: "#8a8a8a" } : undefined}
         >
-          {task.title}
-        </span>
-        {task.duration && task.duration !== "—" && (
-          <span className="text-[11px] text-muted-foreground shrink-0 ml-auto">{task.duration}</span>
-        )}
-        <span className="text-[17px] leading-none shrink-0" aria-label={f.label}>{f.emoji}</span>
-      </div>
-      {isTimerActive && (
-        <div className="mt-2 flex justify-center">
-          <div
-            className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
-            style={{ background: "#fff3e0", color: "#FF6D00" }}
-          >
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-current task-pulse" />
-            ▶ {fmtTime(task.timeSpent + liveSeconds)}
+          <div className="flex items-center gap-2.5">
+            <span
+              className="shrink-0 rounded-[3px]"
+              style={{
+                width: 10,
+                height: 10,
+                background: c.bg,
+                border: c.border ? `1px solid ${c.border}` : "none",
+              }}
+            />
+            <span
+              className="flex-1 text-[14px] font-semibold leading-snug break-words"
+              style={task.done ? { textDecoration: "line-through", color: "#8a8a8a" } : undefined}
+            >
+              {task.title}
+            </span>
+            {task.duration && task.duration !== "—" && (
+              <span className="text-[11px] text-muted-foreground shrink-0">{task.duration}</span>
+            )}
+            <span className="text-[17px] leading-none shrink-0" aria-label={f.label}>{f.emoji}</span>
+            <button
+              type="button"
+              aria-label={checked ? "Задача выполнена" : "Отметить выполненной"}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (checked) return;
+                onComplete();
+              }}
+              className="shrink-0 inline-flex items-center justify-center rounded-full"
+              style={{
+                width: 22,
+                height: 22,
+                background: checked ? "#16a34a" : "transparent",
+                border: checked ? "2px solid #16a34a" : "2px solid #d1d5db",
+                transition: "background 0.2s ease, border-color 0.2s ease",
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M5 12.5l4.5 4.5L19 7.5"
+                  stroke="#ffffff"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{
+                    strokeDasharray: 20,
+                    strokeDashoffset: checked ? 0 : 20,
+                    transition: "stroke-dashoffset 0.25s ease",
+                  }}
+                />
+              </svg>
+            </button>
           </div>
+          {isTimerActive && (
+            <div className="mt-2 flex justify-center">
+              <div
+                className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
+                style={{ background: "#fff3e0", color: "#FF6D00" }}
+              >
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-current task-pulse" />
+                ▶ {fmtTime(task.timeSpent + liveSeconds)}
+              </div>
+            </div>
+          )}
+          <style>{`
+            @keyframes taskPulse { 0%,100% { opacity: 1 } 50% { opacity: .25 } }
+            .task-pulse { animation: taskPulse 1.1s ease-in-out infinite; }
+          `}</style>
         </div>
-      )}
-      <style>{`
-        @keyframes taskPulse { 0%,100% { opacity: 1 } 50% { opacity: .25 } }
-        .task-pulse { animation: taskPulse 1.1s ease-in-out infinite; }
-      `}</style>
-    </button>
+      </div>
+    </div>
   );
 }
 
