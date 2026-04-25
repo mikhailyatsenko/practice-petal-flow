@@ -603,6 +603,11 @@ function WishesScreen() {
                   setTasksFromGoalId(null);
                   changeTabWithCardEffect(1, "tasks");
                 }}
+                onBrainstorm={() => {
+                  setTasksFromGoalId(null);
+                  setBrainstormFromGoalId(g.id);
+                  changeTabWithCardEffect(1, "tasks");
+                }}
               />
             );
           })}
