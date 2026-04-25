@@ -19,6 +19,7 @@ import { Route as AppLibraryRouteImport } from './routes/_app.library'
 import { Route as AppFoursomeRouteImport } from './routes/_app.foursome'
 import { Route as AppCommunityRouteImport } from './routes/_app.community'
 import { Route as AppBuddyRouteImport } from './routes/_app.buddy'
+import { Route as AppPracticeSelfProgRouteImport } from './routes/_app.practice.self-prog'
 
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
@@ -69,6 +70,11 @@ const AppBuddyRoute = AppBuddyRouteImport.update({
   path: '/buddy',
   getParentRoute: () => AppRoute,
 } as any)
+const AppPracticeSelfProgRoute = AppPracticeSelfProgRouteImport.update({
+  id: '/practice/self-prog',
+  path: '/practice/self-prog',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/partner': typeof AppPartnerRoute
   '/sections': typeof AppSectionsRoute
   '/wishes': typeof AppWishesRoute
+  '/practice/self-prog': typeof AppPracticeSelfProgRoute
 }
 export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/sections': typeof AppSectionsRoute
   '/wishes': typeof AppWishesRoute
   '/': typeof AppIndexRoute
+  '/practice/self-prog': typeof AppPracticeSelfProgRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/_app/sections': typeof AppSectionsRoute
   '/_app/wishes': typeof AppWishesRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/practice/self-prog': typeof AppPracticeSelfProgRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/partner'
     | '/sections'
     | '/wishes'
+    | '/practice/self-prog'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/onboarding'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/sections'
     | '/wishes'
     | '/'
+    | '/practice/self-prog'
   id:
     | '__root__'
     | '/_app'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/_app/sections'
     | '/_app/wishes'
     | '/_app/'
+    | '/_app/practice/self-prog'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -219,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBuddyRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/practice/self-prog': {
+      id: '/_app/practice/self-prog'
+      path: '/practice/self-prog'
+      fullPath: '/practice/self-prog'
+      preLoaderRoute: typeof AppPracticeSelfProgRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -231,6 +250,7 @@ interface AppRouteChildren {
   AppSectionsRoute: typeof AppSectionsRoute
   AppWishesRoute: typeof AppWishesRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppPracticeSelfProgRoute: typeof AppPracticeSelfProgRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -242,6 +262,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSectionsRoute: AppSectionsRoute,
   AppWishesRoute: AppWishesRoute,
   AppIndexRoute: AppIndexRoute,
+  AppPracticeSelfProgRoute: AppPracticeSelfProgRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
