@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Plus, Pencil, Trash2, Check, Play, Square, ChevronDown } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, Check, Play, Square, ChevronDown, X } from "lucide-react";
 
 /* =====================================================================
    Раздел «Задачи». Самодостаточный модуль — НЕ трогает существующий код.
