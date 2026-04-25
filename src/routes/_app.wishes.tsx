@@ -245,6 +245,9 @@ function WishesScreen() {
   const [doneWishes, setDoneWishes] = useState<Set<string>>(new Set());
   const [doneGoals, setDoneGoals] = useState<Set<string>>(new Set());
 
+  // Раздел «Задачи»: фильтр по конкретной цели (когда переходим из «Цели → К задачам»)
+  const [tasksFromGoalId, setTasksFromGoalId] = useState<string | null>(null);
+
   useEffect(() => {
     const onTouchMove = (event: TouchEvent) => {
       const state = touchRef.current;
