@@ -314,7 +314,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                     : { background: "#fff", color: "#FF6D00", border: "1px solid #FF6D00" }
                 }
               >
-                {isOpen ? "Закрыть план" : "План"}
+                {isOpen ? "Закрыть план" : "Открыть план"}
                 <ChevronDown
                   className="h-3 w-3 transition-transform"
                   style={{ transform: isOpen ? "rotate(180deg)" : "none" }}
