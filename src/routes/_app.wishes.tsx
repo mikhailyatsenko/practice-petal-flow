@@ -1720,11 +1720,6 @@ function GoalCard({
 
         <div className="my-3 h-px bg-border/60" />
 
-        <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-          Главные задачи
-        </p>
-        {allDone ? (
-          <p className="mt-1.5 text-[13px] text-foreground/85">✅ Все задачи выполнены!</p>
         <div className="flex items-center justify-between gap-2">
           <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
             Задачи
