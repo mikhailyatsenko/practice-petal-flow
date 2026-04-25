@@ -617,6 +617,7 @@ function WishesScreen() {
         hotelki={hotelki.filter((h) => doneHotelki.has(h))}
         wishes={wishes.filter((w) => doneWishes.has(w.id))}
         goals={goals.filter((g) => doneGoals.has(g.id))}
+        moduleTasks={moduleTasks}
         onUndoHotelka={(t) => toggleDoneHotelka(t)}
         onUndoWish={(id) => toggleDoneWish(id)}
         onUndoGoal={(id) => toggleDoneGoal(id)}
