@@ -785,6 +785,8 @@ function HotelkaItem({
   isDone,
   onToggleDone,
   readOnly = false,
+  proudCount = 0,
+  onProud,
 }: {
   index: number;
   text: string;
@@ -793,6 +795,8 @@ function HotelkaItem({
   isDone: boolean;
   onToggleDone: () => void;
   readOnly?: boolean;
+  proudCount?: number;
+  onProud?: () => void;
 }) {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(text);
