@@ -397,6 +397,28 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
               </button>
             </div>
 
+            {/* Кнопка Мозговой штурм — маленькая, сверху */}
+            {isOpen && goal && (
+              <div className="px-1">
+                <button
+                  onClick={() => { setBrainstormGoalId(row.gid); setBrainstormQuestion(null); }}
+                  className="tap inline-flex items-center gap-1 animate-fade-up"
+                  style={{
+                    background: "#fff",
+                    border: "1.5px solid #FF6D00",
+                    color: "#FF6D00",
+                    borderRadius: 999,
+                    padding: "4px 10px",
+                    fontSize: 11.5,
+                    fontWeight: 600,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  🧠 Мозговой штурм
+                </button>
+              </div>
+            )}
+
             {/* План реализации */}
             {isOpen && goal && (
               <article
