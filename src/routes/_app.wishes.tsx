@@ -631,6 +631,8 @@ function WishesScreen() {
           }))}
           initialGoalId={tasksFromGoalId}
           onClearGoalFilter={() => setTasksFromGoalId(null)}
+          initialBrainstormGoalId={brainstormFromGoalId}
+          onClearBrainstormGoalId={() => setBrainstormFromGoalId(null)}
           tasks={moduleTasks}
           onTasksChange={(updater) => setModuleTasks(updater)}
           onUpdateGoalPlan={(goalId, plan) =>
