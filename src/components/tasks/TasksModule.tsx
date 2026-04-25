@@ -227,13 +227,13 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
     }
     // Возвращаемся в ленту, чтобы пользователь увидел свою карточку
     setOpenTaskId(null);
-    // Запускаем анимацию (галочка → вылет → схлопывание)
-    window.setTimeout(() => setShatteringId(id), 30);
-    // 250ms галочка + 400ms вылет + 400ms схлопывание ≈ 1100ms
+    // Ждём, пока лента отрендерится и доскроллится к карточке
+    window.setTimeout(() => setShatteringId(id), 450);
+    // 450ms скролл + 250ms галочка + 400ms вылет + 400ms схлопывание
     window.setTimeout(() => {
       setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
       setShatteringId((c) => (c === id ? null : c));
-    }, 1150);
+    }, 1600);
   };
 
   // ===== Рендер экранов =====
@@ -498,11 +498,14 @@ function TaskRow({
 }) {
   const c = DEADLINE_COLORS[task.deadline];
   const f = feelingOf(task.feeling);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
 
   // Этапы анимации: tick (0-250ms) → flyOut (250-650ms) → collapse (650-1050ms)
   const [stage, setStage] = useState<"idle" | "tick" | "flyOut" | "collapse">("idle");
   useEffect(() => {
     if (!isShattering) { setStage("idle"); return; }
+    // Гарантированно показать карточку перед стартом анимации
+    wrapperRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     setStage("tick");
     const t1 = window.setTimeout(() => setStage("flyOut"), 250);
     const t2 = window.setTimeout(() => setStage("collapse"), 650);
@@ -515,6 +518,7 @@ function TaskRow({
 
   return (
     <div
+      ref={wrapperRef}
       style={{
         overflow: "hidden",
         maxHeight: collapsing ? 0 : 200,
