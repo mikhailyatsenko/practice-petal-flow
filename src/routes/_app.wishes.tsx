@@ -626,6 +626,9 @@ function WishesScreen() {
           onClearGoalFilter={() => setTasksFromGoalId(null)}
           tasks={moduleTasks}
           onTasksChange={(updater) => setModuleTasks(updater)}
+          onUpdateGoalPlan={(goalId, plan) =>
+            setGoals((prev) => prev.map((g) => (g.id === goalId ? { ...g, plan } : g)))
+          }
         />
       );
     }
