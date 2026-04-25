@@ -13,6 +13,8 @@ export interface TaskGoalRef {
   plan: string;
   /** опциональный цветовой акцент цели (hex). Если не задан — оранжевый. */
   color?: string;
+  /** миниатюра картинки цели/желания. */
+  image?: string;
 }
 
 export type TaskDeadline =
@@ -836,10 +838,19 @@ export function CreateOrEditTaskScreen({
                 className="tap w-full flex items-center gap-3 rounded-xl px-3 py-2.5 bg-card transition-colors text-left"
                 style={{ border: `1px solid ${active ? "#FF6D00" : "#ede8df"}` }}
               >
-                <span
-                  className="shrink-0 rounded-lg"
-                  style={{ width: 32, height: 32, background: g.color ?? "linear-gradient(135deg,#FFB300,#FF6D00)" }}
-                />
+                {g.image ? (
+                  <img
+                    src={g.image}
+                    alt=""
+                    className="shrink-0 rounded-lg object-cover"
+                    style={{ width: 36, height: 36 }}
+                  />
+                ) : (
+                  <span
+                    className="shrink-0 rounded-lg"
+                    style={{ width: 36, height: 36, background: g.color ?? "linear-gradient(135deg,#FFB300,#FF6D00)" }}
+                  />
+                )}
                 <span className="flex-1 text-[14px] font-medium">{g.title}</span>
                 {active && <Check className="h-4 w-4" style={{ color: "#FF6D00" }} />}
               </button>

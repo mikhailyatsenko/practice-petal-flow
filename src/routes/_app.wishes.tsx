@@ -621,6 +621,7 @@ function WishesScreen() {
             id: g.id,
             title: g.title,
             plan: g.plan,
+            image: g.image,
           }))}
           initialGoalId={tasksFromGoalId}
           onClearGoalFilter={() => setTasksFromGoalId(null)}
