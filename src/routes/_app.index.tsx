@@ -193,12 +193,12 @@ function HomeScreen() {
 
   // Авто-запуск всех анимаций при заходе на главную
   useEffect(() => {
-    if (autoplayedRef.current) return;
-    autoplayedRef.current = true;
+    void autoplayedRef.current;
 
     const timeouts: number[] = [];
     const STAR_FLIGHT = 1200;
     const STAR_GAP = 200;
+    const INITIAL_DELAY = 350;
 
     // 1) Звёздочки от 3 выполненных практик летят сразу (слева направо)
     timeouts.push(
