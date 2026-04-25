@@ -469,9 +469,11 @@ function WishesScreen() {
     if (transitionState) return;
     const next = targetTab ?? getAdjacentTab(activeTab, direction);
     if (!next || next === activeTab) return;
-    setTransitionState({ current: activeTab, next, direction, stage: "animating" });
+    // Уходящий таб показываем оверлеем, а активный сразу переключаем — чтобы не было ремоунта/мерцания.
+    const outgoing = activeTab;
+    setActiveTab(next);
+    setTransitionState({ current: outgoing, next, direction, stage: "animating" });
     window.setTimeout(() => {
-      setActiveTab(next);
       setTransitionState(null);
     }, 320);
   };
