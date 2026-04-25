@@ -284,7 +284,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       <BrainstormListScreen
         goalTitle={g?.title ?? "—"}
         answers={goalAnswers}
-        onBack={() => setBrainstormGoalId(null)}
+        onBack={() => { setBrainstormGoalId(null); onClearBrainstormGoalId?.(); }}
         onOpenQuestion={(idx) => setBrainstormQuestion(idx)}
       />
     );
