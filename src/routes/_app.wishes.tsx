@@ -1823,20 +1823,22 @@ function GoalCard({
           <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
             Задачи
           </p>
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onAddTask?.(); }}
-            aria-label="Добавить задачу"
-            className="tap inline-flex items-center justify-center rounded-full shrink-0"
-            style={{
-              width: 26, height: 26,
-              background: "linear-gradient(135deg,#FFB300,#FF6D00)",
-              color: "#fff",
-              boxShadow: "0 2px 6px rgba(255,109,0,0.35)",
-            }}
-          >
-            <Plus className="h-4 w-4" strokeWidth={2.5} />
-          </button>
+          {!readOnly && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onAddTask?.(); }}
+              aria-label="Добавить задачу"
+              className="tap inline-flex items-center justify-center rounded-full shrink-0"
+              style={{
+                width: 26, height: 26,
+                background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+                color: "#fff",
+                boxShadow: "0 2px 6px rgba(255,109,0,0.35)",
+              }}
+            >
+              <Plus className="h-4 w-4" strokeWidth={2.5} />
+            </button>
+          )}
         </div>
         {totalTasks === 0 ? (
           <p className="mt-1.5 text-[12.5px] text-muted-foreground">Задач пока нет — добавь первую кнопкой +</p>
