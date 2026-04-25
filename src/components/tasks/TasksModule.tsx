@@ -1001,7 +1001,6 @@ function Section({ title, subtitle, children }: { title: string; subtitle?: stri
 function NotesCard({
   value, isEditing, draft, onStartEdit, onChangeDraft, onCancel, onSave,
 }: {
-  // see below
 
   value: string;
   isEditing: boolean;
@@ -1057,21 +1056,34 @@ function NotesCard({
               className="w-full rounded-xl p-2.5 text-[14px] leading-[1.6] text-foreground/90 outline-none resize-none placeholder:text-muted-foreground"
               style={{ border: "1px solid #ede8df", background: "#fff", minHeight: 60 }}
             />
-            <div className="mt-2 flex gap-2 justify-end">
-              <button
-                onClick={onCancel}
-                className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium"
-                style={{ background: "#fff", color: "#8a8a8a", border: "1px solid #ede8df" }}
+            <div className="mt-2 flex items-center justify-between gap-2">
+              <span
+                className="text-[11.5px]"
+                style={{ color: draft !== value ? "#FF6D00" : "#a8a8a8", fontWeight: draft !== value ? 600 : 400 }}
               >
-                <X className="h-3.5 w-3.5" /> Отмена
-              </button>
-              <button
-                onClick={onSave}
-                className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium text-white"
-                style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
-              >
-                <Check className="h-3.5 w-3.5" /> Сохранить
-              </button>
+                {draft !== value ? "● Несохранённые изменения" : "✓ Сохранено"}
+              </span>
+              <div className="flex gap-2">
+                <button
+                  onClick={onCancel}
+                  className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium"
+                  style={{ background: "#fff", color: "#8a8a8a", border: "1px solid #ede8df" }}
+                >
+                  <X className="h-3.5 w-3.5" /> Отмена
+                </button>
+                <button
+                  disabled={draft === value}
+                  onClick={onSave}
+                  className="tap inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium transition-all"
+                  style={
+                    draft !== value
+                      ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff", boxShadow: "0 2px 8px rgba(255,109,0,0.35)" }
+                      : { background: "#f3f4f6", color: "#9ca3af", border: "1px solid #e5e7eb", cursor: "not-allowed" }
+                  }
+                >
+                  <Check className="h-3.5 w-3.5" /> Сохранить
+                </button>
+              </div>
             </div>
           </div>
         ) : (
