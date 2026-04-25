@@ -128,6 +128,14 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
   const [planDraft, setPlanDraft] = useState("");
   const [shatteringId, setShatteringId] = useState<string | null>(null);
 
+  // Заметки по целям и ответы мозгового штурма (локальное хранилище модуля)
+  const [notesByGoal, setNotesByGoal] = useState<Record<string, string>>({});
+  const [editingNotesGoalId, setEditingNotesGoalId] = useState<string | null>(null);
+  const [notesDraft, setNotesDraft] = useState("");
+  const [answersByGoal, setAnswersByGoal] = useState<Record<string, Record<number, string>>>({});
+  const [brainstormGoalId, setBrainstormGoalId] = useState<string | null>(null);
+  const [brainstormQuestion, setBrainstormQuestion] = useState<number | null>(null);
+
   // Таймеры — поддерживаем несколько активных параллельно
   const [activeTimerIds, setActiveTimerIds] = useState<Set<string>>(new Set());
   const [elapsedMap, setElapsedMap] = useState<Record<string, number>>({});
