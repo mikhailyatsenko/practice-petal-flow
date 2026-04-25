@@ -151,9 +151,10 @@ function HomeScreen() {
   };
 
   const togglePractice = (id: string, origin?: HTMLElement | null) => {
-    // Раздел "Программирование успеха" — открывается отдельным экраном
+    // Раздел "Программирование успеха" — открывается отдельным экраном.
+    // Никакой логики "Сделать/Сделано" здесь не запускаем.
     if (id === "self-prog") {
-      navigate({ to: "/practice/self-prog" });
+      void navigate({ to: "/practice/self-prog" });
       return;
     }
     const originRect = origin ? origin.getBoundingClientRect() : null;
