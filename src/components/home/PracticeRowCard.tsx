@@ -130,9 +130,7 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
       onToggle(id, null);
       return;
     }
-    // origin = текущая кнопка "Сделать" (если ещё не выполнена), иначе тег
     const origin = !doneToday ? buttonRef.current : tagRef.current;
-    // Сначала отдаём origin (с актуальной геометрией), потом запускаем press-эффект
     onToggle(id, origin);
     playPressEffect();
   };
