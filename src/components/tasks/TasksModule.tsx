@@ -121,8 +121,8 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
 
-  // Таймеры
-  const [activeTimerId, setActiveTimerId] = useState<string | null>(null);
+  // Таймеры — поддерживаем несколько активных параллельно
+  const [activeTimerIds, setActiveTimerIds] = useState<Set<string>>(new Set());
   const [elapsedMap, setElapsedMap] = useState<Record<string, number>>({});
 
   // Применяем initialGoalId при изменении (если перешли из «Цели»)
@@ -130,21 +130,41 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
     if (initialGoalId) setOpenGoalId(initialGoalId);
   }, [initialGoalId]);
 
-  // Таймер: тикает каждую секунду
+  // Таймер: тикает каждую секунду для всех активных
   useEffect(() => {
-    if (!activeTimerId) return;
+    if (activeTimerIds.size === 0) return;
     const id = window.setInterval(() => {
-      setElapsedMap((prev) => ({ ...prev, [activeTimerId]: (prev[activeTimerId] ?? 0) + 1 }));
+      setElapsedMap((prev) => {
+        const next = { ...prev };
+        activeTimerIds.forEach((tid) => {
+          next[tid] = (next[tid] ?? 0) + 1;
+        });
+        return next;
+      });
     }, 1000);
     return () => window.clearInterval(id);
-  }, [activeTimerId]);
+  }, [activeTimerIds]);
 
-  const startTimer = (taskId: string) => setActiveTimerId(taskId);
-  const stopTimer = () => {
-    if (!activeTimerId) return;
-    const id = activeTimerId;
-    setActiveTimerId(null);
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, timeSpent: t.timeSpent + (elapsedMap[id] ?? 0) } : t)));
+  const startTimer = (taskId: string) =>
+    setActiveTimerIds((prev) => {
+      const next = new Set(prev);
+      next.add(taskId);
+      return next;
+    });
+  const stopTimer = (taskId: string) => {
+    if (!activeTimerIds.has(taskId)) return;
+    const elapsed = elapsedMap[taskId] ?? 0;
+    setActiveTimerIds((prev) => {
+      const next = new Set(prev);
+      next.delete(taskId);
+      return next;
+    });
+    setElapsedMap((prev) => {
+      const next = { ...prev };
+      delete next[taskId];
+      return next;
+    });
+    setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, timeSpent: t.timeSpent + elapsed } : t)));
   };
 
   const visibleTasks = useMemo(() => {
