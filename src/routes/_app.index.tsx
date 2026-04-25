@@ -151,6 +151,11 @@ function HomeScreen() {
   };
 
   const togglePractice = (id: string, origin?: HTMLElement | null) => {
+    // Раздел "Программирование успеха" — открывается отдельным экраном
+    if (id === "self-prog") {
+      navigate({ to: "/practice/self-prog" });
+      return;
+    }
     const originRect = origin ? origin.getBoundingClientRect() : null;
     setPractices((list) => {
       const current = list.find((p) => p.id === id);
