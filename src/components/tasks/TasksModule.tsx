@@ -121,8 +121,8 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
 
-  // Таймеры
-  const [activeTimerId, setActiveTimerId] = useState<string | null>(null);
+  // Таймеры — поддерживаем несколько активных параллельно
+  const [activeTimerIds, setActiveTimerIds] = useState<Set<string>>(new Set());
   const [elapsedMap, setElapsedMap] = useState<Record<string, number>>({});
 
   // Применяем initialGoalId при изменении (если перешли из «Цели»)
@@ -130,21 +130,41 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
     if (initialGoalId) setOpenGoalId(initialGoalId);
   }, [initialGoalId]);
 
-  // Таймер: тикает каждую секунду
+  // Таймер: тикает каждую секунду для всех активных
   useEffect(() => {
-    if (!activeTimerId) return;
+    if (activeTimerIds.size === 0) return;
     const id = window.setInterval(() => {
-      setElapsedMap((prev) => ({ ...prev, [activeTimerId]: (prev[activeTimerId] ?? 0) + 1 }));
+      setElapsedMap((prev) => {
+        const next = { ...prev };
+        activeTimerIds.forEach((tid) => {
+          next[tid] = (next[tid] ?? 0) + 1;
+        });
+        return next;
+      });
     }, 1000);
     return () => window.clearInterval(id);
-  }, [activeTimerId]);
+  }, [activeTimerIds]);
 
-  const startTimer = (taskId: string) => setActiveTimerId(taskId);
-  const stopTimer = () => {
-    if (!activeTimerId) return;
-    const id = activeTimerId;
-    setActiveTimerId(null);
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, timeSpent: t.timeSpent + (elapsedMap[id] ?? 0) } : t)));
+  const startTimer = (taskId: string) =>
+    setActiveTimerIds((prev) => {
+      const next = new Set(prev);
+      next.add(taskId);
+      return next;
+    });
+  const stopTimer = (taskId: string) => {
+    if (!activeTimerIds.has(taskId)) return;
+    const elapsed = elapsedMap[taskId] ?? 0;
+    setActiveTimerIds((prev) => {
+      const next = new Set(prev);
+      next.delete(taskId);
+      return next;
+    });
+    setElapsedMap((prev) => {
+      const next = { ...prev };
+      delete next[taskId];
+      return next;
+    });
+    setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, timeSpent: t.timeSpent + elapsed } : t)));
   };
 
   const visibleTasks = useMemo(() => {
@@ -186,13 +206,17 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
   };
   const handleDelete = (id: string) => {
     setTasks((prev) => prev.filter((t) => t.id !== id));
-    if (activeTimerId === id) setActiveTimerId(null);
+    if (activeTimerIds.has(id)) {
+      setActiveTimerIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
+    }
     setEditingTask(null);
     setOpenTaskId(null);
   };
   const handleMarkDone = (id: string) => {
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
-    if (activeTimerId === id) setActiveTimerId(null);
+    if (activeTimerIds.has(id)) {
+      setActiveTimerIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
+    }
     setOpenTaskId(null);
   };
 
@@ -230,13 +254,13 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
         <TaskDetailScreen
           task={t}
           goal={g}
-          isTimerActive={activeTimerId === t.id}
+          isTimerActive={activeTimerIds.has(t.id)}
           liveSeconds={elapsedMap[t.id] ?? 0}
           onBack={() => setOpenTaskId(null)}
           onEdit={() => { setOpenTaskId(null); setEditingTask(t); }}
           onDelete={() => handleDelete(t.id)}
           onStartTimer={() => startTimer(t.id)}
-          onStopTimer={stopTimer}
+          onStopTimer={() => stopTimer(t.id)}
           onMarkDone={() => handleMarkDone(t.id)}
         />
       );
@@ -297,13 +321,9 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
             <button
               onClick={() => setOpenGoalId(isOpen ? null : row.gid)}
               className="tap w-full rounded-xl px-3 py-2.5 flex items-center justify-between gap-2 text-left transition-colors"
-              style={
-                isOpen
-                  ? { background: "#fff3e0", border: "1px solid #FF6D00", color: "#FF6D00" }
-                  : { background: "transparent", border: "1px solid transparent" }
-              }
+              style={{ background: "transparent", border: "1px solid transparent" }}
             >
-              <span className="text-[14px] font-semibold truncate flex-1">
+              <span className="text-[14px] font-semibold truncate flex-1 text-foreground">
                 {goal?.title ?? "Без цели"}
               </span>
               <span
@@ -346,7 +366,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, tasks: ta
                 <TaskRow
                   key={t.id}
                   task={t}
-                  isTimerActive={activeTimerId === t.id}
+                  isTimerActive={activeTimerIds.has(t.id)}
                   liveSeconds={elapsedMap[t.id] ?? 0}
                   onOpen={() => setOpenTaskId(t.id)}
                 />
@@ -401,7 +421,7 @@ function TaskRow({
   return (
     <button
       onClick={onOpen}
-      className="tap w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card animate-fade-up transition-colors"
+      className="tap w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card animate-fade-up transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed]"
       style={{
         border: isTimerActive ? "2px solid #FF6D00" : "1px solid #ede8df",
       }}
