@@ -203,6 +203,28 @@ function HomeScreen() {
     }, 0);
   };
 
+
+  // Синхронизация статуса "Программирование успеха" с экраном раздела (localStorage)
+  useEffect(() => {
+    const sync = () => {
+      try {
+        const isDone = localStorage.getItem(SELF_PROG_DONE_KEY) === todayStr();
+        setPractices((list) =>
+          list.map((p) => (p.id === "self-prog" ? { ...p, doneToday: isDone } : p)),
+        );
+      } catch {
+        /* ignore */
+      }
+    };
+    sync();
+    window.addEventListener("focus", sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener("focus", sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
+
   // Авто-запуск всех анимаций при заходе на главную
   useEffect(() => {
     void autoplayedRef.current;
