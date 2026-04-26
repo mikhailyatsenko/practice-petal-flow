@@ -53,8 +53,7 @@ const DEFAULT_AFFIRMATION = `Я — человек, который легко в
 Я властелин своей судьбы. Я господин своей жизни. Я творю. Я воплощаю. Я процветаю.`;
 
 const STORAGE_KEY = "self-prog-affirmation";
-const DONE_KEY = "self-prog-done";
-const TG_BOT_URL = "https://t.me/"; // плейсхолдер — заменить на реальный bot username
+const DONE_KEY = "self-prog-done-v2";
 
 const todayStr = () => {
   const d = new Date();
