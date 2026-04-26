@@ -55,7 +55,7 @@ const initialPractices: PracticeRow[] = [
   { id: "wishes",    title: "Воплощение желаний",      streakDays: 4,  doneToday: true,  history: [], level: 0, progress: 4 },
 ];
 
-const SELF_PROG_DONE_KEY = "self-prog-done";
+const SELF_PROG_DONE_KEY = "self-prog-done-v2";
 const todayStr = () => {
   const d = new Date();
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
