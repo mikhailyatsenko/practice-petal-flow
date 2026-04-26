@@ -169,9 +169,7 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
           {title}
         </h3>
         <div className="shrink-0 flex items-center justify-center min-h-[32px]">
-          {id === "self-prog" ? (
-            <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
-          ) : !doneToday ? (
+          {!doneToday ? (
             <div
               ref={buttonRef}
               style={{
