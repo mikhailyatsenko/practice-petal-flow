@@ -46,14 +46,20 @@ const initialPathSteps: PathStep[] = [
   { id: "s7", label: "День 7 — все 5 практик", done: false },
 ];
 
-// Демо: выполнены — Программирование успеха, Навык успеха, Воплощение желаний
+// Демо: выполнены — Навык успеха, Воплощение желаний
 const initialPractices: PracticeRow[] = [
-  { id: "self-prog", title: "Программирование успеха", streakDays: 17, doneToday: true,  history: [], level: 1, progress: 17 },
+  { id: "self-prog", title: "Программирование успеха", streakDays: 17, doneToday: false, history: [], level: 1, progress: 17 },
   { id: "charge",    title: "Зарядка об цель",         streakDays: 12, doneToday: false, history: [], level: 0, progress: 12 },
   { id: "essay",     title: "Жизнь мечты",             streakDays: 0,  doneToday: false, history: [], level: 0, progress: -6 },
   { id: "skill",     title: "Навык успеха",            streakDays: 22, doneToday: true,  history: [], level: 2, progress: 22 },
   { id: "wishes",    title: "Воплощение желаний",      streakDays: 4,  doneToday: true,  history: [], level: 0, progress: 4 },
 ];
+
+const SELF_PROG_DONE_KEY = "self-prog-done";
+const todayStr = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+};
 
 interface FlyingStar {
   id: number;
