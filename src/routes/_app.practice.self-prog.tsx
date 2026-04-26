@@ -257,7 +257,6 @@ function SelfProgScreen() {
       <section className="mt-4">
         <button
           onClick={handleSpeak}
-          disabled={doneToday}
           className="tap w-full"
           style={{
             background: doneToday
@@ -268,7 +267,7 @@ function SelfProgScreen() {
             borderRadius: 16,
             padding: 17,
             fontSize: 15,
-            cursor: doneToday ? "not-allowed" : "pointer",
+            cursor: "pointer",
             boxShadow: doneToday ? "none" : "0 4px 14px rgba(255,109,0,0.35)",
           }}
         >
