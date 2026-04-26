@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronDown, Play } from "lucide-react";
 
 export const Route = createFileRoute("/_app/practice/self-prog")({
@@ -15,6 +15,8 @@ export const Route = createFileRoute("/_app/practice/self-prog")({
   }),
   component: SelfProgScreen,
 });
+
+// ===== Константы =====
 
 const LEVELS = [
   "0️⃣ Молчащий 🤐",
@@ -52,12 +54,14 @@ const DEFAULT_AFFIRMATION = `Я — человек, который легко в
 
 const STORAGE_KEY = "self-prog-affirmation";
 const DONE_KEY = "self-prog-done";
-const STREAK_KEY = "self-prog-streak"; // { days: number }
+const TG_BOT_URL = "https://t.me/"; // плейсхолдер — заменить на реальный bot username
 
-function todayStr() {
+const todayStr = () => {
   const d = new Date();
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-}
+};
+
+// ===== Главный экран =====
 
 function SelfProgScreen() {
   const navigate = useNavigate();
@@ -66,8 +70,9 @@ function SelfProgScreen() {
   const [editorOpen, setEditorOpen] = useState(false);
   const [howOpen, setHowOpen] = useState(false);
   const [howTab, setHowTab] = useState<"text" | "video">("text");
-  // Демо: серия 17 дней, уровень 1 (Программирующий)
-  const [streakDays] = useState(17);
+
+  // Демо: серия 17 дней => уровень 0, прогресс 17/30
+  const streakDays = 17;
 
   useEffect(() => {
     try {
@@ -86,6 +91,12 @@ function SelfProgScreen() {
 
   const handleSpeak = () => {
     if (doneToday) return;
+    // Открываем Telegram-бота
+    try {
+      window.open(TG_BOT_URL, "_blank");
+    } catch {
+      /* ignore */
+    }
     // Демо: засчитываем сразу
     setDoneToday(true);
     try {
@@ -105,31 +116,27 @@ function SelfProgScreen() {
     setEditorOpen(false);
   };
 
-  void STREAK_KEY;
-
   return (
-    <div className="px-4 pt-2 pb-6">
-      {/* Хедер */}
-      <div className="flex items-center justify-between mb-3">
+    <div className="px-4 pt-2 pb-8">
+      {/* 1. Хедер */}
+      <div className="relative flex items-center mb-3 min-h-[36px]">
         <button
           onClick={() => navigate({ to: "/" })}
           className="tap inline-flex items-center gap-1 text-[14px] font-medium text-[#FF6D00]"
         >
           <ChevronLeft className="h-5 w-5" /> Главная
         </button>
-        <h1 className="text-[15px] font-semibold absolute left-1/2 -translate-x-1/2">
+        <h1 className="text-[15px] font-semibold absolute left-1/2 -translate-x-1/2 whitespace-nowrap">
           Программирование успеха
         </h1>
-        <div style={{ width: 80 }} />
+        <div className="ml-auto" style={{ width: 80 }} />
       </div>
 
-      {/* Блок «Сегодня» */}
+      {/* 2. Сегодня */}
       <section className="mt-2">
         <div
           className="rounded-2xl px-4 py-3 flex items-center gap-3"
-          style={{
-            background: doneToday ? "#dcfce7" : "#fff3e0",
-          }}
+          style={{ background: doneToday ? "#dcfce7" : "#fff3e0" }}
         >
           <div
             className="h-10 w-10 rounded-full flex items-center justify-center text-[18px]"
@@ -159,7 +166,7 @@ function SelfProgScreen() {
         </div>
       </section>
 
-      {/* Уровень + серия */}
+      {/* 3. Уровень + серия */}
       <section className="mt-3 bg-card hairline rounded-2xl shadow-card p-4">
         <div className="flex items-center justify-between gap-2">
           <span className="text-[15px] font-bold truncate">{levelName}</span>
@@ -202,7 +209,7 @@ function SelfProgScreen() {
         </div>
       </section>
 
-      {/* Моя аффирмация */}
+      {/* 4. Моя аффирмация */}
       <section className="mt-3 bg-card hairline rounded-2xl shadow-card p-4">
         <p
           className="text-[11px] font-medium uppercase tracking-wider mb-2"
@@ -249,12 +256,12 @@ function SelfProgScreen() {
         </button>
       </section>
 
-      {/* Кнопка «Проговорить» */}
+      {/* 5. Кнопка проговорить */}
       <section className="mt-4">
         <button
           onClick={handleSpeak}
           disabled={doneToday}
-          className="tap w-full text-white"
+          className="tap w-full"
           style={{
             background: doneToday
               ? "#d1d5db"
@@ -271,7 +278,7 @@ function SelfProgScreen() {
           {doneToday ? "✅ Выполнено сегодня" : "🎙 Проговорить аффирмацию"}
         </button>
         <p
-          className="mt-2 text-[12px] leading-snug px-1"
+          className="mt-2 text-[12px] leading-snug px-1 text-center"
           style={{ color: "#9ca3af" }}
         >
           Нажми на кнопку «Проговорить аффирмацию» — откроется бот, проговори
@@ -279,7 +286,7 @@ function SelfProgScreen() {
         </p>
       </section>
 
-      {/* Как это работает */}
+      {/* 6. Как это работает */}
       <section className="mt-4">
         <button
           onClick={() => setHowOpen((v) => !v)}
@@ -294,10 +301,10 @@ function SelfProgScreen() {
 
         {howOpen && (
           <div className="mt-3 animate-fade-up">
-            {/* Переключатель */}
+            {/* Переключатель Текст / Видео */}
             <div
-              className="flex p-1 rounded-xl mb-3"
-              style={{ background: "#f0ebe2" }}
+              className="flex rounded-xl mb-3"
+              style={{ background: "#f0ebe2", padding: 4 }}
             >
               {(
                 [
@@ -343,8 +350,8 @@ function SelfProgScreen() {
                     }}
                   >
                     ☝️ Собственная аффирмация, написанная под твои конкретные
-                    желания и цели — работает в разы сильнее готовой.
-                    Инвестируй 15 минут и создай свою.
+                    желания и цели — работает в разы сильнее готовой. Инвестируй
+                    15 минут и создай свою.
                   </div>
                 </HowCard>
                 <HowCard
@@ -381,7 +388,7 @@ function SelfProgScreen() {
                   </span>
                 </div>
                 <div className="px-4 py-3">
-                  <p className="text-[14px] leading-snug">
+                  <p className="text-[13px] leading-snug text-foreground">
                     В видео подробно объясняется как работает раздел, что такое
                     аффирмация, как её правильно проговаривать и как создать
                     свою.
@@ -393,16 +400,19 @@ function SelfProgScreen() {
         )}
       </section>
 
+      {/* 7. Экран редактирования (фуллскрин-оверлей) */}
       {editorOpen && (
         <AffirmationEditor
           initial={affirmation}
-          onCancel={() => setEditorOpen(false)}
+          onClose={() => setEditorOpen(false)}
           onSave={saveAffirmation}
         />
       )}
     </div>
   );
 }
+
+// ===== Карточка «Как это работает» =====
 
 function HowCard({
   title,
@@ -414,111 +424,100 @@ function HowCard({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="bg-card hairline rounded-2xl shadow-card p-4">
-      <h3 className="text-[14px] font-semibold mb-1.5">{title}</h3>
-      <p className="text-[13px] leading-snug text-[#3a2f20]">{text}</p>
+    <div
+      className="bg-card shadow-card p-4"
+      style={{ borderRadius: 14 }}
+    >
+      <p className="text-[14px] font-semibold mb-2">{title}</p>
+      <p className="text-[13px] leading-snug text-foreground/85">{text}</p>
       {children}
     </div>
   );
 }
 
+// ===== Экран редактирования аффирмации =====
+
 function AffirmationEditor({
   initial,
-  onCancel,
+  onClose,
   onSave,
 }: {
   initial: string;
-  onCancel: () => void;
+  onClose: () => void;
   onSave: (text: string) => void;
 }) {
   const [text, setText] = useState(initial);
-  const isDirty = text !== initial;
-  const canSave = text.trim().length > 0;
+  const taRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-resize
+  useEffect(() => {
+    const ta = taRef.current;
+    if (!ta) return;
+    ta.style.height = "auto";
+    ta.style.height = `${ta.scrollHeight}px`;
+  }, [text]);
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "#fafaf7",
-        zIndex: 60,
-        display: "flex",
-        flexDirection: "column",
-        animation: "fade-in 0.2s ease-out",
-      }}
-    >
-      <div className="mx-auto w-full max-w-md flex flex-col h-full">
-        <div className="flex items-center px-4 py-3 border-b border-border/60 bg-background">
+    <div className="fixed inset-0 z-[90] overflow-y-auto bg-background">
+      <div className="px-4 pt-2 pb-8 safe-top safe-bottom">
+        {/* Хедер */}
+        <div className="relative flex items-center mb-3 min-h-[36px]">
           <button
-            onClick={onCancel}
+            onClick={onClose}
             className="tap inline-flex items-center gap-1 text-[14px] font-medium text-[#FF6D00]"
           >
             <ChevronLeft className="h-5 w-5" /> Назад
           </button>
-          <h2 className="text-[15px] font-semibold absolute left-1/2 -translate-x-1/2">
+          <h1 className="text-[15px] font-semibold absolute left-1/2 -translate-x-1/2 whitespace-nowrap">
             Моя аффирмация
-          </h2>
+          </h1>
+          <div className="ml-auto" style={{ width: 80 }} />
         </div>
 
-        <div className="flex-1 overflow-auto px-4 py-4">
+        {/* Инфо-блок */}
+        <div
+          className="rounded-2xl px-4 py-3 text-[13px] leading-snug"
+          style={{ background: "#fff3e0", color: "#92400e" }}
+        >
+          По умолчанию используется аффирмация клуба. Ты можешь заменить её
+          своей — или отредактировать в любой момент.
+        </div>
+
+        {/* Карточка с textarea */}
+        <div className="mt-3 bg-card hairline rounded-2xl shadow-card p-4">
+          <textarea
+            ref={taRef}
+            value={text}
+            maxLength={4000}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Введи свою аффирмацию…"
+            className="w-full resize-none bg-transparent outline-none border-0 text-[14px] leading-snug"
+            style={{ minHeight: 200 }}
+          />
           <div
-            className="rounded-xl p-3 text-[13px] leading-snug mb-3"
-            style={{
-              background: "#fff3e0",
-              color: "#92400e",
-              border: "1px solid #ffe0b2",
-            }}
+            className="mt-3 pt-2 text-right text-[11px] tabular-nums"
+            style={{ borderTop: "1px solid #ede8df", color: "#9ca3af" }}
           >
-            По умолчанию используется аффирмация клуба. Ты можешь заменить её
-            своей — или отредактировать в любой момент.
-          </div>
-
-          <div className="bg-card rounded-2xl shadow-card p-3 relative">
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              maxLength={4000}
-              className="w-full bg-transparent border-0 outline-none resize-none text-[14px] leading-relaxed"
-              style={{ minHeight: 320 }}
-            />
-            <div
-              className="text-right text-[11px] mt-1"
-              style={{ color: "#9ca3af" }}
-            >
-              {text.length} / 4000
-            </div>
+            {text.length} / 4000
           </div>
         </div>
 
-        <div className="px-4 pb-5 pt-2 bg-background border-t border-border/60">
-          {isDirty && (
-            <p
-              className="text-[12px] mb-2 text-center"
-              style={{ color: "#FF6D00", fontWeight: 600 }}
-            >
-              ● Несохранённые изменения
-            </p>
-          )}
-          <button
-            onClick={() => canSave && onSave(text)}
-            disabled={!canSave}
-            className="tap w-full"
-            style={{
-              background: canSave
-                ? "linear-gradient(135deg, #FFB300, #FF6D00)"
-                : "#f3f4f6",
-              color: canSave ? "#fff" : "#9ca3af",
-              fontWeight: 700,
-              borderRadius: 16,
-              padding: 15,
-              fontSize: 15,
-              cursor: canSave ? "pointer" : "not-allowed",
-              boxShadow: canSave ? "0 4px 14px rgba(255,109,0,0.35)" : "none",
-            }}
-          >
-            Сохранить аффирмацию
-          </button>
-        </div>
+        {/* Сохранить */}
+        <button
+          onClick={() => onSave(text)}
+          className="tap mt-4 w-full"
+          style={{
+            background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+            color: "#fff",
+            fontWeight: 700,
+            borderRadius: 16,
+            padding: 16,
+            fontSize: 15,
+            boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
+          }}
+        >
+          Сохранить аффирмацию
+        </button>
       </div>
     </div>
   );
