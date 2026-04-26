@@ -90,17 +90,14 @@ function SelfProgScreen() {
   const levelName = LEVELS[level];
 
   const handleSpeak = () => {
-    if (doneToday) return;
-    // Открываем Telegram-бота
+    const next = !doneToday;
+    setDoneToday(next);
     try {
-      window.open(TG_BOT_URL, "_blank");
-    } catch {
-      /* ignore */
-    }
-    // Демо: засчитываем сразу
-    setDoneToday(true);
-    try {
-      localStorage.setItem(DONE_KEY, todayStr());
+      if (next) {
+        localStorage.setItem(DONE_KEY, todayStr());
+      } else {
+        localStorage.removeItem(DONE_KEY);
+      }
     } catch {
       /* ignore */
     }
@@ -260,7 +257,6 @@ function SelfProgScreen() {
       <section className="mt-4">
         <button
           onClick={handleSpeak}
-          disabled={doneToday}
           className="tap w-full"
           style={{
             background: doneToday
@@ -271,7 +267,7 @@ function SelfProgScreen() {
             borderRadius: 16,
             padding: 17,
             fontSize: 15,
-            cursor: doneToday ? "not-allowed" : "pointer",
+            cursor: "pointer",
             boxShadow: doneToday ? "none" : "0 4px 14px rgba(255,109,0,0.35)",
           }}
         >
