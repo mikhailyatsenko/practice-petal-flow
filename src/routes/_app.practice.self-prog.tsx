@@ -90,17 +90,14 @@ function SelfProgScreen() {
   const levelName = LEVELS[level];
 
   const handleSpeak = () => {
-    if (doneToday) return;
-    // Открываем Telegram-бота
+    const next = !doneToday;
+    setDoneToday(next);
     try {
-      window.open(TG_BOT_URL, "_blank");
-    } catch {
-      /* ignore */
-    }
-    // Демо: засчитываем сразу
-    setDoneToday(true);
-    try {
-      localStorage.setItem(DONE_KEY, todayStr());
+      if (next) {
+        localStorage.setItem(DONE_KEY, todayStr());
+      } else {
+        localStorage.removeItem(DONE_KEY);
+      }
     } catch {
       /* ignore */
     }
