@@ -49,13 +49,14 @@ const initialPathSteps: PathStep[] = [
 // Демо: выполнены — Навык успеха, Воплощение желаний
 const initialPractices: PracticeRow[] = [
   { id: "self-prog", title: "Программирование успеха", streakDays: 17, doneToday: false, history: [], level: 1, progress: 17 },
-  { id: "charge",    title: "Зарядка об цель",         streakDays: 12, doneToday: false, history: [], level: 0, progress: 12 },
+  { id: "charge",    title: "Зарядка желаний",         streakDays: 12, doneToday: false, history: [], level: 0, progress: 12 },
   { id: "essay",     title: "Жизнь мечты",             streakDays: 0,  doneToday: false, history: [], level: 0, progress: -6 },
   { id: "skill",     title: "Навык успеха",            streakDays: 22, doneToday: true,  history: [], level: 2, progress: 22 },
   { id: "wishes",    title: "Воплощение желаний",      streakDays: 4,  doneToday: true,  history: [], level: 0, progress: 4 },
 ];
 
 const SELF_PROG_DONE_KEY = "self-prog-done-v2";
+const CHARGE_DONE_KEY = "charge-done-v1";
 const todayStr = () => {
   const d = new Date();
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
@@ -163,6 +164,10 @@ function HomeScreen() {
       void navigate({ to: "/practice/self-prog" });
       return;
     }
+    if (id === "charge") {
+      void navigate({ to: "/practice/charge" });
+      return;
+    }
     const originRect = origin ? origin.getBoundingClientRect() : null;
     setPractices((list) => {
       const current = list.find((p) => p.id === id);
@@ -208,9 +213,15 @@ function HomeScreen() {
   useEffect(() => {
     const sync = () => {
       try {
-        const isDone = localStorage.getItem(SELF_PROG_DONE_KEY) === todayStr();
+        const today = todayStr();
+        const selfProgDone = localStorage.getItem(SELF_PROG_DONE_KEY) === today;
+        const chargeDone = localStorage.getItem(CHARGE_DONE_KEY) === today;
         setPractices((list) =>
-          list.map((p) => (p.id === "self-prog" ? { ...p, doneToday: isDone } : p)),
+          list.map((p) => {
+            if (p.id === "self-prog") return { ...p, doneToday: selfProgDone };
+            if (p.id === "charge") return { ...p, doneToday: chargeDone };
+            return p;
+          }),
         );
       } catch {
         /* ignore */
