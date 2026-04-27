@@ -196,6 +196,22 @@ function ChargeScreen() {
         </div>
       </section>
 
+      {/* Напоминание про осознанные лайки */}
+      <div
+        className="mt-4"
+        style={{
+          background: "#fff3e0",
+          border: "1.5px solid #FFB300",
+          borderRadius: 12,
+          padding: "12px 14px",
+          fontSize: 13,
+          color: "#92400e",
+          lineHeight: 1.6,
+        }}
+      >
+        ☝️ <strong>Важно</strong>: не ставь лайки механически. Сначала посмотри на желание, почувствуй эмоцию — радость, гордость, ощущение что это уже твоё. И только после этого ставь лайк.
+      </div>
+
       {/* 6. Кнопка перехода / засчитать */}
       <section className="mt-4">
         {!bothDone ? (
