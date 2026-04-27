@@ -56,7 +56,6 @@ const initialPractices: PracticeRow[] = [
 ];
 
 const SELF_PROG_DONE_KEY = "self-prog-done-v2";
-const CHARGE_DONE_KEY = "charge-done-v1";
 const todayStr = () => {
   const d = new Date();
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
@@ -165,7 +164,7 @@ function HomeScreen() {
       return;
     }
     if (id === "charge") {
-      void navigate({ to: "/practice/charge" });
+      void navigate({ to: "/practice/wishes-charge" });
       return;
     }
     if (id === "essay") {
@@ -189,11 +188,9 @@ function HomeScreen() {
       try {
         const today = todayStr();
         const selfProgDone = localStorage.getItem(SELF_PROG_DONE_KEY) === today;
-        const chargeDone = localStorage.getItem(CHARGE_DONE_KEY) === today;
         setPractices((list) =>
           list.map((p) => {
             if (p.id === "self-prog") return { ...p, doneToday: selfProgDone };
-            if (p.id === "charge") return { ...p, doneToday: chargeDone };
             return p;
           }),
         );
