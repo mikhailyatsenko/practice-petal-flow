@@ -172,21 +172,28 @@ function ValuesScreen() {
             {values.map((v, i) => (
               <div
                 key={v.id}
-                className="relative flex items-center gap-3 rounded-[14px] bg-white px-4 py-3.5"
+                className="relative flex items-start gap-3 rounded-[14px] bg-white px-4 py-3"
                 style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.07)" }}
               >
                 <button
-                  className="flex flex-1 items-center gap-3 text-left"
+                  className="flex flex-1 items-start gap-3 text-left"
                   onClick={() => setScreen({ name: "view", id: v.id })}
                 >
                   <span
-                    className="min-w-[24px] text-[15px] font-bold"
+                    className="min-w-[24px] pt-[1px] text-[15px] font-bold"
                     style={{ color: "#FF6D00" }}
                   >
                     {v.priority != null ? v.priority : i + 1}
                   </span>
-                  <span className="flex-1 text-[15px] font-semibold text-[#1a1a1a]">
-                    {v.title}
+                  <span className="flex-1">
+                    <span className="block text-[15px] font-semibold text-[#1a1a1a]">
+                      {v.title}
+                    </span>
+                    {v.description && (
+                      <span className="mt-0.5 block text-[12px] leading-[1.4] text-[#8a8a8a] line-clamp-2">
+                        {v.description}
+                      </span>
+                    )}
                   </span>
                 </button>
                 <button
@@ -212,16 +219,7 @@ function ValuesScreen() {
                         setScreen({ name: "view", id: v.id });
                       }}
                     >
-                      ✏️ Изменить название
-                    </button>
-                    <button
-                      className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-[14px] hover:bg-gray-50"
-                      onClick={() => {
-                        setOpenMenu(null);
-                        setScreen({ name: "view", id: v.id });
-                      }}
-                    >
-                      📝 Изменить описание
+                      ✏️ Изменить
                     </button>
                     <button
                       className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-[14px] text-[#ef4444] hover:bg-red-50"
