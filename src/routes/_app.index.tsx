@@ -157,9 +157,9 @@ function HomeScreen() {
     }, 1200);
   };
 
-  const togglePractice = (id: string, origin?: HTMLElement | null) => {
-    // Раздел "Программирование успеха" — открывается отдельным экраном.
-    // Никакой логики "Сделать/Сделано" здесь не запускаем.
+  const togglePractice = (id: string, _origin?: HTMLElement | null) => {
+    void _origin;
+    // Все карточки только переходят на свои экраны — никаких тогглов и анимаций
     if (id === "self-prog") {
       void navigate({ to: "/practice/self-prog" });
       return;
@@ -168,44 +168,18 @@ function HomeScreen() {
       void navigate({ to: "/practice/charge" });
       return;
     }
-    const originRect = origin ? origin.getBoundingClientRect() : null;
-    setPractices((list) => {
-      const current = list.find((p) => p.id === id);
-      if (!current) return list;
-      const willBeDone = !current.doneToday;
-      if (willBeDone && originRect) {
-        launchStarFromRect(originRect, () => triggerStarBurstAtIcon());
-      }
-      return list.map((p) => {
-        if (p.id !== id) return p;
-        const newDone = !p.doneToday;
-        const newHistory: DayState[] = [...p.history];
-        newHistory[newHistory.length - 1] = newDone ? "done" : "empty";
-        const hadMissed = p.progress < 0;
-        const newProgress = newDone
-          ? hadMissed ? 1 : p.progress + 1
-          : Math.max(0, p.progress - 1);
-        return {
-          ...p,
-          doneToday: newDone,
-          history: newHistory,
-          streakDays: newDone
-            ? hadMissed ? 1 : p.streakDays + 1
-            : Math.max(0, p.streakDays - 1),
-          progress: newProgress,
-        };
-      });
-    });
-    setTimeout(() => {
-      setPractices((list) => {
-        const all = list.every((p) => p.doneToday);
-        if (all) {
-          setStars((s) => s + 1);
-          setHit((h0) => h0 + 1);
-        }
-        return list;
-      });
-    }, 0);
+    if (id === "essay") {
+      void navigate({ to: "/practice/essay" });
+      return;
+    }
+    if (id === "skill") {
+      void navigate({ to: "/practice/skill" });
+      return;
+    }
+    if (id === "wishes") {
+      void navigate({ to: "/practice/wishes" });
+      return;
+    }
   };
 
 
