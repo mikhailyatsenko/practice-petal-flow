@@ -182,30 +182,9 @@ function HomeScreen() {
   };
 
 
-  // Синхронизация статуса "Программирование успеха" с экраном раздела (localStorage)
-  useEffect(() => {
-    const sync = () => {
-      try {
-        const today = todayStr();
-        const selfProgDone = localStorage.getItem(SELF_PROG_DONE_KEY) === today;
-        setPractices((list) =>
-          list.map((p) => {
-            if (p.id === "self-prog") return { ...p, doneToday: selfProgDone };
-            return p;
-          }),
-        );
-      } catch {
-        /* ignore */
-      }
-    };
-    sync();
-    window.addEventListener("focus", sync);
-    window.addEventListener("storage", sync);
-    return () => {
-      window.removeEventListener("focus", sync);
-      window.removeEventListener("storage", sync);
-    };
-  }, []);
+  // Все карточки всегда стартуют как "не сделано" — сохранённое состояние не читаем
+  void SELF_PROG_DONE_KEY;
+  void todayStr;
 
   // Авто-запуск всех анимаций при заходе на главную
   useEffect(() => {
