@@ -16,6 +16,7 @@ import { Route as AppWishesRouteImport } from './routes/_app.wishes'
 import { Route as AppSectionsRouteImport } from './routes/_app.sections'
 import { Route as AppPartnerRouteImport } from './routes/_app.partner'
 import { Route as AppLibraryRouteImport } from './routes/_app.library'
+import { Route as AppHabitsRouteImport } from './routes/_app.habits'
 import { Route as AppFoursomeRouteImport } from './routes/_app.foursome'
 import { Route as AppCommunityRouteImport } from './routes/_app.community'
 import { Route as AppBuddyRouteImport } from './routes/_app.buddy'
@@ -58,6 +59,11 @@ const AppPartnerRoute = AppPartnerRouteImport.update({
 const AppLibraryRoute = AppLibraryRouteImport.update({
   id: '/library',
   path: '/library',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppHabitsRoute = AppHabitsRouteImport.update({
+  id: '/habits',
+  path: '/habits',
   getParentRoute: () => AppRoute,
 } as any)
 const AppFoursomeRoute = AppFoursomeRouteImport.update({
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/buddy': typeof AppBuddyRoute
   '/community': typeof AppCommunityRoute
   '/foursome': typeof AppFoursomeRoute
+  '/habits': typeof AppHabitsRoute
   '/library': typeof AppLibraryRoute
   '/partner': typeof AppPartnerRoute
   '/sections': typeof AppSectionsRoute
@@ -128,6 +135,7 @@ export interface FileRoutesByTo {
   '/buddy': typeof AppBuddyRoute
   '/community': typeof AppCommunityRoute
   '/foursome': typeof AppFoursomeRoute
+  '/habits': typeof AppHabitsRoute
   '/library': typeof AppLibraryRoute
   '/partner': typeof AppPartnerRoute
   '/sections': typeof AppSectionsRoute
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/_app/buddy': typeof AppBuddyRoute
   '/_app/community': typeof AppCommunityRoute
   '/_app/foursome': typeof AppFoursomeRoute
+  '/_app/habits': typeof AppHabitsRoute
   '/_app/library': typeof AppLibraryRoute
   '/_app/partner': typeof AppPartnerRoute
   '/_app/sections': typeof AppSectionsRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/buddy'
     | '/community'
     | '/foursome'
+    | '/habits'
     | '/library'
     | '/partner'
     | '/sections'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/buddy'
     | '/community'
     | '/foursome'
+    | '/habits'
     | '/library'
     | '/partner'
     | '/sections'
@@ -201,6 +212,7 @@ export interface FileRouteTypes {
     | '/_app/buddy'
     | '/_app/community'
     | '/_app/foursome'
+    | '/_app/habits'
     | '/_app/library'
     | '/_app/partner'
     | '/_app/sections'
@@ -268,6 +280,13 @@ declare module '@tanstack/react-router' {
       path: '/library'
       fullPath: '/library'
       preLoaderRoute: typeof AppLibraryRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/habits': {
+      id: '/_app/habits'
+      path: '/habits'
+      fullPath: '/habits'
+      preLoaderRoute: typeof AppHabitsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/foursome': {
@@ -340,6 +359,7 @@ interface AppRouteChildren {
   AppBuddyRoute: typeof AppBuddyRoute
   AppCommunityRoute: typeof AppCommunityRoute
   AppFoursomeRoute: typeof AppFoursomeRoute
+  AppHabitsRoute: typeof AppHabitsRoute
   AppLibraryRoute: typeof AppLibraryRoute
   AppPartnerRoute: typeof AppPartnerRoute
   AppSectionsRoute: typeof AppSectionsRoute
@@ -357,6 +377,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppBuddyRoute: AppBuddyRoute,
   AppCommunityRoute: AppCommunityRoute,
   AppFoursomeRoute: AppFoursomeRoute,
+  AppHabitsRoute: AppHabitsRoute,
   AppLibraryRoute: AppLibraryRoute,
   AppPartnerRoute: AppPartnerRoute,
   AppSectionsRoute: AppSectionsRoute,

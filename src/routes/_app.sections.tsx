@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SectionHeader, SubItemList } from "@/components/section/SubItemList";
 
 export const Route = createFileRoute("/_app/sections")({
@@ -12,13 +12,14 @@ export const Route = createFileRoute("/_app/sections")({
 });
 
 function SectionsScreen() {
+  const navigate = useNavigate();
   return (
     <div className="px-4">
       <SectionHeader emoji="🧩" title="Разделы магазина" subtitle="Открывай дополнительные разделы за очки" />
 
       <SubItemList
         items={[
-          { emoji: "💪", title: "Привычки",                subtitle: "Отслеживание любых привычек", price: "300 ⭐", locked: true },
+          { emoji: "💪", title: "Привычки",                subtitle: "Отслеживание любых привычек", price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/habits" }) },
           { emoji: "👑", title: "Качества характера",      subtitle: "Развитие 100+ качеств",       price: "300 ⭐", locked: true },
           { emoji: "🌐", title: "Сферы жизни",                                                       price: "300 ⭐", locked: true },
           { emoji: "🧠", title: "Потребности",                                                       price: "300 ⭐", locked: true },
