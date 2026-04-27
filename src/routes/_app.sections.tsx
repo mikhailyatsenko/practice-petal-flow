@@ -20,7 +20,7 @@ function SectionsScreen() {
       <SubItemList
         items={[
           { emoji: "💪", title: "Привычки",                subtitle: "Отслеживание любых привычек", price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/habits" }) },
-          { emoji: "👑", title: "Качества характера",      subtitle: "Развитие 100+ качеств",       price: "300 ⭐", locked: true },
+          { emoji: "👑", title: "Качества характера",      subtitle: "Развитие 100+ качеств",       price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/qualities" }) },
           { emoji: "🌐", title: "Сферы жизни",                                                       price: "300 ⭐", locked: true },
           { emoji: "🧠", title: "Потребности",                                                       price: "300 ⭐", locked: true },
           { emoji: "💡", title: "Ценности",                                                          price: "300 ⭐", locked: true },
