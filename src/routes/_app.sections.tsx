@@ -24,7 +24,7 @@ function SectionsScreen() {
           { emoji: "🌐", title: "Сферы жизни",                                                       price: "300 ⭐", locked: true },
           { emoji: "🧠", title: "Потребности",                                                       price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/needs" }) },
           { emoji: "💡", title: "Ценности",                                                          price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/values" }) },
-          { emoji: "🤝", title: "Самоулучшение",            subtitle: "30 вопросов для рефлексии",    price: "300 ⭐", locked: true },
+          { emoji: "🤝", title: "Самоулучшение",            subtitle: "30 вопросов для рефлексии",    price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/self-improve" }) },
           { emoji: "🙏", title: "Дневник благодарности",                                              price: "300 ⭐", locked: true },
           { emoji: "🧭", title: "Дневник решений",                                                    price: "300 ⭐", locked: true },
           { emoji: "📝", title: "Дневник ошибок",                                                     price: "300 ⭐", locked: true },
