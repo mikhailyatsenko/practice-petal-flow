@@ -16,6 +16,7 @@ import { Route as AppWishesRouteImport } from './routes/_app.wishes'
 import { Route as AppSectionsRouteImport } from './routes/_app.sections'
 import { Route as AppQualitiesRouteImport } from './routes/_app.qualities'
 import { Route as AppPartnerRouteImport } from './routes/_app.partner'
+import { Route as AppNeedsRouteImport } from './routes/_app.needs'
 import { Route as AppLibraryRouteImport } from './routes/_app.library'
 import { Route as AppHabitsRouteImport } from './routes/_app.habits'
 import { Route as AppFoursomeRouteImport } from './routes/_app.foursome'
@@ -60,6 +61,11 @@ const AppQualitiesRoute = AppQualitiesRouteImport.update({
 const AppPartnerRoute = AppPartnerRouteImport.update({
   id: '/partner',
   path: '/partner',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNeedsRoute = AppNeedsRouteImport.update({
+  id: '/needs',
+  path: '/needs',
   getParentRoute: () => AppRoute,
 } as any)
 const AppLibraryRoute = AppLibraryRouteImport.update({
@@ -126,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/foursome': typeof AppFoursomeRoute
   '/habits': typeof AppHabitsRoute
   '/library': typeof AppLibraryRoute
+  '/needs': typeof AppNeedsRoute
   '/partner': typeof AppPartnerRoute
   '/qualities': typeof AppQualitiesRoute
   '/sections': typeof AppSectionsRoute
@@ -144,6 +151,7 @@ export interface FileRoutesByTo {
   '/foursome': typeof AppFoursomeRoute
   '/habits': typeof AppHabitsRoute
   '/library': typeof AppLibraryRoute
+  '/needs': typeof AppNeedsRoute
   '/partner': typeof AppPartnerRoute
   '/qualities': typeof AppQualitiesRoute
   '/sections': typeof AppSectionsRoute
@@ -165,6 +173,7 @@ export interface FileRoutesById {
   '/_app/foursome': typeof AppFoursomeRoute
   '/_app/habits': typeof AppHabitsRoute
   '/_app/library': typeof AppLibraryRoute
+  '/_app/needs': typeof AppNeedsRoute
   '/_app/partner': typeof AppPartnerRoute
   '/_app/qualities': typeof AppQualitiesRoute
   '/_app/sections': typeof AppSectionsRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/foursome'
     | '/habits'
     | '/library'
+    | '/needs'
     | '/partner'
     | '/qualities'
     | '/sections'
@@ -205,6 +215,7 @@ export interface FileRouteTypes {
     | '/foursome'
     | '/habits'
     | '/library'
+    | '/needs'
     | '/partner'
     | '/qualities'
     | '/sections'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/_app/foursome'
     | '/_app/habits'
     | '/_app/library'
+    | '/_app/needs'
     | '/_app/partner'
     | '/_app/qualities'
     | '/_app/sections'
@@ -292,6 +304,13 @@ declare module '@tanstack/react-router' {
       path: '/partner'
       fullPath: '/partner'
       preLoaderRoute: typeof AppPartnerRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/needs': {
+      id: '/_app/needs'
+      path: '/needs'
+      fullPath: '/needs'
+      preLoaderRoute: typeof AppNeedsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/library': {
@@ -380,6 +399,7 @@ interface AppRouteChildren {
   AppFoursomeRoute: typeof AppFoursomeRoute
   AppHabitsRoute: typeof AppHabitsRoute
   AppLibraryRoute: typeof AppLibraryRoute
+  AppNeedsRoute: typeof AppNeedsRoute
   AppPartnerRoute: typeof AppPartnerRoute
   AppQualitiesRoute: typeof AppQualitiesRoute
   AppSectionsRoute: typeof AppSectionsRoute
@@ -399,6 +419,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppFoursomeRoute: AppFoursomeRoute,
   AppHabitsRoute: AppHabitsRoute,
   AppLibraryRoute: AppLibraryRoute,
+  AppNeedsRoute: AppNeedsRoute,
   AppPartnerRoute: AppPartnerRoute,
   AppQualitiesRoute: AppQualitiesRoute,
   AppSectionsRoute: AppSectionsRoute,
