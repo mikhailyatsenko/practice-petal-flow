@@ -23,6 +23,7 @@ import { Route as AppLibraryRouteImport } from './routes/_app.library'
 import { Route as AppHabitsRouteImport } from './routes/_app.habits'
 import { Route as AppGratitudeRouteImport } from './routes/_app.gratitude'
 import { Route as AppFoursomeRouteImport } from './routes/_app.foursome'
+import { Route as AppDecisionsRouteImport } from './routes/_app.decisions'
 import { Route as AppCommunityRouteImport } from './routes/_app.community'
 import { Route as AppBuddyRouteImport } from './routes/_app.buddy'
 import { Route as AppPracticeWishesChargeRouteImport } from './routes/_app.practice.wishes-charge'
@@ -101,6 +102,11 @@ const AppFoursomeRoute = AppFoursomeRouteImport.update({
   path: '/foursome',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDecisionsRoute = AppDecisionsRouteImport.update({
+  id: '/decisions',
+  path: '/decisions',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCommunityRoute = AppCommunityRouteImport.update({
   id: '/community',
   path: '/community',
@@ -147,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/buddy': typeof AppBuddyRoute
   '/community': typeof AppCommunityRoute
+  '/decisions': typeof AppDecisionsRoute
   '/foursome': typeof AppFoursomeRoute
   '/gratitude': typeof AppGratitudeRoute
   '/habits': typeof AppHabitsRoute
@@ -169,6 +176,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/buddy': typeof AppBuddyRoute
   '/community': typeof AppCommunityRoute
+  '/decisions': typeof AppDecisionsRoute
   '/foursome': typeof AppFoursomeRoute
   '/gratitude': typeof AppGratitudeRoute
   '/habits': typeof AppHabitsRoute
@@ -194,6 +202,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/_app/buddy': typeof AppBuddyRoute
   '/_app/community': typeof AppCommunityRoute
+  '/_app/decisions': typeof AppDecisionsRoute
   '/_app/foursome': typeof AppFoursomeRoute
   '/_app/gratitude': typeof AppGratitudeRoute
   '/_app/habits': typeof AppHabitsRoute
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/buddy'
     | '/community'
+    | '/decisions'
     | '/foursome'
     | '/gratitude'
     | '/habits'
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/buddy'
     | '/community'
+    | '/decisions'
     | '/foursome'
     | '/gratitude'
     | '/habits'
@@ -266,6 +277,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/_app/buddy'
     | '/_app/community'
+    | '/_app/decisions'
     | '/_app/foursome'
     | '/_app/gratitude'
     | '/_app/habits'
@@ -391,6 +403,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFoursomeRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/decisions': {
+      id: '/_app/decisions'
+      path: '/decisions'
+      fullPath: '/decisions'
+      preLoaderRoute: typeof AppDecisionsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/community': {
       id: '/_app/community'
       path: '/community'
@@ -453,6 +472,7 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppBuddyRoute: typeof AppBuddyRoute
   AppCommunityRoute: typeof AppCommunityRoute
+  AppDecisionsRoute: typeof AppDecisionsRoute
   AppFoursomeRoute: typeof AppFoursomeRoute
   AppGratitudeRoute: typeof AppGratitudeRoute
   AppHabitsRoute: typeof AppHabitsRoute
@@ -476,6 +496,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppBuddyRoute: AppBuddyRoute,
   AppCommunityRoute: AppCommunityRoute,
+  AppDecisionsRoute: AppDecisionsRoute,
   AppFoursomeRoute: AppFoursomeRoute,
   AppGratitudeRoute: AppGratitudeRoute,
   AppHabitsRoute: AppHabitsRoute,
