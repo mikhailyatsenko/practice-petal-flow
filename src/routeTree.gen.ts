@@ -21,6 +21,7 @@ import { Route as AppPartnerRouteImport } from './routes/_app.partner'
 import { Route as AppNeedsRouteImport } from './routes/_app.needs'
 import { Route as AppLibraryRouteImport } from './routes/_app.library'
 import { Route as AppHabitsRouteImport } from './routes/_app.habits'
+import { Route as AppGratitudeRouteImport } from './routes/_app.gratitude'
 import { Route as AppFoursomeRouteImport } from './routes/_app.foursome'
 import { Route as AppCommunityRouteImport } from './routes/_app.community'
 import { Route as AppBuddyRouteImport } from './routes/_app.buddy'
@@ -90,6 +91,11 @@ const AppHabitsRoute = AppHabitsRouteImport.update({
   path: '/habits',
   getParentRoute: () => AppRoute,
 } as any)
+const AppGratitudeRoute = AppGratitudeRouteImport.update({
+  id: '/gratitude',
+  path: '/gratitude',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppFoursomeRoute = AppFoursomeRouteImport.update({
   id: '/foursome',
   path: '/foursome',
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/buddy': typeof AppBuddyRoute
   '/community': typeof AppCommunityRoute
   '/foursome': typeof AppFoursomeRoute
+  '/gratitude': typeof AppGratitudeRoute
   '/habits': typeof AppHabitsRoute
   '/library': typeof AppLibraryRoute
   '/needs': typeof AppNeedsRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByTo {
   '/buddy': typeof AppBuddyRoute
   '/community': typeof AppCommunityRoute
   '/foursome': typeof AppFoursomeRoute
+  '/gratitude': typeof AppGratitudeRoute
   '/habits': typeof AppHabitsRoute
   '/library': typeof AppLibraryRoute
   '/needs': typeof AppNeedsRoute
@@ -187,6 +195,7 @@ export interface FileRoutesById {
   '/_app/buddy': typeof AppBuddyRoute
   '/_app/community': typeof AppCommunityRoute
   '/_app/foursome': typeof AppFoursomeRoute
+  '/_app/gratitude': typeof AppGratitudeRoute
   '/_app/habits': typeof AppHabitsRoute
   '/_app/library': typeof AppLibraryRoute
   '/_app/needs': typeof AppNeedsRoute
@@ -212,6 +221,7 @@ export interface FileRouteTypes {
     | '/buddy'
     | '/community'
     | '/foursome'
+    | '/gratitude'
     | '/habits'
     | '/library'
     | '/needs'
@@ -233,6 +243,7 @@ export interface FileRouteTypes {
     | '/buddy'
     | '/community'
     | '/foursome'
+    | '/gratitude'
     | '/habits'
     | '/library'
     | '/needs'
@@ -256,6 +267,7 @@ export interface FileRouteTypes {
     | '/_app/buddy'
     | '/_app/community'
     | '/_app/foursome'
+    | '/_app/gratitude'
     | '/_app/habits'
     | '/_app/library'
     | '/_app/needs'
@@ -365,6 +377,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppHabitsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/gratitude': {
+      id: '/_app/gratitude'
+      path: '/gratitude'
+      fullPath: '/gratitude'
+      preLoaderRoute: typeof AppGratitudeRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/foursome': {
       id: '/_app/foursome'
       path: '/foursome'
@@ -435,6 +454,7 @@ interface AppRouteChildren {
   AppBuddyRoute: typeof AppBuddyRoute
   AppCommunityRoute: typeof AppCommunityRoute
   AppFoursomeRoute: typeof AppFoursomeRoute
+  AppGratitudeRoute: typeof AppGratitudeRoute
   AppHabitsRoute: typeof AppHabitsRoute
   AppLibraryRoute: typeof AppLibraryRoute
   AppNeedsRoute: typeof AppNeedsRoute
@@ -457,6 +477,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppBuddyRoute: AppBuddyRoute,
   AppCommunityRoute: AppCommunityRoute,
   AppFoursomeRoute: AppFoursomeRoute,
+  AppGratitudeRoute: AppGratitudeRoute,
   AppHabitsRoute: AppHabitsRoute,
   AppLibraryRoute: AppLibraryRoute,
   AppNeedsRoute: AppNeedsRoute,
