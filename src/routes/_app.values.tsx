@@ -337,100 +337,62 @@ function ViewScreen({
   onPatch: (patch: Partial<Value>) => void;
   onDelete: () => void;
 }) {
-  const [editingTitle, setEditingTitle] = useState(false);
-  const [editingDesc, setEditingDesc] = useState(false);
   const [title, setTitle] = useState(value.title);
   const [description, setDescription] = useState(value.description);
+
+  useEffect(() => {
+    setTitle(value.title);
+    setDescription(value.description);
+  }, [value.id]);
+
+  function commitTitle() {
+    const t = title.trim();
+    if (t.length >= 3 && t !== value.title) onPatch({ title: t });
+    else setTitle(value.title);
+  }
+
+  function commitDescription() {
+    const d = description.trim();
+    if (d !== value.description) onPatch({ description: d });
+  }
 
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
       <Header title={value.title} onBack={onBack} />
       <div className="px-4 pb-32 pt-4">
-        {editingTitle ? (
-          <div className="mb-5">
-            <div className="mb-1.5 text-[11px] font-semibold uppercase text-[#8a8a8a]">Название</div>
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              maxLength={100}
-              className="w-full rounded-[12px] border border-black/10 bg-white px-4 py-3 text-[15px] outline-none focus:border-[#FF6D00]"
-            />
-            <button
-              disabled={title.trim().length < 3}
-              onClick={() => {
-                onPatch({ title: title.trim() });
-                setEditingTitle(false);
-              }}
-              className="mt-3 w-full rounded-[14px] py-3 text-[14px] font-semibold text-white disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
-            >
-              ✅ Сохранить
-            </button>
-          </div>
-        ) : (
-          <div className="mb-4 rounded-[14px] bg-white px-4 py-4" style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.07)" }}>
-            <div className="text-[18px] font-bold text-[#1a1a1a]">{value.title}</div>
-          </div>
-        )}
-
-        {editingDesc ? (
-          <div className="mb-5">
-            <div className="mb-1.5 text-[11px] font-semibold uppercase text-[#8a8a8a]">Описание</div>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              maxLength={250}
-              className="min-h-[120px] w-full rounded-[12px] border border-black/10 bg-white px-4 py-3 text-[15px] outline-none focus:border-[#FF6D00]"
-            />
-            <button
-              disabled={description.trim().length < 3}
-              onClick={() => {
-                onPatch({ description: description.trim() });
-                setEditingDesc(false);
-              }}
-              className="mt-3 w-full rounded-[14px] py-3 text-[14px] font-semibold text-white disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
-            >
-              ✅ Сохранить
-            </button>
-          </div>
-        ) : (
-          <div className="mb-6 rounded-[14px] bg-white px-4 py-4" style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.07)" }}>
-            <div className="text-[14px] leading-[1.7] text-[#555]">
-              {value.description || <span className="text-[#aaa]">Описание не добавлено</span>}
-            </div>
-          </div>
-        )}
-
-        <div className="flex flex-col gap-3">
-          <button
-            onClick={() => {
-              setTitle(value.title);
-              setEditingTitle(true);
-            }}
-            className="rounded-[14px] py-3 text-[14px] font-semibold"
-            style={{ border: "1.5px solid #FF6D00", color: "#FF6D00" }}
-          >
-            ✏️ Изменить название ценности
-          </button>
-          <button
-            onClick={() => {
-              setDescription(value.description);
-              setEditingDesc(true);
-            }}
-            className="rounded-[14px] py-3 text-[14px] font-semibold"
-            style={{ border: "1.5px solid #FF6D00", color: "#FF6D00" }}
-          >
-            📝 Изменить описание ценности
-          </button>
-          <button
-            onClick={onDelete}
-            className="rounded-[14px] py-3 text-[14px] font-semibold"
-            style={{ border: "1.5px solid #fee2e2", color: "#ef4444", background: "#fff" }}
-          >
-            🗑 Удалить ценность
-          </button>
+        <div className="mb-4">
+          <div className="mb-1.5 text-[11px] font-semibold uppercase text-[#8a8a8a]">Название</div>
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            onBlur={commitTitle}
+            maxLength={100}
+            className="w-full rounded-[14px] border border-transparent bg-white px-4 py-3.5 text-[18px] font-bold text-[#1a1a1a] outline-none focus:border-[#FF6D00]"
+            style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.07)" }}
+          />
         </div>
+
+        <div className="mb-6">
+          <div className="mb-1.5 text-[11px] font-semibold uppercase text-[#8a8a8a]">Описание</div>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            onBlur={commitDescription}
+            maxLength={250}
+            placeholder="Опиши эту ценность подробно — что она для тебя значит"
+            className="min-h-[140px] w-full rounded-[14px] border border-transparent bg-white px-4 py-3.5 text-[14px] leading-[1.7] text-[#555] outline-none focus:border-[#FF6D00]"
+            style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.07)" }}
+          />
+          <div className="mt-1 text-right text-[11px] text-[#aaa]">{description.length}/250</div>
+        </div>
+
+        <button
+          onClick={onDelete}
+          className="w-full rounded-[14px] py-3 text-[14px] font-semibold"
+          style={{ border: "1.5px solid #fee2e2", color: "#ef4444", background: "#fff" }}
+        >
+          🗑 Удалить ценность
+        </button>
       </div>
     </div>
   );
