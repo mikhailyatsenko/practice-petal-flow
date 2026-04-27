@@ -46,13 +46,13 @@ const initialPathSteps: PathStep[] = [
   { id: "s7", label: "День 7 — все 5 практик", done: false },
 ];
 
-// Демо: выполнены — Навык успеха, Воплощение желаний
+// Все практики стартуют как «не сделано» — переходят на свои экраны
 const initialPractices: PracticeRow[] = [
   { id: "self-prog", title: "Программирование успеха", streakDays: 17, doneToday: false, history: [], level: 1, progress: 17 },
   { id: "charge",    title: "Зарядка желаний",         streakDays: 12, doneToday: false, history: [], level: 0, progress: 12 },
   { id: "essay",     title: "Жизнь мечты",             streakDays: 0,  doneToday: false, history: [], level: 0, progress: -6 },
-  { id: "skill",     title: "Навык успеха",            streakDays: 22, doneToday: true,  history: [], level: 2, progress: 22 },
-  { id: "wishes",    title: "Воплощение желаний",      streakDays: 4,  doneToday: true,  history: [], level: 0, progress: 4 },
+  { id: "skill",     title: "Навык успеха",            streakDays: 22, doneToday: false, history: [], level: 2, progress: 22 },
+  { id: "wishes",    title: "Воплощение желаний",      streakDays: 4,  doneToday: false, history: [], level: 0, progress: 4 },
 ];
 
 const SELF_PROG_DONE_KEY = "self-prog-done-v2";
@@ -157,9 +157,9 @@ function HomeScreen() {
     }, 1200);
   };
 
-  const togglePractice = (id: string, origin?: HTMLElement | null) => {
-    // Раздел "Программирование успеха" — открывается отдельным экраном.
-    // Никакой логики "Сделать/Сделано" здесь не запускаем.
+  const togglePractice = (id: string, _origin?: HTMLElement | null) => {
+    void _origin;
+    // Все карточки только переходят на свои экраны — никаких тогглов и анимаций
     if (id === "self-prog") {
       void navigate({ to: "/practice/self-prog" });
       return;
@@ -168,44 +168,18 @@ function HomeScreen() {
       void navigate({ to: "/practice/charge" });
       return;
     }
-    const originRect = origin ? origin.getBoundingClientRect() : null;
-    setPractices((list) => {
-      const current = list.find((p) => p.id === id);
-      if (!current) return list;
-      const willBeDone = !current.doneToday;
-      if (willBeDone && originRect) {
-        launchStarFromRect(originRect, () => triggerStarBurstAtIcon());
-      }
-      return list.map((p) => {
-        if (p.id !== id) return p;
-        const newDone = !p.doneToday;
-        const newHistory: DayState[] = [...p.history];
-        newHistory[newHistory.length - 1] = newDone ? "done" : "empty";
-        const hadMissed = p.progress < 0;
-        const newProgress = newDone
-          ? hadMissed ? 1 : p.progress + 1
-          : Math.max(0, p.progress - 1);
-        return {
-          ...p,
-          doneToday: newDone,
-          history: newHistory,
-          streakDays: newDone
-            ? hadMissed ? 1 : p.streakDays + 1
-            : Math.max(0, p.streakDays - 1),
-          progress: newProgress,
-        };
-      });
-    });
-    setTimeout(() => {
-      setPractices((list) => {
-        const all = list.every((p) => p.doneToday);
-        if (all) {
-          setStars((s) => s + 1);
-          setHit((h0) => h0 + 1);
-        }
-        return list;
-      });
-    }, 0);
+    if (id === "essay") {
+      void navigate({ to: "/practice/essay" });
+      return;
+    }
+    if (id === "skill") {
+      void navigate({ to: "/practice/skill" });
+      return;
+    }
+    if (id === "wishes") {
+      void navigate({ to: "/practice/wishes" });
+      return;
+    }
   };
 
 
