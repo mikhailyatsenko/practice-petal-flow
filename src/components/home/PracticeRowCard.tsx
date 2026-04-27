@@ -124,8 +124,8 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
   };
 
   const handleActivate = () => {
-    // Для "Программирование успеха" — только переход, без анимаций/тогглов
-    if (id === "self-prog") {
+    // Для разделов с собственным экраном — только переход, без анимаций/тогглов
+    if (id === "self-prog" || id === "charge") {
       onToggle(id, null);
       return;
     }
