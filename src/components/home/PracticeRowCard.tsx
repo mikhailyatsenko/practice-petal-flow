@@ -124,13 +124,8 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
   };
 
   const handleActivate = () => {
-    // Для разделов с собственным экраном — только переход, без анимаций/тогглов
-    if (id === "self-prog" || id === "charge") {
-      onToggle(id, null);
-      return;
-    }
-    const origin = !doneToday ? buttonRef.current : tagRef.current;
-    onToggle(id, origin);
+    // Все карточки только переходят на свои экраны — без анимаций тоггла
+    onToggle(id, null);
     playPressEffect();
   };
 
