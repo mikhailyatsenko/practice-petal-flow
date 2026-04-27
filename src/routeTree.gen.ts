@@ -19,7 +19,10 @@ import { Route as AppLibraryRouteImport } from './routes/_app.library'
 import { Route as AppFoursomeRouteImport } from './routes/_app.foursome'
 import { Route as AppCommunityRouteImport } from './routes/_app.community'
 import { Route as AppBuddyRouteImport } from './routes/_app.buddy'
+import { Route as AppPracticeWishesRouteImport } from './routes/_app.practice.wishes'
+import { Route as AppPracticeSkillRouteImport } from './routes/_app.practice.skill'
 import { Route as AppPracticeSelfProgRouteImport } from './routes/_app.practice.self-prog'
+import { Route as AppPracticeEssayRouteImport } from './routes/_app.practice.essay'
 import { Route as AppPracticeChargeRouteImport } from './routes/_app.practice.charge'
 
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -71,9 +74,24 @@ const AppBuddyRoute = AppBuddyRouteImport.update({
   path: '/buddy',
   getParentRoute: () => AppRoute,
 } as any)
+const AppPracticeWishesRoute = AppPracticeWishesRouteImport.update({
+  id: '/practice/wishes',
+  path: '/practice/wishes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPracticeSkillRoute = AppPracticeSkillRouteImport.update({
+  id: '/practice/skill',
+  path: '/practice/skill',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppPracticeSelfProgRoute = AppPracticeSelfProgRouteImport.update({
   id: '/practice/self-prog',
   path: '/practice/self-prog',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPracticeEssayRoute = AppPracticeEssayRouteImport.update({
+  id: '/practice/essay',
+  path: '/practice/essay',
   getParentRoute: () => AppRoute,
 } as any)
 const AppPracticeChargeRoute = AppPracticeChargeRouteImport.update({
@@ -93,7 +111,10 @@ export interface FileRoutesByFullPath {
   '/sections': typeof AppSectionsRoute
   '/wishes': typeof AppWishesRoute
   '/practice/charge': typeof AppPracticeChargeRoute
+  '/practice/essay': typeof AppPracticeEssayRoute
   '/practice/self-prog': typeof AppPracticeSelfProgRoute
+  '/practice/skill': typeof AppPracticeSkillRoute
+  '/practice/wishes': typeof AppPracticeWishesRoute
 }
 export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
@@ -106,7 +127,10 @@ export interface FileRoutesByTo {
   '/wishes': typeof AppWishesRoute
   '/': typeof AppIndexRoute
   '/practice/charge': typeof AppPracticeChargeRoute
+  '/practice/essay': typeof AppPracticeEssayRoute
   '/practice/self-prog': typeof AppPracticeSelfProgRoute
+  '/practice/skill': typeof AppPracticeSkillRoute
+  '/practice/wishes': typeof AppPracticeWishesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -121,7 +145,10 @@ export interface FileRoutesById {
   '/_app/wishes': typeof AppWishesRoute
   '/_app/': typeof AppIndexRoute
   '/_app/practice/charge': typeof AppPracticeChargeRoute
+  '/_app/practice/essay': typeof AppPracticeEssayRoute
   '/_app/practice/self-prog': typeof AppPracticeSelfProgRoute
+  '/_app/practice/skill': typeof AppPracticeSkillRoute
+  '/_app/practice/wishes': typeof AppPracticeWishesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -136,7 +163,10 @@ export interface FileRouteTypes {
     | '/sections'
     | '/wishes'
     | '/practice/charge'
+    | '/practice/essay'
     | '/practice/self-prog'
+    | '/practice/skill'
+    | '/practice/wishes'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/onboarding'
@@ -149,7 +179,10 @@ export interface FileRouteTypes {
     | '/wishes'
     | '/'
     | '/practice/charge'
+    | '/practice/essay'
     | '/practice/self-prog'
+    | '/practice/skill'
+    | '/practice/wishes'
   id:
     | '__root__'
     | '/_app'
@@ -163,7 +196,10 @@ export interface FileRouteTypes {
     | '/_app/wishes'
     | '/_app/'
     | '/_app/practice/charge'
+    | '/_app/practice/essay'
     | '/_app/practice/self-prog'
+    | '/_app/practice/skill'
+    | '/_app/practice/wishes'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -243,11 +279,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBuddyRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/practice/wishes': {
+      id: '/_app/practice/wishes'
+      path: '/practice/wishes'
+      fullPath: '/practice/wishes'
+      preLoaderRoute: typeof AppPracticeWishesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/practice/skill': {
+      id: '/_app/practice/skill'
+      path: '/practice/skill'
+      fullPath: '/practice/skill'
+      preLoaderRoute: typeof AppPracticeSkillRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/practice/self-prog': {
       id: '/_app/practice/self-prog'
       path: '/practice/self-prog'
       fullPath: '/practice/self-prog'
       preLoaderRoute: typeof AppPracticeSelfProgRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/practice/essay': {
+      id: '/_app/practice/essay'
+      path: '/practice/essay'
+      fullPath: '/practice/essay'
+      preLoaderRoute: typeof AppPracticeEssayRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/practice/charge': {
@@ -270,7 +327,10 @@ interface AppRouteChildren {
   AppWishesRoute: typeof AppWishesRoute
   AppIndexRoute: typeof AppIndexRoute
   AppPracticeChargeRoute: typeof AppPracticeChargeRoute
+  AppPracticeEssayRoute: typeof AppPracticeEssayRoute
   AppPracticeSelfProgRoute: typeof AppPracticeSelfProgRoute
+  AppPracticeSkillRoute: typeof AppPracticeSkillRoute
+  AppPracticeWishesRoute: typeof AppPracticeWishesRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -283,7 +343,10 @@ const AppRouteChildren: AppRouteChildren = {
   AppWishesRoute: AppWishesRoute,
   AppIndexRoute: AppIndexRoute,
   AppPracticeChargeRoute: AppPracticeChargeRoute,
+  AppPracticeEssayRoute: AppPracticeEssayRoute,
   AppPracticeSelfProgRoute: AppPracticeSelfProgRoute,
+  AppPracticeSkillRoute: AppPracticeSkillRoute,
+  AppPracticeWishesRoute: AppPracticeWishesRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
