@@ -14,6 +14,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppWishesRouteImport } from './routes/_app.wishes'
 import { Route as AppValuesRouteImport } from './routes/_app.values'
+import { Route as AppSelfImproveRouteImport } from './routes/_app.self-improve'
 import { Route as AppSectionsRouteImport } from './routes/_app.sections'
 import { Route as AppQualitiesRouteImport } from './routes/_app.qualities'
 import { Route as AppPartnerRouteImport } from './routes/_app.partner'
@@ -52,6 +53,11 @@ const AppWishesRoute = AppWishesRouteImport.update({
 const AppValuesRoute = AppValuesRouteImport.update({
   id: '/values',
   path: '/values',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSelfImproveRoute = AppSelfImproveRouteImport.update({
+  id: '/self-improve',
+  path: '/self-improve',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSectionsRoute = AppSectionsRouteImport.update({
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/partner': typeof AppPartnerRoute
   '/qualities': typeof AppQualitiesRoute
   '/sections': typeof AppSectionsRoute
+  '/self-improve': typeof AppSelfImproveRoute
   '/values': typeof AppValuesRoute
   '/wishes': typeof AppWishesRoute
   '/practice/essay': typeof AppPracticeEssayRoute
@@ -162,6 +169,7 @@ export interface FileRoutesByTo {
   '/partner': typeof AppPartnerRoute
   '/qualities': typeof AppQualitiesRoute
   '/sections': typeof AppSectionsRoute
+  '/self-improve': typeof AppSelfImproveRoute
   '/values': typeof AppValuesRoute
   '/wishes': typeof AppWishesRoute
   '/': typeof AppIndexRoute
@@ -185,6 +193,7 @@ export interface FileRoutesById {
   '/_app/partner': typeof AppPartnerRoute
   '/_app/qualities': typeof AppQualitiesRoute
   '/_app/sections': typeof AppSectionsRoute
+  '/_app/self-improve': typeof AppSelfImproveRoute
   '/_app/values': typeof AppValuesRoute
   '/_app/wishes': typeof AppWishesRoute
   '/_app/': typeof AppIndexRoute
@@ -209,6 +218,7 @@ export interface FileRouteTypes {
     | '/partner'
     | '/qualities'
     | '/sections'
+    | '/self-improve'
     | '/values'
     | '/wishes'
     | '/practice/essay'
@@ -229,6 +239,7 @@ export interface FileRouteTypes {
     | '/partner'
     | '/qualities'
     | '/sections'
+    | '/self-improve'
     | '/values'
     | '/wishes'
     | '/'
@@ -251,6 +262,7 @@ export interface FileRouteTypes {
     | '/_app/partner'
     | '/_app/qualities'
     | '/_app/sections'
+    | '/_app/self-improve'
     | '/_app/values'
     | '/_app/wishes'
     | '/_app/'
@@ -302,6 +314,13 @@ declare module '@tanstack/react-router' {
       path: '/values'
       fullPath: '/values'
       preLoaderRoute: typeof AppValuesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/self-improve': {
+      id: '/_app/self-improve'
+      path: '/self-improve'
+      fullPath: '/self-improve'
+      preLoaderRoute: typeof AppSelfImproveRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/sections': {
@@ -422,6 +441,7 @@ interface AppRouteChildren {
   AppPartnerRoute: typeof AppPartnerRoute
   AppQualitiesRoute: typeof AppQualitiesRoute
   AppSectionsRoute: typeof AppSectionsRoute
+  AppSelfImproveRoute: typeof AppSelfImproveRoute
   AppValuesRoute: typeof AppValuesRoute
   AppWishesRoute: typeof AppWishesRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -443,6 +463,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppPartnerRoute: AppPartnerRoute,
   AppQualitiesRoute: AppQualitiesRoute,
   AppSectionsRoute: AppSectionsRoute,
+  AppSelfImproveRoute: AppSelfImproveRoute,
   AppValuesRoute: AppValuesRoute,
   AppWishesRoute: AppWishesRoute,
   AppIndexRoute: AppIndexRoute,
