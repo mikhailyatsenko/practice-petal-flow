@@ -23,7 +23,7 @@ function SectionsScreen() {
           { emoji: "👑", title: "Качества характера",      subtitle: "Развитие 100+ качеств",       price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/qualities" }) },
           { emoji: "🌐", title: "Сферы жизни",                                                       price: "300 ⭐", locked: true },
           { emoji: "🧠", title: "Потребности",                                                       price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/needs" }) },
-          { emoji: "💡", title: "Ценности",                                                          price: "300 ⭐", locked: true },
+          { emoji: "💡", title: "Ценности",                                                          price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/values" }) },
           { emoji: "🤝", title: "Самоулучшение",            subtitle: "30 вопросов для рефлексии",    price: "300 ⭐", locked: true },
           { emoji: "🙏", title: "Дневник благодарности",                                              price: "300 ⭐", locked: true },
           { emoji: "🧭", title: "Дневник решений",                                                    price: "300 ⭐", locked: true },
