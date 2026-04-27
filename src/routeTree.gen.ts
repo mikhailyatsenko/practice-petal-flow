@@ -21,7 +21,6 @@ import { Route as AppQualitiesRouteImport } from './routes/_app.qualities'
 import { Route as AppPartnerRouteImport } from './routes/_app.partner'
 import { Route as AppNeedsRouteImport } from './routes/_app.needs'
 import { Route as AppMistakesRouteImport } from './routes/_app.mistakes'
-import { Route as AppResponsibilityRouteImport } from './routes/_app.responsibility'
 import { Route as AppLibraryRouteImport } from './routes/_app.library'
 import { Route as AppHabitsRouteImport } from './routes/_app.habits'
 import { Route as AppGratitudeRouteImport } from './routes/_app.gratitude'
@@ -93,11 +92,6 @@ const AppNeedsRoute = AppNeedsRouteImport.update({
 const AppMistakesRoute = AppMistakesRouteImport.update({
   id: '/mistakes',
   path: '/mistakes',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppResponsibilityRoute = AppResponsibilityRouteImport.update({
-  id: '/responsibility',
-  path: '/responsibility',
   getParentRoute: () => AppRoute,
 } as any)
 const AppLibraryRoute = AppLibraryRouteImport.update({
@@ -177,7 +171,6 @@ export interface FileRoutesByFullPath {
   '/habits': typeof AppHabitsRoute
   '/library': typeof AppLibraryRoute
   '/mistakes': typeof AppMistakesRoute
-  '/responsibility': typeof AppResponsibilityRoute
   '/needs': typeof AppNeedsRoute
   '/partner': typeof AppPartnerRoute
   '/qualities': typeof AppQualitiesRoute
@@ -203,7 +196,6 @@ export interface FileRoutesByTo {
   '/habits': typeof AppHabitsRoute
   '/library': typeof AppLibraryRoute
   '/mistakes': typeof AppMistakesRoute
-  '/responsibility': typeof AppResponsibilityRoute
   '/needs': typeof AppNeedsRoute
   '/partner': typeof AppPartnerRoute
   '/qualities': typeof AppQualitiesRoute
@@ -232,7 +224,6 @@ export interface FileRoutesById {
   '/_app/habits': typeof AppHabitsRoute
   '/_app/library': typeof AppLibraryRoute
   '/_app/mistakes': typeof AppMistakesRoute
-  '/_app/responsibility': typeof AppResponsibilityRoute
   '/_app/needs': typeof AppNeedsRoute
   '/_app/partner': typeof AppPartnerRoute
   '/_app/qualities': typeof AppQualitiesRoute
@@ -262,7 +253,6 @@ export interface FileRouteTypes {
     | '/habits'
     | '/library'
     | '/mistakes'
-    | '/responsibility'
     | '/needs'
     | '/partner'
     | '/qualities'
@@ -288,7 +278,6 @@ export interface FileRouteTypes {
     | '/habits'
     | '/library'
     | '/mistakes'
-    | '/responsibility'
     | '/needs'
     | '/partner'
     | '/qualities'
@@ -316,7 +305,6 @@ export interface FileRouteTypes {
     | '/_app/habits'
     | '/_app/library'
     | '/_app/mistakes'
-    | '/_app/responsibility'
     | '/_app/needs'
     | '/_app/partner'
     | '/_app/qualities'
@@ -425,13 +413,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMistakesRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/responsibility': {
-      id: '/_app/responsibility'
-      path: '/responsibility'
-      fullPath: '/responsibility'
-      preLoaderRoute: typeof AppResponsibilityRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/library': {
       id: '/_app/library'
       path: '/library'
@@ -535,7 +516,6 @@ interface AppRouteChildren {
   AppHabitsRoute: typeof AppHabitsRoute
   AppLibraryRoute: typeof AppLibraryRoute
   AppMistakesRoute: typeof AppMistakesRoute
-  AppResponsibilityRoute: typeof AppResponsibilityRoute
   AppNeedsRoute: typeof AppNeedsRoute
   AppPartnerRoute: typeof AppPartnerRoute
   AppQualitiesRoute: typeof AppQualitiesRoute
@@ -562,7 +542,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppHabitsRoute: AppHabitsRoute,
   AppLibraryRoute: AppLibraryRoute,
   AppMistakesRoute: AppMistakesRoute,
-  AppResponsibilityRoute: AppResponsibilityRoute,
   AppNeedsRoute: AppNeedsRoute,
   AppPartnerRoute: AppPartnerRoute,
   AppQualitiesRoute: AppQualitiesRoute,
