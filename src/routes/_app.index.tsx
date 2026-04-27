@@ -52,7 +52,7 @@ const initialPractices: PracticeRow[] = [
   { id: "charge",    title: "Зарядка желаний",         streakDays: 12, doneToday: false, history: [], level: 0, progress: 12 },
   { id: "essay",     title: "Жизнь мечты",             streakDays: 0,  doneToday: false, history: [], level: 0, progress: -6 },
   { id: "skill",     title: "Навык успеха",            streakDays: 22, doneToday: false, history: [], level: 2, progress: 22 },
-  { id: "wishes",    title: "Воплощение желаний",      streakDays: 4,  doneToday: false, history: [], level: 0, progress: 4 },
+  { id: "wishes",    title: "Шаг к цели",              streakDays: 4,  doneToday: false, history: [], level: 0, progress: 4 },
 ];
 
 const SELF_PROG_DONE_KEY = "self-prog-done-v2";
@@ -176,7 +176,7 @@ function HomeScreen() {
       return;
     }
     if (id === "wishes") {
-      void navigate({ to: "/practice/wishes" });
+      void navigate({ to: "/practice/step" });
       return;
     }
   };
