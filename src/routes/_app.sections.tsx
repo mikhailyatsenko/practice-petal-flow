@@ -27,7 +27,7 @@ function SectionsScreen() {
           { emoji: "🤝", title: "Самоулучшение",            subtitle: "30 вопросов для рефлексии",    price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/self-improve" }) },
           { emoji: "🙏", title: "Дневник благодарности",                                              price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/gratitude" }) },
           { emoji: "🧭", title: "Дневник решений",                                                    price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/decisions" }) },
-          { emoji: "📝", title: "Дневник ошибок",                                                     price: "300 ⭐", locked: true },
+          { emoji: "📝", title: "Дневник ошибок",                                                     price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/mistakes" }) },
           { emoji: "⚖️", title: "Дневник ответственности",                                            price: "300 ⭐", locked: true },
           { emoji: "📔", title: "Создание дневников",                                                 price: "300 ⭐", locked: true },
           { emoji: "❄️", title: "Заморозка клуба",          subtitle: "Поставить клуб на паузу",     price: "300 ⭐", locked: true },
