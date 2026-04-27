@@ -16,10 +16,12 @@ import { Route as AppWishesRouteImport } from './routes/_app.wishes'
 import { Route as AppValuesRouteImport } from './routes/_app.values'
 import { Route as AppSelfImproveRouteImport } from './routes/_app.self-improve'
 import { Route as AppSectionsRouteImport } from './routes/_app.sections'
+import { Route as AppResponsibilityRouteImport } from './routes/_app.responsibility'
 import { Route as AppQualitiesRouteImport } from './routes/_app.qualities'
 import { Route as AppPartnerRouteImport } from './routes/_app.partner'
 import { Route as AppNeedsRouteImport } from './routes/_app.needs'
 import { Route as AppMistakesRouteImport } from './routes/_app.mistakes'
+import { Route as AppResponsibilityRouteImport } from './routes/_app.responsibility'
 import { Route as AppLibraryRouteImport } from './routes/_app.library'
 import { Route as AppHabitsRouteImport } from './routes/_app.habits'
 import { Route as AppGratitudeRouteImport } from './routes/_app.gratitude'
@@ -68,6 +70,11 @@ const AppSectionsRoute = AppSectionsRouteImport.update({
   path: '/sections',
   getParentRoute: () => AppRoute,
 } as any)
+const AppResponsibilityRoute = AppResponsibilityRouteImport.update({
+  id: '/responsibility',
+  path: '/responsibility',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppQualitiesRoute = AppQualitiesRouteImport.update({
   id: '/qualities',
   path: '/qualities',
@@ -86,6 +93,11 @@ const AppNeedsRoute = AppNeedsRouteImport.update({
 const AppMistakesRoute = AppMistakesRouteImport.update({
   id: '/mistakes',
   path: '/mistakes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppResponsibilityRoute = AppResponsibilityRouteImport.update({
+  id: '/responsibility',
+  path: '/responsibility',
   getParentRoute: () => AppRoute,
 } as any)
 const AppLibraryRoute = AppLibraryRouteImport.update({
@@ -165,9 +177,11 @@ export interface FileRoutesByFullPath {
   '/habits': typeof AppHabitsRoute
   '/library': typeof AppLibraryRoute
   '/mistakes': typeof AppMistakesRoute
+  '/responsibility': typeof AppResponsibilityRoute
   '/needs': typeof AppNeedsRoute
   '/partner': typeof AppPartnerRoute
   '/qualities': typeof AppQualitiesRoute
+  '/responsibility': typeof AppResponsibilityRoute
   '/sections': typeof AppSectionsRoute
   '/self-improve': typeof AppSelfImproveRoute
   '/values': typeof AppValuesRoute
@@ -189,9 +203,11 @@ export interface FileRoutesByTo {
   '/habits': typeof AppHabitsRoute
   '/library': typeof AppLibraryRoute
   '/mistakes': typeof AppMistakesRoute
+  '/responsibility': typeof AppResponsibilityRoute
   '/needs': typeof AppNeedsRoute
   '/partner': typeof AppPartnerRoute
   '/qualities': typeof AppQualitiesRoute
+  '/responsibility': typeof AppResponsibilityRoute
   '/sections': typeof AppSectionsRoute
   '/self-improve': typeof AppSelfImproveRoute
   '/values': typeof AppValuesRoute
@@ -216,9 +232,11 @@ export interface FileRoutesById {
   '/_app/habits': typeof AppHabitsRoute
   '/_app/library': typeof AppLibraryRoute
   '/_app/mistakes': typeof AppMistakesRoute
+  '/_app/responsibility': typeof AppResponsibilityRoute
   '/_app/needs': typeof AppNeedsRoute
   '/_app/partner': typeof AppPartnerRoute
   '/_app/qualities': typeof AppQualitiesRoute
+  '/_app/responsibility': typeof AppResponsibilityRoute
   '/_app/sections': typeof AppSectionsRoute
   '/_app/self-improve': typeof AppSelfImproveRoute
   '/_app/values': typeof AppValuesRoute
@@ -244,9 +262,11 @@ export interface FileRouteTypes {
     | '/habits'
     | '/library'
     | '/mistakes'
+    | '/responsibility'
     | '/needs'
     | '/partner'
     | '/qualities'
+    | '/responsibility'
     | '/sections'
     | '/self-improve'
     | '/values'
@@ -268,9 +288,11 @@ export interface FileRouteTypes {
     | '/habits'
     | '/library'
     | '/mistakes'
+    | '/responsibility'
     | '/needs'
     | '/partner'
     | '/qualities'
+    | '/responsibility'
     | '/sections'
     | '/self-improve'
     | '/values'
@@ -294,9 +316,11 @@ export interface FileRouteTypes {
     | '/_app/habits'
     | '/_app/library'
     | '/_app/mistakes'
+    | '/_app/responsibility'
     | '/_app/needs'
     | '/_app/partner'
     | '/_app/qualities'
+    | '/_app/responsibility'
     | '/_app/sections'
     | '/_app/self-improve'
     | '/_app/values'
@@ -366,6 +390,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSectionsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/responsibility': {
+      id: '/_app/responsibility'
+      path: '/responsibility'
+      fullPath: '/responsibility'
+      preLoaderRoute: typeof AppResponsibilityRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/qualities': {
       id: '/_app/qualities'
       path: '/qualities'
@@ -392,6 +423,13 @@ declare module '@tanstack/react-router' {
       path: '/mistakes'
       fullPath: '/mistakes'
       preLoaderRoute: typeof AppMistakesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/responsibility': {
+      id: '/_app/responsibility'
+      path: '/responsibility'
+      fullPath: '/responsibility'
+      preLoaderRoute: typeof AppResponsibilityRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/library': {
@@ -497,9 +535,11 @@ interface AppRouteChildren {
   AppHabitsRoute: typeof AppHabitsRoute
   AppLibraryRoute: typeof AppLibraryRoute
   AppMistakesRoute: typeof AppMistakesRoute
+  AppResponsibilityRoute: typeof AppResponsibilityRoute
   AppNeedsRoute: typeof AppNeedsRoute
   AppPartnerRoute: typeof AppPartnerRoute
   AppQualitiesRoute: typeof AppQualitiesRoute
+  AppResponsibilityRoute: typeof AppResponsibilityRoute
   AppSectionsRoute: typeof AppSectionsRoute
   AppSelfImproveRoute: typeof AppSelfImproveRoute
   AppValuesRoute: typeof AppValuesRoute
@@ -522,9 +562,11 @@ const AppRouteChildren: AppRouteChildren = {
   AppHabitsRoute: AppHabitsRoute,
   AppLibraryRoute: AppLibraryRoute,
   AppMistakesRoute: AppMistakesRoute,
+  AppResponsibilityRoute: AppResponsibilityRoute,
   AppNeedsRoute: AppNeedsRoute,
   AppPartnerRoute: AppPartnerRoute,
   AppQualitiesRoute: AppQualitiesRoute,
+  AppResponsibilityRoute: AppResponsibilityRoute,
   AppSectionsRoute: AppSectionsRoute,
   AppSelfImproveRoute: AppSelfImproveRoute,
   AppValuesRoute: AppValuesRoute,
