@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronDown, Play, Check } from "lucide-react";
 
-export const Route = createFileRoute("/_app/practice/charge")({
+export const Route = createFileRoute("/_app/practice/wishes-charge")({
   head: () => ({
     meta: [
       { title: "Зарядка желаний — Клуб «Моя жизнь»" },
