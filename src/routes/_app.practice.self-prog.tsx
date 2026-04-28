@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronDown, Play, Mic, Square, Check } from "lucide-react";
-import { setPracticeDone } from "@/lib/practicesStore";
+import { setPracticeDone, useEffectiveProgress } from "@/lib/practicesStore";
 
 export const Route = createFileRoute("/_app/practice/self-prog")({
   head: () => ({
