@@ -777,6 +777,8 @@ function WishesScreen() {
             </div>
           )}
         </div>
+        <HowItWorks tab="goals" />
+        </>
       );
     }
 
