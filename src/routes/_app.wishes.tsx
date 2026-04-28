@@ -11,8 +11,19 @@ import goalMarathon from "@/assets/goal-marathon.jpg";
 import goalLanguage from "@/assets/goal-language.jpg";
 import goalSavings from "@/assets/goal-savings.jpg";
 import { TasksModule, CreateOrEditTaskScreen, type Task as ModuleTask } from "@/components/tasks/TasksModule";
+import { setPracticeDone } from "@/lib/practicesStore";
+
+const VALID_TABS = ["wants", "wishes", "goals", "tasks", "done"] as const;
+type WishesSearch = { tab?: typeof VALID_TABS[number] };
 
 export const Route = createFileRoute("/_app/wishes")({
+  validateSearch: (search: Record<string, unknown>): WishesSearch => {
+    const tab = search.tab;
+    if (typeof tab === "string" && (VALID_TABS as readonly string[]).includes(tab)) {
+      return { tab: tab as WishesSearch["tab"] };
+    }
+    return {};
+  },
   head: () => ({
     meta: [
       { title: "Желания — Клуб «Моя жизнь»" },
@@ -230,7 +241,16 @@ const INITIAL_GOALS: Goal[] = [
 ];
 
 function WishesScreen() {
-  const [activeTab, setActiveTab] = useState<TabId>("wishes");
+  const search = Route.useSearch();
+  const [activeTab, setActiveTab] = useState<TabId>(search.tab ?? "wishes");
+
+  // Реакция на смену search-параметра (например, при переходе из «Шаг к цели»)
+  useEffect(() => {
+    if (search.tab && search.tab !== activeTab) {
+      setActiveTab(search.tab);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.tab]);
   const [transitionState, setTransitionState] = useState<{
     current: TabId;
     next: TabId;
@@ -290,6 +310,24 @@ function WishesScreen() {
 
   // Быстрая постановка задачи из карточки цели
   const [quickTaskGoalId, setQuickTaskGoalId] = useState<string | null>(null);
+
+  // Синхронизация с практикой «Шаг к цели»: как только хотя бы одна задача
+  // выполнена сегодня — отмечаем привычку сделанной (и на главной, и на её странице).
+  useEffect(() => {
+    const doneCount = moduleTasks.filter((t) => t.done).length;
+    if (doneCount < 1) return;
+    try {
+      const d = new Date();
+      const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      localStorage.setItem(
+        "step-done-v1",
+        JSON.stringify({ date: today, count: doneCount }),
+      );
+    } catch {
+      /* ignore */
+    }
+    setPracticeDone("wishes", true);
+  }, [moduleTasks]);
 
   useEffect(() => {
     const onTouchMove = (event: TouchEvent) => {
