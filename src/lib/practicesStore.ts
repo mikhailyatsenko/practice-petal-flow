@@ -176,7 +176,9 @@ const PRACTICE_LS_KEYS = [
   "self-prog-done-v2",
   "charge-done-v1",
   "essay-done-v1",
+  "essay-today-added-v1",
   "skill-done-v1",
+  "skill-today-v1",
   "step-done-v1",
 ];
 
@@ -248,6 +250,7 @@ export function computeEffective(id: PracticeId, doneToday: boolean) {
     if (progress <= 0) progress = 1;
     else progress = progress + 1;
   }
+  const rawProgress = progress;
   const streakDays = Math.max(0, progress);
   let level: number;
   if (progress <= 0) {
@@ -257,7 +260,7 @@ export function computeEffective(id: PracticeId, doneToday: boolean) {
     // если есть хоть один зелёный кружок.
     level = Math.max(1, BASE_LEVEL[id]);
   }
-  return { progress, streakDays, level };
+  return { progress, rawProgress, streakDays, level };
 }
 
 // Кэш снапшотов effective-значений по id, чтобы useSyncExternalStore
