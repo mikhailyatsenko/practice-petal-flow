@@ -303,6 +303,7 @@ export function advanceToNextDay() {
   state = {
     ...state,
     progressOffset: nextOffset,
+    charges: {},
     done: {
       "self-prog": false,
       charge: false,
