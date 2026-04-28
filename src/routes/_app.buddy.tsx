@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ChevronRight, BookOpen, Play, Zap, MessageCircle, Check, X } from "lucide-react";
+import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, MessageCircle, Check, X } from "lucide-react";
 
 export const Route = createFileRoute("/_app/buddy")({
   validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" } => {
@@ -163,6 +163,8 @@ function PageHeader({ title, onBack, badge }: { title: string; onBack: () => voi
 
 function NoBuddy({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   const navigate = useNavigate();
+  const [howOpen, setHowOpen] = useState(false);
+  const [howTab, setHowTab] = useState<"text" | "video">("text");
   return (
     <div className="px-4 pb-6">
       <PageHeader title="Бадди" onBack={() => navigate({ to: "/community" })} />
@@ -221,15 +223,90 @@ function NoBuddy({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         <FormatRow time="20 мин" text="Вместе ставите задачи на неделю" />
       </div>
 
-      {/* How it works */}
-      <button
-        onClick={() => onNavigate({ name: "instructions" })}
-        className="tap mt-4 w-full bg-card hairline shadow-card rounded-2xl px-4 py-3.5 flex items-center gap-3"
-      >
-        <BookOpen className="h-5 w-5 text-muted-foreground" />
-        <span className="text-[14px] font-medium flex-1 text-left">Как работает раздел?</span>
-        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-      </button>
+      {/* How it works — inline collapsible */}
+      <section className="mt-4">
+        <button
+          onClick={() => setHowOpen((v) => !v)}
+          className="tap w-full bg-card hairline shadow-card rounded-2xl px-4 py-3.5 flex items-center gap-3"
+        >
+          <span className="text-[18px] font-bold leading-none" style={{ color: "#E53935" }}>?</span>
+          <span className="text-[14px] font-medium flex-1 text-left">Как работает раздел</span>
+          <ChevronDown
+            className="h-5 w-5 text-muted-foreground transition-transform"
+            style={{ transform: howOpen ? "rotate(180deg)" : "none" }}
+          />
+        </button>
+
+        {howOpen && (
+          <div className="mt-3 animate-fade-up">
+            <div className="flex rounded-xl mb-3" style={{ background: "#f0ebe2", padding: 4 }}>
+              {([
+                { k: "text", label: "📖 Текст" },
+                { k: "video", label: "▶️ Видео" },
+              ] as const).map((t) => {
+                const active = howTab === t.k;
+                return (
+                  <button
+                    key={t.k}
+                    onClick={() => setHowTab(t.k)}
+                    className="tap flex-1 rounded-lg py-2 text-[13px] font-medium transition-colors"
+                    style={{
+                      background: active ? "linear-gradient(135deg, #FFB300, #FF6D00)" : "transparent",
+                      color: active ? "#fff" : "#6b6356",
+                    }}
+                  >
+                    {t.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {howTab === "text" ? (
+              <div className="space-y-3">
+                {INSTRUCTION_CARDS.map((c, i) => (
+                  <div key={i} className="bg-card hairline shadow-card rounded-2xl p-4 animate-fade-up">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-[20px]">{c.emoji}</span>
+                      <h3 className="text-[14px] font-bold">{c.title}</h3>
+                    </div>
+                    <p className="text-[13px] text-foreground/85 whitespace-pre-line" style={{ lineHeight: 1.65 }}>
+                      {c.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <div
+                  className="relative w-full rounded-[18px] overflow-hidden flex items-center justify-center flex-col"
+                  style={{ aspectRatio: "16 / 9", background: "#1a1a1a" }}
+                >
+                  <button
+                    className="tap rounded-full flex items-center justify-center"
+                    style={{
+                      width: 64,
+                      height: 64,
+                      background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                      boxShadow: "0 8px 28px rgba(255,109,0,0.55)",
+                    }}
+                    aria-label="Воспроизвести"
+                  >
+                    <Play className="h-7 w-7 text-white" fill="#fff" />
+                  </button>
+                  <p className="mt-4 text-[14px] font-bold text-white">Видеоинструкция</p>
+                  <p className="text-[12px] text-white/50">Бадди · ~5 мин</p>
+                </div>
+                <div className="rounded-2xl p-4" style={{ background: "#fff8ee", border: "1px solid #ffe0a3" }}>
+                  <p className="text-[13px] text-foreground/85" style={{ lineHeight: 1.55 }}>
+                    В видео подробно объясняется как работает раздел, как найти хорошего бадди, правила созвонов и
+                    как получить максимум от партнёрства.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
