@@ -243,7 +243,7 @@ function EssayScreen() {
           <div
             ref={essayBoxRef}
             style={{
-              maxHeight: 280,
+              maxHeight: 1400,
               overflowY: "auto",
               fontSize: 14,
               lineHeight: 1.8,
