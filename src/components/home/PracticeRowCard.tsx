@@ -15,6 +15,7 @@ export interface PracticeRow {
 interface PracticeRowCardProps {
   practice: PracticeRow;
   onToggle: (id: string, origin?: HTMLElement | null) => void;
+  onMarkDone?: (id: string) => void;
 }
 
 const LEVELS: Record<string, string[]> = {
@@ -106,7 +107,7 @@ const dayWord = (n: number) => {
   return "дней";
 };
 
-export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
+export function PracticeRowCard({ practice, onToggle, onMarkDone }: PracticeRowCardProps) {
   const { id, title, streakDays, doneToday, level, progress } = practice;
   const cardRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLSpanElement>(null);
@@ -167,6 +168,21 @@ export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
           {!doneToday ? (
             <div
               ref={buttonRef}
+              role="button"
+              tabIndex={0}
+              onClick={(e) => {
+                e.stopPropagation();
+                onMarkDone?.(id);
+                playPressEffect();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onMarkDone?.(id);
+                  playPressEffect();
+                }
+              }}
               style={{
                 background: "linear-gradient(135deg,#FFB300,#FF6D00)",
                 borderRadius: 20,
