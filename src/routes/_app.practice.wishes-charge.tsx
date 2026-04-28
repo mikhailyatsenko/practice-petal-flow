@@ -192,33 +192,35 @@ function ChargeScreen() {
         </p>
         <div className="space-y-2">
           <ChecklistItem
-            done={cond1Done}
+            done={doneToday || cond1Done}
             text="Поставить лайк каждому желанию и цели"
-            counter={`${charged} / ${total}`}
+            counter={doneToday && !cond1Done ? "✓" : `${charged} / ${total}`}
           />
           <ChecklistItem
-            done={cond2Done}
+            done={doneToday || cond2Done}
             text="Одно желание или цель зарядить на 100%"
-            counter={`${maxPercent}%`}
+            counter={doneToday && !cond2Done ? "✓" : `${maxPercent}%`}
           />
         </div>
       </section>
 
-      {/* Напоминание про осознанные лайки */}
-      <div
-        className="mt-4"
-        style={{
-          background: "#fff3e0",
-          border: "1.5px solid #FFB300",
-          borderRadius: 12,
-          padding: "12px 14px",
-          fontSize: 13,
-          color: "#92400e",
-          lineHeight: 1.6,
-        }}
-      >
-        ☝️ <strong>Важно</strong>: не ставь лайки механически. Сначала посмотри на желание, почувствуй эмоцию — радость, гордость, ощущение что это уже твоё. И только после этого ставь лайк.
-      </div>
+      {/* Напоминание про осознанные лайки — скрываем после выполнения */}
+      {!doneToday && (
+        <div
+          className="mt-4"
+          style={{
+            background: "#fff3e0",
+            border: "1.5px solid #FFB300",
+            borderRadius: 12,
+            padding: "12px 14px",
+            fontSize: 13,
+            color: "#92400e",
+            lineHeight: 1.6,
+          }}
+        >
+          ☝️ <strong>Важно</strong>: не ставь лайки механически. Сначала посмотри на желание, почувствуй эмоцию — радость, гордость, ощущение что это уже твоё. И только после этого ставь лайк.
+        </div>
+      )}
 
       {/* 6. Кнопка действия / статус выполнения.
           Когда оба условия выполнены — практика засчитывается автоматически,
