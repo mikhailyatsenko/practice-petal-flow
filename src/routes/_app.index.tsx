@@ -46,10 +46,10 @@ const initialPathSteps: PathStep[] = [
   { id: "s7", label: "День 7 — все 5 практик", done: false },
 ];
 
-// Все практики стартуют как «не сделано» — переходят на свои экраны
+// Все практики стартуют как «не сделано», кроме «Зарядки желаний» — она для демо уже выполнена
 const initialPractices: PracticeRow[] = [
   { id: "self-prog", title: "Программирование успеха", streakDays: 17, doneToday: false, history: [], level: 1, progress: 17 },
-  { id: "charge",    title: "Зарядка желаний",         streakDays: 12, doneToday: false, history: [], level: 0, progress: 12 },
+  { id: "charge",    title: "Зарядка желаний",         streakDays: 12, doneToday: true,  history: [], level: 0, progress: 12 },
   { id: "essay",     title: "Жизнь мечты",             streakDays: 0,  doneToday: false, history: [], level: 0, progress: -6 },
   { id: "skill",     title: "Навык успеха",            streakDays: 22, doneToday: false, history: [], level: 2, progress: 22 },
   { id: "wishes",    title: "Шаг к цели",              streakDays: 4,  doneToday: false, history: [], level: 0, progress: 4 },
