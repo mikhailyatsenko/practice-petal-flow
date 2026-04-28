@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, MoreHorizontal, Check } from "lucide-react";
+import { MoreHorizontal, Check } from "lucide-react";
+import { BackButton } from "@/components/layout/BackButton";
 
 export const Route = createFileRoute("/_app/values")({
   head: () => ({
@@ -265,10 +266,7 @@ function ValuesScreen() {
 function Header({ title, onBack, backLabel = "Назад" }: { title: string; onBack: () => void; backLabel?: string }) {
   return (
     <div className="sticky top-0 z-20 flex items-center justify-between border-b border-black/5 bg-white px-3 py-3">
-      <button onClick={onBack} className="flex items-center gap-1 text-[14px] text-[#FF6D00]">
-        <ArrowLeft size={18} />
-        {backLabel}
-      </button>
+      <BackButton onClick={onBack} label={backLabel} />
       <div className="text-[15px] font-semibold text-[#1a1a1a]">{title}</div>
       <div className="w-[70px]" />
     </div>

@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, MoreVertical } from "lucide-react";
+import { MoreVertical } from "lucide-react";
+import { BackButton } from "@/components/layout/BackButton";
 
 export const Route = createFileRoute("/_app/responsibility")({
   head: () => ({
@@ -246,13 +247,7 @@ function Header({
 }) {
   return (
     <div className="flex items-center gap-2 py-3">
-      <button
-        onClick={onBack}
-        className="p-2 -ml-2"
-        aria-label="Назад"
-      >
-        <ArrowLeft size={22} color="#1a1a1a" />
-      </button>
+      <BackButton onClick={onBack} />
       <h1 className="flex-1 text-center text-[17px] font-bold pr-8" style={{ color: "#1a1a1a" }}>
         {title}
       </h1>

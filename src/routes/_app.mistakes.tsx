@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+
+import { BackButton } from "@/components/layout/BackButton";
 
 export const Route = createFileRoute("/_app/mistakes")({
   head: () => ({
@@ -209,13 +210,7 @@ function MistakesScreen() {
 function Header({ title, onBack }: { title: string; onBack: () => void }) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 44 }}>
-      <button
-        onClick={onBack}
-        aria-label="Назад"
-        style={{ background: "transparent", border: 0, padding: 8, color: "#111", cursor: "pointer" }}
-      >
-        <ArrowLeft size={22} />
-      </button>
+      <BackButton onClick={onBack} />
       <div style={{ fontSize: 17, fontWeight: 600 }}>{title}</div>
       <div style={{ width: 38 }} />
     </div>

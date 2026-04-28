@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Calendar, Globe, MessageCircle, Users } from "lucide-react";
+import { BackButton } from "@/components/layout/BackButton";
 
 export const Route = createFileRoute("/_app/foursome")({
   validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "locked" } => {
@@ -169,13 +170,7 @@ const LIME_GRADIENT = "linear-gradient(135deg, #8BC34A, #4CAF50)";
 function PageHeader({ title, onBack, badge }: { title: string; onBack: () => void; badge?: string }) {
   return (
     <div className="flex items-center gap-2 px-1 pt-2 pb-3">
-      <button
-        onClick={onBack}
-        className="tap h-9 w-9 -ml-1 rounded-full flex items-center justify-center hover:bg-secondary"
-        aria-label="Назад"
-      >
-        <ArrowLeft className="h-5 w-5" />
-      </button>
+      <BackButton onClick={onBack} />
       <h1 className="text-[18px] font-semibold leading-tight flex-1">{title}</h1>
       {badge && (
         <span

@@ -123,7 +123,7 @@ function SelfProgScreen() {
       <div className="relative flex items-center mb-3 min-h-[36px]">
         <button
           onClick={() => navigate({ to: "/" })}
-          className="tap inline-flex items-center gap-1 text-[14px] font-medium text-[#FF6D00]"
+          className="tap inline-flex items-center gap-1 text-[15px] font-normal text-[#FF6D00]"
         >
           <ChevronLeft className="h-5 w-5" /> Главная
         </button>
@@ -461,7 +461,7 @@ function AffirmationEditor({
         <div className="relative flex items-center mb-3 min-h-[36px]">
           <button
             onClick={onClose}
-            className="tap inline-flex items-center gap-1 text-[14px] font-medium text-[#FF6D00]"
+            className="tap inline-flex items-center gap-1 text-[15px] font-normal text-[#FF6D00]"
           >
             <ChevronLeft className="h-5 w-5" /> Назад
           </button>
