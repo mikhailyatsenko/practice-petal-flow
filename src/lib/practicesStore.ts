@@ -88,10 +88,34 @@ export function usePracticeDone(id: PracticeId): boolean {
 // ----- charges (зарядка желаний / целей) -----
 
 export function bumpCharge(id: string) {
-  const next = (state.charges[id] ?? 0) + 1;
-  state = { ...state, charges: { ...state.charges, [id]: next } };
+  const current = state.charges[id] ?? 0;
+  // Кап на 5 тапов в день (один круг = один день, второй круг в тот же день нельзя).
+  if (current >= 5) return;
+  const next = current + 1;
+  // На первом тапе нового дня инкрементируем счётчик дней (бейдж 1/2/3...).
+  const nextDays =
+    current === 0
+      ? { ...state.daysCount, [id]: (state.daysCount[id] ?? 0) + 1 }
+      : state.daysCount;
+  state = {
+    ...state,
+    charges: { ...state.charges, [id]: next },
+    daysCount: nextDays,
+  };
   maybeAutoCompleteCharge();
   emit();
+}
+
+export function getDaysCountFor(id: string): number {
+  return state.daysCount[id] ?? 0;
+}
+
+export function useDaysCount(id: string): number {
+  return useSyncExternalStore(
+    subscribe,
+    () => state.daysCount[id] ?? 0,
+    () => state.daysCount[id] ?? 0,
+  );
 }
 
 export function setChargeTotal(total: number) {
