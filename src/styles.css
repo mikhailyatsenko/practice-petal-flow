@@ -124,6 +124,10 @@
     overflow-x: hidden;
     touch-action: pan-y;
     overscroll-behavior-x: none;
+    /* iOS Safari: prevent accidental text selection / callout when navigating between screens */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
   }
 
   body {
@@ -131,6 +135,17 @@
     color: var(--color-foreground);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "SF Pro Display", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
+  }
+
+  /* Allow text selection only inside form controls and explicitly opted-in content */
+  input,
+  textarea,
+  select,
+  [contenteditable="true"],
+  .selectable {
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
   }
 
   button { -webkit-tap-highlight-color: transparent; }
