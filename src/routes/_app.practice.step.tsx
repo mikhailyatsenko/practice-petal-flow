@@ -179,32 +179,29 @@ function StepScreen() {
       {/* Что нужно сделать */}
       <section className="mt-3">
         <div
-          className="flex items-center gap-3"
+          className="rounded-2xl px-4 py-3 flex items-center gap-3"
           style={{
-            background: doneToday ? "#dcfce7" : "#FAF6EF",
-            borderRadius: 12,
-            padding: "12px 14px",
+            background: doneToday ? "#dcfce7" : "#fff",
+            border: doneToday ? "1px solid #bbf7d0" : "1px solid #ede8df",
           }}
         >
           <div
-            className="shrink-0 rounded-full flex items-center justify-center"
+            className="h-7 w-7 rounded-full flex items-center justify-center shrink-0"
             style={{
-              width: 22,
-              height: 22,
-              background: doneToday ? "#16a34a" : "transparent",
-              border: doneToday ? "none" : "1.5px solid #d1d5db",
-              color: "#fff",
-              fontSize: 13,
+              background: doneToday ? "#16a34a" : "#f0ebe2",
+              color: doneToday ? "#fff" : "#9ca3af",
+              fontSize: 14,
+              fontWeight: 700,
               lineHeight: 1,
             }}
           >
-            {doneToday ? "✓" : ""}
+            ✓
           </div>
           <p
-            className="text-[14px] leading-snug"
+            className="flex-1 text-[14px] leading-snug"
             style={{
-              color: doneToday ? "#15803d" : "#1a1a1a",
-              fontWeight: doneToday ? 600 : 400,
+              color: doneToday ? "#15803d" : "#1f2937",
+              fontWeight: doneToday ? 600 : 500,
             }}
           >
             Выполни хотя бы 1 задачу к любой из своих целей
