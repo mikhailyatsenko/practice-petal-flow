@@ -1951,7 +1951,7 @@ function GoalCard({
         </div>
 
         <div className="mt-4 flex items-center justify-between gap-3">
-          <DesireCharge level={count} onTap={onInspire} mode={readOnly ? "proud" : "inspire"} />
+          <DesireCharge level={count} onTap={onInspire} mode={readOnly ? "proud" : "inspire"} id={readOnly ? undefined : goal.id} />
           {!readOnly && (
             <button
               onClick={onOpenTasks}
