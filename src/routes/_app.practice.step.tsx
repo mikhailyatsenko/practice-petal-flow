@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronDown, Play } from "lucide-react";
+import { setPracticeDone } from "@/lib/practicesStore";
 
 export const Route = createFileRoute("/_app/practice/step")({
   head: () => ({
@@ -57,8 +58,10 @@ function StepScreen() {
       if (raw) {
         const obj = JSON.parse(raw) as { date: string; count: number };
         if (obj.date === todayStr()) {
-          setDoneToday(obj.count >= 1);
+          const isDone = obj.count >= 1;
+          setDoneToday(isDone);
           setTodayCount(obj.count);
+          if (isDone) setPracticeDone("wishes", true);
         }
       }
       const h = localStorage.getItem(HISTORY_KEY);

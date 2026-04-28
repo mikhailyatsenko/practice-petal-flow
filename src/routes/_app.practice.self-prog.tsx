@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronDown, Play } from "lucide-react";
+import { setPracticeDone } from "@/lib/practicesStore";
 
 export const Route = createFileRoute("/_app/practice/self-prog")({
   head: () => ({
@@ -78,7 +79,10 @@ function SelfProgScreen() {
       const a = localStorage.getItem(STORAGE_KEY);
       if (a) setAffirmation(a);
       const d = localStorage.getItem(DONE_KEY);
-      if (d === todayStr()) setDoneToday(true);
+      if (d === todayStr()) {
+        setDoneToday(true);
+        setPracticeDone("self-prog", true);
+      }
     } catch {
       /* ignore */
     }
@@ -91,6 +95,7 @@ function SelfProgScreen() {
   const handleSpeak = () => {
     const next = !doneToday;
     setDoneToday(next);
+    setPracticeDone("self-prog", next);
     try {
       if (next) {
         localStorage.setItem(DONE_KEY, todayStr());

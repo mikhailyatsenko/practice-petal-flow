@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronDown, Play, Check } from "lucide-react";
+import { setPracticeDone } from "@/lib/practicesStore";
 
 export const Route = createFileRoute("/_app/practice/wishes-charge")({
   head: () => ({
@@ -53,7 +54,10 @@ function ChargeScreen() {
   useEffect(() => {
     try {
       const d = localStorage.getItem(DONE_KEY);
-      if (d === todayStr()) setDoneToday(true);
+      if (d === todayStr()) {
+        setDoneToday(true);
+        setPracticeDone("charge", true);
+      }
     } catch {
       /* ignore */
     }
@@ -70,6 +74,7 @@ function ChargeScreen() {
   const handleMarkDone = () => {
     if (!bothDone || doneToday) return;
     setDoneToday(true);
+    setPracticeDone("charge", true);
     try {
       localStorage.setItem(DONE_KEY, todayStr());
     } catch {

@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronDown, Play, Plus, X } from "lucide-react";
+import { setPracticeDone } from "@/lib/practicesStore";
 
 export const Route = createFileRoute("/_app/practice/skill")({
   head: () => ({
@@ -67,6 +68,7 @@ function SkillScreen() {
       }
       if (localStorage.getItem(DONE_KEY) === todayStr()) {
         setDoneToday(true);
+        setPracticeDone("skill", true);
       }
       const h = localStorage.getItem(HISTORY_KEY);
       if (h) {
@@ -110,6 +112,7 @@ function SkillScreen() {
   const handleCount = () => {
     if (items.length < 1 || doneToday) return;
     setDoneToday(true);
+    setPracticeDone("skill", true);
     try {
       localStorage.setItem(DONE_KEY, todayStr());
       // Сохранить в историю

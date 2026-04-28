@@ -11,6 +11,7 @@ import {
   Confetti,
   StatusRings,
 } from "@/components/home/StatEffects";
+import { usePracticesDone, setPracticeDone, type PracticeId } from "@/lib/practicesStore";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
@@ -46,10 +47,10 @@ const initialPathSteps: PathStep[] = [
   { id: "s7", label: "День 7 — все 5 практик", done: false },
 ];
 
-// Все практики стартуют как «не сделано», кроме «Зарядки желаний» — она для демо уже выполнена
+// База практик. Поле doneToday здесь — заглушка; реальный статус берётся из practicesStore.
 const initialPractices: PracticeRow[] = [
   { id: "self-prog", title: "Программирование успеха", streakDays: 17, doneToday: false, history: [], level: 1, progress: 17 },
-  { id: "charge",    title: "Зарядка желаний",         streakDays: 12, doneToday: true,  history: [], level: 0, progress: 12 },
+  { id: "charge",    title: "Зарядка желаний",         streakDays: 12, doneToday: false, history: [], level: 0, progress: 12 },
   { id: "essay",     title: "Жизнь мечты",             streakDays: 0,  doneToday: false, history: [], level: 0, progress: -6 },
   { id: "skill",     title: "Навык успеха",            streakDays: 22, doneToday: false, history: [], level: 2, progress: 22 },
   { id: "wishes",    title: "Шаг к цели",              streakDays: 4,  doneToday: false, history: [], level: 0, progress: 4 },
@@ -82,7 +83,11 @@ function HomeScreen() {
   const [stars, setStars]         = useState(970);
   const [hit, setHit]             = useState(2);
   const [insurance, setInsurance] = useState(0);
-  const [practices, setPractices] = useState<PracticeRow[]>(initialPractices);
+  const doneMap = usePracticesDone();
+  const practices = useMemo<PracticeRow[]>(
+    () => initialPractices.map((p) => ({ ...p, doneToday: doneMap[p.id as PracticeId] ?? false })),
+    [doneMap],
+  );
   const [pathSteps]               = useState<PathStep[]>(initialPathSteps);
   const [openStat, setOpenStat]   = useState<StatKey | null>(null);
   const [flyingStars, setFlyingStars] = useState<FlyingStar[]>([]);
@@ -182,9 +187,7 @@ function HomeScreen() {
   };
 
   const markDone = (id: string) => {
-    setPractices((prev) =>
-      prev.map((x) => (x.id === id ? { ...x, doneToday: true } : x)),
-    );
+    setPracticeDone(id as PracticeId, true);
   };
 
   // Все карточки всегда стартуют как "не сделано" — сохранённое состояние не читаем

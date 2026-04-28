@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronDown, Play } from "lucide-react";
+import { setPracticeDone } from "@/lib/practicesStore";
 
 export const Route = createFileRoute("/_app/practice/essay")({
   head: () => ({
@@ -82,6 +83,7 @@ function EssayScreen() {
       const d = localStorage.getItem(DONE_KEY);
       if (d === todayStr()) {
         setDoneToday(true);
+        setPracticeDone("essay", true);
         const n = parseInt(localStorage.getItem(TODAY_ADDED_KEY) || "0", 10);
         if (!Number.isNaN(n)) setTodayAdded(n);
       }
@@ -114,6 +116,7 @@ function EssayScreen() {
     setEssay(finalText);
     setTrimmedNotice(trimmed);
     setDoneToday(true);
+    setPracticeDone("essay", true);
     setTodayAdded(newText.length);
     setDraft("");
     try {
