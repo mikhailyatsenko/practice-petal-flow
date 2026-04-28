@@ -187,9 +187,7 @@ function HomeScreen() {
   };
 
   const markDone = (id: string) => {
-    setPractices((prev) =>
-      prev.map((x) => (x.id === id ? { ...x, doneToday: true } : x)),
-    );
+    setPracticeDone(id as PracticeId, true);
   };
 
   // Все карточки всегда стартуют как "не сделано" — сохранённое состояние не читаем
