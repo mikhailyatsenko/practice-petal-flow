@@ -163,6 +163,8 @@ function PageHeader({ title, onBack, badge }: { title: string; onBack: () => voi
 
 function NoBuddy({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   const navigate = useNavigate();
+  const [howOpen, setHowOpen] = useState(false);
+  const [howTab, setHowTab] = useState<"text" | "video">("text");
   return (
     <div className="px-4 pb-6">
       <PageHeader title="Бадди" onBack={() => navigate({ to: "/community" })} />
