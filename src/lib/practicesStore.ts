@@ -85,6 +85,14 @@ export function getChargeFor(id: string): number {
   return state.charges[id] ?? 0;
 }
 
+export function useChargesMap(): ChargesMap {
+  return useSyncExternalStore(
+    subscribe,
+    () => state.charges,
+    () => state.charges,
+  );
+}
+
 export function useCharge(id: string): number {
   return useSyncExternalStore(
     subscribe,
