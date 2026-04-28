@@ -11,11 +11,17 @@ type DoneMap = Record<PracticeId, boolean>;
 // 5 тапов = 100% (см. DesireCharge: inRound = ((total-1) % 5) + 1).
 type ChargesMap = Record<string, number>;
 
+// Смещение прогресса по дням относительно базовых значений на «Дне 1».
+// Каждое нажатие «Следующий день» увеличивает offset для всех практик,
+// которые были отмечены сделанными в этот день.
+type ProgressOffsetMap = Record<PracticeId, number>;
+
 interface StoreState {
   done: DoneMap;
   charges: ChargesMap;
   // Сколько всего объектов (желаний + целей), которые надо «зарядить» (=поставить лайк).
   totalItems: number;
+  progressOffset: ProgressOffsetMap;
 }
 
 let state: StoreState = {
@@ -28,6 +34,13 @@ let state: StoreState = {
   },
   charges: {},
   totalItems: 0,
+  progressOffset: {
+    "self-prog": 0,
+    charge: 0,
+    essay: 0,
+    skill: 0,
+    wishes: 0,
+  },
 };
 
 const listeners = new Set<() => void>();
