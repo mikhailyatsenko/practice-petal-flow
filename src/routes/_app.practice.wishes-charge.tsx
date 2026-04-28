@@ -220,35 +220,40 @@ function ChargeScreen() {
         ☝️ <strong>Важно</strong>: не ставь лайки механически. Сначала посмотри на желание, почувствуй эмоцию — радость, гордость, ощущение что это уже твоё. И только после этого ставь лайк.
       </div>
 
-      {/* 6. Кнопка перехода (если ещё не выполнено).
+      {/* 6. Кнопка действия / статус выполнения.
           Когда оба условия выполнены — практика засчитывается автоматически,
-          статус виден в верхнем зелёном блоке «Выполнено сегодня». */}
-      {!bothDone && (
-        <section className="mt-4">
-          <button
-            onClick={goToWishes}
-            className="tap w-full"
-            style={{
-              background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-              color: "#fff",
-              fontWeight: 700,
-              borderRadius: 16,
-              padding: 16,
-              fontSize: 15,
-              cursor: "pointer",
-              boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
-            }}
-          >
-            ❤️ Перейти к желаниям и зарядиться
-          </button>
+          и кнопка превращается в серый бейдж «✅ Выполнено сегодня». */}
+      <section className="mt-4">
+        <button
+          onClick={doneToday ? undefined : goToWishes}
+          disabled={doneToday}
+          className="tap w-full"
+          style={{
+            background: doneToday
+              ? "#d1d5db"
+              : "linear-gradient(135deg, #FFB300, #FF6D00)",
+            color: doneToday ? "#6b7280" : "#fff",
+            fontWeight: 700,
+            borderRadius: 16,
+            padding: 16,
+            fontSize: 15,
+            cursor: doneToday ? "default" : "pointer",
+            boxShadow: doneToday ? "none" : "0 4px 14px rgba(255,109,0,0.35)",
+          }}
+        >
+          {doneToday
+            ? "✅ Выполнено сегодня"
+            : "❤️ Перейти к желаниям и зарядиться"}
+        </button>
+        {!doneToday && (
           <p
             className="mt-2 text-[12px] leading-snug px-1 text-center"
             style={{ color: "#9ca3af" }}
           >
             Поставь лайки всем желаниям и целям — одно зарядить на 100%
           </p>
-        </section>
-      )}
+        )}
+      </section>
 
       {/* 8. Как это работает */}
       <section className="mt-4">
