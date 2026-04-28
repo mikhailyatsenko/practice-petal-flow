@@ -107,7 +107,7 @@ const dayWord = (n: number) => {
   return "дней";
 };
 
-export function PracticeRowCard({ practice, onToggle }: PracticeRowCardProps) {
+export function PracticeRowCard({ practice, onToggle, onMarkDone }: PracticeRowCardProps) {
   const { id, title, streakDays, doneToday, level, progress } = practice;
   const cardRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLSpanElement>(null);
