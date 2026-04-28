@@ -665,6 +665,7 @@ const INSTRUCTION_CARDS = [
 function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () => void }) {
   const [day, setDay] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
+  const [extra, setExtra] = useState("");
   const valid = !!day && !!time;
 
   return (
