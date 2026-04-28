@@ -74,7 +74,8 @@ function EssayScreen() {
   const [howTab, setHowTab] = useState<"text" | "video">("text");
 
   const essayBoxRef = useRef<HTMLDivElement>(null);
-  const { streakDays } = useEffectiveProgress("essay");
+  const { streakDays, rawProgress } = useEffectiveProgress("essay");
+  const isNegative = rawProgress < 0;
 
   useEffect(() => {
     try {
@@ -203,19 +204,23 @@ function EssayScreen() {
         <div className="my-3 h-px" style={{ background: "#ede8df" }} />
 
         <div className="flex items-center gap-3">
-          <span style={{ fontSize: 26, lineHeight: 1 }}>🔥</span>
+          <span style={{ fontSize: 26, lineHeight: 1 }}>
+            {isNegative ? "💔" : "🔥"}
+          </span>
           <div className="min-w-0">
             <p
               className="text-[11px] font-medium uppercase tracking-wider"
               style={{ color: "#9ca3af" }}
             >
-              Серия
+              {isNegative ? "Пропуски" : "Серия"}
             </p>
             <p
               className="text-[20px] font-bold leading-tight"
-              style={{ color: "#FF6D00" }}
+              style={{ color: isNegative ? "#ef4444" : "#FF6D00" }}
             >
-              {streakDays} дней подряд
+              {isNegative
+                ? `${rawProgress} дней пропущено`
+                : `${streakDays} дней подряд`}
             </p>
           </div>
         </div>
