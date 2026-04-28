@@ -181,22 +181,6 @@ function HomeScreen() {
     }
   };
 
-  const markPracticeDone = (id: string, _origin?: HTMLElement | null) => {
-    void _origin;
-    setPractices((prev) =>
-      prev.map((p) => {
-        if (p.id !== id || p.doneToday) return p;
-        const newProgress = p.progress < 0 ? 1 : p.progress + 1;
-        return {
-          ...p,
-          doneToday: true,
-          streakDays: p.streakDays + 1,
-          progress: newProgress,
-        };
-      })
-    );
-  };
-
 
   // Все карточки всегда стартуют как "не сделано" — сохранённое состояние не читаем
   void SELF_PROG_DONE_KEY;
@@ -395,7 +379,7 @@ function HomeScreen() {
         <div className="space-y-2">
           {practices.map((p) => (
             <div key={p.id} data-practice-card data-done={p.doneToday ? "1" : "0"}>
-              <PracticeRowCard practice={p} onToggle={togglePractice} onMarkDone={markPracticeDone} />
+              <PracticeRowCard practice={p} onToggle={togglePractice} />
             </div>
           ))}
         </div>
