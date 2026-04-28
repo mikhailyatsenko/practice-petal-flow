@@ -339,6 +339,8 @@ function BenefitRow({ icon, title, sub }: { icon: React.ReactNode; title: string
 
 function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   const navigate = useNavigate();
+  const [howOpen, setHowOpen] = useState(false);
+  const [howTab, setHowTab] = useState<"text" | "video">("text");
   return (
     <div className="px-4 pb-8">
       <PageHeader title="Четвёрка" onBack={() => navigate({ to: "/community" })} />
