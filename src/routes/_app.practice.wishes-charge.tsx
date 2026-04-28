@@ -73,7 +73,8 @@ function ChargeScreen() {
   const cond2Done = maxPercent >= 100;
   const bothDone = cond1Done && cond2Done;
 
-  const handleMarkDone = () => {
+  // Автоматически засчитываем зарядку, как только оба условия выполнены.
+  useEffect(() => {
     if (!bothDone || doneToday) return;
     setDoneToday(true);
     setPracticeDone("charge", true);
@@ -82,7 +83,7 @@ function ChargeScreen() {
     } catch {
       /* ignore */
     }
-  };
+  }, [bothDone, doneToday]);
 
   const goToWishes = () => {
     void navigate({ to: "/wishes" });
