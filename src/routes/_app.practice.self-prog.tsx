@@ -210,8 +210,22 @@ function SelfProgScreen() {
         </div>
       </section>
 
-      {/* 4. Моя аффирмация — показываем целиком */}
-      <section className="mt-3 bg-card hairline rounded-2xl shadow-card p-4">
+      {/* 4. Запись — sticky сверху, чтобы читать аффирмацию ниже */}
+      <section
+        className="mt-3 sticky z-20"
+        style={{ top: 8 }}
+      >
+        <p
+          className="px-1 text-[11px] font-medium uppercase tracking-wider mb-2"
+          style={{ color: "#9ca3af" }}
+        >
+          Вариант 1 — прямо здесь
+        </p>
+        <Recorder doneToday={doneToday} onComplete={handleSpeak} />
+      </section>
+
+      {/* 5. Моя аффирмация — показываем целиком, читаем пока крутим вниз */}
+      <section className="mt-4 bg-card hairline rounded-2xl shadow-card p-4">
         <p
           className="text-[11px] font-medium uppercase tracking-wider mb-2"
           style={{ color: "#9ca3af" }}
@@ -234,13 +248,13 @@ function SelfProgScreen() {
         </button>
       </section>
 
-      {/* 5а. Вариант 1 — проговорить в боте */}
+      {/* 6. Вариант 2 — проговорить в боте */}
       <section className="mt-4">
         <p
           className="px-1 text-[11px] font-medium uppercase tracking-wider mb-2"
           style={{ color: "#9ca3af" }}
         >
-          Вариант 1 — в боте
+          Вариант 2 — в боте
         </p>
         <button
           onClick={handleSpeak}
@@ -266,17 +280,6 @@ function SelfProgScreen() {
         >
           Откроется бот — проговори аффирмацию голосом минимум 1 минуту
         </p>
-      </section>
-
-      {/* 5б. Вариант 2 — проговорить прямо здесь (визуальная имитация) */}
-      <section className="mt-4">
-        <p
-          className="px-1 text-[11px] font-medium uppercase tracking-wider mb-2"
-          style={{ color: "#9ca3af" }}
-        >
-          Вариант 2 — прямо здесь
-        </p>
-        <Recorder doneToday={doneToday} onComplete={handleSpeak} />
       </section>
 
 
@@ -586,135 +589,115 @@ function Recorder({
   }
 
   return (
-    <div className="bg-card hairline rounded-2xl shadow-card p-4">
-      {/* Таймер */}
-      <div className="flex items-baseline justify-center gap-2">
-        <span
-          className="text-[34px] font-bold tabular-nums"
-          style={{ color: recording ? "#FF6D00" : "#1f2937" }}
-        >
-          {formatTime(seconds)}
-        </span>
-        <span className="text-[13px]" style={{ color: "#9ca3af" }}>
-          / {formatTime(REQUIRED_SECONDS)}
-        </span>
-      </div>
-
-      {/* Прогресс-бар */}
-      <div
-        className="mt-3 h-1.5 rounded-full overflow-hidden"
-        style={{ background: "#ede8df" }}
-      >
-        <div
-          className="h-full"
-          style={{
-            width: `${progress * 100}%`,
-            background: canFinish
-              ? "#16a34a"
-              : "linear-gradient(90deg, #FFB300, #FF6D00)",
-            transition: "width 400ms ease-out",
-          }}
-        />
-      </div>
-
-      {/* Волна */}
-      <div className="mt-4 flex items-end justify-center gap-[3px] h-12">
-        {levels.map((lv, i) => (
-          <div
-            key={i}
-            style={{
-              width: 4,
-              height: `${lv * 100}%`,
-              minHeight: 4,
-              borderRadius: 2,
-              background: recording
-                ? "linear-gradient(to top, #FF6D00, #FFB300)"
-                : "#e5dccc",
-              transition: "height 250ms ease-out",
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Статус */}
-      <p
-        className="mt-3 text-center text-[12px]"
-        style={{ color: recording ? "#b45309" : "#9ca3af" }}
-      >
-        {recording
-          ? "🔴 Идёт запись… говори с верой и эмоцией"
-          : seconds === 0
-          ? "Нажми на микрофон и начни проговаривать"
-          : canFinish
-          ? "Минута набрана — можешь засчитать практику"
-          : "Запись остановлена"}
-      </p>
-
-      {/* Кнопки управления */}
-      <div className="mt-4 flex items-center justify-center gap-3">
-        {seconds > 0 && !recording && (
-          <button
-            onClick={reset}
-            className="tap rounded-full text-[13px] font-medium"
-            style={{
-              border: "1.5px solid #d1d5db",
-              color: "#6b7280",
-              background: "#fff",
-              padding: "10px 16px",
-            }}
-          >
-            Сбросить
-          </button>
-        )}
-
+    <div
+      className="hairline rounded-2xl shadow-card p-3"
+      style={{
+        background: "rgba(255,255,255,0.96)",
+        backdropFilter: "saturate(180%) blur(8px)",
+      }}
+    >
+      <div className="flex items-center gap-3">
+        {/* Кнопка микрофона */}
         <button
           onClick={recording ? stop : start}
           aria-label={recording ? "Остановить запись" : "Начать запись"}
-          className="tap rounded-full flex items-center justify-center"
+          className="tap rounded-full flex items-center justify-center shrink-0"
           style={{
-            width: 72,
-            height: 72,
+            width: 52,
+            height: 52,
             background: recording
               ? "#dc2626"
               : "linear-gradient(135deg, #FFB300, #FF6D00)",
             color: "#fff",
             boxShadow: recording
-              ? "0 0 0 6px rgba(220,38,38,0.18)"
-              : "0 6px 18px rgba(255,109,0,0.4)",
+              ? "0 0 0 5px rgba(220,38,38,0.18)"
+              : "0 4px 14px rgba(255,109,0,0.4)",
             transition: "all 200ms ease-out",
           }}
         >
           {recording ? (
-            <Square className="h-7 w-7 fill-white" />
+            <Square className="h-5 w-5 fill-white" />
           ) : (
-            <Mic className="h-8 w-8" />
+            <Mic className="h-6 w-6" />
           )}
+        </button>
+
+        {/* Центр: таймер + прогресс + волна */}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-baseline gap-2">
+            <span
+              className="text-[20px] font-bold tabular-nums leading-none"
+              style={{ color: recording ? "#FF6D00" : "#1f2937" }}
+            >
+              {formatTime(seconds)}
+            </span>
+            <span className="text-[11px]" style={{ color: "#9ca3af" }}>
+              / {formatTime(REQUIRED_SECONDS)}
+            </span>
+          </div>
+          <div
+            className="mt-1.5 h-1.5 rounded-full overflow-hidden"
+            style={{ background: "#ede8df" }}
+          >
+            <div
+              className="h-full"
+              style={{
+                width: `${progress * 100}%`,
+                background: canFinish
+                  ? "#16a34a"
+                  : "linear-gradient(90deg, #FFB300, #FF6D00)",
+                transition: "width 400ms ease-out",
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Засчитать — компактная кнопка справа */}
+        <button
+          onClick={() => {
+            stop();
+            onComplete();
+          }}
+          disabled={!canFinish}
+          className="tap rounded-xl shrink-0 text-[12px] font-bold"
+          style={{
+            background: canFinish
+              ? "linear-gradient(135deg, #16a34a, #15803d)"
+              : "#e5e7eb",
+            color: canFinish ? "#fff" : "#9ca3af",
+            padding: "10px 12px",
+            cursor: canFinish ? "pointer" : "not-allowed",
+            boxShadow: canFinish ? "0 4px 12px rgba(22,163,74,0.35)" : "none",
+          }}
+        >
+          {canFinish ? "✅ Засчитать" : "⏳ 1 мин"}
         </button>
       </div>
 
-      {/* Засчитать — активна только после минуты */}
-      <button
-        onClick={() => {
-          stop();
-          onComplete();
-        }}
-        disabled={!canFinish}
-        className="tap mt-4 w-full"
-        style={{
-          background: canFinish
-            ? "linear-gradient(135deg, #16a34a, #15803d)"
-            : "#e5e7eb",
-          color: canFinish ? "#fff" : "#9ca3af",
-          fontWeight: 700,
-          borderRadius: 14,
-          padding: 14,
-          fontSize: 14,
-          cursor: canFinish ? "pointer" : "not-allowed",
-          boxShadow: canFinish ? "0 4px 14px rgba(22,163,74,0.35)" : "none",
-        }}
-      >
-        {canFinish ? "✅ Засчитать практику" : "⏳ Запиши минимум 1 минуту"}
-      </button>
+      {/* Подсказка / сброс */}
+      <div className="mt-2 flex items-center justify-between gap-2 px-1">
+        <p
+          className="text-[11px] leading-snug truncate"
+          style={{ color: recording ? "#b45309" : "#9ca3af" }}
+        >
+          {recording
+            ? "🔴 Идёт запись… читай аффирмацию ниже"
+            : seconds === 0
+            ? "Нажми микрофон и листай вниз — читай аффирмацию"
+            : canFinish
+            ? "Минута набрана — можешь засчитать"
+            : "Запись на паузе"}
+        </p>
+        {seconds > 0 && !recording && (
+          <button
+            onClick={reset}
+            className="tap text-[11px] font-medium shrink-0"
+            style={{ color: "#6b7280", textDecoration: "underline" }}
+          >
+            Сбросить
+          </button>
+        )}
+      </div>
     </div>
   );
 }
