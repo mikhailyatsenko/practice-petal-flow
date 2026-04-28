@@ -260,7 +260,7 @@ export function computeEffective(id: PracticeId, doneToday: boolean) {
     // если есть хоть один зелёный кружок.
     level = Math.max(1, BASE_LEVEL[id]);
   }
-  return { progress, streakDays, level };
+  return { progress, rawProgress, streakDays, level };
 }
 
 // Кэш снапшотов effective-значений по id, чтобы useSyncExternalStore
