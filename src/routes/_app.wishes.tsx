@@ -785,6 +785,7 @@ function WishesScreen() {
 
     if (tab === "tasks") {
       return (
+        <>
         <TasksModule
           goals={goals.filter((g) => !doneGoals.has(g.id)).map((g) => ({
             id: g.id,
@@ -802,6 +803,8 @@ function WishesScreen() {
             setGoals((prev) => prev.map((g) => (g.id === goalId ? { ...g, plan } : g)))
           }
         />
+        <HowItWorks tab="tasks" />
+        </>
       );
     }
 
