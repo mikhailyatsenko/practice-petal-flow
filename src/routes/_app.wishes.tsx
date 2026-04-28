@@ -1071,17 +1071,18 @@ const DOT_FILLED_COLORS = ["#FFD180", "#FFB300", "#FF9100", "#FF6D00", "#E64A19"
 const DOT_EMPTY = "#e0d8cc";
 
 function DesireCharge({ level, onTap, mode = "inspire" }: { level: number; onTap: () => void; mode?: "inspire" | "proud" }) {
-  // Кап на 100% — не пускаем на второй круг.
-  const total = Math.min(5, Math.max(0, level));
-  const inRound = total; // 0..5
-  const justHit100 = total === 5;
+  const total = Math.max(0, level);
+  const inRound = total === 0 ? 0 : ((total - 1) % 5) + 1;
+  // +1 — с первого тапа; +2 — когда пошёл второй круг (после 100%)
+  const badgeCount = total === 0 ? 0 : Math.floor((total - 1) / 5) + 1;
+  const justHit100 = total > 0 && inRound === 5;
   const label =
     mode === "proud"
       ? total === 0
         ? "Горжусь"
         : `Горжусь · ${total}`
       : total === 0
-        ? "Вдохновляет"
+        ? "Заряжает"
         : `Зарядился на ${inRound * 20}%`;
   const color = CHARGE_COLORS[inRound];
 
@@ -1134,7 +1135,7 @@ function DesireCharge({ level, onTap, mode = "inspire" }: { level: number; onTap
         ❤️
       </span>
       <span className="flex flex-col gap-0.5 min-w-0 text-left">
-        <span className="flex items-center gap-1.5 relative" style={{ height: 16 }}>
+        <span className="flex items-end gap-1.5" style={{ height: 16 }}>
           {Array.from({ length: 5 }).map((_, i) => {
             const filled = i < inRound;
             return (
@@ -1145,19 +1146,18 @@ function DesireCharge({ level, onTap, mode = "inspire" }: { level: number; onTap
               />
             );
           })}
-          {total > 0 && (
-            <span
-              key={`badge-${total}`}
-              className="absolute top-1/2 -translate-y-1/2 min-w-[18px] h-[18px] px-1.5 rounded-full text-[11px] font-bold text-white inline-flex items-center justify-center animate-pop"
-              style={{
-                left: "calc(100% + 6px)",
-                background: "linear-gradient(135deg,#FFB300,#FF6D00)",
-                boxShadow: "0 2px 6px rgba(255,109,0,0.35)",
-              }}
-            >
-              {total}
-            </span>
-          )}
+          {/* Бейдж +N — фикс. ширина, чтобы лейбл не прыгал. Выровнен по низу кружочков */}
+          <span className="ml-1 inline-flex items-end justify-start" style={{ width: 30, height: 16 }}>
+            {badgeCount > 0 && (
+              <span
+                key={badgeCount}
+                className="min-w-[18px] h-[14px] px-1 rounded-full text-[9px] font-bold text-white inline-flex items-center justify-center animate-pop"
+                style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)", boxShadow: "0 2px 6px rgba(255,109,0,0.35)", transform: "translateY(2px)" }}
+              >
+                {badgeCount}
+              </span>
+            )}
+          </span>
         </span>
         {/* Фиксированная высота строки лейбла */}
         <span className="block leading-none" style={{ minHeight: 12 }}>

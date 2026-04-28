@@ -9,40 +9,11 @@ type DoneMap = Record<PracticeId, boolean>;
 
 // Состояние зарядки желаний/целей: id → количество тапов лайка.
 // 5 тапов = 100% (см. DesireCharge: inRound = ((total-1) % 5) + 1).
-// Кап: значение никогда не превышает 5 (на 100% дошёл — больше не растёт).
 type ChargesMap = Record<string, number>;
-
-const CHARGE_MAX = 5;
-const SHADOW_LS_KEY = "charges-shadow-v1";
-
-// Загружаем «теневой» счётчик — он переживает «Сбросить привычки».
-// Это позволяет показывать пользователю, сколько раз он реально лайкал пост,
-// сразу после первого тапа после сброса.
-const loadShadow = (): ChargesMap => {
-  try {
-    const raw = localStorage.getItem(SHADOW_LS_KEY);
-    if (!raw) return {};
-    const parsed = JSON.parse(raw);
-    if (parsed && typeof parsed === "object") return parsed as ChargesMap;
-  } catch {
-    /* ignore */
-  }
-  return {};
-};
-
-const saveShadow = (s: ChargesMap) => {
-  try {
-    localStorage.setItem(SHADOW_LS_KEY, JSON.stringify(s));
-  } catch {
-    /* ignore */
-  }
-};
 
 interface StoreState {
   done: DoneMap;
   charges: ChargesMap;
-  // Скрытая память лайков, которая не очищается «Сбросить привычки».
-  shadowCharges: ChargesMap;
   // Сколько всего объектов (желаний + целей), которые надо «зарядить» (=поставить лайк).
   totalItems: number;
 }
@@ -56,7 +27,6 @@ let state: StoreState = {
     wishes: false,
   },
   charges: {},
-  shadowCharges: typeof window !== "undefined" ? loadShadow() : {},
   totalItems: 0,
 };
 
@@ -100,22 +70,8 @@ export function usePracticeDone(id: PracticeId): boolean {
 // ----- charges (зарядка желаний / целей) -----
 
 export function bumpCharge(id: string) {
-  const currentVisible = state.charges[id] ?? 0;
-  const currentShadow = state.shadowCharges[id] ?? 0;
-  // Кап 100%: не пускаем на второй круг — максимум 5 тапов.
-  if (currentVisible >= CHARGE_MAX) return;
-  // Видимое значение синхронизируется с реальной (теневой) историей,
-  // так что после «Сбросить привычки» первый тап покажет, сколько раз
-  // пост уже лайкали (1 → 2 → 3 после повторных сбросов), но не больше 5.
-  const nextShadow = Math.min(CHARGE_MAX, currentShadow + 1);
-  const nextVisible = Math.min(CHARGE_MAX, Math.max(currentVisible + 1, nextShadow));
-  const nextShadowMap = { ...state.shadowCharges, [id]: nextShadow };
-  state = {
-    ...state,
-    charges: { ...state.charges, [id]: nextVisible },
-    shadowCharges: nextShadowMap,
-  };
-  saveShadow(nextShadowMap);
+  const next = (state.charges[id] ?? 0) + 1;
+  state = { ...state, charges: { ...state.charges, [id]: next } };
   maybeAutoCompleteCharge();
   emit();
 }
@@ -221,8 +177,6 @@ export function resetAllPractices() {
       wishes: false,
     },
     charges: {},
-    // shadowCharges НЕ сбрасываем — это «настоящая» история лайков.
-    shadowCharges: state.shadowCharges,
     totalItems: state.totalItems,
   };
   try {
