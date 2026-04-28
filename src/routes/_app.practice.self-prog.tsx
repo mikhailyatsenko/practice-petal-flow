@@ -210,7 +210,7 @@ function SelfProgScreen() {
         </div>
       </section>
 
-      {/* 4. Моя аффирмация */}
+      {/* 4. Моя аффирмация — показываем целиком */}
       <section className="mt-3 bg-card hairline rounded-2xl shadow-card p-4">
         <p
           className="text-[11px] font-medium uppercase tracking-wider mb-2"
@@ -218,32 +218,9 @@ function SelfProgScreen() {
         >
           Моя аффирмация
         </p>
-        <div className="relative">
-          <p
-            className="text-[14px] leading-snug whitespace-pre-line"
-            style={{
-              display: "-webkit-box",
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
-            {affirmation}
-          </p>
-          <div
-            aria-hidden
-            style={{
-              position: "absolute",
-              left: 0,
-              right: 0,
-              bottom: 0,
-              height: 26,
-              background:
-                "linear-gradient(to bottom, rgba(255,255,255,0), #fff)",
-              pointerEvents: "none",
-            }}
-          />
-        </div>
+        <p className="text-[14px] leading-relaxed whitespace-pre-line">
+          {affirmation}
+        </p>
         <button
           onClick={() => setEditorOpen(true)}
           className="tap mt-3 w-full rounded-xl py-2.5 text-[14px] font-medium"
@@ -257,8 +234,14 @@ function SelfProgScreen() {
         </button>
       </section>
 
-      {/* 5. Кнопка проговорить */}
+      {/* 5а. Вариант 1 — проговорить в боте */}
       <section className="mt-4">
+        <p
+          className="px-1 text-[11px] font-medium uppercase tracking-wider mb-2"
+          style={{ color: "#9ca3af" }}
+        >
+          Вариант 1 — в боте
+        </p>
         <button
           onClick={handleSpeak}
           className="tap w-full"
@@ -275,16 +258,27 @@ function SelfProgScreen() {
             boxShadow: doneToday ? "none" : "0 4px 14px rgba(255,109,0,0.35)",
           }}
         >
-          {doneToday ? "✅ Выполнено сегодня" : "🎙 Проговорить аффирмацию"}
+          {doneToday ? "✅ Выполнено сегодня" : "🤖 Открыть бота и проговорить"}
         </button>
         <p
           className="mt-2 text-[12px] leading-snug px-1 text-center"
           style={{ color: "#9ca3af" }}
         >
-          Нажми на кнопку «Проговорить аффирмацию» — откроется бот, проговори
-          аффирмацию голосом минимум 1 минуту
+          Откроется бот — проговори аффирмацию голосом минимум 1 минуту
         </p>
       </section>
+
+      {/* 5б. Вариант 2 — проговорить прямо здесь (визуальная имитация) */}
+      <section className="mt-4">
+        <p
+          className="px-1 text-[11px] font-medium uppercase tracking-wider mb-2"
+          style={{ color: "#9ca3af" }}
+        >
+          Вариант 2 — прямо здесь
+        </p>
+        <Recorder doneToday={doneToday} onComplete={handleSpeak} />
+      </section>
+
 
       {/* 6. Как это работает */}
       <section className="mt-4">
