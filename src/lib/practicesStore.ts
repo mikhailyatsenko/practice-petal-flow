@@ -9,11 +9,40 @@ type DoneMap = Record<PracticeId, boolean>;
 
 // Состояние зарядки желаний/целей: id → количество тапов лайка.
 // 5 тапов = 100% (см. DesireCharge: inRound = ((total-1) % 5) + 1).
+// Кап: значение никогда не превышает 5 (на 100% дошёл — больше не растёт).
 type ChargesMap = Record<string, number>;
+
+const CHARGE_MAX = 5;
+const SHADOW_LS_KEY = "charges-shadow-v1";
+
+// Загружаем «теневой» счётчик — он переживает «Сбросить привычки».
+// Это позволяет показывать пользователю, сколько раз он реально лайкал пост,
+// сразу после первого тапа после сброса.
+const loadShadow = (): ChargesMap => {
+  try {
+    const raw = localStorage.getItem(SHADOW_LS_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === "object") return parsed as ChargesMap;
+  } catch {
+    /* ignore */
+  }
+  return {};
+};
+
+const saveShadow = (s: ChargesMap) => {
+  try {
+    localStorage.setItem(SHADOW_LS_KEY, JSON.stringify(s));
+  } catch {
+    /* ignore */
+  }
+};
 
 interface StoreState {
   done: DoneMap;
   charges: ChargesMap;
+  // Скрытая память лайков, которая не очищается «Сбросить привычки».
+  shadowCharges: ChargesMap;
   // Сколько всего объектов (желаний + целей), которые надо «зарядить» (=поставить лайк).
   totalItems: number;
 }
@@ -27,6 +56,7 @@ let state: StoreState = {
     wishes: false,
   },
   charges: {},
+  shadowCharges: typeof window !== "undefined" ? loadShadow() : {},
   totalItems: 0,
 };
 
