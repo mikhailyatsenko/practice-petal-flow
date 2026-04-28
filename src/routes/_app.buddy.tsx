@@ -530,6 +530,7 @@ function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () 
   const [time, setTime] = useState<string | null>(null);
   const [job, setJob] = useState("");
   const [bio, setBio] = useState("");
+  const [extra, setExtra] = useState("");
 
   const valid = !!day && !!time && job.trim().length > 1 && bio.trim().length > 20;
 
