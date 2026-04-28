@@ -379,7 +379,15 @@ function HomeScreen() {
         <div className="space-y-2">
           {practices.map((p) => (
             <div key={p.id} data-practice-card data-done={p.doneToday ? "1" : "0"}>
-              <PracticeRowCard practice={p} onToggle={togglePractice} />
+              <PracticeRowCard
+                practice={p}
+                onToggle={togglePractice}
+                onMarkDone={(id) =>
+                  setPractices((prev) =>
+                    prev.map((x) => (x.id === id ? { ...x, doneToday: true } : x)),
+                  )
+                }
+              />
             </div>
           ))}
         </div>
