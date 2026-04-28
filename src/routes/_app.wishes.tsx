@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Plus, X, ArrowLeft, Check, ImageIcon, FolderOpen, Pencil, RotateCw, Sparkles, Trash2, Trophy, MoreHorizontal, ChevronDown } from "lucide-react";
+import { Plus, X, ArrowLeft, Check, ImageIcon, FolderOpen, Pencil, RotateCw, Sparkles, Trash2, Trophy, MoreHorizontal, ChevronDown, Heart } from "lucide-react";
 import wishHouse from "@/assets/wish-house.jpg";
 import wishBali from "@/assets/wish-bali.jpg";
 import wishBody from "@/assets/wish-body.jpg";
@@ -1486,10 +1486,14 @@ function DesireCharge({ level, onTap, mode = "inspire", id }: { level: number; o
       >
         <span
           key={`proud-${total}`}
-          className={`text-[22px] leading-none transition-transform active:scale-90 ${liked ? "animate-pop" : ""}`}
-          style={liked ? undefined : { WebkitTextStroke: "1px #c8c0b0", color: "transparent" }}
+          className={`inline-flex items-center justify-center transition-transform active:scale-90 ${liked ? "animate-pop" : ""}`}
         >
-          {liked ? "❤️" : "🤍"}
+          <Heart
+            className="h-[22px] w-[22px]"
+            strokeWidth={2}
+            fill={liked ? "#FF6D00" : "none"}
+            color={liked ? "#FF6D00" : "#c8c0b0"}
+          />
         </span>
         <span
           className="text-[13px] font-medium leading-none inline-flex items-center gap-1.5"
