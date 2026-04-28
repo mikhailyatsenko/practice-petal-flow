@@ -597,6 +597,24 @@ function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () 
           </div>
         </div>
 
+
+        {/* Extra comments */}
+        <div>
+          <h3 className="text-[14px] font-semibold">Дополнительные комментарии</h3>
+          <p className="text-[12px] text-muted-foreground mt-0.5 mb-2">
+            Напиши, в какие ещё дни и часы тебе удобно созваниваться, в каком мессенджере, и любые другие важные моменты
+          </p>
+          <div className="relative">
+            <textarea
+              value={extra}
+              onChange={(e) => setExtra(e.target.value)}
+              placeholder="Например: Кроме среды свободна во вторник и четверг с 18:00 до 21:00 МСК. Созваниваюсь через Яндекс Телемост."
+              className="w-full bg-card rounded-xl px-3.5 py-3 text-[14px] outline-none transition-colors resize-none"
+              style={{ minHeight: 90, border: `1px solid ${extra ? "#FF6D00" : "#ede8df"}` }}
+            />
+          </div>
+        </div>
+
         <button
           disabled={!valid}
           onClick={() => valid && onSubmit()}
