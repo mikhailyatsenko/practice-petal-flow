@@ -83,7 +83,11 @@ function HomeScreen() {
   const [stars, setStars]         = useState(970);
   const [hit, setHit]             = useState(2);
   const [insurance, setInsurance] = useState(0);
-  const [practices, setPractices] = useState<PracticeRow[]>(initialPractices);
+  const doneMap = usePracticesDone();
+  const practices = useMemo<PracticeRow[]>(
+    () => initialPractices.map((p) => ({ ...p, doneToday: doneMap[p.id as PracticeId] ?? false })),
+    [doneMap],
+  );
   const [pathSteps]               = useState<PathStep[]>(initialPathSteps);
   const [openStat, setOpenStat]   = useState<StatKey | null>(null);
   const [flyingStars, setFlyingStars] = useState<FlyingStar[]>([]);
