@@ -1145,18 +1145,7 @@ function DesireCharge({ level, onTap, mode = "inspire" }: { level: number; onTap
               />
             );
           })}
-          {/* Бейдж +N — фикс. ширина, чтобы лейбл не прыгал. Выровнен по низу кружочков */}
-          <span className="ml-1 inline-flex items-end justify-start" style={{ width: 30, height: 16 }}>
-            {badgeCount > 0 && (
-              <span
-                key={badgeCount}
-                className="min-w-[18px] h-[14px] px-1 rounded-full text-[9px] font-bold text-white inline-flex items-center justify-center animate-pop"
-                style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)", boxShadow: "0 2px 6px rgba(255,109,0,0.35)", transform: "translateY(2px)" }}
-              >
-                {badgeCount}
-              </span>
-            )}
-          </span>
+          {/* Бейдж второго круга убран: до 100% — и стоп. */}
         </span>
         {/* Фиксированная высота строки лейбла */}
         <span className="block leading-none" style={{ minHeight: 12 }}>
