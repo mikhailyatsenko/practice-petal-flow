@@ -267,3 +267,13 @@
 .animate-pulse-orange { animation: pulse-orange 2.4s ease-in-out infinite; }
 .animate-celebrate { animation: celebrate 900ms var(--ease-soft) both; }
 .animate-celebrate-glow { animation: celebrate-glow 900ms ease-out both; }
+
+/* iOS Safari: prevent auto-zoom on focus by enforcing 16px min font-size on form controls */
+@supports (-webkit-touch-callout: none) {
+  input,
+  textarea,
+  select,
+  [contenteditable="true"] {
+    font-size: 16px !important;
+  }
+}
