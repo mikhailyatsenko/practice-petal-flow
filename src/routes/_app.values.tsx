@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, MoreHorizontal, Check } from "lucide-react";
+import { MoreHorizontal, Check } from "lucide-react";
 import { BackButton } from "@/components/layout/BackButton";
 
 export const Route = createFileRoute("/_app/values")({

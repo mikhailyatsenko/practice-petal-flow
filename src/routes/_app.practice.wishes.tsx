@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft } from "lucide-react";
+
 import { BackButton } from "@/components/layout/BackButton";
 
 export const Route = createFileRoute("/_app/practice/wishes")({

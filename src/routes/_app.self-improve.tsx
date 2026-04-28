@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+
 import { BackButton } from "@/components/layout/BackButton";
 
 export const Route = createFileRoute("/_app/self-improve")({
