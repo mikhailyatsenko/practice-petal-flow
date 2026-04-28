@@ -809,6 +809,7 @@ function WishesScreen() {
     }
 
     return (
+      <>
       <RealizedTab
         hotelki={hotelki.filter((h) => doneHotelki.has(h))}
         wishes={wishes.filter((w) => doneWishes.has(w.id))}
@@ -818,6 +819,8 @@ function WishesScreen() {
         onUndoWish={(id) => toggleDoneWish(id)}
         onUndoGoal={(id) => toggleDoneGoal(id)}
       />
+      <HowItWorks tab="done" />
+      </>
     );
   };
 
