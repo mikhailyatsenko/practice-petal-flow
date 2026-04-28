@@ -11,8 +11,19 @@ import goalMarathon from "@/assets/goal-marathon.jpg";
 import goalLanguage from "@/assets/goal-language.jpg";
 import goalSavings from "@/assets/goal-savings.jpg";
 import { TasksModule, CreateOrEditTaskScreen, type Task as ModuleTask } from "@/components/tasks/TasksModule";
+import { setPracticeDone } from "@/lib/practicesStore";
+
+const VALID_TABS = ["wants", "wishes", "goals", "tasks", "done"] as const;
+type WishesSearch = { tab?: typeof VALID_TABS[number] };
 
 export const Route = createFileRoute("/_app/wishes")({
+  validateSearch: (search: Record<string, unknown>): WishesSearch => {
+    const tab = search.tab;
+    if (typeof tab === "string" && (VALID_TABS as readonly string[]).includes(tab)) {
+      return { tab: tab as WishesSearch["tab"] };
+    }
+    return {};
+  },
   head: () => ({
     meta: [
       { title: "Желания — Клуб «Моя жизнь»" },
