@@ -414,8 +414,6 @@ function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         <FormatRow time="20 мин" text="Все ставят задачи на следующий месяц" />
       </Card>
 
-      {/* Как работает */}
-      <button
       {/* Как работает — inline collapsible */}
       <section>
         <button
