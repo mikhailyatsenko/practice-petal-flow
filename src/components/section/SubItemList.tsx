@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { ChevronRight, Lock } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 export interface SubItem {
@@ -29,7 +29,7 @@ export function SubItemList({ items }: SubItemListProps) {
             <div className="min-w-0 flex-1">
               <h3 className="text-[14px] font-medium leading-tight truncate flex items-center gap-1.5">
                 {it.title}
-                {it.locked && <Lock className="h-3 w-3 text-muted-foreground" />}
+                {it.locked && <span className="text-[14px] leading-none">🔒</span>}
               </h3>
               {it.subtitle && (
                 <p className="mt-0.5 text-[11.5px] text-muted-foreground leading-snug line-clamp-2">
