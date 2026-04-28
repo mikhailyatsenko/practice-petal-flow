@@ -49,13 +49,24 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
 
           <button
             onClick={() => {
+              advanceToNextDay();
+              onOpenChange(false);
+            }}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground font-medium"
+          >
+            <CalendarPlus className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>➡️ Следующий день</span>
+          </button>
+
+          <button
+            onClick={() => {
               resetAllPractices();
               onOpenChange(false);
             }}
             className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-primary font-medium"
           >
             <RotateCcw className="h-[18px] w-[18px]" strokeWidth={2} />
-            <span>🔄 Сбросить привычки</span>
+            <span>🔄 Сбросить дни</span>
           </button>
 
           <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
