@@ -11,7 +11,7 @@ import {
   Confetti,
   StatusRings,
 } from "@/components/home/StatEffects";
-import { usePracticesDone, setPracticeDone, useProgressOffset, type PracticeId } from "@/lib/practicesStore";
+import { usePracticesDone, setPracticeDone, computeEffective, type PracticeId } from "@/lib/practicesStore";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
@@ -84,23 +84,21 @@ function HomeScreen() {
   const [hit, setHit]             = useState(2);
   const [insurance, setInsurance] = useState(0);
   const doneMap = usePracticesDone();
-  const offsetMap = useProgressOffset();
   const practices = useMemo<PracticeRow[]>(
     () =>
       initialPractices.map((p) => {
         const id = p.id as PracticeId;
-        const off = offsetMap[id] ?? 0;
-        const newProgress = p.progress + off;
-        // streakDays растёт вместе с offset, но не уходит ниже 0.
-        const newStreak = Math.max(0, p.streakDays + off);
+        const done = doneMap[id] ?? false;
+        const eff = computeEffective(id, done);
         return {
           ...p,
-          doneToday: doneMap[id] ?? false,
-          progress: newProgress,
-          streakDays: newStreak,
+          doneToday: done,
+          progress: eff.progress,
+          streakDays: eff.streakDays,
+          level: eff.level,
         };
       }),
-    [doneMap, offsetMap],
+    [doneMap],
   );
   const [pathSteps]               = useState<PathStep[]>(initialPathSteps);
   const [openStat, setOpenStat]   = useState<StatKey | null>(null);

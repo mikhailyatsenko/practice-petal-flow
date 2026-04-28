@@ -225,6 +225,61 @@ export function useProgressOffset(): ProgressOffsetMap {
   );
 }
 
+// Базовые уровни (на «Дне 1»). Используются только когда progress > 0.
+const BASE_LEVEL: Record<PracticeId, number> = {
+  "self-prog": 1,
+  charge: 0,
+  essay: 0,
+  skill: 2,
+  wishes: 0,
+};
+
+// Вычисляет эффективные значения практики с учётом:
+// • базы на «Дне 1»,
+// • накопленного offset от «Следующий день»,
+// • мгновенного «+1», если практика отмечена сделанной сегодня (но ещё не
+//   подтверждена «Следующим днём»). Если база была отрицательной, первое
+//   выполнение переводит сразу в +1 (а не «-5»).
+export function computeEffective(id: PracticeId, doneToday: boolean) {
+  const base = BASE_PROGRESS[id];
+  const offset = state.progressOffset[id] ?? 0;
+  let progress = base + offset;
+  if (doneToday) {
+    if (progress <= 0) progress = 1;
+    else progress = progress + 1;
+  }
+  const streakDays = Math.max(0, progress);
+  let level: number;
+  if (progress <= 0) {
+    level = 0;
+  } else {
+    // Сохраняем «ручной» базовый уровень (см. BASE_LEVEL), но не меньше 1,
+    // если есть хоть один зелёный кружок.
+    level = Math.max(1, BASE_LEVEL[id]);
+  }
+  return { progress, streakDays, level };
+}
+
+// Кэш снапшотов effective-значений по id, чтобы useSyncExternalStore
+// получал стабильные ссылки и не уходил в бесконечный ререндер.
+type EffectiveSnap = ReturnType<typeof computeEffective>;
+const effectiveCache: Partial<Record<PracticeId, { state: StoreState; snap: EffectiveSnap }>> = {};
+function getEffectiveSnap(id: PracticeId): EffectiveSnap {
+  const cached = effectiveCache[id];
+  if (cached && cached.state === state) return cached.snap;
+  const snap = computeEffective(id, state.done[id]);
+  effectiveCache[id] = { state, snap };
+  return snap;
+}
+
+export function useEffectiveProgress(id: PracticeId) {
+  return useSyncExternalStore(
+    subscribe,
+    () => getEffectiveSnap(id),
+    () => getEffectiveSnap(id),
+  );
+}
+
 // «Следующий день»: для каждой выполненной сегодня практики увеличиваем offset.
 // Если базовый прогресс был отрицательным (пропуски) и текущий effective <= 0,
 // первое выполнение переводит сразу в +1 зелёный кружок (а не в -5).

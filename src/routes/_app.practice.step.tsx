@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronDown, Play } from "lucide-react";
-import { setPracticeDone } from "@/lib/practicesStore";
+import { setPracticeDone, useEffectiveProgress } from "@/lib/practicesStore";
 
 export const Route = createFileRoute("/_app/practice/step")({
   head: () => ({
@@ -50,7 +50,7 @@ function StepScreen() {
   const [howOpen, setHowOpen] = useState(false);
   const [howTab, setHowTab] = useState<"text" | "video">("text");
 
-  const streakDays = 0;
+  const { streakDays } = useEffectiveProgress("wishes");
 
   useEffect(() => {
     try {

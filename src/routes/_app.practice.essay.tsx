@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronDown, Play } from "lucide-react";
-import { setPracticeDone } from "@/lib/practicesStore";
+import { setPracticeDone, useEffectiveProgress } from "@/lib/practicesStore";
 
 export const Route = createFileRoute("/_app/practice/essay")({
   head: () => ({
@@ -74,7 +74,7 @@ function EssayScreen() {
   const [howTab, setHowTab] = useState<"text" | "video">("text");
 
   const essayBoxRef = useRef<HTMLDivElement>(null);
-  const streakDays = 0;
+  const { streakDays } = useEffectiveProgress("essay");
 
   useEffect(() => {
     try {

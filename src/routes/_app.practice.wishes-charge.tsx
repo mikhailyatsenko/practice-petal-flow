@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronDown, Play, Check } from "lucide-react";
-import { setPracticeDone, useChargeStats } from "@/lib/practicesStore";
+import { setPracticeDone, useChargeStats, useEffectiveProgress } from "@/lib/practicesStore";
 
 export const Route = createFileRoute("/_app/practice/wishes-charge")({
   head: () => ({
@@ -45,7 +45,7 @@ function ChargeScreen() {
   const [howOpen, setHowOpen] = useState(false);
   const [howTab, setHowTab] = useState<"text" | "video">("text");
 
-  const streakDays = 12;
+  const { streakDays } = useEffectiveProgress("charge");
 
   // Реальные данные о зарядке желаний/целей из общего хранилища
   const { total, charged, maxPercent } = useChargeStats();

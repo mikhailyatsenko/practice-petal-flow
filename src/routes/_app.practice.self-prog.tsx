@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronDown, Play, Mic, Square, Check } from "lucide-react";
-import { setPracticeDone } from "@/lib/practicesStore";
+import { setPracticeDone, useEffectiveProgress } from "@/lib/practicesStore";
 
 export const Route = createFileRoute("/_app/practice/self-prog")({
   head: () => ({
@@ -71,8 +71,8 @@ function SelfProgScreen() {
   const [howOpen, setHowOpen] = useState(false);
   const [howTab, setHowTab] = useState<"text" | "video">("text");
 
-  // Демо: серия 17 дней => уровень 0, прогресс 17/30
-  const streakDays = 17;
+  // Серия синхронизирована с главным экраном через practicesStore.
+  const { streakDays } = useEffectiveProgress("self-prog");
 
   useEffect(() => {
     try {
