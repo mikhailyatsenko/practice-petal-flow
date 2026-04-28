@@ -26,6 +26,7 @@ interface BuddyRequest {
   day: string;
   time: string;
   bio: string;
+  extra?: string;
 }
 
 type Screen =
