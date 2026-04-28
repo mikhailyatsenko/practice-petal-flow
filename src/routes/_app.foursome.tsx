@@ -887,6 +887,18 @@ function ConfirmSheet({
           </div>
         </div>
 
+        {req.extra && (
+          <div
+            className="rounded-2xl p-3.5 mb-3 text-[13px]"
+            style={{ background: "#fff8ee", border: "1px solid #ffe0a3", lineHeight: 1.5 }}
+          >
+            <div className="text-[11px] font-bold uppercase mb-1" style={{ color: "#FF6D00", letterSpacing: 0.4 }}>
+              💬 Доп. комментарии
+            </div>
+            <p className="text-foreground/85">{req.extra}</p>
+          </div>
+        )}
+
         <p className="text-[13px] text-muted-foreground text-center mb-4 px-2" style={{ lineHeight: 1.5 }}>
           Сначала подтвердит твой бадди, затем оба участника пары. Если все согласны — Четвёрка создана ✅
         </p>
