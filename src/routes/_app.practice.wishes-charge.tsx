@@ -37,11 +37,7 @@ const todayStr = () => {
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 };
 
-// Демо: количество желаний/целей и их прогресс зарядки
-// В реальности должно подтягиваться из раздела «Желания».
-const DEMO_TOTAL = 8;
-const DEMO_CHARGED = 5; // сколько заряжено хотя бы на 20%
-const DEMO_MAX_PERCENT = 60; // максимум среди всех
+// Числа подтягиваются из общего хранилища (см. useChargeStats).
 
 function ChargeScreen() {
   const navigate = useNavigate();
@@ -197,12 +193,12 @@ function ChargeScreen() {
           <ChecklistItem
             done={cond1Done}
             text="Поставить лайк каждому желанию и цели"
-            counter={`${DEMO_CHARGED} / ${DEMO_TOTAL}`}
+            counter={`${charged} / ${total}`}
           />
           <ChecklistItem
             done={cond2Done}
             text="Одно желание или цель зарядить на 100%"
-            counter={`${DEMO_MAX_PERCENT}%`}
+            counter={`${maxPercent}%`}
           />
         </div>
       </section>
