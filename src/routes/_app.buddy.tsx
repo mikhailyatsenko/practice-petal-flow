@@ -252,10 +252,7 @@ function ActionCard({
       onClick={onClick}
       className="tap w-full bg-card hairline rounded-2xl px-3.5 py-3 shadow-card flex items-center gap-3 text-left animate-fade-up"
     >
-      <div
-        className="h-11 w-11 shrink-0 rounded-xl flex items-center justify-center text-[22px]"
-        style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
-      >
+      <div className="h-11 w-11 shrink-0 rounded-xl flex items-center justify-center text-[22px] bg-secondary">
         {emoji}
       </div>
       <div className="min-w-0 flex-1">
