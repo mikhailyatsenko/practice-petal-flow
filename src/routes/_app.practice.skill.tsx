@@ -56,6 +56,22 @@ function SkillScreen() {
   const [howTab, setHowTab] = useState<"text" | "video">("text");
 
   const { streakDays } = useEffectiveProgress("skill");
+  const storeDone = usePracticeDone("skill");
+
+  // Когда «Следующий день» сбросил done в сторе — очищаем локальные успехи,
+  // чтобы рамка стала пустой для записи новых на следующий день.
+  useEffect(() => {
+    if (!storeDone && doneToday) {
+      setDoneToday(false);
+      setItems([]);
+      try {
+        localStorage.removeItem(TODAY_KEY);
+        localStorage.removeItem(DONE_KEY);
+      } catch {
+        /* ignore */
+      }
+    }
+  }, [storeDone, doneToday]);
 
   useEffect(() => {
     try {
