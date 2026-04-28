@@ -1070,11 +1070,13 @@ const CHARGE_COLORS = ["#9c8f7a", "#FFB300", "#FF9100", "#FF7A00", "#FF5722", "#
 const DOT_FILLED_COLORS = ["#FFD180", "#FFB300", "#FF9100", "#FF6D00", "#E64A19"];
 const DOT_EMPTY = "#e0d8cc";
 
-function DesireCharge({ level, onTap, mode = "inspire" }: { level: number; onTap: () => void; mode?: "inspire" | "proud" }) {
+function DesireCharge({ level, onTap, mode = "inspire", id }: { level: number; onTap: () => void; mode?: "inspire" | "proud"; id?: string }) {
   const total = Math.max(0, level);
   const inRound = total === 0 ? 0 : ((total - 1) % 5) + 1;
-  // +1 — с первого тапа; +2 — когда пошёл второй круг (после 100%)
-  const badgeCount = total === 0 ? 0 : Math.floor((total - 1) / 5) + 1;
+  // Бейдж = количество дней, в которые пользователь заряжал именно это желание/цель.
+  // Появляется с первого тапа дня; в новый день обнуляется до первого тапа.
+  const daysCount = useDaysCount(id ?? "__none__");
+  const badgeCount = id ? (total > 0 ? daysCount : 0) : (total === 0 ? 0 : Math.floor((total - 1) / 5) + 1);
   const justHit100 = total > 0 && inRound === 5;
   const label =
     mode === "proud"
