@@ -701,6 +701,18 @@ function RequestCard({ req, onSend }: { req: BuddyRequest; onSend: () => void })
         {req.bio}
       </div>
 
+      {req.extra && (
+        <div
+          className="mt-2 rounded-[10px] p-3 text-[13px]"
+          style={{ background: "#fff8ee", border: "1px solid #ffe0a3", lineHeight: 1.5 }}
+        >
+          <div className="text-[11px] font-bold uppercase mb-1" style={{ color: "#FF6D00", letterSpacing: 0.4 }}>
+            💬 Доп. комментарии
+          </div>
+          <p className="text-foreground/85">{req.extra}</p>
+        </div>
+      )}
+
       <button
         onClick={onSend}
         className="tap mt-3 w-full rounded-xl py-2.5 text-[13px] font-bold text-white"
