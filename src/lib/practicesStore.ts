@@ -133,4 +133,34 @@ export function useChargeStats(): ChargeStats {
   return useSyncExternalStore(subscribe, getStatsSnapshot, getStatsSnapshot);
 }
 
+// ----- reset (тестовая утилита для меню «Сбросить привычки») -----
+
+const PRACTICE_LS_KEYS = [
+  "self-prog-done-v2",
+  "charge-done-v1",
+  "essay-done-v1",
+  "skill-done-v1",
+  "step-done-v1",
+];
+
+export function resetAllPractices() {
+  state = {
+    done: {
+      "self-prog": false,
+      charge: false,
+      essay: false,
+      skill: false,
+      wishes: false,
+    },
+    charges: {},
+    totalItems: state.totalItems,
+  };
+  try {
+    for (const k of PRACTICE_LS_KEYS) localStorage.removeItem(k);
+  } catch {
+    /* ignore */
+  }
+  emit();
+}
+
 export type { PracticeId };

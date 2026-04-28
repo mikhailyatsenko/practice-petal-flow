@@ -1,6 +1,7 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, Hourglass, Mic } from "lucide-react";
+import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, Hourglass, RotateCcw } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { resetAllPractices } from "@/lib/practicesStore";
 
 interface SideMenuProps {
   open: boolean;
@@ -46,6 +47,17 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             <span>Вводная страница</span>
           </Link>
 
+          <button
+            onClick={() => {
+              resetAllPractices();
+              onOpenChange(false);
+            }}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-primary font-medium"
+          >
+            <RotateCcw className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>🔄 Сбросить привычки</span>
+          </button>
+
           <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
             Демо-страницы
           </div>
@@ -84,14 +96,6 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
           >
             <Hourglass className="h-[18px] w-[18px]" strokeWidth={2} />
             <span>Четвёрка — ожидание</span>
-          </Link>
-          <Link
-            to="/practice/self-prog"
-            onClick={() => onOpenChange(false)}
-            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-primary font-medium"
-          >
-            <Mic className="h-[18px] w-[18px]" strokeWidth={2} />
-            <span>🎙 Программирование успеха</span>
           </Link>
 
           <div className="my-2 border-t border-border" />
