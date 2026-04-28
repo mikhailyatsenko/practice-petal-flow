@@ -714,6 +714,20 @@ function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () 
         </div>
       </Card>
 
+      <Card className="p-4 mb-4">
+        <div className="text-[14px] font-semibold mb-1">Дополнительные комментарии</div>
+        <div className="text-[11px] text-muted-foreground mb-3">
+          Напишите, в какие ещё дни и часы вы можете созваниваться, в каком сервисе и любые другие важные детали для второй пары
+        </div>
+        <textarea
+          value={extra}
+          onChange={(e) => setExtra(e.target.value)}
+          placeholder="Например: Если первая среда не подойдёт — готовы перенести на первый вторник или четверг (19:00–21:00 МСК). Созваниваемся через Zoom."
+          className="w-full bg-card rounded-xl px-3.5 py-3 text-[14px] outline-none transition-colors resize-none"
+          style={{ minHeight: 90, border: `1px solid ${extra ? "#FF6D00" : "#ede8df"}` }}
+        />
+      </Card>
+
       <button
         disabled={!valid}
         onClick={onSubmit}
