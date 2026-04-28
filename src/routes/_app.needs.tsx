@@ -17,13 +17,13 @@ export const Route = createFileRoute("/_app/needs")({
 
 type Rating = "sleeping" | "0" | "1" | "2" | "3" | "4"; // 6 levels in spec order
 
-const RATINGS: { key: Rating; color: string; label: string }[] = [
-  { key: "sleeping", color: "#1a1a1a", label: "Спящая потребность: для меня неактуальна, я её не ощущаю" },
-  { key: "0", color: "#ef4444", label: "Полностью не удовлетворена (0–10%)" },
-  { key: "1", color: "#92400e", label: "Удовлетворена минимально (10–30%)" },
-  { key: "2", color: "#f97316", label: "Удовлетворена частично (30–60%)" },
-  { key: "3", color: "#facc15", label: "Почти удовлетворена (70–80%)" },
-  { key: "4", color: "#16a34a", label: "Полностью удовлетворена (90–100%)" },
+const RATINGS: { key: Rating; color: string; emoji: string; label: string }[] = [
+  { key: "sleeping", color: "#1a1a1a", emoji: "⚫️", label: "Спящая потребность: для меня неактуальна, я её не ощущаю" },
+  { key: "0", color: "#ef4444", emoji: "🔴", label: "Полностью не удовлетворена (0–10%)" },
+  { key: "1", color: "#92400e", emoji: "🟤", label: "Удовлетворена минимально (10–30%)" },
+  { key: "2", color: "#f97316", emoji: "🟠", label: "Удовлетворена частично (30–60%)" },
+  { key: "3", color: "#facc15", emoji: "🟡", label: "Почти удовлетворена (70–80%)" },
+  { key: "4", color: "#16a34a", emoji: "🟢", label: "Полностью удовлетворена (90–100%)" },
 ];
 
 interface NeedDef {
@@ -279,7 +279,7 @@ function NeedRow({
     return () => document.removeEventListener("mousedown", handler);
   }, [menuOpen]);
 
-  const dotColor = rating ? RATINGS.find((r) => r.key === rating)!.color : "#e5e7eb";
+  const ratingDef = rating ? RATINGS.find((r) => r.key === rating) : undefined;
 
   return (
     <div
@@ -291,10 +291,30 @@ function NeedRow({
         className="tap flex w-full items-center gap-3 text-left"
         style={{ padding: "14px 16px" }}
       >
-        <span
-          className="shrink-0"
-          style={{ width: 20, height: 20, borderRadius: "50%", background: dotColor }}
-        />
+        {ratingDef ? (
+          <span
+            className="shrink-0 leading-none"
+            style={{
+              fontSize: 20,
+              fontFamily:
+                '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif',
+            }}
+            aria-label={ratingDef.label}
+          >
+            {ratingDef.emoji}
+          </span>
+        ) : (
+          <span
+            className="shrink-0"
+            style={{
+              width: 20,
+              height: 20,
+              borderRadius: "50%",
+              border: "1.5px dashed #d4cfc4",
+              background: "transparent",
+            }}
+          />
+        )}
         <span
           className="flex-1 truncate"
           style={{ fontSize: 15, fontWeight: 600, color: "#1a1a1a" }}
