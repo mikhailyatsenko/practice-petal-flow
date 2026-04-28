@@ -1878,7 +1878,7 @@ function CreateWishWizard({
           <div className="mt-6 flex gap-2">
             <button
               onClick={() => setStep(1)}
-              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
             >
               ← Назад
             </button>
@@ -1967,7 +1967,7 @@ function CreateWishWizard({
           <div className="mt-6 flex gap-2">
             <button
               onClick={() => setStep(2)}
-              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
             >
               ← Назад
             </button>
@@ -2777,7 +2777,7 @@ function CreateGoalWizard({
           <div className="mt-6 flex gap-2">
             <button
               onClick={handleBack}
-              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
             >
               ← Назад
             </button>
@@ -2822,7 +2822,7 @@ function CreateGoalWizard({
           <div className="mt-6 flex gap-2">
             <button
               onClick={handleBack}
-              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
             >
               ← Назад
             </button>
@@ -2867,7 +2867,7 @@ function CreateGoalWizard({
           <div className="mt-6 flex gap-2">
             <button
               onClick={handleBack}
-              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
             >
               ← Назад
             </button>
