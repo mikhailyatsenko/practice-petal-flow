@@ -221,6 +221,8 @@ export function resetAllPractices() {
       wishes: false,
     },
     charges: {},
+    // shadowCharges НЕ сбрасываем — это «настоящая» история лайков.
+    shadowCharges: state.shadowCharges,
     totalItems: state.totalItems,
   };
   try {
