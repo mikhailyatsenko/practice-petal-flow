@@ -91,6 +91,7 @@ function SelfProgScreen() {
   const handleSpeak = () => {
     const next = !doneToday;
     setDoneToday(next);
+    setPracticeDone("self-prog", next);
     try {
       if (next) {
         localStorage.setItem(DONE_KEY, todayStr());

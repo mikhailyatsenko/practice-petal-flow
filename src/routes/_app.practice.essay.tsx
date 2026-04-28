@@ -114,6 +114,7 @@ function EssayScreen() {
     setEssay(finalText);
     setTrimmedNotice(trimmed);
     setDoneToday(true);
+    setPracticeDone("essay", true);
     setTodayAdded(newText.length);
     setDraft("");
     try {

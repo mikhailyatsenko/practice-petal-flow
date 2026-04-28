@@ -70,6 +70,7 @@ function ChargeScreen() {
   const handleMarkDone = () => {
     if (!bothDone || doneToday) return;
     setDoneToday(true);
+    setPracticeDone("charge", true);
     try {
       localStorage.setItem(DONE_KEY, todayStr());
     } catch {

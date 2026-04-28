@@ -110,6 +110,7 @@ function SkillScreen() {
   const handleCount = () => {
     if (items.length < 1 || doneToday) return;
     setDoneToday(true);
+    setPracticeDone("skill", true);
     try {
       localStorage.setItem(DONE_KEY, todayStr());
       // Сохранить в историю
