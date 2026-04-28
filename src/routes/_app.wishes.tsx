@@ -1486,18 +1486,14 @@ function DesireCharge({ level, onTap, mode = "inspire", id }: { level: number; o
       >
         <span
           key={`proud-${total}`}
-          className={`inline-flex items-center justify-center transition-transform active:scale-90 ${liked ? "animate-pop" : ""}`}
+          className={`inline-flex items-center justify-center transition-transform active:scale-90 text-[22px] leading-none ${liked ? "animate-pop" : ""}`}
+          style={{ fontFamily: '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif' }}
         >
-          <Heart
-            className="h-[22px] w-[22px]"
-            strokeWidth={2}
-            fill={liked ? "#FF6D00" : "none"}
-            color={liked ? "#FF6D00" : "#c8c0b0"}
-          />
+          {liked ? "❤️" : "🤍"}
         </span>
         <span
           className="text-[13px] font-medium leading-none inline-flex items-center gap-1.5"
-          style={{ color: liked ? "#FF6D00" : "#9c8f7a" }}
+          style={{ color: liked ? "#E53935" : "#9c8f7a" }}
         >
           <span>Горжусь</span>
           {total > 0 && (
