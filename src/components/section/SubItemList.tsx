@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { ChevronRight, Lock } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -21,11 +22,7 @@ export function SubItemList({ items }: SubItemListProps) {
       {items.map((it, i) => {
         const Icon = it.icon;
         return (
-          <button
-            key={i}
-            onClick={it.onClick}
-            className="tap w-full bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 text-left animate-fade-up"
-          >
+          <PressableItem key={i} onClick={it.onClick}>
             <div className="h-10 w-10 shrink-0 rounded-xl bg-secondary flex items-center justify-center text-xl">
               {it.emoji ?? (Icon ? <Icon className="h-5 w-5 text-foreground/70" /> : "•")}
             </div>
@@ -47,9 +44,43 @@ export function SubItemList({ items }: SubItemListProps) {
             ) : (
               <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
             )}
-          </button>
+          </PressableItem>
         );
       })}
+    </div>
+  );
+}
+
+function PressableItem({ onClick, children }: { onClick?: () => void; children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const handle = () => {
+    const el = ref.current;
+    if (el) {
+      el.style.transform = "scale(0.97)";
+      el.style.background = "rgba(255,109,0,0.06)";
+      window.setTimeout(() => {
+        el.style.transform = "scale(1)";
+        el.style.background = "";
+      }, 180);
+    }
+    onClick?.();
+  };
+  return (
+    <div
+      ref={ref}
+      role="button"
+      tabIndex={0}
+      onClick={handle}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handle();
+        }
+      }}
+      style={{ transition: "transform 0.18s ease, background 0.18s ease" }}
+      className="tap w-full bg-card hairline rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 text-left animate-fade-up cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+    >
+      {children}
     </div>
   );
 }
