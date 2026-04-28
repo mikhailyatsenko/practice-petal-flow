@@ -72,13 +72,37 @@ export function usePracticeDone(id: PracticeId): boolean {
 export function bumpCharge(id: string) {
   const next = (state.charges[id] ?? 0) + 1;
   state = { ...state, charges: { ...state.charges, [id]: next } };
+  maybeAutoCompleteCharge();
   emit();
 }
 
 export function setChargeTotal(total: number) {
   if (state.totalItems === total) return;
   state = { ...state, totalItems: total };
+  maybeAutoCompleteCharge();
   emit();
+}
+
+// Если выполнены оба условия зарядки желаний — автоматически засчитываем
+// практику «charge», даже если пользователь сейчас не на её странице.
+function maybeAutoCompleteCharge() {
+  if (state.done.charge) return;
+  const values = Object.values(state.charges);
+  const charged = values.filter((v) => v > 0).length;
+  let maxLevel = 0;
+  for (const v of values) if (v > maxLevel) maxLevel = v;
+  const cond1 = state.totalItems > 0 && charged >= state.totalItems;
+  const cond2 = maxLevel >= 5;
+  if (cond1 && cond2) {
+    state = { ...state, done: { ...state.done, charge: true } };
+    try {
+      const d = new Date();
+      const today = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+      localStorage.setItem("charge-done-v1", today);
+    } catch {
+      /* ignore */
+    }
+  }
 }
 
 export function getChargeFor(id: string): number {
