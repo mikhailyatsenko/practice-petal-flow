@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import { ChevronRight, ChevronLeft } from "lucide-react";
+import { useRef, type KeyboardEvent, type MouseEvent } from "react";
+import { ChevronLeft } from "lucide-react";
 export type DayState = "done" | "missed" | "empty";
 
 export interface PracticeRow {
@@ -111,7 +111,7 @@ export function PracticeRowCard({ practice, onToggle, onMarkDone }: PracticeRowC
   const { id, title, streakDays, doneToday, level, progress } = practice;
   const cardRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLSpanElement>(null);
-  const buttonRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const playPressEffect = () => {
     const el = cardRef.current;
@@ -130,6 +130,19 @@ export function PracticeRowCard({ practice, onToggle, onMarkDone }: PracticeRowC
     playPressEffect();
   };
 
+  const handleCardKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleActivate();
+    }
+  };
+
+  const handleMarkDone = (e: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onMarkDone?.(id, buttonRef.current);
+  };
+
   // Логика: progress < 0 => N красных слева (пропуски обнулили прогресс).
   // progress > 0 => N зелёных слева. Остальное — пусто.
   const hasMissedStreak = progress < 0;
@@ -145,64 +158,21 @@ export function PracticeRowCard({ practice, onToggle, onMarkDone }: PracticeRowC
   const progressValue = progress;
 
   return (
+    <div className="relative w-full">
     <div
       ref={cardRef}
       role="button"
       tabIndex={0}
       onClick={handleActivate}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          handleActivate();
-        }
-      }}
+      onKeyDown={handleCardKeyDown}
       style={{ transition: "transform 0.18s ease, background 0.18s ease" }}
       className="tap w-full text-left bg-card hairline rounded-xl px-3 py-2 shadow-card animate-fade-up cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
     >
-      {/* Верхняя строка: название + кнопка/шеврон справа (фикс. высота) */}
-      <div className="flex items-start gap-2 min-h-[32px]">
+      {/* Верхняя строка: название, место справа зарезервировано под независимую кнопку */}
+      <div className="flex items-start gap-2 min-h-[32px] pr-[96px]">
         <h3 className="text-[14px] font-medium leading-tight truncate flex-1 min-w-0 pt-1">
           {title}
         </h3>
-        <div className="shrink-0 flex items-center justify-center min-h-[32px]">
-          {!doneToday ? (
-            <div
-              ref={buttonRef}
-              role="button"
-              tabIndex={0}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onMarkDone) onMarkDone(id, buttonRef.current);
-                else onToggle(id, buttonRef.current);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (onMarkDone) onMarkDone(id, buttonRef.current);
-                  else onToggle(id, buttonRef.current);
-                }
-              }}
-              style={{
-                background: "linear-gradient(135deg,#FFB300,#FF6D00)",
-                borderRadius: 20,
-                padding: "6px 14px",
-                fontSize: 12,
-                fontWeight: 500,
-                color: "#fff",
-                whiteSpace: "nowrap",
-                cursor: "pointer",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 4,
-              }}
-            >
-              Сделать <ChevronLeft className="h-3.5 w-3.5 rotate-180 stroke-[2.75]" aria-hidden />
-            </div>
-          ) : (
-            <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
-          )}
-        </div>
       </div>
 
       {/* Вторая строка: серия / пропуски */}
@@ -274,6 +244,35 @@ export function PracticeRowCard({ practice, onToggle, onMarkDone }: PracticeRowC
         </span>
       </div>
 
+    </div>
+    {!doneToday && (
+      <button
+        type="button"
+        ref={buttonRef}
+        onClick={handleMarkDone}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            handleMarkDone(e);
+          }
+        }}
+        style={{
+          background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+          borderRadius: 20,
+          padding: "6px 14px",
+          fontSize: 12,
+          fontWeight: 500,
+          color: "#fff",
+          whiteSpace: "nowrap",
+          cursor: "pointer",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 4,
+        }}
+        className="absolute right-3 top-2 z-10"
+      >
+        Сделать <ChevronLeft className="h-3.5 w-3.5 rotate-180 stroke-[2.75]" aria-hidden />
+      </button>
+    )}
     </div>
   );
 }
