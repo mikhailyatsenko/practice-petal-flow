@@ -688,6 +688,7 @@ function WishesScreen() {
 
     if (tab === "wants") {
       return (
+        <>
         <div className="px-4 pt-3">
           {adding ? (
             <InlineHotelkaForm
@@ -727,6 +728,8 @@ function WishesScreen() {
             Маленькие хотелки — большие радости 🌿
           </div>
         </div>
+        <HowItWorks tab="wants" />
+        </>
       );
     }
 
