@@ -375,7 +375,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       </div>
 
       {grouped.length === 0 && (
-        <div className="text-center text-[13px] text-muted-foreground py-10">
+        <div className="text-center text-[13px] text-[#FF6D00] py-10">
           Пока нет задач по выбранному фильтру. Добавь первую ✨
         </div>
       )}
@@ -758,7 +758,7 @@ function TaskDetailScreen({
   return (
     <div className="px-4 pt-3 pb-6 space-y-4">
       <div className="flex items-center justify-between">
-        <button onClick={onBack} className="tap inline-flex items-center gap-1.5 text-[14px] text-muted-foreground">
+        <button onClick={onBack} className="tap inline-flex items-center gap-1.5 text-[14px] text-[#FF6D00]">
           <ArrowLeft className="h-4 w-4" /> К задачам
         </button>
       </div>
@@ -853,7 +853,7 @@ export function CreateOrEditTaskScreen({
   return (
     <div className="px-4 pt-3 pb-6 space-y-4">
       <div className="flex items-center justify-between">
-        <button onClick={onCancel} className="tap inline-flex items-center gap-1.5 text-[14px] text-muted-foreground">
+        <button onClick={onCancel} className="tap inline-flex items-center gap-1.5 text-[14px] text-[#FF6D00]">
           <ArrowLeft className="h-4 w-4" /> Отмена
         </button>
         <h1 className="text-[15px] font-semibold">{mode === "create" ? "Новая задача" : "Изменить задачу"}</h1>

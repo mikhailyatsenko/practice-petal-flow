@@ -935,7 +935,7 @@ function WishesScreen() {
               />
             ))}
             {wishes.filter((w) => !doneWishes.has(w.id)).length === 0 && (
-              <div className="text-center text-[13px] text-muted-foreground py-10">
+              <div className="text-center text-[13px] text-[#FF6D00] py-10">
                 Пока нет желаний. Добавь первое ✨
               </div>
             )}
@@ -1645,7 +1645,7 @@ function WizardHeader({ title, onBack }: { title: string; onBack: () => void }) 
   return (
     <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50">
       <div className="flex items-center px-4 py-3">
-        <button onClick={onBack} className="tap inline-flex items-center gap-1 text-[13px] text-muted-foreground">
+        <button onClick={onBack} className="tap inline-flex items-center gap-1 text-[13px] text-[#FF6D00]">
           <ArrowLeft className="h-4 w-4" /> Отмена
         </button>
         <h2 className="flex-1 text-center text-[15px] font-semibold pr-12">{title}</h2>
@@ -1701,7 +1701,7 @@ function CreateWishWizard({
         <div className="px-4 pt-8 text-center animate-fade-up">
           <div className="text-6xl mb-3">🌟</div>
           <h2 className="text-[20px] font-bold">Желание создано!</h2>
-          <p className="mt-1.5 text-[13px] text-muted-foreground">
+          <p className="mt-1.5 text-[13px] text-[#FF6D00]">
             Твоё желание добавлено в ленту
           </p>
 
@@ -1745,7 +1745,7 @@ function CreateWishWizard({
       {step === 1 && (
         <div className="px-4 animate-fade-up">
           <h2 className="text-[18px] font-bold leading-tight">Как называется твоё желание?</h2>
-          <p className="mt-1.5 text-[14px] text-muted-foreground">
+          <p className="mt-1.5 text-[14px] text-[#FF6D00]">
             Напиши своё желание или выбери одну из хотелок ниже, чтобы превратить её в желание.
           </p>
 
@@ -1814,7 +1814,7 @@ function CreateWishWizard({
       {step === 2 && (
         <div className="px-4 animate-fade-up">
           <h2 className="text-[18px] font-bold leading-tight">Почему это важно?</h2>
-          <p className="mt-1.5 text-[14px] text-muted-foreground">
+          <p className="mt-1.5 text-[14px] text-[#FF6D00]">
             Запиши причины — они держат мотивацию когда становится трудно.
           </p>
 
@@ -1878,7 +1878,7 @@ function CreateWishWizard({
           <div className="mt-6 flex gap-2">
             <button
               onClick={() => setStep(1)}
-              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
             >
               ← Назад
             </button>
@@ -1902,7 +1902,7 @@ function CreateWishWizard({
       {step === 3 && (
         <div className="px-4 animate-fade-up">
           <h2 className="text-[18px] font-bold leading-tight">Добавь картинку</h2>
-          <p className="mt-1.5 text-[14px] text-muted-foreground">
+          <p className="mt-1.5 text-[14px] text-[#FF6D00]">
             Визуальный образ усиливает желание. Загрузи фото с телефона или компьютера.
           </p>
 
@@ -1967,7 +1967,7 @@ function CreateWishWizard({
           <div className="mt-6 flex gap-2">
             <button
               onClick={() => setStep(2)}
-              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
             >
               ← Назад
             </button>
@@ -2027,7 +2027,7 @@ function EditWishScreen({
         <div className="flex items-center gap-2 px-4 py-3">
           <button
             onClick={onClose}
-            className="tap inline-flex items-center gap-1 text-[13px] text-muted-foreground"
+            className="tap inline-flex items-center gap-1 text-[13px] text-[#FF6D00]"
           >
             <ArrowLeft className="h-4 w-4" /> К желанию
           </button>
@@ -2630,7 +2630,7 @@ function CreateGoalWizard({
         <div className="px-4 pt-8 text-center animate-fade-up">
           <div className="text-6xl mb-3">🎯</div>
           <h2 className="text-[20px] font-bold">Цель создана!</h2>
-          <p className="mt-1.5 text-[13px] text-muted-foreground">
+          <p className="mt-1.5 text-[13px] text-[#FF6D00]">
             Твоя цель добавлена в ленту целей
           </p>
 
@@ -2680,7 +2680,7 @@ function CreateGoalWizard({
     <div className="min-h-screen bg-background pb-8">
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50">
         <div className="flex items-center px-4 py-3">
-          <button onClick={onClose} className="tap inline-flex items-center gap-1 text-[13px] text-muted-foreground">
+          <button onClick={onClose} className="tap inline-flex items-center gap-1 text-[13px] text-[#FF6D00]">
             <ArrowLeft className="h-4 w-4" /> Отмена
           </button>
           <h2 className="flex-1 text-center text-[15px] font-semibold pr-12">Новая цель</h2>
@@ -2704,13 +2704,13 @@ function CreateGoalWizard({
       {isPickWish && (
         <div className="px-4 animate-fade-up">
           <h2 className="text-[18px] font-bold leading-tight">Выбери желание</h2>
-          <p className="mt-1.5 text-[14px] text-muted-foreground">
+          <p className="mt-1.5 text-[14px] text-[#FF6D00]">
             Цель вырастает из желания — выбери то, которое хочешь воплотить
           </p>
 
           <div className="mt-5 space-y-2">
             {wishes.length === 0 && (
-              <p className="text-[13px] text-muted-foreground text-center py-6">
+              <p className="text-[13px] text-[#FF6D00] text-center py-6">
                 Сначала создай желание во вкладке «Желания»
               </p>
             )}
@@ -2755,7 +2755,7 @@ function CreateGoalWizard({
       {isDeadline && (
         <div className="px-4 animate-fade-up">
           <h2 className="text-[18px] font-bold leading-tight">До какого числа хочешь достичь цели?</h2>
-          <p className="mt-1.5 text-[14px] text-muted-foreground">
+          <p className="mt-1.5 text-[14px] text-[#FF6D00]">
             Выбери дату — конкретный срок помогает двигаться.
           </p>
 
@@ -2777,7 +2777,7 @@ function CreateGoalWizard({
           <div className="mt-6 flex gap-2">
             <button
               onClick={handleBack}
-              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
             >
               ← Назад
             </button>
@@ -2794,7 +2794,7 @@ function CreateGoalWizard({
       {isCriteria && (
         <div className="px-4 animate-fade-up">
           <h2 className="text-[18px] font-bold leading-tight">Напиши критерий готовности</h2>
-          <p className="mt-1.5 text-[14px] text-muted-foreground">
+          <p className="mt-1.5 text-[14px] text-[#FF6D00]">
             Одно предложение — конкретный факт, по которому ты поймёшь что цель достигнута. Не «хочу похудеть», а «вес 74 кг на весах утром».
           </p>
 
@@ -2822,7 +2822,7 @@ function CreateGoalWizard({
           <div className="mt-6 flex gap-2">
             <button
               onClick={handleBack}
-              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
             >
               ← Назад
             </button>
@@ -2840,7 +2840,7 @@ function CreateGoalWizard({
       {isPlan && (
         <div className="px-4 animate-fade-up">
           <h2 className="text-[18px] font-bold leading-tight">Напиши план реализации</h2>
-          <p className="mt-1.5 text-[14px] text-muted-foreground">
+          <p className="mt-1.5 text-[14px] text-[#FF6D00]">
             Опиши шаги — как и в каком порядке ты будешь двигаться к цели.
           </p>
 
@@ -2867,7 +2867,7 @@ function CreateGoalWizard({
           <div className="mt-6 flex gap-2">
             <button
               onClick={handleBack}
-              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-secondary text-muted-foreground hairline"
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
             >
               ← Назад
             </button>
@@ -2958,7 +2958,7 @@ function EditGoalScreen({
         <div className="flex items-center gap-2 px-4 py-3">
           <button
             onClick={onClose}
-            className="tap inline-flex items-center gap-1 text-[13px] text-muted-foreground"
+            className="tap inline-flex items-center gap-1 text-[13px] text-[#FF6D00]"
           >
             <ArrowLeft className="h-4 w-4" /> К цели
           </button>
@@ -3021,7 +3021,7 @@ function EditGoalScreen({
 
         {tab === "deadline" && (
           <div className="animate-fade-up">
-            <p className="text-[13px] text-muted-foreground">
+            <p className="text-[13px] text-[#FF6D00]">
               До какого числа нужно достичь цели
             </p>
             <DateWheelPicker
@@ -3145,7 +3145,7 @@ function EditGoalScreen({
         {tab === "progress" && (
           <div className="animate-fade-up">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[13px] text-muted-foreground">Текущий прогресс</span>
+              <span className="text-[13px] text-[#FF6D00]">Текущий прогресс</span>
               <span
                 className="text-[13px] font-bold text-white px-3 py-1 rounded-full"
                 style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
@@ -3471,7 +3471,7 @@ function RealizedConfirmSheet({
         <div className="text-center text-[48px] leading-none">🎉</div>
         <h3 className="mt-2 text-center text-[18px] font-bold text-foreground">Воплощено?</h3>
         <p
-          className="mt-2 text-center text-[14px] text-muted-foreground"
+          className="mt-2 text-center text-[14px] text-[#FF6D00]"
           style={{ lineHeight: 1.6 }}
         >
           {text}
@@ -3555,7 +3555,7 @@ function DeleteConfirmSheet({
         <div className="text-center text-[48px] leading-none">🗑️</div>
         <h3 className="mt-2 text-center text-[18px] font-bold text-foreground">Удалить?</h3>
         <p
-          className="mt-2 text-center text-[14px] text-muted-foreground"
+          className="mt-2 text-center text-[14px] text-[#FF6D00]"
           style={{ lineHeight: 1.6 }}
         >
           {text}
@@ -3748,7 +3748,7 @@ function WishesDeck({
 
   if (visibleIds.length === 0) {
     return (
-      <div className="text-center text-[13px] text-muted-foreground py-10">
+      <div className="text-center text-[13px] text-[#FF6D00] py-10">
         Пока нет желаний. Добавь первое ✨
       </div>
     );
