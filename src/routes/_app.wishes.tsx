@@ -1082,7 +1082,7 @@ function DesireCharge({ level, onTap, mode = "inspire" }: { level: number; onTap
         : `Горжусь · ${total}`
       : total === 0
         ? "Вдохновляет"
-        : `Вдохновил на ${inRound * 20}%`;
+        : `Зарядился на ${inRound * 20}%`;
   const color = CHARGE_COLORS[inRound];
 
   if (mode === "proud") {
