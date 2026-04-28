@@ -32,6 +32,7 @@ interface FoursomeRequest {
   members: Member[]; // 2
   day: string;
   time: string;
+  extra?: string;
 }
 
 interface FoursomeData {
