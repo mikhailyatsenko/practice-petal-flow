@@ -311,6 +311,24 @@ function WishesScreen() {
   // Быстрая постановка задачи из карточки цели
   const [quickTaskGoalId, setQuickTaskGoalId] = useState<string | null>(null);
 
+  // Синхронизация с практикой «Шаг к цели»: как только хотя бы одна задача
+  // выполнена сегодня — отмечаем привычку сделанной (и на главной, и на её странице).
+  useEffect(() => {
+    const doneCount = moduleTasks.filter((t) => t.done).length;
+    if (doneCount < 1) return;
+    try {
+      const d = new Date();
+      const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      localStorage.setItem(
+        "step-done-v1",
+        JSON.stringify({ date: today, count: doneCount }),
+      );
+    } catch {
+      /* ignore */
+    }
+    setPracticeDone("wishes", true);
+  }, [moduleTasks]);
+
   useEffect(() => {
     const onTouchMove = (event: TouchEvent) => {
       const state = touchRef.current;
