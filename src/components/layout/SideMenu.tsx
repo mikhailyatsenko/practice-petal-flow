@@ -1,7 +1,7 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, Hourglass, RotateCcw } from "lucide-react";
+import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, Hourglass, RotateCcw, CalendarPlus } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { resetAllPractices } from "@/lib/practicesStore";
+import { resetAllPractices, advanceToNextDay } from "@/lib/practicesStore";
 
 interface SideMenuProps {
   open: boolean;
