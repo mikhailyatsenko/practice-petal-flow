@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronDown, Play } from "lucide-react";
-import { setPracticeDone, useEffectiveProgress } from "@/lib/practicesStore";
+import { setPracticeDone, useEffectiveProgress, usePracticeDone } from "@/lib/practicesStore";
 
 export const Route = createFileRoute("/_app/practice/essay")({
   head: () => ({
@@ -76,6 +76,16 @@ function EssayScreen() {
   const essayBoxRef = useRef<HTMLDivElement>(null);
   const { streakDays, rawProgress } = useEffectiveProgress("essay");
   const isNegative = rawProgress < 0;
+  const storeDone = usePracticeDone("essay");
+
+  // «Следующий день» сбросил done — очищаем локальный признак выполнения.
+  useEffect(() => {
+    if (!storeDone && doneToday) {
+      setDoneToday(false);
+      setTodayAdded(0);
+      setTrimmedNotice(false);
+    }
+  }, [storeDone, doneToday]);
 
   useEffect(() => {
     try {
