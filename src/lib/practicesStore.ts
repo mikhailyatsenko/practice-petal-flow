@@ -176,7 +176,9 @@ const PRACTICE_LS_KEYS = [
   "self-prog-done-v2",
   "charge-done-v1",
   "essay-done-v1",
+  "essay-today-added-v1",
   "skill-done-v1",
+  "skill-today-v1",
   "step-done-v1",
 ];
 
