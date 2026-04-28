@@ -241,7 +241,16 @@ const INITIAL_GOALS: Goal[] = [
 ];
 
 function WishesScreen() {
-  const [activeTab, setActiveTab] = useState<TabId>("wishes");
+  const search = Route.useSearch();
+  const [activeTab, setActiveTab] = useState<TabId>(search.tab ?? "wishes");
+
+  // Реакция на смену search-параметра (например, при переходе из «Шаг к цели»)
+  useEffect(() => {
+    if (search.tab && search.tab !== activeTab) {
+      setActiveTab(search.tab);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.tab]);
   const [transitionState, setTransitionState] = useState<{
     current: TabId;
     next: TabId;
