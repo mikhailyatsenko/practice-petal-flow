@@ -1,4 +1,4 @@
-import { useRef, type KeyboardEvent, type MouseEvent, type PointerEvent, type TouchEvent } from "react";
+import { useRef, type KeyboardEvent, type MouseEvent } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 export type DayState = "done" | "missed" | "empty";
 
@@ -124,20 +124,17 @@ export function PracticeRowCard({ practice, onToggle, onMarkDone }: PracticeRowC
     }, 180);
   };
 
-  const isDoneButtonEvent = (target: EventTarget | null) =>
-    target instanceof HTMLElement && Boolean(target.closest("[data-mark-done-button]"));
-
-  const handleActivate = (event?: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>) => {
-    if (event && isDoneButtonEvent(event.target)) return;
+  const handleActivate = () => {
     // Все карточки только переходят на свои экраны — без анимаций тоггла
     onToggle(id, null);
     playPressEffect();
   };
 
-  const stopButtonEvent = (
-    e: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement> | TouchEvent<HTMLButtonElement>,
-  ) => {
-    e.stopPropagation();
+  const handleCardKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleActivate();
+    }
   };
 
   const handleMarkDone = (e: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLButtonElement>) => {
