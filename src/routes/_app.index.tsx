@@ -183,6 +183,7 @@ function HomeScreen() {
 
 
   // Синхронизация статуса "Программирование успеха" с экраном практики через localStorage
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   useEffect(() => {
     const syncSelfProg = () => {
       let done = false;
@@ -212,7 +213,7 @@ function HomeScreen() {
       window.removeEventListener("storage", onStorage);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, []);
+  }, [pathname]);
 
   // Авто-запуск всех анимаций при заходе на главную
   useEffect(() => {
