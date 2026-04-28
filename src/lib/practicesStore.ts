@@ -19,6 +19,10 @@ type ProgressOffsetMap = Record<PracticeId, number>;
 interface StoreState {
   done: DoneMap;
   charges: ChargesMap;
+  // Сколько дней подряд/всего пользователь «заряжал» конкретное желание/цель.
+  // Инкрементируется только на первом тапе нового дня. Бейджик с цифрой 1/2/3
+  // показывает именно это значение, когда у элемента есть хотя бы 1 тап сегодня.
+  daysCount: ChargesMap;
   // Сколько всего объектов (желаний + целей), которые надо «зарядить» (=поставить лайк).
   totalItems: number;
   progressOffset: ProgressOffsetMap;
@@ -33,6 +37,7 @@ let state: StoreState = {
     wishes: false,
   },
   charges: {},
+  daysCount: {},
   totalItems: 0,
   progressOffset: {
     "self-prog": 0,
