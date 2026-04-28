@@ -260,14 +260,23 @@ export function computeEffective(id: PracticeId, doneToday: boolean) {
   return { progress, streakDays, level };
 }
 
+// Кэш снапшотов effective-значений по id, чтобы useSyncExternalStore
+// получал стабильные ссылки и не уходил в бесконечный ререндер.
+type EffectiveSnap = ReturnType<typeof computeEffective>;
+const effectiveCache: Partial<Record<PracticeId, { state: StoreState; snap: EffectiveSnap }>> = {};
+function getEffectiveSnap(id: PracticeId): EffectiveSnap {
+  const cached = effectiveCache[id];
+  if (cached && cached.state === state) return cached.snap;
+  const snap = computeEffective(id, state.done[id]);
+  effectiveCache[id] = { state, snap };
+  return snap;
+}
+
 export function useEffectiveProgress(id: PracticeId) {
   return useSyncExternalStore(
     subscribe,
-    () => {
-      const done = state.done[id];
-      return computeEffective(id, done);
-    },
-    () => computeEffective(id, state.done[id]),
+    () => getEffectiveSnap(id),
+    () => getEffectiveSnap(id),
   );
 }
 
