@@ -223,8 +223,6 @@ function NoBuddy({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         <FormatRow time="20 мин" text="Вместе ставите задачи на неделю" />
       </div>
 
-      {/* How it works */}
-      <button
       {/* How it works — inline collapsible */}
       <section className="mt-4">
         <button
