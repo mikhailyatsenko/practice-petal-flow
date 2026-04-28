@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Plus, X, ArrowLeft, Check, ImageIcon, FolderOpen, Pencil, RotateCw, Sparkles, Trash2, Trophy, MoreHorizontal, ChevronDown } from "lucide-react";
+import { Plus, X, ArrowLeft, Check, ImageIcon, FolderOpen, Pencil, RotateCw, Sparkles, Trash2, Trophy, MoreHorizontal, ChevronDown, Heart } from "lucide-react";
 import wishHouse from "@/assets/wish-house.jpg";
 import wishBali from "@/assets/wish-bali.jpg";
 import wishBody from "@/assets/wish-body.jpg";
@@ -1319,8 +1319,12 @@ function HotelkaItem({
     return (
       <div className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card animate-fade-up">
         <div className="flex items-center gap-3 min-h-[40px]">
-          <div className="h-7 w-7 shrink-0 rounded-full bg-secondary flex items-center justify-center text-[12px] font-medium text-muted-foreground">
-            {index}
+          <div
+            className="h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-white"
+            style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
+            aria-hidden
+          >
+            <Check className="h-4 w-4" strokeWidth={3} />
           </div>
           <p className="text-[14px] leading-snug text-foreground/90 flex-1">
             {text}
@@ -1482,10 +1486,14 @@ function DesireCharge({ level, onTap, mode = "inspire", id }: { level: number; o
       >
         <span
           key={`proud-${total}`}
-          className={`text-[22px] leading-none transition-transform active:scale-90 ${liked ? "animate-pop" : ""}`}
-          style={liked ? undefined : { WebkitTextStroke: "1px #c8c0b0", color: "transparent" }}
+          className={`inline-flex items-center justify-center transition-transform active:scale-90 ${liked ? "animate-pop" : ""}`}
         >
-          {liked ? "❤️" : "🤍"}
+          <Heart
+            className="h-[22px] w-[22px]"
+            strokeWidth={2}
+            fill={liked ? "#FF6D00" : "none"}
+            color={liked ? "#FF6D00" : "#c8c0b0"}
+          />
         </span>
         <span
           className="text-[13px] font-medium leading-none inline-flex items-center gap-1.5"
