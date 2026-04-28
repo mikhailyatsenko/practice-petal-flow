@@ -182,54 +182,9 @@ function HomeScreen() {
   };
 
 
-  // Считываем статус "выполнено сегодня" из localStorage по каждому ключу практики
+  // Все карточки всегда стартуют как "не сделано" — сохранённое состояние не читаем
   void SELF_PROG_DONE_KEY;
-  useEffect(() => {
-    const sync = () => {
-      try {
-        const today = todayStr();
-        const isDone = (key: string): boolean => {
-          const raw = localStorage.getItem(key);
-          if (!raw) return false;
-          if (raw === today) return true;
-          try {
-            const obj = JSON.parse(raw) as { date?: string; count?: number };
-            if (obj && obj.date === today && (obj.count ?? 0) >= 1) return true;
-          } catch {
-            /* not json */
-          }
-          return false;
-        };
-        const map: Record<string, string> = {
-          "self-prog": "self-prog-done-v2",
-          charge: "charge-done-v1",
-          essay: "essay-done-v1",
-          skill: "skill-done-v1",
-          wishes: "step-done-v1",
-        };
-        setPractices((prev) =>
-          prev.map((p) => {
-            const next = isDone(map[p.id] ?? "");
-            return p.doneToday === next ? p : { ...p, doneToday: next };
-          }),
-        );
-      } catch {
-        /* ignore */
-      }
-    };
-    sync();
-    const onVis = () => {
-      if (document.visibilityState === "visible") sync();
-    };
-    window.addEventListener("focus", sync);
-    window.addEventListener("pageshow", sync);
-    document.addEventListener("visibilitychange", onVis);
-    return () => {
-      window.removeEventListener("focus", sync);
-      window.removeEventListener("pageshow", sync);
-      document.removeEventListener("visibilitychange", onVis);
-    };
-  }, []);
+  void todayStr;
 
   // Авто-запуск всех анимаций при заходе на главную
   useEffect(() => {
