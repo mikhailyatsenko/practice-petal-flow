@@ -245,5 +245,34 @@ export function PracticeRowCard({ practice, onToggle, onMarkDone }: PracticeRowC
       </div>
 
     </div>
+    {!doneToday && (
+      <button
+        type="button"
+        ref={buttonRef}
+        onClick={handleMarkDone}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            handleMarkDone(e);
+          }
+        }}
+        style={{
+          background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+          borderRadius: 20,
+          padding: "6px 14px",
+          fontSize: 12,
+          fontWeight: 500,
+          color: "#fff",
+          whiteSpace: "nowrap",
+          cursor: "pointer",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 4,
+        }}
+        className="absolute right-3 top-2 z-10"
+      >
+        Сделать <ChevronLeft className="h-3.5 w-3.5 rotate-180 stroke-[2.75]" aria-hidden />
+      </button>
+    )}
+    </div>
   );
 }
