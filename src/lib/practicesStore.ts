@@ -100,8 +100,22 @@ export function usePracticeDone(id: PracticeId): boolean {
 // ----- charges (зарядка желаний / целей) -----
 
 export function bumpCharge(id: string) {
-  const next = (state.charges[id] ?? 0) + 1;
-  state = { ...state, charges: { ...state.charges, [id]: next } };
+  const currentVisible = state.charges[id] ?? 0;
+  const currentShadow = state.shadowCharges[id] ?? 0;
+  // Кап 100%: не пускаем на второй круг — максимум 5 тапов.
+  if (currentVisible >= CHARGE_MAX) return;
+  // Видимое значение синхронизируется с реальной (теневой) историей,
+  // так что после «Сбросить привычки» первый тап покажет, сколько раз
+  // пост уже лайкали (1 → 2 → 3 после повторных сбросов), но не больше 5.
+  const nextShadow = Math.min(CHARGE_MAX, currentShadow + 1);
+  const nextVisible = Math.min(CHARGE_MAX, Math.max(currentVisible + 1, nextShadow));
+  const nextShadowMap = { ...state.shadowCharges, [id]: nextShadow };
+  state = {
+    ...state,
+    charges: { ...state.charges, [id]: nextVisible },
+    shadowCharges: nextShadowMap,
+  };
+  saveShadow(nextShadowMap);
   maybeAutoCompleteCharge();
   emit();
 }
