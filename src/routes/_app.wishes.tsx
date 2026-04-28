@@ -329,6 +329,14 @@ function WishesScreen() {
     setPracticeDone("wishes", true);
   }, [moduleTasks]);
 
+  // Сообщаем «Зарядке желаний» сколько всего активных объектов нужно зарядить
+  // (активные желания + активные цели — без воплощённых).
+  useEffect(() => {
+    const activeWishes = wishes.filter((w) => !doneWishes.has(w.id)).length;
+    const activeGoals = goals.filter((g) => !doneGoals.has(g.id)).length;
+    setChargeTotal(activeWishes + activeGoals);
+  }, [wishes, goals, doneWishes, doneGoals]);
+
   useEffect(() => {
     const onTouchMove = (event: TouchEvent) => {
       const state = touchRef.current;
