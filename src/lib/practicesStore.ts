@@ -221,6 +221,7 @@ export function resetAllPractices() {
       wishes: false,
     },
     charges: {},
+    daysCount: {},
     totalItems: state.totalItems,
     progressOffset: {
       "self-prog": 0,
