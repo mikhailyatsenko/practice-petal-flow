@@ -648,6 +648,7 @@ function WishesScreen() {
   const renderTabContent = (tab: TabId) => {
     if (tab === "wishes") {
       return (
+        <>
         <div className="px-4 pt-3 space-y-4">
           <button
             onClick={() => setCreating(true)}
@@ -680,6 +681,8 @@ function WishesScreen() {
             Это все твои желания на сегодня ✨
           </div>
         </div>
+        <HowItWorks tab="wishes" />
+        </>
       );
     }
 
