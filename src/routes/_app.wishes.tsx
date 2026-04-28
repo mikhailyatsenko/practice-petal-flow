@@ -1319,8 +1319,12 @@ function HotelkaItem({
     return (
       <div className="bg-card hairline rounded-xl px-3.5 py-3 shadow-card animate-fade-up">
         <div className="flex items-center gap-3 min-h-[40px]">
-          <div className="h-7 w-7 shrink-0 rounded-full bg-secondary flex items-center justify-center text-[12px] font-medium text-muted-foreground">
-            {index}
+          <div
+            className="h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-white"
+            style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
+            aria-hidden
+          >
+            <Check className="h-4 w-4" strokeWidth={3} />
           </div>
           <p className="text-[14px] leading-snug text-foreground/90 flex-1">
             {text}
