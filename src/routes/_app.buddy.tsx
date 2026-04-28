@@ -771,6 +771,18 @@ function ConfirmSheet({
           {req.bio}
         </div>
 
+        {req.extra && (
+          <div
+            className="mt-2 rounded-xl p-3 text-[13px]"
+            style={{ background: "#fff8ee", border: "1px solid #ffe0a3", lineHeight: 1.5 }}
+          >
+            <div className="text-[11px] font-bold uppercase mb-1" style={{ color: "#FF6D00", letterSpacing: 0.4 }}>
+              💬 Доп. комментарии
+            </div>
+            <p className="text-foreground/85">{req.extra}</p>
+          </div>
+        )}
+
         <p className="text-[13px] text-muted-foreground text-center mt-4 leading-snug">
           Отправить запрос на партнёрство? {req.name} получит уведомление и сможет принять или отклонить.
         </p>
