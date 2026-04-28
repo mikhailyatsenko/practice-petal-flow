@@ -735,6 +735,7 @@ function WishesScreen() {
 
     if (tab === "goals") {
       return (
+        <>
         <div className="px-4 pt-3 space-y-4">
           <button
             onClick={() => setCreatingGoal({ returnTo: "goals" })}
