@@ -168,6 +168,21 @@ export function PracticeRowCard({ practice, onToggle, onMarkDone }: PracticeRowC
           {!doneToday ? (
             <div
               ref={buttonRef}
+              role="button"
+              tabIndex={0}
+              onClick={(e) => {
+                e.stopPropagation();
+                onMarkDone?.(id);
+                playPressEffect();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onMarkDone?.(id);
+                  playPressEffect();
+                }
+              }}
               style={{
                 background: "linear-gradient(135deg,#FFB300,#FF6D00)",
                 borderRadius: 20,
