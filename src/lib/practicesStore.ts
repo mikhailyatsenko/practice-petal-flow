@@ -250,6 +250,7 @@ export function computeEffective(id: PracticeId, doneToday: boolean) {
     if (progress <= 0) progress = 1;
     else progress = progress + 1;
   }
+  const rawProgress = progress;
   const streakDays = Math.max(0, progress);
   let level: number;
   if (progress <= 0) {
