@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Plus, X, ArrowLeft, Check, ImageIcon, FolderOpen, Pencil, RotateCw, Sparkles, Trash2, Trophy, MoreHorizontal } from "lucide-react";
+import { Plus, X, ArrowLeft, Check, ImageIcon, FolderOpen, Pencil, RotateCw, Sparkles, Trash2, Trophy, MoreHorizontal, ChevronDown } from "lucide-react";
 import wishHouse from "@/assets/wish-house.jpg";
 import wishBali from "@/assets/wish-bali.jpg";
 import wishBody from "@/assets/wish-body.jpg";
