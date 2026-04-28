@@ -249,6 +249,8 @@ function EssayScreen() {
               lineHeight: 1.8,
               padding: "14px 16px",
               whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+              overflowWrap: "anywhere",
               color: essay ? "#1f2937" : "#9ca3af",
             }}
           >
