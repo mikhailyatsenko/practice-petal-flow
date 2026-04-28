@@ -181,6 +181,11 @@ function HomeScreen() {
     }
   };
 
+  const markDone = (id: string) => {
+    setPractices((prev) =>
+      prev.map((x) => (x.id === id ? { ...x, doneToday: true } : x)),
+    );
+  };
 
   // Все карточки всегда стартуют как "не сделано" — сохранённое состояние не читаем
   void SELF_PROG_DONE_KEY;
@@ -382,11 +387,7 @@ function HomeScreen() {
               <PracticeRowCard
                 practice={p}
                 onToggle={togglePractice}
-                onMarkDone={(id) =>
-                  setPractices((prev) =>
-                    prev.map((x) => (x.id === id ? { ...x, doneToday: true } : x)),
-                  )
-                }
+                onMarkDone={markDone}
               />
             </div>
           ))}
