@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, type KeyboardEvent, type MouseEvent, type PointerEvent, type TouchEvent } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 export type DayState = "done" | "missed" | "empty";
 
@@ -111,7 +111,7 @@ export function PracticeRowCard({ practice, onToggle, onMarkDone }: PracticeRowC
   const { id, title, streakDays, doneToday, level, progress } = practice;
   const cardRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLSpanElement>(null);
-  const buttonRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const playPressEffect = () => {
     const el = cardRef.current;
@@ -124,10 +124,26 @@ export function PracticeRowCard({ practice, onToggle, onMarkDone }: PracticeRowC
     }, 180);
   };
 
-  const handleActivate = () => {
+  const isDoneButtonEvent = (target: EventTarget | null) =>
+    target instanceof HTMLElement && Boolean(target.closest("[data-mark-done-button]"));
+
+  const handleActivate = (event?: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>) => {
+    if (event && isDoneButtonEvent(event.target)) return;
     // Все карточки только переходят на свои экраны — без анимаций тоггла
     onToggle(id, null);
     playPressEffect();
+  };
+
+  const stopButtonEvent = (
+    e: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement> | TouchEvent<HTMLButtonElement>,
+  ) => {
+    e.stopPropagation();
+  };
+
+  const handleMarkDone = (e: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onMarkDone?.(id, buttonRef.current);
   };
 
   // Логика: progress < 0 => N красных слева (пропуски обнулили прогресс).
@@ -153,7 +169,7 @@ export function PracticeRowCard({ practice, onToggle, onMarkDone }: PracticeRowC
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          handleActivate();
+          handleActivate(e);
         }
       }}
       style={{ transition: "transform 0.18s ease, background 0.18s ease" }}
@@ -166,21 +182,17 @@ export function PracticeRowCard({ practice, onToggle, onMarkDone }: PracticeRowC
         </h3>
         <div className="shrink-0 flex items-center justify-center min-h-[32px]">
           {!doneToday ? (
-            <div
+            <button
+              type="button"
+              data-mark-done-button
               ref={buttonRef}
-              role="button"
-              tabIndex={0}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onMarkDone) onMarkDone(id, buttonRef.current);
-                else onToggle(id, buttonRef.current);
-              }}
+              onPointerDown={stopButtonEvent}
+              onMouseDown={stopButtonEvent}
+              onTouchStart={stopButtonEvent}
+              onClick={handleMarkDone}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (onMarkDone) onMarkDone(id, buttonRef.current);
-                  else onToggle(id, buttonRef.current);
+                  handleMarkDone(e);
                 }
               }}
               style={{
@@ -198,7 +210,7 @@ export function PracticeRowCard({ practice, onToggle, onMarkDone }: PracticeRowC
               }}
             >
               Сделать <ChevronLeft className="h-3.5 w-3.5 rotate-180 stroke-[2.75]" aria-hidden />
-            </div>
+            </button>
           ) : (
             <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
           )}
