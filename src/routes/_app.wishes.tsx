@@ -11,7 +11,7 @@ import goalMarathon from "@/assets/goal-marathon.jpg";
 import goalLanguage from "@/assets/goal-language.jpg";
 import goalSavings from "@/assets/goal-savings.jpg";
 import { TasksModule, CreateOrEditTaskScreen, type Task as ModuleTask } from "@/components/tasks/TasksModule";
-import { setPracticeDone } from "@/lib/practicesStore";
+import { setPracticeDone, useChargesMap, bumpCharge, setChargeTotal } from "@/lib/practicesStore";
 
 const VALID_TABS = ["wants", "wishes", "goals", "tasks", "done"] as const;
 type WishesSearch = { tab?: typeof VALID_TABS[number] };
@@ -258,13 +258,13 @@ function WishesScreen() {
     stage: "animating";
   } | null>(null);
   const touchRef = useRef<{ x: number; y: number; active: boolean }>({ x: 0, y: 0, active: false });
-  const [inspires, setInspires] = useState<Record<string, number>>({});
+  const inspires = useChargesMap();
   const [wishes, setWishes] = useState<Wish[]>(INITIAL_WISHES);
   const [hotelki, setHotelki] = useState<string[]>(INITIAL_HOTELKI);
 
   // Цели
   const [goals, setGoals] = useState<Goal[]>(INITIAL_GOALS);
-  const [goalInspires, setGoalInspires] = useState<Record<string, number>>({});
+  const goalInspires = inspires; // единый источник для зарядки желаний и целей
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [creatingGoal, setCreatingGoal] = useState<null | { fromWish?: Wish; returnTo?: TabId }>(null);
 
@@ -329,6 +329,14 @@ function WishesScreen() {
     setPracticeDone("wishes", true);
   }, [moduleTasks]);
 
+  // Сообщаем «Зарядке желаний» сколько всего активных объектов нужно зарядить
+  // (активные желания + активные цели — без воплощённых).
+  useEffect(() => {
+    const activeWishes = wishes.filter((w) => !doneWishes.has(w.id)).length;
+    const activeGoals = goals.filter((g) => !doneGoals.has(g.id)).length;
+    setChargeTotal(activeWishes + activeGoals);
+  }, [wishes, goals, doneWishes, doneGoals]);
+
   useEffect(() => {
     const onTouchMove = (event: TouchEvent) => {
       const state = touchRef.current;
@@ -386,10 +394,10 @@ function WishesScreen() {
   };
 
   const handleInspire = (id: string) => {
-    setInspires((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
+    bumpCharge(id);
   };
   const handleGoalInspire = (id: string) => {
-    setGoalInspires((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
+    bumpCharge(id);
   };
 
   const handleAddHotelka = () => {

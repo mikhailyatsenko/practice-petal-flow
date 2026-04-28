@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronDown, Play, Check } from "lucide-react";
-import { setPracticeDone } from "@/lib/practicesStore";
+import { setPracticeDone, useChargeStats } from "@/lib/practicesStore";
 
 export const Route = createFileRoute("/_app/practice/wishes-charge")({
   head: () => ({
@@ -37,11 +37,7 @@ const todayStr = () => {
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 };
 
-// Демо: количество желаний/целей и их прогресс зарядки
-// В реальности должно подтягиваться из раздела «Желания».
-const DEMO_TOTAL = 8;
-const DEMO_CHARGED = 5; // сколько заряжено хотя бы на 20%
-const DEMO_MAX_PERCENT = 60; // максимум среди всех
+// Числа подтягиваются из общего хранилища (см. useChargeStats).
 
 function ChargeScreen() {
   const navigate = useNavigate();
@@ -50,6 +46,9 @@ function ChargeScreen() {
   const [howTab, setHowTab] = useState<"text" | "video">("text");
 
   const streakDays = 12;
+
+  // Реальные данные о зарядке желаний/целей из общего хранилища
+  const { total, charged, maxPercent } = useChargeStats();
 
   useEffect(() => {
     try {
@@ -67,8 +66,11 @@ function ChargeScreen() {
   const progressInLevel = streakDays % 30;
   const levelName = LEVELS[level];
 
-  const cond1Done = DEMO_CHARGED >= DEMO_TOTAL;
-  const cond2Done = DEMO_MAX_PERCENT >= 100;
+  // Условия выполнения практики:
+  //   1) Каждое желание/цель получило хотя бы один лайк (charged >= total, total > 0)
+  //   2) Хотя бы одно — заряжено на 100% (5 тапов = 100%)
+  const cond1Done = total > 0 && charged >= total;
+  const cond2Done = maxPercent >= 100;
   const bothDone = cond1Done && cond2Done;
 
   const handleMarkDone = () => {
@@ -191,12 +193,12 @@ function ChargeScreen() {
           <ChecklistItem
             done={cond1Done}
             text="Поставить лайк каждому желанию и цели"
-            counter={`${DEMO_CHARGED} / ${DEMO_TOTAL}`}
+            counter={`${charged} / ${total}`}
           />
           <ChecklistItem
             done={cond2Done}
             text="Одно желание или цель зарядить на 100%"
-            counter={`${DEMO_MAX_PERCENT}%`}
+            counter={`${maxPercent}%`}
           />
         </div>
       </section>
