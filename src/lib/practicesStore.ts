@@ -11,11 +11,17 @@ type DoneMap = Record<PracticeId, boolean>;
 // 5 тапов = 100% (см. DesireCharge: inRound = ((total-1) % 5) + 1).
 type ChargesMap = Record<string, number>;
 
+// Смещение прогресса по дням относительно базовых значений на «Дне 1».
+// Каждое нажатие «Следующий день» увеличивает offset для всех практик,
+// которые были отмечены сделанными в этот день.
+type ProgressOffsetMap = Record<PracticeId, number>;
+
 interface StoreState {
   done: DoneMap;
   charges: ChargesMap;
   // Сколько всего объектов (желаний + целей), которые надо «зарядить» (=поставить лайк).
   totalItems: number;
+  progressOffset: ProgressOffsetMap;
 }
 
 let state: StoreState = {
@@ -28,6 +34,13 @@ let state: StoreState = {
   },
   charges: {},
   totalItems: 0,
+  progressOffset: {
+    "self-prog": 0,
+    charge: 0,
+    essay: 0,
+    skill: 0,
+    wishes: 0,
+  },
 };
 
 const listeners = new Set<() => void>();
@@ -178,6 +191,67 @@ export function resetAllPractices() {
     },
     charges: {},
     totalItems: state.totalItems,
+    progressOffset: {
+      "self-prog": 0,
+      charge: 0,
+      essay: 0,
+      skill: 0,
+      wishes: 0,
+    },
+  };
+  try {
+    for (const k of PRACTICE_LS_KEYS) localStorage.removeItem(k);
+  } catch {
+    /* ignore */
+  }
+  emit();
+}
+
+// ----- «Следующий день» -----
+// Базовые значения progress на «Дне 1» (см. initialPractices в _app.index.tsx).
+const BASE_PROGRESS: Record<PracticeId, number> = {
+  "self-prog": 17,
+  charge: 12,
+  essay: -6,
+  skill: 22,
+  wishes: 4,
+};
+
+export function useProgressOffset(): ProgressOffsetMap {
+  return useSyncExternalStore(
+    subscribe,
+    () => state.progressOffset,
+    () => state.progressOffset,
+  );
+}
+
+// «Следующий день»: для каждой выполненной сегодня практики увеличиваем offset.
+// Если базовый прогресс был отрицательным (пропуски) и текущий effective <= 0,
+// первое выполнение переводит сразу в +1 зелёный кружок (а не в -5).
+export function advanceToNextDay() {
+  const ids: PracticeId[] = ["self-prog", "charge", "essay", "skill", "wishes"];
+  const nextOffset: ProgressOffsetMap = { ...state.progressOffset };
+  for (const id of ids) {
+    if (!state.done[id]) continue;
+    const base = BASE_PROGRESS[id];
+    const current = base + nextOffset[id];
+    if (current <= 0) {
+      // Скачок: красные пропуски сменяются на 1 зелёный.
+      nextOffset[id] = 1 - base;
+    } else {
+      nextOffset[id] = nextOffset[id] + 1;
+    }
+  }
+  state = {
+    ...state,
+    progressOffset: nextOffset,
+    done: {
+      "self-prog": false,
+      charge: false,
+      essay: false,
+      skill: false,
+      wishes: false,
+    },
   };
   try {
     for (const k of PRACTICE_LS_KEYS) localStorage.removeItem(k);
