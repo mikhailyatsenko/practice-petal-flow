@@ -182,9 +182,38 @@ function HomeScreen() {
   };
 
 
-  // Все карточки всегда стартуют как "не сделано" — сохранённое состояние не читаем
+  // Считываем статус "выполнено сегодня" из localStorage по каждому ключу практики
   void SELF_PROG_DONE_KEY;
-  void todayStr;
+  useEffect(() => {
+    try {
+      const today = todayStr();
+      const isDone = (key: string): boolean => {
+        const raw = localStorage.getItem(key);
+        if (!raw) return false;
+        if (raw === today) return true;
+        // step-done-v1 хранит JSON {date, count}
+        try {
+          const obj = JSON.parse(raw) as { date?: string; count?: number };
+          if (obj && obj.date === today && (obj.count ?? 0) >= 1) return true;
+        } catch {
+          /* not json */
+        }
+        return false;
+      };
+      const map: Record<string, string> = {
+        "self-prog": "self-prog-done-v2",
+        charge: "charge-done-v1",
+        essay: "essay-done-v1",
+        skill: "skill-done-v1",
+        wishes: "step-done-v1",
+      };
+      setPractices((prev) =>
+        prev.map((p) => ({ ...p, doneToday: isDone(map[p.id] ?? "") })),
+      );
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   // Авто-запуск всех анимаций при заходе на главную
   useEffect(() => {
