@@ -216,7 +216,7 @@ function StepScreen() {
       <section className="mt-4">
         <button
           onClick={() => {
-            if (!doneToday) void navigate({ to: "/wishes" });
+            if (!doneToday) void navigate({ to: "/wishes", search: { tab: "tasks" } });
           }}
           disabled={doneToday}
           className="tap w-full"
