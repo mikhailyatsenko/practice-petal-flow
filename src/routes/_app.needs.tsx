@@ -279,7 +279,7 @@ function NeedRow({
     return () => document.removeEventListener("mousedown", handler);
   }, [menuOpen]);
 
-  const dotColor = rating ? RATINGS.find((r) => r.key === rating)!.color : "#e5e7eb";
+  const ratingDef = rating ? RATINGS.find((r) => r.key === rating) : undefined;
 
   return (
     <div
@@ -291,10 +291,30 @@ function NeedRow({
         className="tap flex w-full items-center gap-3 text-left"
         style={{ padding: "14px 16px" }}
       >
-        <span
-          className="shrink-0"
-          style={{ width: 20, height: 20, borderRadius: "50%", background: dotColor }}
-        />
+        {ratingDef ? (
+          <span
+            className="shrink-0 leading-none"
+            style={{
+              fontSize: 20,
+              fontFamily:
+                '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif',
+            }}
+            aria-label={ratingDef.label}
+          >
+            {ratingDef.emoji}
+          </span>
+        ) : (
+          <span
+            className="shrink-0"
+            style={{
+              width: 20,
+              height: 20,
+              borderRadius: "50%",
+              border: "1.5px dashed #d4cfc4",
+              background: "transparent",
+            }}
+          />
+        )}
         <span
           className="flex-1 truncate"
           style={{ fontSize: 15, fontWeight: 600, color: "#1a1a1a" }}
