@@ -32,6 +32,7 @@ interface FoursomeRequest {
   members: Member[]; // 2
   day: string;
   time: string;
+  extra?: string;
 }
 
 interface FoursomeData {
@@ -75,6 +76,7 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
     ],
     day: "Вт",
     time: "19:00",
+    extra: "Если первый вторник не подойдёт — готовы перенести на первую среду или четверг (19:00–21:00 МСК). Созваниваемся через Zoom.",
   },
   {
     id: "f2",
@@ -84,6 +86,7 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
     ],
     day: "Чт",
     time: "20:00",
+    extra: "Альтернативные слоты: первая пятница 19:00–21:00 МСК или первая суббота утром 10:00–12:00. Просим заранее предупреждать о переносах.",
   },
   {
     id: "f3",
@@ -93,6 +96,7 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
     ],
     day: "Ср",
     time: "10:00",
+    extra: "Если утро не подходит — можем в первый вторник или четверг с 19:00 до 21:00 МСК. Созваниваемся через Яндекс Телемост.",
   },
 ];
 
@@ -661,6 +665,7 @@ const INSTRUCTION_CARDS = [
 function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () => void }) {
   const [day, setDay] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
+  const [extra, setExtra] = useState("");
   const valid = !!day && !!time;
 
   return (
@@ -707,6 +712,20 @@ function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () 
             </Chip>
           ))}
         </div>
+      </Card>
+
+      <Card className="p-4 mb-4">
+        <div className="text-[14px] font-semibold mb-1">Дополнительные комментарии</div>
+        <div className="text-[11px] text-muted-foreground mb-3">
+          Напишите, в какие ещё дни и часы вы можете созваниваться, в каком сервисе и любые другие важные детали для второй пары
+        </div>
+        <textarea
+          value={extra}
+          onChange={(e) => setExtra(e.target.value)}
+          placeholder="Например: Если первая среда не подойдёт — готовы перенести на первый вторник или четверг (19:00–21:00 МСК). Созваниваемся через Zoom."
+          className="w-full bg-card rounded-xl px-3.5 py-3 text-[14px] outline-none transition-colors resize-none"
+          style={{ minHeight: 90, border: `1px solid ${extra ? "#FF6D00" : "#ede8df"}` }}
+        />
       </Card>
 
       <button
@@ -786,6 +805,18 @@ function BrowseRequests({
               </span>
             </div>
 
+            {req.extra && (
+              <div
+                className="mb-3 rounded-xl p-3 text-[13px]"
+                style={{ background: "#fff8ee", border: "1px solid #ffe0a3", lineHeight: 1.5 }}
+              >
+                <div className="text-[11px] font-bold uppercase mb-1" style={{ color: "#FF6D00", letterSpacing: 0.4 }}>
+                  💬 Доп. комментарии
+                </div>
+                <p className="text-foreground/85">{req.extra}</p>
+              </div>
+            )}
+
             <button
               onClick={() => setConfirming(req)}
               className="tap w-full py-2.5 rounded-xl text-white text-[13px] font-bold"
@@ -855,6 +886,18 @@ function ConfirmSheet({
             </span>
           </div>
         </div>
+
+        {req.extra && (
+          <div
+            className="rounded-2xl p-3.5 mb-3 text-[13px]"
+            style={{ background: "#fff8ee", border: "1px solid #ffe0a3", lineHeight: 1.5 }}
+          >
+            <div className="text-[11px] font-bold uppercase mb-1" style={{ color: "#FF6D00", letterSpacing: 0.4 }}>
+              💬 Доп. комментарии
+            </div>
+            <p className="text-foreground/85">{req.extra}</p>
+          </div>
+        )}
 
         <p className="text-[13px] text-muted-foreground text-center mb-4 px-2" style={{ lineHeight: 1.5 }}>
           Сначала подтвердит твой бадди, затем оба участника пары. Если все согласны — Четвёрка создана ✅

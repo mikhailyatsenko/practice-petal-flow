@@ -26,6 +26,7 @@ interface BuddyRequest {
   day: string;
   time: string;
   bio: string;
+  extra?: string;
 }
 
 type Screen =
@@ -48,6 +49,7 @@ const DEMO_REQUESTS: BuddyRequest[] = [
     day: "Ср",
     time: "19:00",
     bio: "Запускаю свой бренд косметики. Ищу партнёра, с которым будем держать друг друга в фокусе и без откладываний.",
+    extra: "Если среда не подойдёт — могу также во вторник или четверг с 18:00 до 21:00 МСК. По выходным занята. Созваниваюсь через Яндекс Телемост.",
   },
   {
     id: "2",
@@ -57,6 +59,7 @@ const DEMO_REQUESTS: BuddyRequest[] = [
     day: "Пт",
     time: "10:00",
     bio: "Развиваю IT-агентство, цель — выйти на 1М/мес. Хочу системного бадди, кто умеет ставить чёткие задачи.",
+    extra: "Кроме пятницы свободен в понедельник и среду утром (09:00–12:00 МСК). Прошу не опаздывать — у меня плотный график.",
   },
   {
     id: "3",
@@ -66,6 +69,7 @@ const DEMO_REQUESTS: BuddyRequest[] = [
     day: "Вт",
     time: "20:00",
     bio: "Веду частную практику, расту в личном бренде. Ищу человека на длинную дистанцию, без воды.",
+    extra: "Запасные слоты: четверг 19:00–21:00, суббота утром 10:00–12:00 МСК. Готова созваниваться через Zoom или Telemost.",
   },
   {
     id: "4",
@@ -75,6 +79,7 @@ const DEMO_REQUESTS: BuddyRequest[] = [
     day: "Сб",
     time: "12:00",
     bio: "Перехожу из найма во фриланс, выстраиваю поток клиентов. Готов делиться прогрессом каждую неделю.",
+    extra: "Помимо субботы могу в воскресенье днём и по будням после 20:00 МСК. Часовой пояс — Москва.",
   },
 ];
 
@@ -525,6 +530,7 @@ function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () 
   const [time, setTime] = useState<string | null>(null);
   const [job, setJob] = useState("");
   const [bio, setBio] = useState("");
+  const [extra, setExtra] = useState("");
 
   const valid = !!day && !!time && job.trim().length > 1 && bio.trim().length > 20;
 
@@ -588,6 +594,24 @@ function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () 
             <span className="absolute right-3 bottom-2 text-[11px] text-muted-foreground">
               {bio.length} символов
             </span>
+          </div>
+        </div>
+
+
+        {/* Extra comments */}
+        <div>
+          <h3 className="text-[14px] font-semibold">Дополнительные комментарии</h3>
+          <p className="text-[12px] text-muted-foreground mt-0.5 mb-2">
+            Напиши, в какие ещё дни и часы тебе удобно созваниваться, в каком мессенджере, и любые другие важные моменты
+          </p>
+          <div className="relative">
+            <textarea
+              value={extra}
+              onChange={(e) => setExtra(e.target.value)}
+              placeholder="Например: Кроме среды свободна во вторник и четверг с 18:00 до 21:00 МСК. Созваниваюсь через Яндекс Телемост."
+              className="w-full bg-card rounded-xl px-3.5 py-3 text-[14px] outline-none transition-colors resize-none"
+              style={{ minHeight: 90, border: `1px solid ${extra ? "#FF6D00" : "#ede8df"}` }}
+            />
           </div>
         </div>
 
@@ -677,6 +701,18 @@ function RequestCard({ req, onSend }: { req: BuddyRequest; onSend: () => void })
         {req.bio}
       </div>
 
+      {req.extra && (
+        <div
+          className="mt-2 rounded-[10px] p-3 text-[13px]"
+          style={{ background: "#fff8ee", border: "1px solid #ffe0a3", lineHeight: 1.5 }}
+        >
+          <div className="text-[11px] font-bold uppercase mb-1" style={{ color: "#FF6D00", letterSpacing: 0.4 }}>
+            💬 Доп. комментарии
+          </div>
+          <p className="text-foreground/85">{req.extra}</p>
+        </div>
+      )}
+
       <button
         onClick={onSend}
         className="tap mt-3 w-full rounded-xl py-2.5 text-[13px] font-bold text-white"
@@ -734,6 +770,18 @@ function ConfirmSheet({
         >
           {req.bio}
         </div>
+
+        {req.extra && (
+          <div
+            className="mt-2 rounded-xl p-3 text-[13px]"
+            style={{ background: "#fff8ee", border: "1px solid #ffe0a3", lineHeight: 1.5 }}
+          >
+            <div className="text-[11px] font-bold uppercase mb-1" style={{ color: "#FF6D00", letterSpacing: 0.4 }}>
+              💬 Доп. комментарии
+            </div>
+            <p className="text-foreground/85">{req.extra}</p>
+          </div>
+        )}
 
         <p className="text-[13px] text-muted-foreground text-center mt-4 leading-snug">
           Отправить запрос на партнёрство? {req.name} получит уведомление и сможет принять или отклонить.
