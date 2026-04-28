@@ -691,8 +691,30 @@ function MainView({
 
       <div className="flex flex-col gap-2 mt-4">
         <PrimaryBtn onClick={onAdd}>Добавить ответственность</PrimaryBtn>
-        <PrimaryBtn onClick={onChecks}>Проверка ответственности</PrimaryBtn>
-        <PrimaryBtn onClick={onHundred}>100 видов ответственности</PrimaryBtn>
+        <button
+          onClick={onChecks}
+          className="w-full py-3 font-semibold"
+          style={{
+            background: "#fff",
+            color: "#FF6D00",
+            borderRadius: 12,
+            border: "1.5px solid #FF6D00",
+          }}
+        >
+          Проверка ответственности
+        </button>
+        <button
+          onClick={onHundred}
+          className="w-full py-3 font-semibold"
+          style={{
+            background: "#fff",
+            color: "#FF6D00",
+            borderRadius: 12,
+            border: "1.5px solid #FF6D00",
+          }}
+        >
+          100 видов ответственности
+        </button>
       </div>
     </>
   );
