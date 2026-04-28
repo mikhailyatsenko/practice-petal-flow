@@ -58,8 +58,10 @@ function StepScreen() {
       if (raw) {
         const obj = JSON.parse(raw) as { date: string; count: number };
         if (obj.date === todayStr()) {
-          setDoneToday(obj.count >= 1);
+          const isDone = obj.count >= 1;
+          setDoneToday(isDone);
           setTodayCount(obj.count);
+          if (isDone) setPracticeDone("wishes", true);
         }
       }
       const h = localStorage.getItem(HISTORY_KEY);

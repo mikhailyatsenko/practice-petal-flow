@@ -68,6 +68,7 @@ function SkillScreen() {
       }
       if (localStorage.getItem(DONE_KEY) === todayStr()) {
         setDoneToday(true);
+        setPracticeDone("skill", true);
       }
       const h = localStorage.getItem(HISTORY_KEY);
       if (h) {

@@ -83,6 +83,7 @@ function EssayScreen() {
       const d = localStorage.getItem(DONE_KEY);
       if (d === todayStr()) {
         setDoneToday(true);
+        setPracticeDone("essay", true);
         const n = parseInt(localStorage.getItem(TODAY_ADDED_KEY) || "0", 10);
         if (!Number.isNaN(n)) setTodayAdded(n);
       }

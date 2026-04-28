@@ -79,7 +79,10 @@ function SelfProgScreen() {
       const a = localStorage.getItem(STORAGE_KEY);
       if (a) setAffirmation(a);
       const d = localStorage.getItem(DONE_KEY);
-      if (d === todayStr()) setDoneToday(true);
+      if (d === todayStr()) {
+        setDoneToday(true);
+        setPracticeDone("self-prog", true);
+      }
     } catch {
       /* ignore */
     }

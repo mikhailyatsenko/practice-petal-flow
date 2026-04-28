@@ -54,7 +54,10 @@ function ChargeScreen() {
   useEffect(() => {
     try {
       const d = localStorage.getItem(DONE_KEY);
-      if (d === todayStr()) setDoneToday(true);
+      if (d === todayStr()) {
+        setDoneToday(true);
+        setPracticeDone("charge", true);
+      }
     } catch {
       /* ignore */
     }
