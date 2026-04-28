@@ -416,12 +416,91 @@ function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
       {/* Как работает */}
       <button
-        onClick={() => onNavigate({ name: "instructions", from: "no_foursome" })}
-        className="tap w-full bg-white rounded-2xl p-3.5 flex items-center justify-center gap-2 text-[14px] font-medium"
-        style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.07)" }}
-      >
-        <BookOpen className="h-4 w-4" /> Как работает раздел?
-      </button>
+      {/* Как работает — inline collapsible */}
+      <section>
+        <button
+          onClick={() => setHowOpen((v) => !v)}
+          className="tap w-full bg-white rounded-2xl px-4 py-3.5 flex items-center gap-3"
+          style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.07)" }}
+        >
+          <span className="text-[18px] font-bold leading-none" style={{ color: "#E53935" }}>?</span>
+          <span className="text-[14px] font-medium flex-1 text-left">Как работает раздел</span>
+          <ChevronDown
+            className="h-5 w-5 text-muted-foreground transition-transform"
+            style={{ transform: howOpen ? "rotate(180deg)" : "none" }}
+          />
+        </button>
+
+        {howOpen && (
+          <div className="mt-3 animate-fade-up">
+            <div className="flex rounded-xl mb-3" style={{ background: "#f0ebe2", padding: 4 }}>
+              {([
+                { k: "text", label: "📖 Текст" },
+                { k: "video", label: "▶️ Видео" },
+              ] as const).map((t) => {
+                const active = howTab === t.k;
+                return (
+                  <button
+                    key={t.k}
+                    onClick={() => setHowTab(t.k)}
+                    className="tap flex-1 rounded-lg py-2 text-[13px] font-medium transition-colors"
+                    style={{
+                      background: active ? ORANGE_GRADIENT : "transparent",
+                      color: active ? "#fff" : "#6b6356",
+                    }}
+                  >
+                    {t.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {howTab === "text" ? (
+              <div className="space-y-3">
+                {INSTRUCTION_CARDS.map((c, i) => (
+                  <Card key={i} className="p-4">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="text-[20px]">{c.emoji}</span>
+                      <span className="text-[14px] font-bold">{c.title}</span>
+                    </div>
+                    <p className="text-[13px] text-foreground/85 whitespace-pre-line" style={{ lineHeight: 1.65 }}>
+                      {c.text}
+                    </p>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div>
+                <div
+                  className="relative rounded-[18px] overflow-hidden mb-3"
+                  style={{ background: "#1a1a1a", aspectRatio: "16 / 9" }}
+                >
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                    <button
+                      className="h-16 w-16 rounded-full flex items-center justify-center text-white"
+                      style={{
+                        background: ORANGE_GRADIENT,
+                        boxShadow: "0 0 24px rgba(255,109,0,0.6)",
+                      }}
+                      aria-label="Воспроизвести"
+                    >
+                      <Play className="h-7 w-7 ml-1" fill="white" />
+                    </button>
+                    <div className="text-[14px] font-bold text-white mt-2">Видеоинструкция</div>
+                    <div className="text-[12px] text-white/50">Четвёрка · ~5 мин</div>
+                  </div>
+                </div>
+                <div className="rounded-2xl p-3.5" style={{ background: "#fff8ee", border: "1px solid #ffe0a3" }}>
+                  <p className="text-[13px] text-foreground/80" style={{ lineHeight: 1.6 }}>
+                    В видео объясняется как найти Четвёрку, как проходит процесс подтверждения и что делать на ежемесячных
+                    созвонах.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
