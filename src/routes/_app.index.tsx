@@ -11,6 +11,7 @@ import {
   Confetti,
   StatusRings,
 } from "@/components/home/StatEffects";
+import { usePracticesDone, setPracticeDone, type PracticeId } from "@/lib/practicesStore";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
