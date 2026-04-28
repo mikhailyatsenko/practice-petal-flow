@@ -443,7 +443,7 @@ function ActionCard({
       className="tap w-full bg-white rounded-2xl p-3.5 flex items-center gap-3 text-left"
       style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.07)" }}
     >
-      <div className="h-11 w-11 rounded-xl flex items-center justify-center text-[22px] shrink-0 bg-secondary">
+      <div className="h-11 w-11 rounded-xl flex items-center justify-center text-[22px] shrink-0" style={{ background: "#FF8A00" }}>
         {emoji}
       </div>
       <div className="flex-1 min-w-0">
