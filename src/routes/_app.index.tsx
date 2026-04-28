@@ -182,9 +182,37 @@ function HomeScreen() {
   };
 
 
-  // Все карточки всегда стартуют как "не сделано" — сохранённое состояние не читаем
-  void SELF_PROG_DONE_KEY;
-  void todayStr;
+  // Синхронизация статуса "Программирование успеха" с экраном практики через localStorage
+  useEffect(() => {
+    const syncSelfProg = () => {
+      let done = false;
+      try {
+        done = localStorage.getItem(SELF_PROG_DONE_KEY) === todayStr();
+      } catch {
+        /* ignore */
+      }
+      setPractices((prev) =>
+        prev.map((p) =>
+          p.id === "self-prog" && p.doneToday !== done ? { ...p, doneToday: done } : p,
+        ),
+      );
+    };
+    syncSelfProg();
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") syncSelfProg();
+    };
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === SELF_PROG_DONE_KEY) syncSelfProg();
+    };
+    window.addEventListener("focus", syncSelfProg);
+    window.addEventListener("storage", onStorage);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("focus", syncSelfProg);
+      window.removeEventListener("storage", onStorage);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
 
   // Авто-запуск всех анимаций при заходе на главную
   useEffect(() => {
