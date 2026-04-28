@@ -210,8 +210,22 @@ function SelfProgScreen() {
         </div>
       </section>
 
-      {/* 4. Моя аффирмация — показываем целиком */}
-      <section className="mt-3 bg-card hairline rounded-2xl shadow-card p-4">
+      {/* 4. Запись — sticky сверху, чтобы читать аффирмацию ниже */}
+      <section
+        className="mt-3 sticky z-20"
+        style={{ top: 8 }}
+      >
+        <p
+          className="px-1 text-[11px] font-medium uppercase tracking-wider mb-2"
+          style={{ color: "#9ca3af" }}
+        >
+          Вариант 1 — прямо здесь
+        </p>
+        <Recorder doneToday={doneToday} onComplete={handleSpeak} />
+      </section>
+
+      {/* 5. Моя аффирмация — показываем целиком, читаем пока крутим вниз */}
+      <section className="mt-4 bg-card hairline rounded-2xl shadow-card p-4">
         <p
           className="text-[11px] font-medium uppercase tracking-wider mb-2"
           style={{ color: "#9ca3af" }}
@@ -234,13 +248,13 @@ function SelfProgScreen() {
         </button>
       </section>
 
-      {/* 5а. Вариант 1 — проговорить в боте */}
+      {/* 6. Вариант 2 — проговорить в боте */}
       <section className="mt-4">
         <p
           className="px-1 text-[11px] font-medium uppercase tracking-wider mb-2"
           style={{ color: "#9ca3af" }}
         >
-          Вариант 1 — в боте
+          Вариант 2 — в боте
         </p>
         <button
           onClick={handleSpeak}
@@ -266,17 +280,6 @@ function SelfProgScreen() {
         >
           Откроется бот — проговори аффирмацию голосом минимум 1 минуту
         </p>
-      </section>
-
-      {/* 5б. Вариант 2 — проговорить прямо здесь (визуальная имитация) */}
-      <section className="mt-4">
-        <p
-          className="px-1 text-[11px] font-medium uppercase tracking-wider mb-2"
-          style={{ color: "#9ca3af" }}
-        >
-          Вариант 2 — прямо здесь
-        </p>
-        <Recorder doneToday={doneToday} onComplete={handleSpeak} />
       </section>
 
 
