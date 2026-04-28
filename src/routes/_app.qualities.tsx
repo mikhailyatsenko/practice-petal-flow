@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { BackButton } from "@/components/layout/BackButton";
 
 export const Route = createFileRoute("/_app/qualities")({
   head: () => ({
@@ -227,12 +228,7 @@ function QualitiesScreen() {
     <div className="pb-6">
       {/* Header */}
       <div className="flex items-center px-3 pt-2 pb-2">
-        <button
-          onClick={() => navigate({ to: "/sections" })}
-          className="tap inline-flex items-center gap-1 text-[14px] text-muted-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> Назад
-        </button>
+        <BackButton onClick={() => navigate({ to: "/sections" })} />
         <h1 className="flex-1 text-center text-[16px] font-semibold">Качества характера</h1>
         <div className="w-[64px]" />
       </div>
@@ -537,12 +533,7 @@ function EditScreenInline({
       style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.07)", padding: 16 }}
     >
       <div className="flex items-center mb-3">
-        <button
-          onClick={onCancel}
-          className="tap inline-flex items-center gap-1 text-[13px] text-muted-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> Назад
-        </button>
+        <BackButton onClick={onCancel} />
         <h3 className="flex-1 text-center text-[15px] font-semibold">Изменить качество</h3>
         <div className="w-[60px]" />
       </div>
@@ -652,12 +643,7 @@ function DetailScreen({
   return (
     <div className="pb-8">
       <div className="flex items-center px-3 pt-2 pb-2">
-        <button
-          onClick={onBack}
-          className="tap inline-flex items-center gap-1 text-[14px] text-muted-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> Назад
-        </button>
+        <BackButton onClick={onBack} />
         <h1 className="flex-1 text-center text-[16px] font-semibold truncate px-2">
           {item.title}
         </h1>

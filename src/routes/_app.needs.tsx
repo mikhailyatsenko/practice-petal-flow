@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ChevronRight, MoreHorizontal, Trash2 } from "lucide-react";
+import { BackButton } from "@/components/layout/BackButton";
 
 export const Route = createFileRoute("/_app/needs")({
   head: () => ({
@@ -227,12 +228,7 @@ function NeedsScreen() {
   return (
     <div className="pb-6">
       <div className="flex items-center px-3 pt-2 pb-2">
-        <button
-          onClick={() => navigate({ to: "/sections" })}
-          className="tap inline-flex items-center gap-1 text-[14px] text-muted-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> Назад
-        </button>
+        <BackButton onClick={() => navigate({ to: "/sections" })} />
         <h1 className="flex-1 text-center text-[16px] font-semibold">Потребности</h1>
         <div className="w-[64px]" />
       </div>
@@ -357,12 +353,7 @@ function DetailScreen({
   return (
     <div className="pb-8">
       <div className="flex items-center px-3 pt-2 pb-2">
-        <button
-          onClick={onBack}
-          className="tap inline-flex items-center gap-1 text-[14px] text-muted-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> Назад
-        </button>
+        <BackButton onClick={onBack} />
         <h1 className="flex-1 text-center text-[16px] font-semibold truncate px-2">
           {need.title}
         </h1>
@@ -436,12 +427,7 @@ function CreateScreen({
   return (
     <div className="pb-8">
       <div className="flex items-center px-3 pt-2 pb-2">
-        <button
-          onClick={onBack}
-          className="tap inline-flex items-center gap-1 text-[14px] text-muted-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> Назад
-        </button>
+        <BackButton onClick={onBack} />
         <h1 className="flex-1 text-center text-[16px] font-semibold">Своя потребность</h1>
         <div className="w-[64px]" />
       </div>
