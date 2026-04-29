@@ -260,7 +260,7 @@ function FreezeContent({ onBuy }: { onBuy: () => void }) {
 
       <DialogFooter className="mt-3">
         <Button
-          onClick={onClose}
+          onClick={onBuy}
           className="w-full text-white"
           style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
         >
@@ -271,7 +271,7 @@ function FreezeContent({ onBuy }: { onBuy: () => void }) {
   );
 }
 
-function InsuranceContent({ onClose }: { onClose: () => void }) {
+function InsuranceContent({ onBuy }: { onBuy: () => void }) {
   return (
     <>
       <DialogHeader>
@@ -296,7 +296,7 @@ function InsuranceContent({ onClose }: { onClose: () => void }) {
 
       <DialogFooter className="mt-3">
         <Button
-          onClick={onClose}
+          onClick={onBuy}
           className="w-full text-white"
           style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
         >
