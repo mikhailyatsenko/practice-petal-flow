@@ -22,7 +22,7 @@ function CommunityScreen() {
           { emoji: "📣", title: "Общий канал",  subtitle: "Новости и материалы от создателей" },
           { emoji: "💬", title: "Общий чат",    subtitle: "Общение участников и обмен опытом" },
           { emoji: "👥", title: "Бадди",        subtitle: "Партнёр для еженедельных созвонов", onClick: () => navigate({ to: "/buddy" }) },
-          { emoji: "🧑🧑🧑🧑", title: "Четвёрка",   subtitle: "Группа из 4 человек, созвон раз в месяц", onClick: () => navigate({ to: "/foursome" }) },
+          { emoji: "👥👥", title: "Четвёрка",   subtitle: "Группа из 4 человек, созвон раз в месяц", onClick: () => navigate({ to: "/foursome" }) },
           { emoji: "🛟", title: "Помощь",       subtitle: "Связь с администратором" },
         ]}
       />
