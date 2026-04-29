@@ -52,7 +52,7 @@ function SectionsScreen() {
       />
 
       <Dialog open={extra !== null} onOpenChange={(o) => !o && setExtra(null)}>
-        <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
+        <DialogContent className="w-[calc(100vw-24px)] max-w-md max-h-[85vh] overflow-y-auto p-5">
           {extra === "freeze" && <FreezeContent onClose={() => setExtra(null)} />}
           {extra === "insurance" && <InsuranceContent onClose={() => setExtra(null)} />}
         </DialogContent>
@@ -88,13 +88,6 @@ function FreezeContent({ onClose }: { onClose: () => void }) {
 • Пропуски не считаются
 • Уровни не падают, прогресс сохраняется
 • Через 21 день возвращаешься и продолжаешь`}
-      </Section>
-      <Section title="🎁 Что получаешь:">
-        {`✅ 21 день отдыха без страха потерять прогресс
-✅ Сохранение всех уровней и серий
-✅ Никаких штрафов за пропуски
-✅ Спокойный отпуск/командировка/болезнь
-✅ Возвращаешься и продолжаешь с того же места`}
       </Section>
       <Section title="💡 Когда покупать:">
         Перед отпуском, командировкой, болезнью, важным проектом — любой ситуацией, где 21 день не сможешь делать практики.
@@ -135,13 +128,6 @@ function InsuranceContent({ onClose }: { onClose: () => void }) {
 • Она лежит в твоём инвентаре
 • Пропускаешь любые практики за день → прогресс не обнулится
 • Страховка сгорает (нужно покупать новую)`}
-      </Section>
-      <Section title="🎁 Что получаешь:">
-        {`✅ Защита от случайного пропуска (забыл, заболел, форс-мажор)
-✅ Прогресс сохраняется полностью
-✅ Можно купить несколько штук про запас
-✅ Спокойствие: есть страховка на случай ЧП
-✅ Дёшево: всего 50 очков`}
       </Section>
       <Section title="💡 Совет:">
         Держи 1-2 страховки про запас. Никогда не знаешь когда случится форс-мажор.
