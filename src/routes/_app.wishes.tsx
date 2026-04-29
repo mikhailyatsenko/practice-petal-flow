@@ -245,7 +245,8 @@ type HowBlock =
   | { kind: "callout"; text: string }
   | { kind: "list"; title: string; items: { label: string; text: string }[] };
 
-const HOW_IT_WORKS: Record<TabId, { video: string; blocks: HowBlock[] }> = {
+type HowVideo = { title: string; duration: string; caption: string };
+const HOW_IT_WORKS: Record<TabId, { videos: [HowVideo, HowVideo]; blocks: HowBlock[] }> = {
   wants: {
     video:
       "В видео объясняется как работать с хотелками — быстро фиксировать желания, чтобы не терять важные мысли в потоке дня.",
