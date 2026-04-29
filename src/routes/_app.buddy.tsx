@@ -442,36 +442,20 @@ function Instructions({ onBack }: { onBack: () => void }) {
           ))}
         </div>
       ) : (
-        <div className="space-y-3">
-          <div
-            className="relative w-full rounded-[18px] overflow-hidden flex items-center justify-center flex-col"
-            style={{ aspectRatio: "16 / 9", background: "#1a1a1a" }}
-          >
-            <button
-              className="tap rounded-full flex items-center justify-center"
-              style={{
-                width: 64,
-                height: 64,
-                background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-                boxShadow: "0 8px 28px rgba(255,109,0,0.55)",
-              }}
-              aria-label="Воспроизвести"
-            >
-              <Play className="h-7 w-7 text-white" fill="#fff" />
-            </button>
-            <p className="mt-4 text-[14px] font-bold text-white">Видеоинструкция</p>
-            <p className="text-[12px] text-white/50">Бадди · ~5 мин</p>
-          </div>
-          <div
-            className="rounded-2xl p-4"
-            style={{ background: "#fff8ee", border: "1px solid #ffe0a3" }}
-          >
-            <p className="text-[13px] text-foreground/85" style={{ lineHeight: 1.55 }}>
-              В видео подробно объясняется как работает раздел, как найти хорошего бадди, правила созвонов и
-              как получить максимум от партнёрства.
-            </p>
-          </div>
-        </div>
+        <HowVideoCards
+          first={{
+            title: "🎬 Что такое Бадди и как это работает",
+            duration: "5:00",
+            caption:
+              "Подробно: как работает раздел, как найти хорошего бадди, правила созвонов и зачем это нужно.",
+          }}
+          second={{
+            title: "🤝 Как получить максимум от партнёрства",
+            duration: "4:20",
+            caption:
+              "Структура созвона, темы для обсуждения и частые ошибки бадди-пар.",
+          }}
+        />
       )}
     </div>
   );
