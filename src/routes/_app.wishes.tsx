@@ -1494,8 +1494,9 @@ function DesireCharge({ level, onTap, mode = "inspire", id }: { level: number; o
   // Бейдж = количество дней, в которые пользователь заряжал именно это желание/цель.
   // Появляется с первого тапа дня; в новый день обнуляется до первого тапа.
   const daysCount = useDaysCount(id ?? "__none__");
-  const badgeCount = id ? (total > 0 ? daysCount : 0) : (total === 0 ? 0 : Math.floor((total - 1) / 5) + 1);
   const justHit100 = total > 0 && inRound === 5;
+  // Бейдж появляется только когда заряд достигает 100% (5/5 в текущем круге).
+  const badgeCount = id ? (justHit100 ? daysCount : 0) : (total === 0 ? 0 : Math.floor((total - 1) / 5) + 1);
   const label =
     mode === "proud"
       ? total === 0
