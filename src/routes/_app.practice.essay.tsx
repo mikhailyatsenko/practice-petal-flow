@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronDown, Play } from "lucide-react";
 import { setPracticeDone, useEffectiveProgress, usePracticeDone } from "@/lib/practicesStore";
+import { HowVideoCards } from "@/components/section/HowVideoCards";
 
 export const Route = createFileRoute("/_app/practice/essay")({
   head: () => ({
@@ -434,34 +435,20 @@ function EssayScreen() {
             )}
 
             {howTab === "video" && (
-              <div className="bg-card hairline rounded-2xl overflow-hidden shadow-card">
-                <div
-                  className="relative aspect-video w-full flex items-center justify-center"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #2a1a05 0%, #4a2c0a 50%, #1a0e00 100%)",
-                  }}
-                >
-                  <button
-                    aria-label="Воспроизвести"
-                    className="tap h-16 w-16 rounded-full flex items-center justify-center text-white shadow-lg"
-                    style={{
-                      background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-                    }}
-                  >
-                    <Play className="h-7 w-7 fill-white ml-1" />
-                  </button>
-                  <span className="absolute bottom-2.5 right-3 rounded-md bg-black/60 px-2 py-0.5 text-[11px] font-medium text-white">
-                    6:30
-                  </span>
-                </div>
-                <div className="px-4 py-3">
-                  <p className="text-[13px] leading-snug text-foreground">
-                    В видео объясняется как писать сочинение, почему важно
-                    настоящее время и как этот инструмент меняет мышление.
-                  </p>
-                </div>
-              </div>
+              <HowVideoCards
+                first={{
+                  title: "🎬 Как писать сочинение «Жизнь мечты»",
+                  duration: "7:00",
+                  caption:
+                    "Подробный разбор: что такое сочинение, почему важно настоящее время и как этот инструмент меняет мышление.",
+                }}
+                second={{
+                  title: "✍️ Примеры и частые ошибки",
+                  duration: "5:30",
+                  caption:
+                    "Разбор реальных примеров: как формулировать образы, чего избегать и как сделать текст по-настоящему живым.",
+                }}
+              />
             )}
           </div>
         )}

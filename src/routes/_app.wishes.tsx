@@ -12,6 +12,7 @@ import goalLanguage from "@/assets/goal-language.jpg";
 import goalSavings from "@/assets/goal-savings.jpg";
 import { TasksModule, CreateOrEditTaskScreen, type Task as ModuleTask } from "@/components/tasks/TasksModule";
 import { setPracticeDone, useChargesMap, bumpCharge, setChargeTotal, useDaysCount } from "@/lib/practicesStore";
+import { HowVideoCards } from "@/components/section/HowVideoCards";
 
 const VALID_TABS = ["wants", "wishes", "goals", "tasks", "done"] as const;
 type WishesSearch = { tab?: typeof VALID_TABS[number] };
@@ -245,10 +246,23 @@ type HowBlock =
   | { kind: "callout"; text: string }
   | { kind: "list"; title: string; items: { label: string; text: string }[] };
 
-const HOW_IT_WORKS: Record<TabId, { video: string; blocks: HowBlock[] }> = {
+type HowVideo = { title: string; duration: string; caption: string };
+const HOW_IT_WORKS: Record<TabId, { videos: [HowVideo, HowVideo]; blocks: HowBlock[] }> = {
   wants: {
-    video:
-      "В видео объясняется как работать с хотелками — быстро фиксировать желания, чтобы не терять важные мысли в потоке дня.",
+    videos: [
+      {
+        title: "🎬 Что такое Хотелки",
+        duration: "5:00",
+        caption:
+          "Как работать с хотелками — быстро фиксировать желания, чтобы не терять важные мысли в потоке дня.",
+      },
+      {
+        title: "✨ Как ловить и записывать желания",
+        duration: "4:10",
+        caption:
+          "Простые приёмы: как замечать желания в обычной жизни и не фильтровать себя в момент записи.",
+      },
+    ],
     blocks: [
       {
         kind: "card",
@@ -276,8 +290,20 @@ const HOW_IT_WORKS: Record<TabId, { video: string; blocks: HowBlock[] }> = {
     ],
   },
   wishes: {
-    video:
-      "В видео разбираем как из хотелки родить настоящее желание: найти причины, подобрать образ и почувствовать притяжение.",
+    videos: [
+      {
+        title: "🌟 Что такое Желания",
+        duration: "6:30",
+        caption:
+          "Как из хотелки родить настоящее желание: найти причины, подобрать образ и почувствовать притяжение.",
+      },
+      {
+        title: "🖼️ Как подобрать образ и причины",
+        duration: "5:00",
+        caption:
+          "Разбор: как выбрать картинку, которая цепляет, и какие причины делают желание живым.",
+      },
+    ],
     blocks: [
       {
         kind: "card",
@@ -327,8 +353,20 @@ const HOW_IT_WORKS: Record<TabId, { video: string; blocks: HowBlock[] }> = {
     ],
   },
   goals: {
-    video:
-      "В видео объясняем как превратить желание в цель: выставить дату, прописать критерий и составить план.",
+    videos: [
+      {
+        title: "🎯 Что такое Цели",
+        duration: "6:00",
+        caption:
+          "Как превратить желание в цель: выставить дату, прописать критерий и составить план.",
+      },
+      {
+        title: "🗺️ Как написать рабочий план",
+        duration: "5:20",
+        caption:
+          "Разбор: какие шаги попадают в план, как ставить промежуточные даты и не утонуть в деталях.",
+      },
+    ],
     blocks: [
       {
         kind: "card",
@@ -381,8 +419,20 @@ const HOW_IT_WORKS: Record<TabId, { video: string; blocks: HowBlock[] }> = {
     ],
   },
   tasks: {
-    video:
-      "В видео разбираем как разбить большую цель на конкретные задачи и каждый день делать ощутимый шаг.",
+    videos: [
+      {
+        title: "📋 Что такое Задачи",
+        duration: "5:30",
+        caption:
+          "Как разбить большую цель на конкретные задачи и каждый день делать ощутимый шаг.",
+      },
+      {
+        title: "🟧 Как работать с фильтрами и сроками",
+        duration: "4:30",
+        caption:
+          "День / неделя / месяц / главные — как пользоваться фильтрами, чтобы не перегружаться задачами.",
+      },
+    ],
     blocks: [
       {
         kind: "card",
@@ -432,8 +482,20 @@ const HOW_IT_WORKS: Record<TabId, { video: string; blocks: HowBlock[] }> = {
     ],
   },
   done: {
-    video:
-      "В видео рассказываем зачем возвращаться к воплощённым желаниям и как они укрепляют веру в себя.",
+    videos: [
+      {
+        title: "🏆 Что такое Воплощённые желания",
+        duration: "4:30",
+        caption:
+          "Зачем возвращаться к воплощённым желаниям и как они укрепляют веру в себя.",
+      },
+      {
+        title: "💎 Как использовать раздел в сложные моменты",
+        duration: "3:50",
+        caption:
+          "Как этот раздел помогает в моменты сомнений, усталости и потери мотивации.",
+      },
+    ],
     blocks: [
       {
         kind: "card",
@@ -569,39 +631,7 @@ function HowItWorks({ tab }: { tab: TabId }) {
           )}
 
           {howTab === "video" && (
-            <div className="bg-card hairline rounded-2xl overflow-hidden shadow-card">
-              <div
-                className="relative aspect-video w-full flex items-center justify-center"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #2a1a05 0%, #4a2c0a 50%, #1a0e00 100%)",
-                }}
-              >
-                <button
-                  aria-label="Воспроизвести"
-                  className="tap h-16 w-16 rounded-full flex items-center justify-center text-white shadow-lg"
-                  style={{
-                    background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-                  }}
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-7 w-7 ml-1"
-                    fill="white"
-                  >
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </button>
-                <span className="absolute bottom-2.5 right-3 rounded-md bg-black/60 px-2 py-0.5 text-[11px] font-medium text-white">
-                  6:30
-                </span>
-              </div>
-              <div className="px-4 py-3">
-                <p className="text-[13px] leading-snug text-foreground">
-                  {data.video}
-                </p>
-              </div>
-            </div>
+            <HowVideoCards first={data.videos[0]} second={data.videos[1]} />
           )}
         </div>
       )}
