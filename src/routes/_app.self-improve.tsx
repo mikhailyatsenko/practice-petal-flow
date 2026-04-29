@@ -221,7 +221,7 @@ function SelfImproveScreen() {
 
 function Header({ title, onBack }: { title: string; onBack: () => void }) {
   return (
-    <div className="sticky top-0 z-20 flex items-center justify-between border-b border-black/5 bg-white px-3 py-3">
+    <div className="sticky top-0 z-20 flex items-center justify-between bg-background px-3 py-3">
       <BackButton onClick={onBack} />
       <div className="text-[15px] font-semibold text-[#1a1a1a]">{title}</div>
       <div className="w-[70px]" />
