@@ -1,4 +1,21 @@
 import { useSyncExternalStore } from "react";
+import { toast } from "sonner";
+
+const PRACTICE_TITLES: Record<PracticeId, string> = {
+  "self-prog": "Самопрограммирование",
+  charge: "Зарядка желаний",
+  essay: "Сочинение",
+  skill: "Развитие навыка",
+  wishes: "Шаг к желанию",
+};
+
+function notifyPracticeDone(id: PracticeId) {
+  try {
+    toast.success(`✅ Привычка сделана: ${PRACTICE_TITLES[id]}`);
+  } catch {
+    /* ignore */
+  }
+}
 
 // Общий источник истины для статуса doneToday по всем 5 практикам.
 // id совпадают с id в initialPractices на главной:
@@ -65,7 +82,9 @@ const subscribe = (l: () => void) => {
 
 export function setPracticeDone(id: PracticeId, value: boolean = true) {
   if (state.done[id] === value) return;
+  const wasDone = state.done[id];
   state = { ...state, done: { ...state.done, [id]: value } };
+  if (!wasDone && value) notifyPracticeDone(id);
   emit();
 }
 
@@ -137,6 +156,7 @@ function maybeAutoCompleteCharge() {
   const cond2 = maxLevel >= 5;
   if (cond1 && cond2) {
     state = { ...state, done: { ...state.done, charge: true } };
+    notifyPracticeDone("charge");
     try {
       const d = new Date();
       const today = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
