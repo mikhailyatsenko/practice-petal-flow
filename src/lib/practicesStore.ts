@@ -82,7 +82,9 @@ const subscribe = (l: () => void) => {
 
 export function setPracticeDone(id: PracticeId, value: boolean = true) {
   if (state.done[id] === value) return;
+  const wasDone = state.done[id];
   state = { ...state, done: { ...state.done, [id]: value } };
+  if (!wasDone && value) notifyPracticeDone(id);
   emit();
 }
 
