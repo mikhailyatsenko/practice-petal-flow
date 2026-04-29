@@ -974,7 +974,7 @@ function WishesScreen() {
             Это все твои желания на сегодня ✨
           </div>
         </div>
-        <HowItWorks tab="wishes" />
+        <HowItWorks key="wishes" tab="wishes" />
         </>
       );
     }
@@ -1021,7 +1021,7 @@ function WishesScreen() {
             Маленькие хотелки — большие радости 🌿
           </div>
         </div>
-        <HowItWorks tab="wants" />
+        <HowItWorks key="wants" tab="wants" />
         </>
       );
     }
@@ -1071,7 +1071,7 @@ function WishesScreen() {
             </div>
           )}
         </div>
-        <HowItWorks tab="goals" />
+        <HowItWorks key="goals" tab="goals" />
         </>
       );
     }
@@ -1096,7 +1096,7 @@ function WishesScreen() {
             setGoals((prev) => prev.map((g) => (g.id === goalId ? { ...g, plan } : g)))
           }
         />
-        <HowItWorks tab="tasks" />
+        <HowItWorks key="tasks" tab="tasks" />
         </>
       );
     }
@@ -1112,7 +1112,7 @@ function WishesScreen() {
         onUndoWish={(id) => toggleDoneWish(id)}
         onUndoGoal={(id) => toggleDoneGoal(id)}
       />
-      <HowItWorks tab="done" />
+      <HowItWorks key="done" tab="done" />
       </>
     );
   };
