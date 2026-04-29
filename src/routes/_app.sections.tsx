@@ -18,12 +18,32 @@ export const Route = createFileRoute("/_app/sections")({
 
 type ExtraKey = "freeze" | "insurance" | null;
 
+type Confirm =
+  | { kind: "section"; key: string; title: string; price: string; route: string }
+  | { kind: "extra"; key: "freeze" | "insurance"; title: string; price: string }
+  | null;
+
 function SectionsScreen() {
   const navigate = useNavigate();
   const [extra, setExtra] = useState<ExtraKey>(null);
   const [sectionKey, setSectionKey] = useState<string | null>(null);
+  const [confirm, setConfirm] = useState<Confirm>(null);
 
   const open = (key: string) => setSectionKey(key);
+
+  const confirmPurchase = () => {
+    if (!confirm) return;
+    if (confirm.kind === "section") {
+      const route = confirm.route;
+      setConfirm(null);
+      setSectionKey(null);
+      navigate({ to: route });
+    } else {
+      // extras (insurance / freeze) — no navigation, just close
+      setConfirm(null);
+      setExtra(null);
+    }
+  };
 
   return (
     <div className="px-4">
