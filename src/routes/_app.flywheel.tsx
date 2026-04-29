@@ -47,8 +47,24 @@ function FlywheelScreen() {
         </h1>
       </div>
 
+      <section aria-label="Статистика">
+        <div className="grid grid-cols-4 gap-2">
+          <StatCard emoji="⭐" label="Очки" value="970" tone="orange" />
+          <StatCard emoji="🔥" label="Хит" value="2 дн" tone="green" />
+          <StatCard emoji="🔰" label="Страховка" value="0 шт" />
+          <StatCard emoji="💎" label="Статус" value="Мастер" tone="orange" />
+        </div>
+      </section>
+
+      <section className="mt-5">
+        <h2 className="px-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
+          Твой путь
+        </h2>
+        <PathLevels />
+      </section>
+
       <div
-        className="mx-auto mt-4"
+        className="mx-auto mt-5"
         style={{
           background: "#fff",
           borderRadius: 20,
