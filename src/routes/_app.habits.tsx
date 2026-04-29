@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, MoreHorizontal, Pencil, Trash2, Plus } from "lucide-react";
 import { BackButton } from "@/components/layout/BackButton";
+import { HowItWorksBlock } from "@/components/section/HowItWorksBlock";
 
 export const Route = createFileRoute("/_app/habits")({
   head: () => ({
