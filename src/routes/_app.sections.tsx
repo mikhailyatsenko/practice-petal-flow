@@ -229,7 +229,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function FreezeContent({ onClose }: { onClose: () => void }) {
+function FreezeContent({ onBuy }: { onBuy: () => void }) {
   return (
     <>
       <DialogHeader>
