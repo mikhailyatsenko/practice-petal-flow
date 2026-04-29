@@ -1,5 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { BackButton } from "@/components/layout/BackButton";
+import { StatCard } from "@/components/home/StatCard";
+import { PathLevels } from "@/components/home/PathLevels";
 
 export const Route = createFileRoute("/_app/flywheel")({
   head: () => ({
