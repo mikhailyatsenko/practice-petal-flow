@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronDown, Play, Check } from "lucide-react";
 import { setPracticeDone, useChargeStats, useEffectiveProgress } from "@/lib/practicesStore";
+import { HowVideoCards } from "@/components/section/HowVideoCards";
 
 export const Route = createFileRoute("/_app/practice/wishes-charge")({
   head: () => ({
