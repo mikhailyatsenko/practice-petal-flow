@@ -523,19 +523,49 @@ function ResponsibilityScreen() {
     <div className="min-h-screen pb-8" style={{ background: PAGE_BG }}>
       <div className="px-4 max-w-md mx-auto">
         {view.kind === "main" && (
-          <MainView
-            store={store}
-            onBack={goSections}
-            onAdd={() =>
-              setView({ kind: "add", step: 1, name: "", result: "", actions: "" })
-            }
-            onChecks={() => setView({ kind: "checks" })}
-            onHundred={() => setView({ kind: "hundred" })}
-            onEdit={(id) => setView({ kind: "edit", id })}
-            onDelete={(id) =>
-              update({ ...store, zones: store.zones.filter((z) => z.id !== id) })
-            }
-          />
+          <>
+            <MainView
+              store={store}
+              onBack={goSections}
+              onAdd={() =>
+                setView({ kind: "add", step: 1, name: "", result: "", actions: "" })
+              }
+              onChecks={() => setView({ kind: "checks" })}
+              onHundred={() => setView({ kind: "hundred" })}
+              onEdit={(id) => setView({ kind: "edit", id })}
+              onDelete={(id) =>
+                update({ ...store, zones: store.zones.filter((z) => z.id !== id) })
+              }
+            />
+            <HowItWorksBlock
+              paragraphs={[
+                {
+                  title: "⚖️ Что такое «Дневник ответственности»",
+                  text: "Это место, где ты честно смотришь на свои зоны ответственности: семья, работа, здоровье, финансы, дом — что бы ни было важно в твоей жизни. Регулярно проверяешь себя — не упускаешь ли что-то важное. Это про взросление и осознанность.",
+                },
+                {
+                  title: "🎯 Как это работает",
+                  text: "Добавляешь зоны ответственности — для каждой пишешь желаемый результат и действия. Регулярно делаешь чек-ап: где сейчас, что упустил, что исправить. Раздел «100 решений» — практика для тренировки осознанной ответственности.",
+                },
+                {
+                  title: "💎 Зачем это нужно",
+                  text: "Жизнь состоит из зон, и в каждой ты либо хозяин, либо жертва обстоятельств. Этот раздел помогает оставаться хозяином: видеть всё поле, не упускать важное и не прятаться от того, что давно требует решения. Это превращает «как-нибудь разрулится» в «я держу свою жизнь».",
+                },
+              ]}
+              videos={[
+                {
+                  title: "🎬 Что такое осознанная ответственность",
+                  duration: "5:30",
+                  caption: "Чем взрослая ответственность отличается от чувства вины и почему это ключевой навык.",
+                },
+                {
+                  title: "⚖️ Как делать чек-ап ответственности",
+                  duration: "4:30",
+                  caption: "Конкретный приём: как раз в неделю/месяц проходить по своим зонам и держать их в фокусе.",
+                },
+              ]}
+            />
+          </>
         )}
 
         {view.kind === "add" && (
