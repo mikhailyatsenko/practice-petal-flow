@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
 import { BackButton } from "@/components/layout/BackButton";
+import { HowItWorksBlock } from "@/components/section/HowItWorksBlock";
 
 export const Route = createFileRoute("/_app/mistakes")({
   head: () => ({
