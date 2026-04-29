@@ -1360,7 +1360,7 @@ function HotelkaItem({
             {text}
           </p>
         </div>
-        <div className="mt-2 pl-10">
+        <div className="mt-2">
           <DesireCharge level={proudCount} onTap={() => onProud?.()} mode="proud" />
         </div>
       </div>
