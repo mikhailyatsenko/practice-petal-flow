@@ -12,6 +12,7 @@ import goalLanguage from "@/assets/goal-language.jpg";
 import goalSavings from "@/assets/goal-savings.jpg";
 import { TasksModule, CreateOrEditTaskScreen, type Task as ModuleTask } from "@/components/tasks/TasksModule";
 import { setPracticeDone, useChargesMap, bumpCharge, setChargeTotal, useDaysCount } from "@/lib/practicesStore";
+import { HowVideoCards } from "@/components/section/HowVideoCards";
 
 const VALID_TABS = ["wants", "wishes", "goals", "tasks", "done"] as const;
 type WishesSearch = { tab?: typeof VALID_TABS[number] };
