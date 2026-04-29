@@ -630,39 +630,7 @@ function HowItWorks({ tab }: { tab: TabId }) {
           )}
 
           {howTab === "video" && (
-            <div className="bg-card hairline rounded-2xl overflow-hidden shadow-card">
-              <div
-                className="relative aspect-video w-full flex items-center justify-center"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #2a1a05 0%, #4a2c0a 50%, #1a0e00 100%)",
-                }}
-              >
-                <button
-                  aria-label="Воспроизвести"
-                  className="tap h-16 w-16 rounded-full flex items-center justify-center text-white shadow-lg"
-                  style={{
-                    background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-                  }}
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-7 w-7 ml-1"
-                    fill="white"
-                  >
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </button>
-                <span className="absolute bottom-2.5 right-3 rounded-md bg-black/60 px-2 py-0.5 text-[11px] font-medium text-white">
-                  6:30
-                </span>
-              </div>
-              <div className="px-4 py-3">
-                <p className="text-[13px] leading-snug text-foreground">
-                  {data.video}
-                </p>
-              </div>
-            </div>
+            <HowVideoCards first={data.videos[0]} second={data.videos[1]} />
           )}
         </div>
       )}
