@@ -157,7 +157,7 @@ function ValuesScreen() {
 
   // ----- List screen -----
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className="min-h-screen bg-background">
       <Header
         title="Ценности"
         onBack={() => navigate({ to: "/sections" })}
@@ -310,7 +310,7 @@ function AddScreen({ onBack, onSave }: { onBack: () => void; onSave: (t: string,
   const [description, setDescription] = useState("");
   const valid = title.trim().length >= 3 && description.trim().length >= 3;
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className="min-h-screen bg-background">
       <Header title="Новая ценность" onBack={onBack} />
       <div className="px-4 pb-32 pt-4">
         <div className="mb-5">
@@ -385,7 +385,7 @@ function ViewScreen({
   }
 
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className="min-h-screen bg-background">
       <Header title={value.title} onBack={onBack} />
       <div className="px-4 pb-32 pt-4">
         <div className="mb-4">
@@ -448,7 +448,7 @@ function PriorityScreen({
   }, [order, values.length, onDone]);
 
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className="min-h-screen bg-background">
       <Header title="Приоритет ценностей" onBack={onBack} />
       <div className="px-4 pb-32 pt-4">
         <div className="mb-5 text-[14px] leading-[1.55] text-[#666]">

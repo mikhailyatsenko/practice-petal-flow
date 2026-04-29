@@ -145,7 +145,7 @@ function GratitudeScreen() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className="min-h-screen bg-background">
       <Header title="Дневник благодарности" onBack={() => navigate({ to: "/sections" })} />
       <div className="px-4 pb-32 pt-6">
         <div className="mb-4 text-[14px] text-[#8a8a8a]">Выберите вид благодарностей:</div>
@@ -260,7 +260,7 @@ function CategoryScreen({
         : "Посмотреть золотые моменты";
 
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className="min-h-screen bg-background">
       <Header title={CAT_TITLES[cat]} onBack={onBack} />
       <div className="px-4 pb-32 pt-4">
         {INFO_TEXT[cat] && (
@@ -342,7 +342,7 @@ function AddScreen({
   }
 
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className="min-h-screen bg-background">
       <Header title={CAT_TITLES[cat]} onBack={onBack} />
       <div className="px-4 pb-32 pt-4">
         {isDaily && (
@@ -472,7 +472,7 @@ function HistoryScreen({
   }
 
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className="min-h-screen bg-background">
       <Header title={CAT_TITLES[cat]} onBack={onBack} />
       <div className="px-4 pb-32 pt-4">
         {grouped.length === 0 ? (
