@@ -3,6 +3,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SectionHeader, SubItemList } from "@/components/section/SubItemList";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { HowVideoCards } from "@/components/section/HowVideoCards";
+import { SECTION_INFO, type SectionInfo } from "@/lib/sectionInfo";
 
 export const Route = createFileRoute("/_app/sections")({
   head: () => ({
@@ -19,6 +21,9 @@ type ExtraKey = "freeze" | "insurance" | null;
 function SectionsScreen() {
   const navigate = useNavigate();
   const [extra, setExtra] = useState<ExtraKey>(null);
+  const [sectionKey, setSectionKey] = useState<string | null>(null);
+
+  const open = (key: string) => setSectionKey(key);
 
   return (
     <div className="px-4">
@@ -26,15 +31,15 @@ function SectionsScreen() {
 
       <SubItemList
         items={[
-          { emoji: "💪", title: "Привычки",                subtitle: "Отслеживание любых привычек", price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/habits" }) },
-          { emoji: "👑", title: "Качества характера",      subtitle: "Развитие 100+ качеств",       price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/qualities" }) },
-          { emoji: "🧠", title: "Потребности",                                                       price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/needs" }) },
-          { emoji: "💡", title: "Ценности",                                                          price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/values" }) },
-          { emoji: "🤝", title: "Самоулучшение",            subtitle: "30 вопросов для рефлексии",    price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/self-improve" }) },
-          { emoji: "🙏", title: "Дневник благодарности",                                              price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/gratitude" }) },
-          { emoji: "🧭", title: "Дневник решений",                                                    price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/decisions" }) },
-          { emoji: "📝", title: "Дневник ошибок",                                                     price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/mistakes" }) },
-          { emoji: "⚖️", title: "Дневник ответственности",                                            price: "300 ⭐", locked: true, onClick: () => navigate({ to: "/responsibility" }) },
+          { emoji: "💪", title: "Привычки",                subtitle: "Отслеживание любых привычек", price: "300 ⭐", locked: true, onClick: () => open("habits") },
+          { emoji: "👑", title: "Качества характера",      subtitle: "Развитие 100+ качеств",       price: "300 ⭐", locked: true, onClick: () => open("qualities") },
+          { emoji: "🧠", title: "Потребности",                                                       price: "300 ⭐", locked: true, onClick: () => open("needs") },
+          { emoji: "💡", title: "Ценности",                                                          price: "300 ⭐", locked: true, onClick: () => open("values") },
+          { emoji: "🤝", title: "Самоулучшение",            subtitle: "30 вопросов для рефлексии",    price: "300 ⭐", locked: true, onClick: () => open("self-improve") },
+          { emoji: "🙏", title: "Дневник благодарности",                                              price: "300 ⭐", locked: true, onClick: () => open("gratitude") },
+          { emoji: "🧭", title: "Дневник решений",                                                    price: "300 ⭐", locked: true, onClick: () => open("decisions") },
+          { emoji: "📝", title: "Дневник ошибок",                                                     price: "300 ⭐", locked: true, onClick: () => open("mistakes") },
+          { emoji: "⚖️", title: "Дневник ответственности",                                            price: "300 ⭐", locked: true, onClick: () => open("responsibility") },
         ]}
       />
 
@@ -57,7 +62,96 @@ function SectionsScreen() {
           {extra === "insurance" && <InsuranceContent onClose={() => setExtra(null)} />}
         </DialogContent>
       </Dialog>
+
+      <Dialog open={sectionKey !== null} onOpenChange={(o) => !o && setSectionKey(null)}>
+        <DialogContent className="w-[calc(100vw-24px)] max-w-md max-h-[85vh] overflow-y-auto p-5">
+          {sectionKey && SECTION_INFO[sectionKey] && (
+            <SectionInfoContent
+              info={SECTION_INFO[sectionKey]}
+              onBuy={() => {
+                const route = SECTION_INFO[sectionKey].route;
+                setSectionKey(null);
+                navigate({ to: route });
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
+  );
+}
+
+function SectionInfoContent({ info, onBuy }: { info: SectionInfo; onBuy: () => void }) {
+  const [tab, setTab] = useState<"text" | "video">("text");
+
+  return (
+    <>
+      <DialogHeader>
+        <DialogTitle className="text-[18px]">
+          {info.emoji} {info.title}
+        </DialogTitle>
+      </DialogHeader>
+
+      <div
+        className="flex rounded-xl mt-2"
+        style={{ background: "#f0ebe2", padding: 4 }}
+      >
+        {([
+          { k: "text" as const, label: "📖 Текст" },
+          { k: "video" as const, label: "▶️ Видео" },
+        ]).map((t) => {
+          const active = tab === t.k;
+          return (
+            <button
+              key={t.k}
+              onClick={() => setTab(t.k)}
+              className="tap flex-1 rounded-lg py-2 text-[13px] font-medium transition-colors"
+              style={{
+                background: active
+                  ? "linear-gradient(135deg, #FFB300, #FF6D00)"
+                  : "transparent",
+                color: active ? "#fff" : "#6b6356",
+              }}
+            >
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-3">
+        {tab === "text" && (
+          <div className="space-y-3">
+            {info.paragraphs.map((p, i) => (
+              <div
+                key={i}
+                className="bg-card shadow-card p-4"
+                style={{ borderRadius: 14 }}
+              >
+                <p className="text-[14px] font-semibold mb-2">{p.title}</p>
+                <p className="text-[13px] leading-snug text-foreground/85 whitespace-pre-line">
+                  {p.text}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {tab === "video" && (
+          <HowVideoCards first={info.videos[0]} second={info.videos[1]} />
+        )}
+      </div>
+
+      <DialogFooter className="mt-4">
+        <Button
+          onClick={onBuy}
+          className="w-full text-white"
+          style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+        >
+          Купить за {info.price}
+        </Button>
+      </DialogFooter>
+    </>
   );
 }
 
