@@ -1,4 +1,21 @@
 import { useSyncExternalStore } from "react";
+import { toast } from "sonner";
+
+const PRACTICE_TITLES: Record<PracticeId, string> = {
+  "self-prog": "Самопрограммирование",
+  charge: "Зарядка желаний",
+  essay: "Сочинение",
+  skill: "Развитие навыка",
+  wishes: "Шаг к желанию",
+};
+
+function notifyPracticeDone(id: PracticeId) {
+  try {
+    toast.success(`✅ Привычка сделана: ${PRACTICE_TITLES[id]}`);
+  } catch {
+    /* ignore */
+  }
+}
 
 // Общий источник истины для статуса doneToday по всем 5 практикам.
 // id совпадают с id в initialPractices на главной:
