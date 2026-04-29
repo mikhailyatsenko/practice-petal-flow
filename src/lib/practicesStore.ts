@@ -156,6 +156,7 @@ function maybeAutoCompleteCharge() {
   const cond2 = maxLevel >= 5;
   if (cond1 && cond2) {
     state = { ...state, done: { ...state.done, charge: true } };
+    notifyPracticeDone("charge");
     try {
       const d = new Date();
       const today = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
