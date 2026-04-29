@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronDown, Play } from "lucide-react";
 import { setPracticeDone, useEffectiveProgress } from "@/lib/practicesStore";
+import { HowVideoCards } from "@/components/section/HowVideoCards";
 
 export const Route = createFileRoute("/_app/practice/step")({
   head: () => ({
