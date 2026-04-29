@@ -248,8 +248,20 @@ type HowBlock =
 type HowVideo = { title: string; duration: string; caption: string };
 const HOW_IT_WORKS: Record<TabId, { videos: [HowVideo, HowVideo]; blocks: HowBlock[] }> = {
   wants: {
-    video:
-      "В видео объясняется как работать с хотелками — быстро фиксировать желания, чтобы не терять важные мысли в потоке дня.",
+    videos: [
+      {
+        title: "🎬 Что такое Хотелки",
+        duration: "5:00",
+        caption:
+          "Как работать с хотелками — быстро фиксировать желания, чтобы не терять важные мысли в потоке дня.",
+      },
+      {
+        title: "✨ Как ловить и записывать желания",
+        duration: "4:10",
+        caption:
+          "Простые приёмы: как замечать желания в обычной жизни и не фильтровать себя в момент записи.",
+      },
+    ],
     blocks: [
       {
         kind: "card",
