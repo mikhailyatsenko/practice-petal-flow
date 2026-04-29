@@ -52,7 +52,7 @@ function SectionsScreen() {
       />
 
       <Dialog open={extra !== null} onOpenChange={(o) => !o && setExtra(null)}>
-        <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
+        <DialogContent className="w-[calc(100vw-24px)] max-w-md max-h-[85vh] overflow-y-auto p-5">
           {extra === "freeze" && <FreezeContent onClose={() => setExtra(null)} />}
           {extra === "insurance" && <InsuranceContent onClose={() => setExtra(null)} />}
         </DialogContent>
