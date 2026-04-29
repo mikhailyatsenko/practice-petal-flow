@@ -1550,10 +1550,11 @@ function DesireCharge({ level, onTap, mode = "inspire", id }: { level: number; o
       className="tap flex items-center gap-2.5 min-w-0 select-none -mx-1 px-1 py-1 rounded-lg relative"
     >
       <span
-        key={`heart-${justHit100 ? total : "idle"}`}
+        key={`heart-${total === 0 ? "empty" : justHit100 ? total : "idle"}`}
         className={`text-[22px] leading-none transition-transform active:scale-90 ${justHit100 ? "animate-celebrate" : ""}`}
+        style={{ fontFamily: '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif' }}
       >
-        ❤️
+        {total === 0 ? "🤍" : "❤️"}
       </span>
       <span className="flex flex-col gap-0.5 min-w-0 text-left">
         <span className="flex items-end gap-1.5" style={{ height: 16 }}>
