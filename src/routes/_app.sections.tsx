@@ -78,8 +78,20 @@ function SectionsScreen() {
 
       <Dialog open={extra !== null} onOpenChange={(o) => !o && setExtra(null)}>
         <DialogContent className="w-[calc(100vw-24px)] max-w-md max-h-[85vh] overflow-y-auto p-5">
-          {extra === "freeze" && <FreezeContent onClose={() => setExtra(null)} />}
-          {extra === "insurance" && <InsuranceContent onClose={() => setExtra(null)} />}
+          {extra === "freeze" && (
+            <FreezeContent
+              onBuy={() =>
+                setConfirm({ kind: "extra", key: "freeze", title: "Заморозка клуба", price: "300 ⭐" })
+              }
+            />
+          )}
+          {extra === "insurance" && (
+            <InsuranceContent
+              onBuy={() =>
+                setConfirm({ kind: "extra", key: "insurance", title: "Страховка практики", price: "50 ⭐" })
+              }
+            />
+          )}
         </DialogContent>
       </Dialog>
 
@@ -88,13 +100,46 @@ function SectionsScreen() {
           {sectionKey && SECTION_INFO[sectionKey] && (
             <SectionInfoContent
               info={SECTION_INFO[sectionKey]}
-              onBuy={() => {
-                const route = SECTION_INFO[sectionKey].route;
-                setSectionKey(null);
-                navigate({ to: route });
-              }}
+              onBuy={() =>
+                setConfirm({
+                  kind: "section",
+                  key: sectionKey,
+                  title: SECTION_INFO[sectionKey].title,
+                  price: SECTION_INFO[sectionKey].price,
+                  route: SECTION_INFO[sectionKey].route,
+                })
+              }
             />
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={confirm !== null} onOpenChange={(o) => !o && setConfirm(null)}>
+        <DialogContent className="w-[calc(100vw-24px)] max-w-sm p-5">
+          <DialogHeader>
+            <DialogTitle className="text-[18px]">Подтверждение покупки</DialogTitle>
+          </DialogHeader>
+          {confirm && (
+            <p className="text-[14px] text-foreground/85 mt-1">
+              Купить «{confirm.title}» за {confirm.price}?
+            </p>
+          )}
+          <DialogFooter className="mt-4 flex-row gap-2 sm:justify-end">
+            <Button
+              variant="outline"
+              onClick={() => setConfirm(null)}
+              className="flex-1"
+            >
+              Отмена
+            </Button>
+            <Button
+              onClick={confirmPurchase}
+              className="flex-1 text-white"
+              style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+            >
+              Подтвердить
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
