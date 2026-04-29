@@ -164,7 +164,7 @@ function SelfImproveScreen() {
 
   // -- main
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className="min-h-screen bg-background">
       <Header title="Самоулучшение" onBack={() => navigate({ to: "/sections" })} />
       <div className="px-4 pb-32 pt-6">
         <div className="flex flex-col gap-3">
@@ -241,7 +241,7 @@ function PickScreen({
   onPick: (q: number) => void;
 }) {
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className="min-h-screen bg-background">
       <Header title="Выбери вопрос" onBack={onBack} />
       <div className="px-4 pb-32 pt-4">
         <div className="mb-3 text-[13px] italic text-[#8a8a8a]">
@@ -309,7 +309,7 @@ function AnswerScreen({
   }, [text]);
 
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className="min-h-screen bg-background">
       <Header title="Ответ на вопрос" onBack={onBack} />
       <div className="px-4 pb-32 pt-4">
         <div
@@ -401,7 +401,7 @@ function MyListScreen({
     .filter((x) => (store[x.num]?.length ?? 0) > 0);
 
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className="min-h-screen bg-background">
       <Header title="Мои ответы" onBack={onBack} />
       <div className="px-4 pb-32 pt-4">
         <div className="mb-3 text-[13px] italic text-[#8a8a8a]">
@@ -453,7 +453,7 @@ function HistoryScreen({
 }) {
   const answers = [...(store[q] || [])].sort((a, b) => a.ts - b.ts);
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className="min-h-screen bg-background">
       <Header title={`Вопрос ${q}`} onBack={onBack} />
       <div className="px-4 pb-32 pt-4">
         <div
@@ -514,7 +514,7 @@ function HistoryScreen({
 
 function InstructionScreen({ onBack }: { onBack: () => void }) {
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className="min-h-screen bg-background">
       <Header title="Инструкция" onBack={onBack} />
       <div className="px-4 pb-32 pt-4">
         <div
