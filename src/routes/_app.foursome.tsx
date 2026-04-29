@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Calendar, Globe, MessageCircle, Users } from "lucide-react";
 import { BackButton } from "@/components/layout/BackButton";
+import { HowVideoCards } from "@/components/section/HowVideoCards";
 
 export const Route = createFileRoute("/_app/foursome")({
   validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "locked" } => {
