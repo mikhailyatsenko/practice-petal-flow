@@ -74,10 +74,10 @@ function FlywheelScreen() {
       >
         <div className="text-center">
           <h2 style={{ fontSize: 18, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.3 }}>
-            Скоро тут откроется маховик успеха
+            Скоро тут откроется 5 главных привычек
           </h2>
           <p style={{ fontSize: 13, color: "#8a8a8a", lineHeight: 1.5, marginTop: 10 }}>
-            5 главных привычек откроются здесь, когда ты дойдёшь до 3 уровня
+            Дойди до 3 уровня и маховик успеха откроется здесь
           </p>
         </div>
 
