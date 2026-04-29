@@ -472,33 +472,20 @@ function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
                 ))}
               </div>
             ) : (
-              <div>
-                <div
-                  className="relative rounded-[18px] overflow-hidden mb-3"
-                  style={{ background: "#1a1a1a", aspectRatio: "16 / 9" }}
-                >
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                    <button
-                      className="h-16 w-16 rounded-full flex items-center justify-center text-white"
-                      style={{
-                        background: ORANGE_GRADIENT,
-                        boxShadow: "0 0 24px rgba(255,109,0,0.6)",
-                      }}
-                      aria-label="Воспроизвести"
-                    >
-                      <Play className="h-7 w-7 ml-1" fill="white" />
-                    </button>
-                    <div className="text-[14px] font-bold text-white mt-2">Видеоинструкция</div>
-                    <div className="text-[12px] text-white/50">Четвёрка · ~5 мин</div>
-                  </div>
-                </div>
-                <div className="rounded-2xl p-3.5" style={{ background: "#fff8ee", border: "1px solid #ffe0a3" }}>
-                  <p className="text-[13px] text-foreground/80" style={{ lineHeight: 1.6 }}>
-                    В видео объясняется как найти Четвёрку, как проходит процесс подтверждения и что делать на ежемесячных
-                    созвонах.
-                  </p>
-                </div>
-              </div>
+              <HowVideoCards
+                first={{
+                  title: "🎬 Что такое Четвёрка",
+                  duration: "5:00",
+                  caption:
+                    "Как найти Четвёрку, как проходит процесс подтверждения и зачем встречаться раз в месяц.",
+                }}
+                second={{
+                  title: "👥 Структура созвона Четвёрки",
+                  duration: "4:30",
+                  caption:
+                    "Что делать на ежемесячных созвонах: формат, правила, темы и как получить максимум.",
+                }}
+              />
             )}
           </div>
         )}
