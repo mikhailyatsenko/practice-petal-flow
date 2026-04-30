@@ -444,54 +444,68 @@ export function PathLevels() {
                   marginBottom: 8,
                 }}
               >
-                {isMulti ? "Награды" : "Награда"}
+                Награда 🎁
               </div>
               <ul style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {rewards.map((r, i) => (
-                  <li
-                    key={i}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      padding: "10px 12px",
-                      background: "#FFF7EC",
-                      border: "1px solid rgba(255,109,0,0.18)",
-                      borderRadius: 12,
-                    }}
-                  >
-                    <span
-                      aria-hidden
+                {rewards.map((r, i) => {
+                  const clean = r.replace(/^🎁\s*/, "");
+                  return (
+                    <li
+                      key={i}
                       style={{
-                        flexShrink: 0,
-                        width: 22,
-                        height: 22,
-                        borderRadius: "50%",
-                        background: "linear-gradient(135deg,#FFB300,#FF6D00)",
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 12,
-                        boxShadow: "0 2px 4px rgba(255,109,0,0.25)",
-                        fontFamily: '"Apple Color Emoji","Segoe UI Emoji",sans-serif',
+                        gap: 8,
                       }}
                     >
-                      🎁
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 13,
-                        fontWeight: 500,
-                        color: "#1a1a1a",
-                        lineHeight: 1.35,
-                        minWidth: 0,
-                        flex: 1,
-                      }}
-                    >
-                      {r.replace(/^🎁\s*/, "")}
-                    </span>
-                  </li>
-                ))}
+                      {isMulti ? (
+                        <span
+                          aria-hidden
+                          style={{
+                            flexShrink: 0,
+                            width: 20,
+                            height: 20,
+                            borderRadius: "50%",
+                            background: "#FFB300",
+                            color: "#fff",
+                            fontSize: 11,
+                            fontWeight: 600,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            lineHeight: 1,
+                          }}
+                        >
+                          {i + 1}
+                        </span>
+                      ) : (
+                        <span
+                          aria-hidden
+                          style={{
+                            flexShrink: 0,
+                            fontSize: 16,
+                            lineHeight: 1,
+                            fontFamily:
+                              '"Apple Color Emoji","Segoe UI Emoji",sans-serif',
+                          }}
+                        >
+                          🎁
+                        </span>
+                      )}
+                      <span
+                        style={{
+                          fontSize: 13,
+                          color: "#1a1a1a",
+                          lineHeight: 1.35,
+                          minWidth: 0,
+                          flex: 1,
+                        }}
+                      >
+                        {clean}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           );
