@@ -30,19 +30,20 @@ export function LibraryLockedPreview({ unlockLevel = 3 }: LibraryLockedPreviewPr
         .llp-fog-3 { animation: llp-fog-1 2.8s ease-in-out 1s infinite; }
       `}</style>
 
-      {/* Анимация 80x80 */}
+      {/* Анимация 160x160 */}
       <div
         className="relative mx-auto"
-        style={{ width: 80, height: 80 }}
+        style={{ width: 160, height: 160 }}
       >
         {/* Книги снизу */}
         <div
           className="absolute inset-0 flex items-end justify-center"
           style={{
-            fontSize: 26,
-            opacity: 0.4,
+            fontSize: 64,
+            opacity: 0.45,
             fontFamily: '"Apple Color Emoji","Segoe UI Emoji",sans-serif',
             lineHeight: 1,
+            paddingBottom: 4,
           }}
         >
           📚
@@ -52,28 +53,28 @@ export function LibraryLockedPreview({ unlockLevel = 3 }: LibraryLockedPreviewPr
         <div
           className="llp-fog-1 absolute"
           style={{
-            width: 70, height: 18, top: 8, left: 5,
+            width: 140, height: 32, top: 16, left: 10,
             background: "#e8e8e8",
-            borderRadius: 8,
-            opacity: 0.5,
+            borderRadius: 16,
+            opacity: 0.55,
           }}
         />
         <div
           className="llp-fog-2 absolute"
           style={{
-            width: 60, height: 16, top: 26, left: 10,
+            width: 120, height: 30, top: 56, left: 20,
             background: "#e8e8e8",
-            borderRadius: 8,
-            opacity: 0.6,
+            borderRadius: 16,
+            opacity: 0.65,
           }}
         />
         <div
           className="llp-fog-3 absolute"
           style={{
-            width: 65, height: 16, top: 42, left: 7,
+            width: 130, height: 30, top: 92, left: 14,
             background: "#e8e8e8",
-            borderRadius: 8,
-            opacity: 0.5,
+            borderRadius: 16,
+            opacity: 0.55,
           }}
         />
       </div>
