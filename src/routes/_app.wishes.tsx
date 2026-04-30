@@ -158,6 +158,7 @@ interface Goal {
   deadline: string;
   progress: number;
   reasons: string[];
+  vision?: string;
   criteria: string;
   plan: string;
   tasks: GoalTask[];
