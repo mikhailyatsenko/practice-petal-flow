@@ -20,7 +20,17 @@ function PartnerScreen() {
 
   return (
     <div className="px-4">
-      <SectionHeader emoji="📍" title="Партнёрка" subtitle="Пригласи друга — и клуб станет бесплатным." />
+      <div className="px-1 pt-2 pb-3">
+        <h1 className="text-[22px] font-semibold leading-tight">
+          <span className="mr-1.5">📍</span>Партнёрка
+        </h1>
+        <p
+          className="mt-1.5 text-[14px] font-medium leading-snug"
+          style={{ color: "#1a1a1a" }}
+        >
+          Пригласи друга — и клуб станет бесплатным.
+        </p>
+      </div>
 
       {/* Balance */}
       <div className="rounded-2xl bg-card hairline shadow-card p-4">
