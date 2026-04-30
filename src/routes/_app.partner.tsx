@@ -16,6 +16,7 @@ export const Route = createFileRoute("/_app/partner")({
 
 function PartnerScreen() {
   const [howOpen, setHowOpen] = useState(false);
+  const [howTab, setHowTab] = useState<"text" | "video">("text");
 
   return (
     <div className="px-4">
@@ -84,67 +85,128 @@ function PartnerScreen() {
 
         {howOpen && (
           <div className="mt-3 animate-fade-up">
-            <div className="space-y-3 text-[13.5px] leading-relaxed text-foreground/90">
-              <p>
-                Партнёрка — это способ сделать участие в клубе бесплатным. Ты делишься своей ссылкой
-                с друзьями, а клуб награждает тебя бонусными рублями за каждую оплату, которую они
-                совершают.
-              </p>
-              <p>
-                <span className="font-semibold">1 бонусный ₽ = 1 реальному ₽.</span> Бонусы
-                автоматически списываются вместо денег, когда наступает твой следующий платёж.
-              </p>
-              <p>
-                <span className="font-semibold">Как считается начисление.</span> Тебе начисляется
-                ровно та сумма, которую заплатил друг. Если друг только начал и платит 1 ₽ за первый
-                месяц — ты получаешь 1 бонусный ₽. Когда он переходит на регулярную оплату 1 000 ₽ в
-                месяц — ты получаешь 1 000 бонусов с каждой его оплаты.
-              </p>
-              <p>
-                <span className="font-semibold">Бонусы не сгорают.</span> Они копятся на твоём
-                балансе, пока ты их не используешь. В день твоей оплаты система сначала спишет
-                бонусы, и только если их не хватит — попросит доплатить разницу.
-              </p>
-
-              <p className="pt-1 text-[12px] uppercase tracking-wider text-muted-foreground">
-                Схема
-              </p>
-
-              <div className="flex flex-col gap-2">
-                <BonusStep
-                  variant="orange"
-                  title="Друг платит"
-                  line1="1 ₽ — первый месяц"
-                  line2="1 000 ₽ — каждый следующий"
-                />
-                <StepArrow />
-                <BonusStep
-                  variant="green"
-                  title="Тебе начисляется"
-                  line1="1 бонусный ₽ — в первый месяц"
-                  line2="1 000 бонусов ₽ — с каждой оплаты"
-                />
-                <StepArrow />
-                <BonusStep
-                  variant="blue"
-                  title="Ты не платишь"
-                  line1="когда наступает твой день оплаты"
-                  line2="списываются бонусные рубли"
-                />
-              </div>
-
-              <div className="mt-1 rounded-xl bg-secondary p-3">
-                <p className="text-[12px] uppercase tracking-wider text-muted-foreground">
-                  Пример
-                </p>
-                <p className="mt-1.5 text-[13px] leading-relaxed">
-                  Ты пригласил 2 друзей. Оба перешли на регулярную оплату 1 000 ₽/мес. За месяц тебе
-                  начислится 2 000 бонусов. Когда наступит твой день оплаты — система спишет 1 000
-                  бонусов вместо денег, а 1 000 останутся на следующий месяц. Так твоё участие
-                  становится полностью бесплатным.
-                </p>
-              </div>
+            {/* Tabs */}
+            <div
+              className="flex rounded-xl mb-3"
+              style={{ background: "#f0ebe2", padding: 4 }}
+            >
+              {([
+                { k: "text" as const, label: "📖 Текст" },
+                { k: "video" as const, label: "▶️ Видео" },
+              ]).map((t) => {
+                const active = howTab === t.k;
+                return (
+                  <button
+                    key={t.k}
+                    onClick={() => setHowTab(t.k)}
+                    className="tap flex-1 rounded-lg py-2 text-[13px] font-medium transition-colors"
+                    style={{
+                      background: active
+                        ? "linear-gradient(135deg, #FFB300, #FF6D00)"
+                        : "transparent",
+                      color: active ? "#fff" : "#6b6356",
+                    }}
+                  >
+                    {t.label}
+                  </button>
+                );
+              })}
             </div>
+
+            {howTab === "text" && (
+              <div className="space-y-3">
+                <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
+                  <p className="text-[14px] font-semibold mb-2">Что такое партнёрка</p>
+                  <p className="text-[13px] leading-relaxed text-foreground/85">
+                    Партнёрка — это способ сделать участие в клубе бесплатным. Ты делишься своей
+                    ссылкой с друзьями, а клуб награждает тебя бонусными рублями за каждую оплату,
+                    которую они совершают.
+                  </p>
+                </div>
+
+                <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
+                  <p className="text-[14px] font-semibold mb-2">Курс бонусов</p>
+                  <p className="text-[13px] leading-relaxed text-foreground/85">
+                    1 бонусный ₽ = 1 реальному ₽. Бонусы автоматически списываются вместо денег,
+                    когда наступает твой следующий платёж.
+                  </p>
+                </div>
+
+                <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
+                  <p className="text-[14px] font-semibold mb-2">Как считается начисление</p>
+                  <p className="text-[13px] leading-relaxed text-foreground/85">
+                    Тебе начисляется ровно та сумма, которую заплатил друг. Если друг только начал и
+                    платит 1 ₽ за первый месяц — ты получаешь 1 бонусный ₽. Когда он переходит на
+                    регулярную оплату 1 000 ₽ в месяц — ты получаешь 1 000 бонусов с каждой его
+                    оплаты.
+                  </p>
+                </div>
+
+                <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
+                  <p className="text-[14px] font-semibold mb-2">Бонусы не сгорают</p>
+                  <p className="text-[13px] leading-relaxed text-foreground/85">
+                    Они копятся на твоём балансе, пока ты их не используешь. В день твоей оплаты
+                    система сначала спишет бонусы, и только если их не хватит — попросит доплатить
+                    разницу.
+                  </p>
+                </div>
+
+                <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
+                  <p className="text-[12px] uppercase tracking-wider text-muted-foreground mb-2">
+                    Схема
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    <BonusStep
+                      variant="orange"
+                      title="Друг платит"
+                      line1="1 ₽ — первый месяц"
+                      line2="1 000 ₽ — каждый следующий"
+                    />
+                    <StepArrow />
+                    <BonusStep
+                      variant="green"
+                      title="Тебе начисляется"
+                      line1="1 бонусный ₽ — в первый месяц"
+                      line2="1 000 бонусов ₽ — с каждой оплаты"
+                    />
+                    <StepArrow />
+                    <BonusStep
+                      variant="blue"
+                      title="Ты не платишь"
+                      line1="когда наступает твой день оплаты"
+                      line2="списываются бонусные рубли"
+                    />
+                  </div>
+                </div>
+
+                <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
+                  <p className="text-[14px] font-semibold mb-2">Пример</p>
+                  <p className="text-[13px] leading-relaxed text-foreground/85">
+                    Ты пригласил 2 друзей. Оба перешли на регулярную оплату 1 000 ₽/мес. За месяц
+                    тебе начислится 2 000 бонусов. Когда наступит твой день оплаты — система спишет
+                    1 000 бонусов вместо денег, а 1 000 останутся на следующий месяц. Так твоё
+                    участие становится полностью бесплатным.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {howTab === "video" && (
+              <HowVideoCards
+                first={{
+                  title: "Как работает партнёрка",
+                  duration: "2:30",
+                  caption:
+                    "Короткий обзор: как получить ссылку, делиться ей и получать бонусные рубли.",
+                }}
+                second={{
+                  title: "Как списываются бонусы",
+                  duration: "1:45",
+                  caption:
+                    "Разбираем на примере, как бонусы автоматически уходят в счёт твоей следующей оплаты.",
+                }}
+              />
+            )}
           </div>
         )}
       </section>
