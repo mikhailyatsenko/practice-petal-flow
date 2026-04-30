@@ -182,6 +182,7 @@ function DecisionsScreen() {
       <DetailScreen
         decision={dec}
         onBack={() => setView({ kind: "list", status: dec.status })}
+        onAccepted={() => setView({ kind: "main" })}
         onUpdate={(patch) => updateDecision(dec.id, patch)}
       />
     );
