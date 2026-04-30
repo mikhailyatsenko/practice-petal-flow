@@ -1072,6 +1072,9 @@ function WishesScreen() {
                 tasksAll={goalTasks}
                 tasksDoneCount={goalDone}
                 onAddTask={() => setQuickTaskGoalId(g.id)}
+                onProgressChange={(value) =>
+                  setGoals((prev) => prev.map((x) => (x.id === g.id ? { ...x, progress: value } : x)))
+                }
                 onOpenTasks={() => {
                   // По правке: при переходе из «Цели» фильтр НЕ ставим — показываем все задачи всех целей.
                   setTasksFromGoalId(null);
@@ -2340,6 +2343,7 @@ function GoalCard({
   tasksDoneCount = 0,
   onAddTask,
   readOnly = false,
+  onProgressChange,
 }: {
   goal: Goal;
   count: number;
@@ -2354,6 +2358,7 @@ function GoalCard({
   tasksDoneCount?: number;
   onAddTask?: () => void;
   readOnly?: boolean;
+  onProgressChange?: (value: number) => void;
 }) {
   void isDone;
   const openTasks = tasksAll.filter((t) => !t.done);
@@ -2389,15 +2394,42 @@ function GoalCard({
             <span className="text-muted-foreground">Прогресс</span>
             <span className="font-semibold" style={{ color: "#FF6D00" }}>{goal.progress}%</span>
           </div>
-          <div className="h-1.5 w-full rounded-full overflow-hidden" style={{ background: "#ede8df" }}>
-            <div
-              className="h-full rounded-full transition-all"
-              style={{
-                width: `${goal.progress}%`,
-                background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-              }}
-            />
-          </div>
+          {!readOnly && onProgressChange ? (
+            <div className="relative h-5 flex items-center">
+              <div
+                className="absolute inset-x-0 h-1.5 rounded-full overflow-hidden"
+                style={{ background: "#ede8df" }}
+              >
+                <div
+                  className="h-full rounded-full transition-all"
+                  style={{
+                    width: `${goal.progress}%`,
+                    background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                  }}
+                />
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={goal.progress}
+                onChange={(e) => onProgressChange(Number(e.target.value))}
+                aria-label="Прогресс цели"
+                className="relative w-full h-5 bg-transparent appearance-none cursor-pointer goal-progress-range"
+                style={{ accentColor: "#FF6D00" }}
+              />
+            </div>
+          ) : (
+            <div className="h-1.5 w-full rounded-full overflow-hidden" style={{ background: "#ede8df" }}>
+              <div
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${goal.progress}%`,
+                  background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                }}
+              />
+            </div>
+          )}
         </div>
 
         {goal.vision && goal.vision.trim() && (
