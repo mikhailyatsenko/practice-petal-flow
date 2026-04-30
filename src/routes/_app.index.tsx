@@ -82,6 +82,8 @@ interface EffectInstance {
 
 function HomeScreen() {
   const navigate = useNavigate();
+  const previewLevel = usePreviewLevel();
+  const flywheelOpen = isFeatureUnlocked("flywheel", previewLevel);
   const [stars, setStars]         = useState(970);
   const [hit, setHit]             = useState(2);
   const [insurance, setInsurance] = useState(0);
