@@ -2179,7 +2179,7 @@ function CreateWishWizard({
                   hidden
                   onChange={(e) => {
                     const f = e.target.files?.[0];
-                    if (f) setImage(URL.createObjectURL(f));
+                    if (f) handlePickImage(f);
                   }}
                 />
               </label>
