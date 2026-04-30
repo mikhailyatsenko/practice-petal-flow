@@ -1829,10 +1829,15 @@ function CreateWishWizard({
             </div>
           )}
 
+        </div>
+      )}
+
+      {step === 1 && (
+        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] bg-gradient-to-t from-background via-background to-background/80 z-40">
           <button
             disabled={title.trim().length < 2}
             onClick={() => setStep(2)}
-            className="tap btn-pill-orange w-full mt-6 disabled:opacity-40"
+            className="tap btn-pill-orange w-full disabled:opacity-40"
           >
             Далее → Причины
           </button>
