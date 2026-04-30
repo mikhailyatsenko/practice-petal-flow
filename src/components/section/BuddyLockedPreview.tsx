@@ -17,6 +17,15 @@ export function BuddyLockedPreview({ unlockLevel = 2 }: BuddyLockedPreviewProps)
       className="relative w-full bg-card hairline rounded-2xl px-4 py-5 shadow-card overflow-hidden select-none"
       aria-disabled="true"
     >
+      {/* Заголовок над анимацией */}
+      <div className="text-center mb-3">
+        <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1a1a", lineHeight: 1.3 }}>
+          Раздел закрыт
+        </p>
+        <p style={{ fontSize: 12, color: "#8a8a8a", lineHeight: 1.4, marginTop: 2 }}>
+          Бадди откроется на {unlockLevel} уровне
+        </p>
+      </div>
       <style>{`
         @keyframes ${id}-spin {
           from { transform: rotate(0deg); } to { transform: rotate(360deg); }
@@ -149,18 +158,20 @@ export function BuddyLockedPreview({ unlockLevel = 2 }: BuddyLockedPreviewProps)
         </div>
       </div>
 
-      {/* Мигающие точки внизу */}
-      <div className="flex items-center justify-center gap-1.5 mt-3">
-        {[0, 0.25, 0.5].map((d, i) => (
-          <span
-            key={i}
-            style={{
-              width: 5, height: 5, borderRadius: "50%",
-              background: from, display: "inline-block",
-              animation: `${id}-blink 1.2s ease-in-out ${d}s infinite`,
-            }}
-          />
-        ))}
+      {/* Бейдж внизу */}
+      <div className="flex justify-center mt-3">
+        <span
+          className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5"
+          style={{
+            background: "rgba(255,109,0,0.10)",
+            color: "#FF6D00",
+            fontSize: 12,
+            fontWeight: 600,
+          }}
+        >
+          <span style={{ fontFamily: '"Apple Color Emoji","Segoe UI Emoji",sans-serif' }}>🔒</span>
+          Откроется на уровне {unlockLevel}
+        </span>
       </div>
     </div>
   );
