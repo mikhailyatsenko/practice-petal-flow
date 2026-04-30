@@ -201,7 +201,7 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
       { id: "s1", label: "Соединиться с Бадди", done: false },
       { id: "s2", label: "Созвониться и заполнить карточку Бадди", done: false },
     ],
-    reward: "🎁 Маховик успеха + 2 ⭐ в день за Бадди",
+    reward: "Открывается Маховик успеха + 2 ⭐ в день за Бадди",
     task: {
       videoTitle: "Уровень 2 — Бадди",
       caption: "Введение • Уровень 2",
@@ -218,7 +218,7 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
     steps: [
       { id: "s1", label: "Соединиться в четвёрку", done: false },
     ],
-    reward: "🎁 +2 ⭐ за четвёрку каждый день · Открывается Библиотека знаний",
+    reward: "Открывается раздел Четвёрка + 2 ⭐ в день за четвёрку",
     task: {
       videoTitle: "Уровень 3 — Четвёрка",
       caption: "Введение • Уровень 3",
@@ -236,7 +236,7 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
       { id: "s1", label: "Прослушать «Закон притяжения» 6 ч", done: false },
       { id: "s2", label: "Сдать тест ИИ на 50%", done: false },
     ],
-    reward: "🎁 Открывается Магазин разделов",
+    reward: "Открывается раздел Библиотека знаний",
     task: {
       videoTitle: "Уровень 4 — Формула",
       caption: "Введение • Уровень 4",
@@ -254,7 +254,7 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
     steps: [
       { id: "s1", label: "Сделать Хит 30 дней подряд", done: false },
     ],
-    reward: "🎁 +200 ⭐",
+    reward: "Открывается раздел Магазин разделов + 200 ⭐",
     task: {
       videoTitle: "Уровень 5 — 30 хитов",
       caption: "Введение • Уровень 5",
