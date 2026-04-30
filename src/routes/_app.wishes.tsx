@@ -1871,7 +1871,7 @@ function CreateWishWizard({
 
           <article className="mt-6 mx-auto max-w-sm bg-card hairline rounded-2xl overflow-hidden shadow-card text-left">
             {image && (
-              <div className="aspect-[4/5] w-full overflow-hidden bg-muted">
+              <div className={`${aspectClass(aspect)} w-full overflow-hidden bg-muted`}>
                 <img src={image} alt={title} className="h-full w-full object-cover" />
               </div>
             )}
