@@ -319,27 +319,30 @@ function GreyOutlineButton({
 
 // ---------- Create flow ----------
 
-const QUESTIONS: { key: keyof Decision; label: string; max: number; multi: boolean }[] = [
-  { key: "title", label: "Задайте название этому решению (не более 200 символов)", max: 200, multi: false },
-  {
-    key: "positive",
-    label:
-      "Какое положительное ожидание от решения? (если это произойдет, то я пойму, что решение удачное)",
-    max: 1000,
-    multi: true,
-  },
+const QUESTIONS: { key: keyof Decision; title: string; label: string; max: number; multi: boolean }[] = [
+  { key: "title", title: "Название", label: "Задайте название этому решению (не более 200 символов)", max: 200, multi: false },
+  { key: "pros", title: "Плюсы от решения", label: "Какие плюсы этого решения? (перечислить все варианты)", max: 1000, multi: true },
+  { key: "cons", title: "Минусы", label: "Какие минусы этого решения? (перечислить все варианты)", max: 1000, multi: true },
   {
     key: "negative",
+    title: "Самый отрицательный исход",
     label:
       "Какой самый отрицательный исход? (узнав худший сценарий, я пойму, что он не так страшен, и перестану бояться)",
     max: 1000,
     multi: true,
   },
-  { key: "pros", label: "Какие плюсы этого решения? (перечислить все варианты)", max: 1000, multi: true },
-  { key: "cons", label: "Какие минусы этого решения? (перечислить все варианты)", max: 1000, multi: true },
-  { key: "needs", label: "Что нужно, чтобы реализовать это решение?", max: 1000, multi: true },
+  {
+    key: "positive",
+    title: "Самый положительный исход",
+    label:
+      "Какое положительное ожидание от решения? (если это произойдет, то я пойму, что решение удачное)",
+    max: 1000,
+    multi: true,
+  },
+  { key: "needs", title: "Что нужно для решения", label: "Что нужно, чтобы реализовать это решение?", max: 1000, multi: true },
   {
     key: "barriers",
+    title: "Барьеры на пути",
     label: "Какие барьеры я могу встретить на пути, и не довести решение до положительного результата?",
     max: 1000,
     multi: true,
@@ -436,7 +439,7 @@ function CreateFlow({
     const value = (answers[q.key as string] ?? text) || "";
     return (
       <div style={{ padding: 16 }}>
-        <Header title={`Шаг ${step + 1} из 9`} onBack={back} />
+        <Header title={q.title} onBack={back} />
         <p style={{ fontSize: 14, color: "#111", margin: "14px 0 8px", lineHeight: 1.4 }}>{q.label}</p>
         {q.multi ? (
           <textarea
