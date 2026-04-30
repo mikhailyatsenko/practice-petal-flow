@@ -39,7 +39,9 @@ function AppLayout() {
       </div>
 
       <div style={{ paddingTop: topPad }}>
-        <Topbar onMenu={() => setMenuOpen(true)} />
+        <div style={{ ["--topbar-offset" as any]: `${topPad}px` } as React.CSSProperties}>
+          <Topbar onMenu={() => setMenuOpen(true)} />
+        </div>
         <SideMenu
           open={menuOpen}
           onOpenChange={setMenuOpen}
