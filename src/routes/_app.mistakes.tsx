@@ -409,13 +409,18 @@ function EditScreen({
 }: {
   mistake: Mistake;
   onBack: () => void;
-  onSave: (text: string, lesson: string, prevention: string) => void;
+  onSave: (text: string, lesson: string, lessons: string, prevention: string) => void;
   onDelete: () => void;
 }) {
   const [text, setText] = useState(mistake.text);
   const [lesson, setLesson] = useState(mistake.lesson);
+  const [lessons, setLessons] = useState(mistake.lessons || "");
   const [prevention, setPrevention] = useState(mistake.prevention || "");
-  const valid = text.trim().length > 0 && lesson.trim().length > 0 && prevention.trim().length > 0;
+  const valid =
+    text.trim().length > 0 &&
+    lesson.trim().length > 0 &&
+    lessons.trim().length > 0 &&
+    prevention.trim().length > 0;
   return (
     <div style={{ padding: 16 }}>
       <Header title="Изменить ошибку" onBack={onBack} />
@@ -437,6 +442,14 @@ function EditScreen({
       </div>
 
       <p style={{ fontSize: 14, fontWeight: 600, margin: "14px 0 6px", color: "#1a1a1a" }}>
+        Уроки из ошибки
+      </p>
+      <AutoTextarea value={lessons} onChange={setLessons} max={500} minHeight={100} />
+      <div style={{ textAlign: "right", color: "#9CA3AF", fontSize: 12, marginTop: 4 }}>
+        {lessons.length} / 500
+      </div>
+
+      <p style={{ fontSize: 14, fontWeight: 600, margin: "14px 0 6px", color: "#1a1a1a" }}>
         Страховка от повторения
       </p>
       <AutoTextarea value={prevention} onChange={setPrevention} max={500} minHeight={100} />
@@ -445,7 +458,7 @@ function EditScreen({
       </div>
 
       <div style={{ marginTop: 16 }}>
-        <PrimaryButton disabled={!valid} onClick={() => onSave(text.trim(), lesson.trim(), prevention.trim())}>
+        <PrimaryButton disabled={!valid} onClick={() => onSave(text.trim(), lesson.trim(), lessons.trim(), prevention.trim())}>
           ✅ Сохранить изменения
         </PrimaryButton>
       </div>
