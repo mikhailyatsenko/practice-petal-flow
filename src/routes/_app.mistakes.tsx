@@ -411,16 +411,16 @@ function EditScreen({
 }: {
   mistake: Mistake;
   onBack: () => void;
-  onSave: (text: string, lesson: string, lessons: string, prevention: string) => void;
+  onSave: (title: string, text: string, lessons: string, prevention: string) => void;
   onDelete: () => void;
 }) {
+  const [title, setTitle] = useState(mistake.title || "");
   const [text, setText] = useState(mistake.text);
-  const [lesson, setLesson] = useState(mistake.lesson);
   const [lessons, setLessons] = useState(mistake.lessons || "");
   const [prevention, setPrevention] = useState(mistake.prevention || "");
   const valid =
+    title.trim().length > 0 &&
     text.trim().length > 0 &&
-    lesson.trim().length > 0 &&
     lessons.trim().length > 0 &&
     prevention.trim().length > 0;
   return (
@@ -428,19 +428,19 @@ function EditScreen({
       <Header title="Изменить ошибку" onBack={onBack} />
 
       <p style={{ fontSize: 14, fontWeight: 600, margin: "14px 0 6px", color: "#1a1a1a" }}>
-        Описание ошибки
+        Название ошибки
       </p>
-      <AutoTextarea value={text} onChange={setText} max={200} minHeight={80} />
+      <AutoTextarea value={title} onChange={setTitle} max={200} minHeight={60} />
       <div style={{ textAlign: "right", color: "#9CA3AF", fontSize: 12, marginTop: 4 }}>
-        {text.length} / 200
+        {title.length} / 200
       </div>
 
       <p style={{ fontSize: 14, fontWeight: 600, margin: "14px 0 6px", color: "#1a1a1a" }}>
-        Чему научила
+        Описание ошибки
       </p>
-      <AutoTextarea value={lesson} onChange={setLesson} max={500} minHeight={100} />
+      <AutoTextarea value={text} onChange={setText} max={1000} minHeight={120} />
       <div style={{ textAlign: "right", color: "#9CA3AF", fontSize: 12, marginTop: 4 }}>
-        {lesson.length} / 500
+        {text.length} / 1000
       </div>
 
       <p style={{ fontSize: 14, fontWeight: 600, margin: "14px 0 6px", color: "#1a1a1a" }}>
@@ -460,7 +460,7 @@ function EditScreen({
       </div>
 
       <div style={{ marginTop: 16 }}>
-        <PrimaryButton disabled={!valid} onClick={() => onSave(text.trim(), lesson.trim(), lessons.trim(), prevention.trim())}>
+        <PrimaryButton disabled={!valid} onClick={() => onSave(title.trim(), text.trim(), lessons.trim(), prevention.trim())}>
           ✅ Сохранить изменения
         </PrimaryButton>
       </div>
