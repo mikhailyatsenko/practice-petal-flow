@@ -2234,6 +2234,13 @@ function EditWishScreen({
   const [reasons, setReasons] = useState<string[]>(wish.reasons.length ? wish.reasons : [""]);
   const [vision, setVision] = useState<string>(wish.vision ?? "");
   const [image, setImage] = useState<string>(wish.image);
+  const [aspect, setAspect] = useState<ImageAspect>(wish.aspect ?? "portrait");
+
+  const handlePickImage = async (f: File) => {
+    const url = URL.createObjectURL(f);
+    setImage(url);
+    setAspect(await detectAspectFromUrl(url));
+  };
 
   const handleSave = () => {
     onSave({
@@ -2242,6 +2249,7 @@ function EditWishScreen({
       reasons: reasons.map((r) => r.trim()).filter(Boolean),
       vision: vision.trim(),
       image,
+      aspect,
     });
   };
 
