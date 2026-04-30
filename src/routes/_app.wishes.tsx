@@ -2134,7 +2134,7 @@ function CreateWishWizard({
 /* ============================================================
    ===================  ЭКРАН РЕДАКТИРОВАНИЯ  ================= */
 
-type EditTab = "title" | "reasons" | "image";
+type EditTab = "title" | "reasons" | "vision" | "image";
 
 function EditWishScreen({
   wish,
@@ -2151,6 +2151,7 @@ function EditWishScreen({
   const [tab, setTab] = useState<EditTab>("title");
   const [title, setTitle] = useState(wish.title);
   const [reasons, setReasons] = useState<string[]>(wish.reasons.length ? wish.reasons : [""]);
+  const [vision, setVision] = useState<string>(wish.vision ?? "");
   const [image, setImage] = useState<string>(wish.image);
 
   const handleSave = () => {
@@ -2158,6 +2159,7 @@ function EditWishScreen({
       ...wish,
       title: title.trim() || wish.title,
       reasons: reasons.map((r) => r.trim()).filter(Boolean),
+      vision: vision.trim(),
       image,
     });
   };
@@ -2189,10 +2191,11 @@ function EditWishScreen({
       </div>
 
       {/* Табы */}
-      <div className="px-4 mt-3 flex gap-1.5">
+      <div className="px-4 mt-3 flex gap-1.5 flex-wrap">
         {([
           { id: "title",   label: "✏️ Название" },
           { id: "reasons", label: "💡 Причины"  },
+          { id: "vision",  label: "✨ Образ"    },
           { id: "image",   label: "🖼 Картинка"  },
         ] as { id: EditTab; label: string }[]).map((t) => {
           const active = t.id === tab;
@@ -2202,8 +2205,8 @@ function EditWishScreen({
               onClick={() => setTab(t.id)}
               className={
                 active
-                  ? "tap btn-pill-orange btn-sm flex-1"
-                  : "tap flex-1 rounded-full px-3 py-1.5 text-[12px] font-medium bg-card text-muted-foreground hairline"
+                  ? "tap btn-pill-orange btn-sm"
+                  : "tap rounded-full px-3 py-1.5 text-[12px] font-medium bg-card text-muted-foreground hairline"
               }
             >
               {t.label}
@@ -2283,6 +2286,24 @@ function EditWishScreen({
                 + Добавить причину
               </button>
             )}
+          </div>
+        )}
+
+        {tab === "vision" && (
+          <div className="animate-fade-up">
+            <p className="text-[13px] text-[#FF6D00] mb-2">
+              Представь, что оно уже произошло. Опиши так, как будто проживаешь это прямо сейчас — что ты видишь, слышишь, чувствуешь.
+            </p>
+            <textarea
+              value={vision}
+              onChange={(e) => setVision(e.target.value)}
+              maxLength={800}
+              rows={8}
+              placeholder="Я вижу, как..."
+              className="w-full rounded-xl bg-card px-3.5 py-3 text-[14px] outline-none transition-colors resize-none"
+              style={{ border: `1px solid ${vision.trim() ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
+            />
+            <div className="mt-1.5 text-right text-[11px] text-muted-foreground">{vision.length}/800</div>
           </div>
         )}
 
@@ -3056,7 +3077,7 @@ function CreateGoalWizard({
 /* ============================================================
    =================  РЕДАКТИРОВАНИЕ ЦЕЛИ  ==================== */
 
-type GoalEditTab = "title" | "deadline" | "reasons" | "image" | "criteria" | "plan" | "progress";
+type GoalEditTab = "title" | "deadline" | "reasons" | "vision" | "image" | "criteria" | "plan";
 
 function parseDeadline(s: string): { d: number; m: number; y: number } {
   // Ожидаем формат "31 декабря 2026"
@@ -3088,7 +3109,7 @@ function EditGoalScreen({
   const [reasons, setReasons] = useState<string[]>(goal.reasons.length ? goal.reasons : [""]);
   const [criteria, setCriteria] = useState(goal.criteria);
   const [plan, setPlan] = useState(goal.plan);
-  const [progress, setProgress] = useState(goal.progress);
+  const [vision, setVision] = useState(goal.vision ?? "");
   const [image, setImage] = useState(goal.image);
 
   const initDl = parseDeadline(goal.deadline);
@@ -3104,20 +3125,20 @@ function EditGoalScreen({
       reasons: reasons.map((r) => r.trim()).filter(Boolean),
       criteria: criteria.trim() || goal.criteria,
       plan: plan.trim() || goal.plan,
-      progress,
+      vision: vision.trim(),
       image,
     });
   };
 
-  // Порядок: Название → Причины → Картинка → Срок → Критерий → План → Прогресс
+  // Порядок: Название → Причины → Образ → Картинка → Срок → Критерий → План
   const tabs: { id: GoalEditTab; label: string }[] = [
     { id: "title",    label: "✏️ Название"  },
     { id: "reasons",  label: "💡 Причины"  },
+    { id: "vision",   label: "✨ Образ"    },
     { id: "image",    label: "🖼 Картинка"  },
     { id: "deadline", label: "📅 Срок"      },
     { id: "criteria", label: "✅ Критерий" },
     { id: "plan",     label: "🗺 План"      },
-    { id: "progress", label: "📊 Прогресс" },
   ];
 
   return (
@@ -3143,12 +3164,6 @@ function EditGoalScreen({
           <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 px-3 py-2">
             <div className="text-white text-[15px] font-semibold drop-shadow">{title}</div>
-          </div>
-          <div
-            className="absolute top-2 right-2 text-white text-[12px] font-semibold px-2 py-0.5 rounded-full"
-            style={{ background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)" }}
-          >
-            {progress}%
           </div>
         </div>
       </div>
@@ -3310,26 +3325,21 @@ function EditGoalScreen({
           </div>
         )}
 
-        {tab === "progress" && (
+        {tab === "vision" && (
           <div className="animate-fade-up">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[13px] text-[#FF6D00]">Текущий прогресс</span>
-              <span
-                className="text-[13px] font-bold text-white px-3 py-1 rounded-full"
-                style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
-              >
-                {progress}%
-              </span>
-            </div>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              value={progress}
-              onChange={(e) => setProgress(Number(e.target.value))}
-              className="w-full accent-orange-500"
-              style={{ accentColor: "#FF6D00" }}
+            <p className="text-[13px] text-[#FF6D00] mb-2">
+              Представь, что оно уже произошло. Опиши так, как будто проживаешь это прямо сейчас — что ты видишь, слышишь, чувствуешь.
+            </p>
+            <textarea
+              value={vision}
+              onChange={(e) => setVision(e.target.value)}
+              maxLength={800}
+              rows={8}
+              placeholder="Я стою на финише и чувствую..."
+              className="w-full rounded-xl bg-card px-3.5 py-3 text-[14px] outline-none transition-colors resize-none"
+              style={{ border: `1px solid ${vision.trim() ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
             />
+            <div className="mt-1.5 text-right text-[11px] text-muted-foreground">{vision.length}/800</div>
           </div>
         )}
       </div>
