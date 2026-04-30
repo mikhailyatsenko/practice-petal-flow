@@ -149,7 +149,7 @@ export function BrainstormAnswerScreen({
   return (
     <div className="px-4 pt-3 pb-6 space-y-3">
       <div className="flex items-center justify-between">
-        <button onClick={onBack} className="tap inline-flex items-center gap-1.5 text-[14px] text-muted-foreground">
+        <button onClick={onBack} className="tap inline-flex items-center gap-1.5 text-[14px] font-medium" style={{ color: "#FF6D00" }}>
           <ArrowLeft className="h-4 w-4" /> К вопросам
         </button>
       </div>
