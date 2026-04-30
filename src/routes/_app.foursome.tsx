@@ -67,7 +67,7 @@ const DAY_FULL: Record<string, string> = {
 };
 
 const ME: Member = { userId: "me", name: "Ты", avatar: "🙂", job: "Участник клуба" };
-const MY_BUDDY: Member = { userId: "b1", name: "Алексей", avatar: "🧑‍💻", job: "Продакт-менеджер" };
+const MY_BUDDY: Member = { userId: "b1", name: "Алексей", avatar: "🧑‍💻", job: "Продакт-менеджер", username: "алексей" };
 
 const DEMO_REQUESTS: FoursomeRequest[] = [
   {
