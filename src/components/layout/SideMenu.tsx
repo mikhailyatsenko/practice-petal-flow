@@ -170,7 +170,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
           <MenuItem icon={LogOut} label="Выход" danger />
         </nav>
 
-        <div className="px-5 pt-2 pb-5 mt-auto absolute bottom-0 left-0 right-0">
+        <div className="px-5 pt-4 pb-8">
           <button
             onClick={onOpenOnboarding}
             className="tap text-[11px] text-muted-foreground/70 underline underline-offset-2"
