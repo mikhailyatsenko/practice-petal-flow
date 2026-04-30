@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { Bell } from "lucide-react";
 import { useFoursomeRequestMode } from "@/lib/foursomeRequestMode";
 
 export function FoursomeRequestBanner() {
