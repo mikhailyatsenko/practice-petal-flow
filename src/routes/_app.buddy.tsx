@@ -218,6 +218,37 @@ function NoBuddy({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         />
       </div>
 
+      {/* Ожидание — переход в карточку запросов */}
+      <button
+        onClick={() => onNavigate({ name: "waiting", to: DEMO_REQUESTS[0] })}
+        className="tap mt-3 w-full rounded-2xl px-3.5 py-3 flex items-center gap-3 text-left animate-fade-up"
+        style={{
+          background: "linear-gradient(135deg, #fff8ee, #fff3e0)",
+          border: "1px solid #ffd089",
+        }}
+      >
+        <div
+          className="h-11 w-11 shrink-0 rounded-xl flex items-center justify-center text-[22px]"
+          style={{ background: "rgba(255,109,0,0.15)" }}
+        >
+          ⏳
+        </div>
+        <div className="min-w-0 flex-1">
+          <h3 className="text-[15px] font-semibold leading-tight" style={{ color: "#FF6D00" }}>
+            Ожидание ответа
+          </h3>
+          <p className="mt-0.5 text-[12px] leading-snug" style={{ color: "#b45309" }}>
+            Зайди и посмотри отклики на твою заявку
+          </p>
+        </div>
+        <span
+          className="text-[11px] font-bold text-white px-2.5 py-1 rounded-full"
+          style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+        >
+          {INCOMING_REQUESTS.length}
+        </span>
+      </button>
+
       {/* Format */}
       <h3 className="mt-5 px-1 text-[12px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
         Формат созвона · 60 минут

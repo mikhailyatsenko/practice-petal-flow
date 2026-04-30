@@ -1,7 +1,8 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, Hourglass, RotateCcw, CalendarPlus, Cog } from "lucide-react";
+import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, Hourglass, RotateCcw, CalendarPlus, Cog, Bell, BellOff } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { resetAllPractices, advanceToNextDay } from "@/lib/practicesStore";
+import { useBuddyRequestMode, toggleBuddyRequestMode } from "@/lib/buddyRequestMode";
 
 interface SideMenuProps {
   open: boolean;
@@ -10,6 +11,7 @@ interface SideMenuProps {
 }
 
 export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps) {
+  const requestMode = useBuddyRequestMode();
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-[300px] sm:w-[320px] bg-background p-0 overflow-y-auto" data-version="v2">
@@ -90,15 +92,22 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             <Users className="h-[18px] w-[18px]" strokeWidth={2} />
             <span>Бадди — есть бадди</span>
           </Link>
-          <Link
-            to="/buddy"
-            search={{ demo: "waiting" }}
-            onClick={() => onOpenChange(false)}
-            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          <button
+            onClick={() => {
+              toggleBuddyRequestMode();
+            }}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+            style={{ color: requestMode ? "#E53935" : "#FF6D00" }}
           >
-            <Hourglass className="h-[18px] w-[18px]" strokeWidth={2} />
-            <span>Бадди — ожидание</span>
-          </Link>
+            {requestMode ? (
+              <BellOff className="h-[18px] w-[18px]" strokeWidth={2} />
+            ) : (
+              <Bell className="h-[18px] w-[18px]" strokeWidth={2} />
+            )}
+            <span>
+              {requestMode ? "Выключить режим запроса бадди" : "Включить режим запроса бадди"}
+            </span>
+          </button>
           <Link
             to="/foursome"
             search={{ demo: "has" }}
