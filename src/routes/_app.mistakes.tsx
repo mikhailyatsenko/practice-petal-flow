@@ -14,8 +14,8 @@ export const Route = createFileRoute("/_app/mistakes")({
 
 interface Mistake {
   id: string;
+  title: string;
   text: string;
-  lesson: string;
   lessons: string;
   prevention: string;
   createdAt: number;
