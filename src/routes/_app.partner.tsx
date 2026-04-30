@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SubItemList, SectionHeader } from "@/components/section/SubItemList";
-import { Copy, ArrowRight } from "lucide-react";
+import { Copy, ArrowDown } from "lucide-react";
 
 export const Route = createFileRoute("/_app/partner")({
   head: () => ({
@@ -38,21 +38,23 @@ function PartnerScreen() {
           Бонусы списываются вместо реальных денег при твоей следующей оплате.
         </p>
 
-        <div className="mt-4 flex items-stretch gap-1.5">
+        <div className="mt-4 flex flex-col gap-2">
           <BonusStep
+            variant="orange"
             title="Друг платит"
             line1="1 ₽ — первый месяц"
             line2="1 000 ₽ — каждый следующий"
           />
           <StepArrow />
           <BonusStep
+            variant="green"
             title="Тебе начисляется"
             line1="1 бонусный ₽ — в первый месяц"
             line2="1 000 бонусов ₽ — с каждой оплаты"
-            highlight
           />
           <StepArrow />
           <BonusStep
+            variant="blue"
             title="Ты не платишь"
             line1="когда наступает твой день оплаты"
             line2="списываются бонусные рубли"
@@ -74,42 +76,51 @@ function PartnerScreen() {
   );
 }
 
+type BonusVariant = "orange" | "green" | "blue";
+
+const VARIANT_STYLES: Record<BonusVariant, { bg: string; border: string; title: string }> = {
+  orange: {
+    bg: "bg-primary/10",
+    border: "border-primary/25",
+    title: "text-primary",
+  },
+  green: {
+    bg: "bg-success/10",
+    border: "border-success/25",
+    title: "text-success-dark",
+  },
+  blue: {
+    bg: "bg-[oklch(0.92_0.04_220)]",
+    border: "border-[oklch(0.75_0.08_220)]/30",
+    title: "text-[oklch(0.45_0.12_220)]",
+  },
+};
+
 function BonusStep({
   title,
   line1,
   line2,
-  highlight,
+  variant,
 }: {
   title: string;
   line1: string;
   line2: string;
-  highlight?: boolean;
+  variant: BonusVariant;
 }) {
+  const s = VARIANT_STYLES[variant];
   return (
-    <div
-      className={`flex-1 min-w-0 rounded-xl p-2.5 flex flex-col ${
-        highlight
-          ? "bg-primary/10 border border-primary/20"
-          : "bg-secondary border border-border"
-      }`}
-    >
-      <p
-        className={`text-[11px] font-semibold leading-tight ${
-          highlight ? "text-primary" : "text-foreground"
-        }`}
-      >
-        {title}
-      </p>
-      <p className="mt-1.5 text-[10.5px] leading-snug text-foreground/80">{line1}</p>
-      <p className="mt-1 text-[10.5px] leading-snug text-muted-foreground">{line2}</p>
+    <div className={`w-full rounded-xl p-3.5 border ${s.bg} ${s.border}`}>
+      <p className={`text-[14px] font-semibold leading-tight ${s.title}`}>{title}</p>
+      <p className="mt-1.5 text-[13px] leading-snug text-foreground/85">{line1}</p>
+      <p className="mt-0.5 text-[13px] leading-snug text-muted-foreground">{line2}</p>
     </div>
   );
 }
 
 function StepArrow() {
   return (
-    <div className="flex items-center justify-center shrink-0">
-      <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+    <div className="flex items-center justify-center">
+      <ArrowDown className="h-4 w-4 text-muted-foreground" />
     </div>
   );
 }
