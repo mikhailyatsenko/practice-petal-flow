@@ -201,7 +201,7 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
       { id: "s1", label: "Соединиться с Бадди", done: false },
       { id: "s2", label: "Созвониться и заполнить карточку Бадди", done: false },
     ],
-    reward: "Открывается Маховик успеха + 2 ⭐ в день за Бадди",
+    reward: "+2 ⭐ в день за Бадди",
     task: {
       videoTitle: "Уровень 2 — Бадди",
       caption: "Введение • Уровень 2",
@@ -218,7 +218,7 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
     steps: [
       { id: "s1", label: "Соединиться в четвёрку", done: false },
     ],
-    reward: "Открывается раздел Четвёрка + 2 ⭐ в день за четвёрку",
+    reward: "Открывается Маховик успеха + раздел Четвёрка",
     task: {
       videoTitle: "Уровень 3 — Четвёрка",
       caption: "Введение • Уровень 3",
