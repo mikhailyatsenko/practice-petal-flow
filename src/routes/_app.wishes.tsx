@@ -2087,14 +2087,14 @@ function CreateWishWizard({
 
           <div className="mt-6 flex gap-2">
             <button
-              onClick={() => setStep(2)}
+              onClick={() => setStep(3)}
               className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
             >
               ← Назад
             </button>
             <button
               disabled={!image}
-              onClick={() => setStep(4)}
+              onClick={() => setStep(5)}
               className="tap btn-pill-orange flex-1 inline-flex items-center justify-center gap-1.5 disabled:opacity-40"
             >
               <Sparkles className="h-4 w-4" /> Создать желание
