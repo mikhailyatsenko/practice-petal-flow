@@ -3104,7 +3104,7 @@ function EditGoalScreen({
       reasons: reasons.map((r) => r.trim()).filter(Boolean),
       criteria: criteria.trim() || goal.criteria,
       plan: plan.trim() || goal.plan,
-      progress,
+      vision: vision.trim(),
       image,
     });
   };
