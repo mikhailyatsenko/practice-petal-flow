@@ -146,15 +146,6 @@ export function BuddyLockedPreview({ unlockLevel = 2 }: BuddyLockedPreviewProps)
           <p className="mt-1 text-[11.5px] text-muted-foreground leading-snug">
             Партнёр для еженедельных созвонов
           </p>
-          <p
-            className="mt-2 inline-block text-[11.5px] font-medium rounded-full px-2.5 py-1"
-            style={{
-              background: `linear-gradient(135deg, ${from}22, ${to}22)`,
-              color: to,
-            }}
-          >
-            🔒 Откроется на уровне {unlockLevel}
-          </p>
         </div>
       </div>
 

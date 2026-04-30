@@ -58,9 +58,9 @@ export type Feature = "flywheel" | "buddy" | "foursome" | "library" | "sections"
 const UNLOCKS: Record<PreviewLevel, Feature[]> = {
   1: [],
   2: ["buddy"],
-  3: ["buddy", "flywheel"],
-  4: ["buddy", "flywheel", "library"],
-  5: ["buddy", "flywheel", "library", "foursome", "sections"],
+  3: ["buddy", "foursome"],
+  4: ["buddy", "foursome", "flywheel"],
+  5: ["buddy", "foursome", "flywheel", "library", "sections"],
 };
 
 export function isFeatureUnlocked(feature: Feature, level: PreviewLevel | null): boolean {
