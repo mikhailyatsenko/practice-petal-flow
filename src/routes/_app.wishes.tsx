@@ -2884,6 +2884,7 @@ function CreateGoalWizard({
       {
         title: selectedWish.title,
         image: selectedWish.image,
+        aspect: selectedWish.aspect,
         deadline: formatDeadline(dlDay, dlMonth, dlYear),
         progress: 0,
         reasons: selectedWish.reasons,
