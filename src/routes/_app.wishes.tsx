@@ -2453,25 +2453,9 @@ function GoalCard({
           <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
             Задачи
           </p>
-          {!readOnly && (
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); onAddTask?.(); }}
-              aria-label="Добавить задачу"
-              className="tap inline-flex items-center justify-center rounded-full shrink-0"
-              style={{
-                width: 28, height: 28,
-                background: "#fff",
-                color: "#9a8f7e",
-                border: "1px solid #ede8df",
-              }}
-            >
-              <Plus className="h-4 w-4" />
-            </button>
-          )}
         </div>
         {totalTasks === 0 ? (
-          <p className="mt-1.5 text-[12.5px] text-muted-foreground">Задач пока нет — добавь первую кнопкой +</p>
+          <p className="mt-1.5 text-[12.5px] text-muted-foreground">Задач пока нет</p>
         ) : openTasks.length === 0 ? (
           <p className="mt-1.5 text-[13px] text-foreground/85">✅ Все задачи выполнены!</p>
         ) : (
@@ -2479,8 +2463,9 @@ function GoalCard({
             {openTasks.map((t) => (
               <li key={t.id} className="flex items-start gap-2 text-[13px] leading-snug text-foreground/85">
                 <span
-                  className="mt-0.5 inline-block h-4 w-4 rounded-[4px] shrink-0"
-                  style={{ border: "1.5px solid #c8c0b0", background: "#fff" }}
+                  className="mt-[7px] inline-block h-1.5 w-1.5 rounded-full shrink-0"
+                  style={{ background: "#c8c0b0" }}
+                  aria-hidden
                 />
                 <span className="flex-1">{t.title}</span>
               </li>
