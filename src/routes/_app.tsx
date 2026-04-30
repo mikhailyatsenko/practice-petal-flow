@@ -39,7 +39,7 @@ function AppLayout() {
       </div>
 
       <div style={{ paddingTop: topPad }}>
-        <Topbar onMenu={() => setMenuOpen(true)} />
+        <Topbar onMenu={() => setMenuOpen(true)} stickyTop={topPad} />
         <SideMenu
           open={menuOpen}
           onOpenChange={setMenuOpen}
