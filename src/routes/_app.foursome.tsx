@@ -413,27 +413,27 @@ function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         onClick={() => onNavigate({ name: "waiting", to: DEMO_REQUESTS[0] })}
         className="tap mb-4 w-full rounded-2xl px-3.5 py-3 flex items-center gap-3 text-left animate-fade-up"
         style={{
-          background: "linear-gradient(135deg, #f5f3ff, #ede9fe)",
-          border: "1px solid #c4b5fd",
+          background: "linear-gradient(135deg, #fff7ed, #ffedd5)",
+          border: "1px solid #fdba74",
         }}
       >
         <div
           className="h-11 w-11 shrink-0 rounded-xl flex items-center justify-center text-[22px]"
-          style={{ background: "rgba(124,58,237,0.15)" }}
+          style={{ background: "rgba(255,109,0,0.15)" }}
         >
           ⏳
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="text-[15px] font-semibold leading-tight" style={{ color: "#6d28d9" }}>
+          <h3 className="text-[15px] font-semibold leading-tight" style={{ color: "#9a3412" }}>
             Ожидание ответа
           </h3>
-          <p className="mt-0.5 text-[12px] leading-snug" style={{ color: "#7c3aed" }}>
+          <p className="mt-0.5 text-[12px] leading-snug" style={{ color: "#c2410c" }}>
             Посмотри отклики на твою заявку
           </p>
         </div>
         <span
           className="text-[11px] font-bold text-white px-2.5 py-1 rounded-full"
-          style={{ background: "linear-gradient(135deg, #a78bfa, #6d28d9)" }}
+          style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
         >
           {DEMO_REQUESTS.length}
         </span>
