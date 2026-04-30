@@ -1766,12 +1766,12 @@ function CreateWishWizard({
   }
 
   return (
-    <div className="min-h-screen bg-background pb-8">
+    <div className="min-h-screen bg-background pb-32">
       <WizardHeader title="Новое желание" onBack={onClose} />
       <StepIndicator step={step} />
 
       {step === 1 && (
-        <div className="px-4 animate-fade-up">
+        <div className="px-4 animate-fade-up pb-24">
           <h2 className="text-[18px] font-bold leading-tight">Как называется твоё желание?</h2>
           <p className="mt-1.5 text-[14px] text-[#FF6D00]">
             Напиши своё желание или выбери одну из хотелок ниже, чтобы превратить её в желание.
@@ -1802,7 +1802,7 @@ function CreateWishWizard({
                 </span>
                 <div className="h-px flex-1 bg-border/60" />
               </div>
-              <div className="space-y-2 max-h-[40vh] overflow-y-auto -mx-1 px-1 pb-1">
+              <div className="space-y-2 -mx-1 px-1 pb-1">
                 {hotelki.map((h, i) => {
                   const active = fromHotelkaIdx === i;
                   return (
@@ -1829,10 +1829,15 @@ function CreateWishWizard({
             </div>
           )}
 
+        </div>
+      )}
+
+      {step === 1 && (
+        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] bg-gradient-to-t from-background via-background to-background/80 z-40">
           <button
             disabled={title.trim().length < 2}
             onClick={() => setStep(2)}
-            className="tap btn-pill-orange w-full mt-6 disabled:opacity-40"
+            className="tap btn-pill-orange w-full disabled:opacity-40"
           >
             Далее → Причины
           </button>
