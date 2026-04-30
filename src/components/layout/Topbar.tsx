@@ -3,11 +3,15 @@ import { Menu } from "lucide-react";
 
 interface TopbarProps {
   onMenu: () => void;
+  stickyTop?: number;
 }
 
-export function Topbar({ onMenu }: TopbarProps) {
+export function Topbar({ onMenu, stickyTop = 0 }: TopbarProps) {
   return (
-    <header className="safe-top sticky top-0 z-30 px-4 pt-2 pb-2 bg-background/85 backdrop-blur-md">
+    <header
+      className="safe-top sticky z-30 px-4 pt-2 pb-2 bg-background/85 backdrop-blur-md"
+      style={{ top: stickyTop }}
+    >
       <div className="flex items-center justify-between gap-3">
         <button
           onClick={onMenu}
