@@ -150,15 +150,6 @@ export function FoursomeLockedPreview({ unlockLevel = 3 }: FoursomeLockedPreview
           <p className="mt-1 text-[11.5px] text-muted-foreground leading-snug">
             Группа из 4 человек, созвон раз в месяц
           </p>
-          <p
-            className="mt-2 inline-block text-[11.5px] font-medium rounded-full px-2.5 py-1"
-            style={{
-              background: `linear-gradient(135deg, ${from}22, ${to}22)`,
-              color: to,
-            }}
-          >
-            🔒 Откроется на уровне {unlockLevel}
-          </p>
         </div>
       </div>
 
