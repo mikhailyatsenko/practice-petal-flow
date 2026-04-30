@@ -13,6 +13,7 @@ import {
 } from "@/components/home/StatEffects";
 import { usePracticesDone, setPracticeDone, computeEffective, type PracticeId } from "@/lib/practicesStore";
 import { LockedFeatureCard } from "@/components/section/LockedFeatureCard";
+import { FlywheelLockedPreview } from "@/components/section/FlywheelLockedPreview";
 import { isFeatureUnlocked, unlockLevelOf, usePreviewLevel } from "@/lib/previewLevel";
 
 export const Route = createFileRoute("/_app/")({
@@ -415,16 +416,7 @@ function HomeScreen() {
         </section>
       ) : (
         <section className="mt-5">
-          <h2 className="px-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
-            Маховик успеха
-          </h2>
-          <LockedFeatureCard
-            emoji="⚙️"
-            title="Маховик успеха"
-            hint="5 главных привычек откроются после Бадди"
-            unlockLevel={unlockLevelOf("flywheel")}
-            theme="warm"
-          />
+          <FlywheelLockedPreview unlockLevel={unlockLevelOf("flywheel")} />
         </section>
       )}
 
