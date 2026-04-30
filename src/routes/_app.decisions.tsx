@@ -778,6 +778,7 @@ function DetailScreen({
     const target = customMs ?? Date.now() + days * 86400000;
     onUpdate({ status: "accepted", concludeBy: target, decideBy: undefined });
     setMode("view");
+    onBack();
   }
 
   function saveConclusion() {
