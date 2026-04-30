@@ -2329,6 +2329,21 @@ function GoalCard({
           </div>
         </div>
 
+        {goal.vision && goal.vision.trim() && (
+          <>
+            <div className="my-3 h-px bg-border/60" />
+            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+              Как это уже произошло
+            </p>
+            <p
+              className="mt-1.5 rounded-xl px-3 py-2.5 text-[13px] leading-snug text-foreground/85 italic whitespace-pre-line"
+              style={{ background: "#FAF6EF" }}
+            >
+              {goal.vision}
+            </p>
+          </>
+        )}
+
         <div className="my-3 h-px bg-border/60" />
 
         <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
