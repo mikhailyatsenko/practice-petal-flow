@@ -428,6 +428,24 @@ function EditScreen({
           ✅ Сохранить изменения
         </PrimaryButton>
       </div>
+
+      <button
+        onClick={onDelete}
+        style={{
+          width: "100%",
+          marginTop: 12,
+          padding: 14,
+          borderRadius: 14,
+          border: "1.5px solid #fee2e2",
+          background: "#fff",
+          color: "#ef4444",
+          fontWeight: 600,
+          fontSize: 14,
+          cursor: "pointer",
+        }}
+      >
+        🗑 Удалить ошибку
+      </button>
     </div>
   );
 }
