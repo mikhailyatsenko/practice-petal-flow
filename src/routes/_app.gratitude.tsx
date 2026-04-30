@@ -7,10 +7,10 @@ function EditIconButton({ onClick }: { onClick: () => void }) {
     <button
       onClick={onClick}
       aria-label="Изменить"
-      className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full"
+      className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full"
       style={{ background: "#f5efe4", border: "1px solid #e7dfcf" }}
     >
-      <Pencil size={14} strokeWidth={2} style={{ color: "#9c8f7a" }} />
+      <Pencil size={15} strokeWidth={2} style={{ color: "#9c8f7a" }} />
     </button>
   );
 }
