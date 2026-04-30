@@ -1873,7 +1873,7 @@ function CreateWishWizard({
             onClick={() => setStep(2)}
             className="tap btn-pill-orange w-full shadow-lg shadow-orange-200/60 disabled:opacity-40"
           >
-            Далее → Образ
+            Далее → Причины
           </button>
         </div>
       )}
