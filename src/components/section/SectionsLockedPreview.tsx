@@ -7,7 +7,7 @@ interface SectionsLockedPreviewProps {
   unlockLevel?: number;
 }
 
-export function SectionsLockedPreview({ unlockLevel = 4 }: SectionsLockedPreviewProps) {
+export function SectionsLockedPreview({ unlockLevel = 5 }: SectionsLockedPreviewProps) {
   return (
     <div
       className="mx-auto"

@@ -5,7 +5,7 @@ interface LibraryLockedPreviewProps {
   unlockLevel?: number;
 }
 
-export function LibraryLockedPreview({ unlockLevel = 3 }: LibraryLockedPreviewProps) {
+export function LibraryLockedPreview({ unlockLevel = 4 }: LibraryLockedPreviewProps) {
   return (
     <div
       className="mx-auto"
