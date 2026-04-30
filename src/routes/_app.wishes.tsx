@@ -1869,30 +1869,9 @@ function CreateWishWizard({
             Твоё желание добавлено в ленту
           </p>
 
-          <article className="mt-6 mx-auto max-w-sm bg-card hairline rounded-2xl overflow-hidden shadow-card text-left">
-            {image && (
-              <div className={`${aspectClass(aspect)} w-full overflow-hidden bg-muted`}>
-                <img src={image} alt={title} className="h-full w-full object-cover" />
-              </div>
-            )}
-            <div className="px-4 py-3.5">
-              <h3 className="text-[16px] font-semibold">{title}</h3>
-              {filledReasons.slice(0, 2).length > 0 && (
-                <ul className="mt-2 space-y-1.5">
-                  {filledReasons.slice(0, 2).map((r, i) => (
-                    <li key={i} className="flex gap-2 text-[13px] leading-snug text-foreground/80">
-                      <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-primary" />
-                      <span>{r}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </article>
-
           <button
             onClick={handleCreate}
-            className="tap btn-pill-orange mt-6 inline-flex items-center justify-center gap-1.5 px-6"
+            className="tap btn-pill-orange mt-8 inline-flex items-center justify-center gap-1.5 px-8 py-4 text-[16px] font-semibold"
           >
             Посмотреть в ленте
           </button>
