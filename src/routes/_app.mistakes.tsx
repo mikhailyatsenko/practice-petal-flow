@@ -14,8 +14,8 @@ export const Route = createFileRoute("/_app/mistakes")({
 
 interface Mistake {
   id: string;
+  title: string;
   text: string;
-  lesson: string;
   lessons: string;
   prevention: string;
   createdAt: number;
@@ -54,9 +54,9 @@ const AFFIRMATION =
 type View =
   | { kind: "main" }
   | { kind: "add1" }
-  | { kind: "add2"; text: string }
-  | { kind: "add3"; text: string; lesson: string }
-  | { kind: "add4"; text: string; lesson: string; lessons: string }
+  | { kind: "add2"; title: string }
+  | { kind: "add3"; title: string; text: string }
+  | { kind: "add4"; title: string; text: string; lessons: string }
   | { kind: "affirm" }
   | { kind: "edit"; id: string };
 
@@ -78,12 +78,12 @@ function MistakesScreen() {
     return (
       <StepScreen
         key="add1"
-        title="Новая ошибка"
-        prompt="Опишите ошибку (не более 200 символов)"
+        title="Название ошибки"
+        prompt="Задайте название этой ошибке (не более 200 символов)"
         max={200}
-        minHeight={80}
+        minHeight={60}
         onBack={() => setView({ kind: "main" })}
-        onSave={(t) => setView({ kind: "add2", text: t })}
+        onSave={(t) => setView({ kind: "add2", title: t })}
       />
     );
   }
@@ -92,12 +92,12 @@ function MistakesScreen() {
     return (
       <StepScreen
         key="add2"
-        title="Чему научила ошибка"
-        prompt="Напишите, чему вас научила эта ошибка (не более 500 символов)"
-        max={500}
-        minHeight={100}
+        title="Описание ошибки"
+        prompt="Опишите, что именно произошло (не более 1000 символов)"
+        max={1000}
+        minHeight={120}
         onBack={() => setView({ kind: "add1" })}
-        onSave={(lesson) => setView({ kind: "add3", text: view.text, lesson })}
+        onSave={(text) => setView({ kind: "add3", title: view.title, text })}
       />
     );
   }
@@ -110,8 +110,8 @@ function MistakesScreen() {
         prompt="Какие уроки вы вынесли из этой ошибки? (не более 500 символов)"
         max={500}
         minHeight={100}
-        onBack={() => setView({ kind: "add2", text: view.text })}
-        onSave={(lessons) => setView({ kind: "add4", text: view.text, lesson: view.lesson, lessons })}
+        onBack={() => setView({ kind: "add2", title: view.title })}
+        onSave={(lessons) => setView({ kind: "add4", title: view.title, text: view.text, lessons })}
       />
     );
   }
@@ -124,12 +124,12 @@ function MistakesScreen() {
         prompt="Что нужно сделать, чтобы такая ошибка больше не повторилась? (не более 500 символов)"
         max={500}
         minHeight={100}
-        onBack={() => setView({ kind: "add3", text: view.text, lesson: view.lesson })}
+        onBack={() => setView({ kind: "add3", title: view.title, text: view.text })}
         onSave={(prevention) => {
           const m: Mistake = {
             id: newId(),
+            title: view.title,
             text: view.text,
-            lesson: view.lesson,
             lessons: view.lessons,
             prevention,
             createdAt: Date.now(),
@@ -155,8 +155,8 @@ function MistakesScreen() {
       <EditScreen
         mistake={m}
         onBack={() => setView({ kind: "main" })}
-        onSave={(text, lesson, lessons, prevention) => {
-          persist(store.map((x) => (x.id === m.id ? { ...x, text, lesson, lessons, prevention } : x)));
+        onSave={(title, text, lessons, prevention) => {
+          persist(store.map((x) => (x.id === m.id ? { ...x, title, text, lessons, prevention } : x)));
           setView({ kind: "main" });
         }}
         onDelete={() => {
@@ -229,11 +229,13 @@ function MistakesScreen() {
                 }}
               >
                 <div style={{ fontWeight: 700, fontSize: 15, color: "#1a1a1a", marginBottom: 4 }}>
-                  {m.text}
+                  {m.title || m.text}
                 </div>
-                <div style={{ fontSize: 13, color: "#555", lineHeight: 1.5 }}>
-                  Научила меня: {m.lesson}
-                </div>
+                {m.title && m.text && (
+                  <div style={{ fontSize: 13, color: "#555", lineHeight: 1.5 }}>
+                    {m.text}
+                  </div>
+                )}
                 {m.lessons && (
                   <div style={{ fontSize: 13, color: "#555", lineHeight: 1.5, marginTop: 4 }}>
                     Уроки: {m.lessons}
@@ -409,16 +411,16 @@ function EditScreen({
 }: {
   mistake: Mistake;
   onBack: () => void;
-  onSave: (text: string, lesson: string, lessons: string, prevention: string) => void;
+  onSave: (title: string, text: string, lessons: string, prevention: string) => void;
   onDelete: () => void;
 }) {
+  const [title, setTitle] = useState(mistake.title || "");
   const [text, setText] = useState(mistake.text);
-  const [lesson, setLesson] = useState(mistake.lesson);
   const [lessons, setLessons] = useState(mistake.lessons || "");
   const [prevention, setPrevention] = useState(mistake.prevention || "");
   const valid =
+    title.trim().length > 0 &&
     text.trim().length > 0 &&
-    lesson.trim().length > 0 &&
     lessons.trim().length > 0 &&
     prevention.trim().length > 0;
   return (
@@ -426,19 +428,19 @@ function EditScreen({
       <Header title="Изменить ошибку" onBack={onBack} />
 
       <p style={{ fontSize: 14, fontWeight: 600, margin: "14px 0 6px", color: "#1a1a1a" }}>
-        Описание ошибки
+        Название ошибки
       </p>
-      <AutoTextarea value={text} onChange={setText} max={200} minHeight={80} />
+      <AutoTextarea value={title} onChange={setTitle} max={200} minHeight={60} />
       <div style={{ textAlign: "right", color: "#9CA3AF", fontSize: 12, marginTop: 4 }}>
-        {text.length} / 200
+        {title.length} / 200
       </div>
 
       <p style={{ fontSize: 14, fontWeight: 600, margin: "14px 0 6px", color: "#1a1a1a" }}>
-        Чему научила
+        Описание ошибки
       </p>
-      <AutoTextarea value={lesson} onChange={setLesson} max={500} minHeight={100} />
+      <AutoTextarea value={text} onChange={setText} max={1000} minHeight={120} />
       <div style={{ textAlign: "right", color: "#9CA3AF", fontSize: 12, marginTop: 4 }}>
-        {lesson.length} / 500
+        {text.length} / 1000
       </div>
 
       <p style={{ fontSize: 14, fontWeight: 600, margin: "14px 0 6px", color: "#1a1a1a" }}>
@@ -458,7 +460,7 @@ function EditScreen({
       </div>
 
       <div style={{ marginTop: 16 }}>
-        <PrimaryButton disabled={!valid} onClick={() => onSave(text.trim(), lesson.trim(), lessons.trim(), prevention.trim())}>
+        <PrimaryButton disabled={!valid} onClick={() => onSave(title.trim(), text.trim(), lessons.trim(), prevention.trim())}>
           ✅ Сохранить изменения
         </PrimaryButton>
       </div>
