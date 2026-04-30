@@ -18,7 +18,7 @@ export function Topbar({ onMenu }: TopbarProps) {
         </button>
 
         <div className="text-center min-w-0">
-          <p className="text-[12px] leading-tight text-muted-foreground">Доброе утро</p>
+          <p className="text-[12px] leading-tight text-muted-foreground">Живи свою лучшую жизнь</p>
           <h1 className="text-[16px] leading-tight font-medium truncate">Клуб Моя жизнь</h1>
         </div>
 
