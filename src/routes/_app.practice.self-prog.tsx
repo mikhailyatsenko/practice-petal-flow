@@ -694,7 +694,7 @@ function Recorder({
             boxShadow: canFinish ? "0 4px 12px rgba(22,163,74,0.35)" : "none",
           }}
         >
-          {canFinish ? "✅ Засчитать" : "⏳ 1 мин"}
+          {canFinish ? "✅ Проговорил" : "⏳ 1 мин"}
         </button>
       </div>
 
