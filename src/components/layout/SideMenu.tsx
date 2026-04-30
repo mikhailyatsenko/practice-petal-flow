@@ -138,6 +138,34 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             </span>
           </button>
 
+          <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
+            Демо-уровни
+          </div>
+          {([1, 2, 3, 4, 5] as PreviewLevel[]).map((n) => {
+            const active = previewLevel === n;
+            return (
+              <button
+                key={n}
+                onClick={() => {
+                  togglePreviewLevel(n);
+                  if (!active) onOpenChange(false);
+                }}
+                className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium transition-colors"
+                style={{
+                  color: active ? "#FF6D00" : "#1a1a1a",
+                  border: active ? "1.5px solid #FF6D00" : "1.5px solid transparent",
+                  background: active ? "rgba(255,109,0,0.06)" : "transparent",
+                  marginBottom: 4,
+                }}
+              >
+                <Layers className="h-[18px] w-[18px]" strokeWidth={2} />
+                <span>
+                  {active ? `Выключить уровень ${n}` : `Включить уровень ${n}`}
+                </span>
+              </button>
+            );
+          })}
+
           <div className="my-2 border-t border-border" />
           <MenuItem icon={Settings} label="Настройки" />
           <MenuItem icon={LifeBuoy} label="Поддержка" />
