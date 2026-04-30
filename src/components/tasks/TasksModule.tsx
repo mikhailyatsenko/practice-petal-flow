@@ -109,6 +109,8 @@ interface TasksModuleProps {
   /** Сразу открыть мозговой штурм для цели. */
   initialBrainstormGoalId?: string | null;
   onClearBrainstormGoalId?: () => void;
+  /** Уведомлять родителя, когда открыт мозговой штурм. */
+  onBrainstormingChange?: (active: boolean) => void;
   /** Контролируемое хранилище задач (если задано — используется вместо локального). */
   tasks?: Task[];
   onTasksChange?: (updater: (prev: Task[]) => Task[]) => void;
@@ -116,7 +118,7 @@ interface TasksModuleProps {
   onUpdateGoalPlan?: (goalId: string, plan: string) => void;
 }
 
-export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBrainstormGoalId, onClearBrainstormGoalId, tasks: tasksProp, onTasksChange, onUpdateGoalPlan }: TasksModuleProps) {
+export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBrainstormGoalId, onClearBrainstormGoalId, onBrainstormingChange, tasks: tasksProp, onTasksChange, onUpdateGoalPlan }: TasksModuleProps) {
   const [internalTasks, setInternalTasks] = useState<Task[]>(() => SAMPLE_TASKS(goals));
   const tasks = tasksProp ?? internalTasks;
   const setTasks = (updater: (prev: Task[]) => Task[]) => {
