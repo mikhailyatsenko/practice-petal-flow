@@ -368,7 +368,7 @@ function CreateFlow({
   onCancel: () => void;
   onCreated: (d: Decision) => void;
 }) {
-  // step: 0 = type, 1..7 = questions, 8 = readiness, 9 = accept-days, 10 = wait-days
+  // step: 0 = type, 1 = title, 2 = all questions on one page, 8 = readiness, 9 = accept-days, 10 = wait-days
   const [step, setStep] = useState(0);
   const [type, setType] = useState<DType | null>(null);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -378,6 +378,8 @@ function CreateFlow({
   function back() {
     if (step === 0) onCancel();
     else if (step === 9 || step === 10) setStep(8);
+    else if (step === 8) setStep(2);
+    else if (step === 2) setStep(1);
     else setStep(step - 1);
   }
 
@@ -442,46 +444,27 @@ function CreateFlow({
     );
   }
 
-  // questions 1..7
-  if (step >= 1 && step <= 7) {
-    const q = QUESTIONS[step - 1];
+  // step 1 — title
+  if (step === 1) {
+    const q = QUESTIONS[0];
     const value = (answers[q.key as string] ?? text) || "";
     return (
       <div style={{ padding: 16 }}>
         <Header title={q.title} onBack={back} />
         <p style={{ fontSize: 14, color: "#111", margin: "14px 0 8px", lineHeight: 1.4 }}>{q.label}</p>
-        {q.multi ? (
-          <textarea
-            value={value}
-            onChange={(e) => setText(e.target.value.slice(0, q.max))}
-            maxLength={q.max}
-            style={{
-              width: "100%",
-              minHeight: 140,
-              padding: 12,
-              border: "1px solid #D1D5DB",
-              borderRadius: 10,
-              fontSize: 14,
-              outline: "none",
-              resize: "vertical",
-              fontFamily: "inherit",
-            }}
-          />
-        ) : (
-          <input
-            value={value}
-            onChange={(e) => setText(e.target.value.slice(0, q.max))}
-            maxLength={q.max}
-            style={{
-              width: "100%",
-              padding: 12,
-              border: "1px solid #D1D5DB",
-              borderRadius: 10,
-              fontSize: 14,
-              outline: "none",
-            }}
-          />
-        )}
+        <input
+          value={value}
+          onChange={(e) => setText(e.target.value.slice(0, q.max))}
+          maxLength={q.max}
+          style={{
+            width: "100%",
+            padding: 12,
+            border: "1px solid #D1D5DB",
+            borderRadius: 10,
+            fontSize: 14,
+            outline: "none",
+          }}
+        />
         <div style={{ textAlign: "right", color: "#9CA3AF", fontSize: 12, marginTop: 4 }}>
           {value.length}/{q.max}
         </div>
@@ -492,9 +475,66 @@ function CreateFlow({
               const next = { ...answers, [q.key as string]: value.trim() };
               setAnswers(next);
               setText("");
-              setStep(step + 1);
+              setStep(2);
             }}
           >
+            ✅ Сохранить
+          </PrimaryButton>
+        </div>
+      </div>
+    );
+  }
+
+  // step 2 — все остальные вопросы на одной странице
+  if (step === 2) {
+    const restQuestions = QUESTIONS.slice(1);
+    const allFilled = restQuestions.every(
+      (q) => (answers[q.key as string] ?? "").trim().length > 0,
+    );
+    return (
+      <div style={{ padding: 16 }}>
+        <Header title="Анализ решения" onBack={back} />
+        <p style={{ fontSize: 13, color: "#6B7280", margin: "14px 0 12px", lineHeight: 1.5 }}>
+          Заполните пункты — можно выборочно. Кнопка «Сохранить» активна, когда во всех полях есть хотя бы 1 символ.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          {restQuestions.map((q) => {
+            const val = answers[q.key as string] ?? "";
+            return (
+              <div key={q.key as string}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#111", marginBottom: 6 }}>
+                  {q.title}
+                </div>
+                <div style={{ fontSize: 12.5, color: "#6B7280", marginBottom: 6, lineHeight: 1.4 }}>
+                  {q.label}
+                </div>
+                <textarea
+                  value={val}
+                  onChange={(e) =>
+                    setAnswers({ ...answers, [q.key as string]: e.target.value.slice(0, q.max) })
+                  }
+                  maxLength={q.max}
+                  style={{
+                    width: "100%",
+                    minHeight: 90,
+                    padding: 10,
+                    border: "1px solid #D1D5DB",
+                    borderRadius: 10,
+                    fontSize: 14,
+                    outline: "none",
+                    resize: "vertical",
+                    fontFamily: "inherit",
+                  }}
+                />
+                <div style={{ textAlign: "right", color: "#9CA3AF", fontSize: 11, marginTop: 2 }}>
+                  {val.length}/{q.max}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ marginTop: 16, marginBottom: 8 }}>
+          <PrimaryButton disabled={!allFilled} onClick={() => setStep(8)}>
             ✅ Сохранить
           </PrimaryButton>
         </div>
