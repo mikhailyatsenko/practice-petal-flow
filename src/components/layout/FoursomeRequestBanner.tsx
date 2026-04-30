@@ -15,9 +15,9 @@ export function FoursomeRequestBanner() {
       aria-label="У тебя новый запрос на четвёрку — открыть"
     >
       <div
-        className="relative overflow-hidden rounded-2xl px-4 py-3 flex items-center gap-3 text-white shadow-[0_10px_30px_rgba(124,58,237,0.45)]"
+        className="relative overflow-hidden rounded-2xl px-4 py-3 flex items-center gap-3 text-white shadow-[0_10px_30px_rgba(255,109,0,0.45)]"
         style={{
-          background: "linear-gradient(135deg, #a78bfa, #6d28d9)",
+          background: "linear-gradient(135deg, #FFB300, #FF6D00)",
           animation: "foursome-banner-pulse 1.6s ease-in-out infinite",
         }}
       >
