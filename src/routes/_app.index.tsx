@@ -13,6 +13,7 @@ import {
 } from "@/components/home/StatEffects";
 import { usePracticesDone, setPracticeDone, computeEffective, type PracticeId } from "@/lib/practicesStore";
 import { LockedFeatureCard } from "@/components/section/LockedFeatureCard";
+import { FlywheelLockedPreview } from "@/components/section/FlywheelLockedPreview";
 import { isFeatureUnlocked, unlockLevelOf, usePreviewLevel } from "@/lib/previewLevel";
 
 export const Route = createFileRoute("/_app/")({
