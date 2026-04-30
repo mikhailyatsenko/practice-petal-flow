@@ -267,7 +267,8 @@ type HowBlock =
   | { kind: "list"; title: string; items: { label: string; text: string }[] };
 
 type HowVideo = { title: string; duration: string; caption: string };
-const HOW_IT_WORKS: Record<TabId, { videos: [HowVideo, HowVideo]; blocks: HowBlock[] }> = {
+type HowKey = TabId | "brainstorm";
+const HOW_IT_WORKS: Record<HowKey, { videos: [HowVideo, HowVideo]; blocks: HowBlock[] }> = {
   wants: {
     videos: [
       {
