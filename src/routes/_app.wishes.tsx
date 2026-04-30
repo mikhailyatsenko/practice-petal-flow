@@ -1072,6 +1072,9 @@ function WishesScreen() {
                 tasksAll={goalTasks}
                 tasksDoneCount={goalDone}
                 onAddTask={() => setQuickTaskGoalId(g.id)}
+                onProgressChange={(value) =>
+                  setGoals((prev) => prev.map((x) => (x.id === g.id ? { ...x, progress: value } : x)))
+                }
                 onOpenTasks={() => {
                   // По правке: при переходе из «Цели» фильтр НЕ ставим — показываем все задачи всех целей.
                   setTasksFromGoalId(null);
