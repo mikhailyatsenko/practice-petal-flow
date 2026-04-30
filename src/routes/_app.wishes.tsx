@@ -1727,8 +1727,9 @@ function CreateWishWizard({
   hotelki: string[];
   onConsumeHotelka: (idx: number) => void;
 }) {
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [title, setTitle] = useState("");
+  const [vision, setVision] = useState("");
   const [reasons, setReasons] = useState<string[]>(["", "", ""]);
   const [image, setImage] = useState<string>("");
   const [fromHotelkaIdx, setFromHotelkaIdx] = useState<number | null>(null);
@@ -1741,6 +1742,7 @@ function CreateWishWizard({
     }
     onCreate({
       title: title.trim(),
+      vision: vision.trim(),
       reasons: filledReasons,
       image,
     });
