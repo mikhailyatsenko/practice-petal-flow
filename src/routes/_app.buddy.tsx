@@ -579,7 +579,7 @@ function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () 
             <textarea
               value={extra}
               onChange={(e) => setExtra(e.target.value)}
-              placeholder="Например: Кроме среды свободна во вторник и четверг с 18:00 до 21:00 МСК. Созваниваюсь через Яндекс Телемост."
+              placeholder="Например: Кроме среды свободна во вторник и четверг с 18:00 до 21:00 МСК."
               className="w-full bg-card rounded-xl px-3.5 py-3 text-[14px] outline-none transition-colors resize-none"
               style={{ minHeight: 90, border: `1px solid ${extra ? "#FF6D00" : "#ede8df"}` }}
             />
