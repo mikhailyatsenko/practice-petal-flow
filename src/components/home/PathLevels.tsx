@@ -183,7 +183,7 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
       { id: "s1", label: "Создать 5 желаний", done: false },
       { id: "s2", label: "Создать 1 цель", done: false },
     ],
-    reward: "🎁 Открывается возможность соединиться с Бадди",
+    reward: "Открывается возможность соединиться с Бадди",
     task: {
       videoTitle: "Уровень 1 — Старт",
       caption: "Введение • Уровень 1",
@@ -408,17 +408,58 @@ export function PathLevels() {
         <div
           style={{
             display: "flex",
-            alignItems: "center",
-            gap: 6,
-            padding: "10px 0",
-            borderTop: "0.5px solid rgba(0,0,0,0.07)",
-            marginTop: 10,
+            alignItems: "flex-start",
+            gap: 10,
+            padding: "12px 12px",
+            marginTop: 12,
+            background: "linear-gradient(135deg, rgba(255,179,0,0.10), rgba(255,109,0,0.08))",
+            border: "1px solid rgba(255,109,0,0.18)",
+            borderRadius: 12,
           }}
         >
-          <span style={{ fontSize: 12, color: "#b8a888" }}>Награда:</span>
-          <span style={{ fontSize: 13, fontWeight: 500, color: "#FF6D00" }}>
-            {lvl.reward}
-          </span>
+          <div
+            style={{
+              flexShrink: 0,
+              width: 32,
+              height: 32,
+              borderRadius: 10,
+              background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 16,
+              boxShadow: "0 2px 6px rgba(255,109,0,0.25)",
+              fontFamily: '"Apple Color Emoji","Segoe UI Emoji",sans-serif',
+            }}
+            aria-hidden
+          >
+            🎁
+          </div>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                color: "#b8a888",
+                lineHeight: 1,
+                marginBottom: 4,
+              }}
+            >
+              Награда
+            </div>
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: "#1a1a1a",
+                lineHeight: 1.35,
+              }}
+            >
+              {lvl.reward}
+            </div>
+          </div>
         </div>
 
         {/* CTA: Посмотреть задание */}
