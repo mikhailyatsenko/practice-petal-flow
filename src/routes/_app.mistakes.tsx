@@ -143,6 +143,11 @@ function MistakesScreen() {
           persist(store.map((x) => (x.id === m.id ? { ...x, text, lesson, prevention } : x)));
           setView({ kind: "main" });
         }}
+        onDelete={() => {
+          if (!confirm("Удалить эту ошибку?")) return;
+          persist(store.filter((x) => x.id !== m.id));
+          setView({ kind: "main" });
+        }}
       />
     );
   }
