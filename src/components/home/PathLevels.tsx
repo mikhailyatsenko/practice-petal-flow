@@ -418,63 +418,74 @@ export function PathLevels() {
           <p className="mt-3 text-[12px] text-muted-foreground">{lvl.footer}</p>
         )}
 
-        {/* Награда */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-start",
-            gap: 10,
-            padding: "12px 12px",
-            marginTop: 12,
-            background: "linear-gradient(135deg, rgba(255,179,0,0.10), rgba(255,109,0,0.08))",
-            border: "1px solid rgba(255,109,0,0.18)",
-            borderRadius: 12,
-          }}
-        >
-          <div
-            style={{
-              flexShrink: 0,
-              width: 32,
-              height: 32,
-              borderRadius: 10,
-              background: "linear-gradient(135deg,#FFB300,#FF6D00)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 16,
-              boxShadow: "0 2px 6px rgba(255,109,0,0.25)",
-              fontFamily: '"Apple Color Emoji","Segoe UI Emoji",sans-serif',
-            }}
-            aria-hidden
-          >
-            🎁
-          </div>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <div
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                color: "#b8a888",
-                lineHeight: 1,
-                marginBottom: 4,
-              }}
-            >
-              Награда
+        {/* Награды */}
+        {(() => {
+          const rewards = Array.isArray(lvl.reward) ? lvl.reward : [lvl.reward];
+          const isMulti = rewards.length > 1;
+          return (
+            <div style={{ marginTop: 14 }}>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  color: "#b8a888",
+                  marginBottom: 8,
+                }}
+              >
+                {isMulti ? "Награды" : "Награда"}
+              </div>
+              <ul style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {rewards.map((r, i) => (
+                  <li
+                    key={i}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      padding: "10px 12px",
+                      background: "#FFF7EC",
+                      border: "1px solid rgba(255,109,0,0.18)",
+                      borderRadius: 12,
+                    }}
+                  >
+                    <span
+                      aria-hidden
+                      style={{
+                        flexShrink: 0,
+                        width: 22,
+                        height: 22,
+                        borderRadius: "50%",
+                        background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 12,
+                        boxShadow: "0 2px 4px rgba(255,109,0,0.25)",
+                        fontFamily: '"Apple Color Emoji","Segoe UI Emoji",sans-serif',
+                      }}
+                    >
+                      🎁
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 500,
+                        color: "#1a1a1a",
+                        lineHeight: 1.35,
+                        minWidth: 0,
+                        flex: 1,
+                      }}
+                    >
+                      {r.replace(/^🎁\s*/, "")}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div
-              style={{
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#1a1a1a",
-                lineHeight: 1.35,
-              }}
-            >
-              {lvl.reward}
-            </div>
-          </div>
-        </div>
+          );
+        })()}
 
         {/* CTA: Посмотреть задание */}
         <div
