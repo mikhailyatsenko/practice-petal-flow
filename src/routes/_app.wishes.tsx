@@ -1839,23 +1839,34 @@ function CreateWishWizard({
                 {hotelki.map((h, i) => {
                   const active = fromHotelkaIdx === i;
                   return (
-                    <button
-                      key={i}
-                      onClick={() => handlePickHotelka(i, h)}
-                      className="tap w-full text-left bg-card rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 transition-colors"
-                      style={{ border: `1px solid ${active ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
-                    >
-                      <div
-                        className="h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-[12px] font-medium transition-colors"
-                        style={{
-                          background: active ? "#FF6D00" : "var(--secondary)",
-                          color: active ? "#fff" : "var(--muted-foreground)",
-                        }}
+                    <React.Fragment key={i}>
+                      <button
+                        onClick={() => handlePickHotelka(i, h)}
+                        className="tap w-full text-left bg-card rounded-xl px-3.5 py-3 shadow-card flex items-center gap-3 transition-colors"
+                        style={{ border: `1px solid ${active ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
                       >
-                        {active ? <Check className="h-4 w-4" /> : i + 1}
-                      </div>
-                      <p className="text-[14px] leading-snug text-foreground/90 flex-1">{h}</p>
-                    </button>
+                        <div
+                          className="h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-[12px] font-medium transition-colors"
+                          style={{
+                            background: active ? "#FF6D00" : "var(--secondary)",
+                            color: active ? "#fff" : "var(--muted-foreground)",
+                          }}
+                        >
+                          {active ? <Check className="h-4 w-4" /> : i + 1}
+                        </div>
+                        <p className="text-[14px] leading-snug text-foreground/90 flex-1">{h}</p>
+                      </button>
+                      {active && (
+                        <div className="pt-1 pb-2 animate-fade-up">
+                          <button
+                            onClick={() => setStep(2)}
+                            className="tap btn-pill-orange w-full shadow-lg shadow-orange-200/60"
+                          >
+                            Далее → Образ
+                          </button>
+                        </div>
+                      )}
+                    </React.Fragment>
                   );
                 })}
               </div>
