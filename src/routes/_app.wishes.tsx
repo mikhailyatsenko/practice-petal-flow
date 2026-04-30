@@ -2191,7 +2191,7 @@ function EditWishScreen({
       </div>
 
       {/* Табы */}
-      <div className="px-4 mt-3 flex gap-1.5">
+      <div className="px-4 mt-3 flex gap-1.5 flex-wrap">
         {([
           { id: "title",   label: "✏️ Название" },
           { id: "reasons", label: "💡 Причины"  },
