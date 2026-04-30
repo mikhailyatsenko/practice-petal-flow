@@ -1856,17 +1856,7 @@ function CreateWishWizard({
                         </div>
                         <p className="text-[14px] leading-snug text-foreground/90 flex-1">{h}</p>
                       </button>
-                      {active && (
-                        <div className="pt-1 pb-2 animate-fade-up">
-                          <button
-                            onClick={() => setStep(2)}
-                            className="tap btn-pill-orange w-full shadow-lg shadow-orange-200/60"
-                          >
-                            Далее → Образ
-                          </button>
-                        </div>
-                      )}
-                    </React.Fragment>
+                     </React.Fragment>
                   );
                 })}
               </div>
