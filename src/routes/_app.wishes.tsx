@@ -3144,12 +3144,6 @@ function EditGoalScreen({
           <div className="absolute inset-x-0 bottom-0 px-3 py-2">
             <div className="text-white text-[15px] font-semibold drop-shadow">{title}</div>
           </div>
-          <div
-            className="absolute top-2 right-2 text-white text-[12px] font-semibold px-2 py-0.5 rounded-full"
-            style={{ background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)" }}
-          >
-            {progress}%
-          </div>
         </div>
       </div>
 
