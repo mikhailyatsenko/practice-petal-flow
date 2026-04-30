@@ -3200,6 +3200,13 @@ function EditGoalScreen({
   const [plan, setPlan] = useState(goal.plan);
   const [vision, setVision] = useState(goal.vision ?? "");
   const [image, setImage] = useState(goal.image);
+  const [aspect, setAspect] = useState<ImageAspect>(goal.aspect ?? "portrait");
+
+  const handlePickImage = async (f: File) => {
+    const url = URL.createObjectURL(f);
+    setImage(url);
+    setAspect(await detectAspectFromUrl(url));
+  };
 
   const initDl = parseDeadline(goal.deadline);
   const [dlDay, setDlDay] = useState<number>(initDl.d);
@@ -3216,6 +3223,7 @@ function EditGoalScreen({
       plan: plan.trim() || goal.plan,
       vision: vision.trim(),
       image,
+      aspect,
     });
   };
 
