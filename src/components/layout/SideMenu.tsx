@@ -1,9 +1,10 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, Hourglass, RotateCcw, CalendarPlus, Cog, Bell, BellOff } from "lucide-react";
+import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, RotateCcw, CalendarPlus, Cog, Bell, BellOff, Layers } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { resetAllPractices, advanceToNextDay } from "@/lib/practicesStore";
 import { useBuddyRequestMode, toggleBuddyRequestMode } from "@/lib/buddyRequestMode";
 import { useFoursomeRequestMode, toggleFoursomeRequestMode } from "@/lib/foursomeRequestMode";
+import { usePreviewLevel, togglePreviewLevel, type PreviewLevel } from "@/lib/previewLevel";
 
 interface SideMenuProps {
   open: boolean;
@@ -14,6 +15,7 @@ interface SideMenuProps {
 export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps) {
   const buddyMode = useBuddyRequestMode();
   const foursomeMode = useFoursomeRequestMode();
+  const previewLevel = usePreviewLevel();
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-[300px] sm:w-[320px] bg-background p-0 overflow-y-auto" data-version="v2">
