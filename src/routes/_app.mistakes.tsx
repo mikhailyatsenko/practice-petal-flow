@@ -54,6 +54,8 @@ type View =
   | { kind: "main" }
   | { kind: "add1" }
   | { kind: "add2"; text: string }
+  | { kind: "add3"; text: string; lesson: string }
+  | { kind: "add4"; text: string; lesson: string; prevention: string }
   | { kind: "affirm" }
   | { kind: "edit"; id: string };
 
@@ -74,6 +76,7 @@ function MistakesScreen() {
   if (view.kind === "add1") {
     return (
       <StepScreen
+        key="add1"
         title="Новая ошибка"
         prompt="Опишите ошибку (не более 200 символов)"
         max={200}
@@ -87,16 +90,32 @@ function MistakesScreen() {
   if (view.kind === "add2") {
     return (
       <StepScreen
-        title="Новая ошибка"
+        key="add2"
+        title="Чему научила ошибка"
         prompt="Напишите, чему вас научила эта ошибка (не более 500 символов)"
         max={500}
         minHeight={100}
         onBack={() => setView({ kind: "add1" })}
-        onSave={(lesson) => {
+        onSave={(lesson) => setView({ kind: "add3", text: view.text, lesson })}
+      />
+    );
+  }
+
+  if (view.kind === "add3") {
+    return (
+      <StepScreen
+        key="add3"
+        title="Страховка от повторения"
+        prompt="Что нужно сделать, чтобы такая ошибка больше не повторилась? (не более 500 символов)"
+        max={500}
+        minHeight={100}
+        onBack={() => setView({ kind: "add2", text: view.text })}
+        onSave={(prevention) => {
           const m: Mistake = {
             id: newId(),
             text: view.text,
-            lesson,
+            lesson: view.lesson,
+            prevention,
             createdAt: Date.now(),
           };
           persist([m, ...store]);
@@ -120,8 +139,8 @@ function MistakesScreen() {
       <EditScreen
         mistake={m}
         onBack={() => setView({ kind: "main" })}
-        onSave={(text, lesson) => {
-          persist(store.map((x) => (x.id === m.id ? { ...x, text, lesson } : x)));
+        onSave={(text, lesson, prevention) => {
+          persist(store.map((x) => (x.id === m.id ? { ...x, text, lesson, prevention } : x)));
           setView({ kind: "main" });
         }}
       />
