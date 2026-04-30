@@ -1758,7 +1758,7 @@ function CreateWishWizard({
     }
   };
 
-  if (step === 4) {
+  if (step === 5) {
     return (
       <div className="min-h-screen bg-background pb-8">
         <WizardHeader title="Готово" onBack={onClose} />
