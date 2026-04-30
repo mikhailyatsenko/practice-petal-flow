@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SectionHeader, SubItemList } from "@/components/section/SubItemList";
-import { LockedFeatureCard } from "@/components/section/LockedFeatureCard";
+import { LibraryLockedPreview } from "@/components/section/LibraryLockedPreview";
 import { isFeatureUnlocked, unlockLevelOf, usePreviewLevel } from "@/lib/previewLevel";
 
 export const Route = createFileRoute("/_app/library")({
