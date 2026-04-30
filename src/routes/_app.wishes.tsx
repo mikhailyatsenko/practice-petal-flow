@@ -1464,6 +1464,20 @@ function WishCard({
           )}
         </div>
 
+        {wish.vision && wish.vision.trim() && (
+          <>
+            <p className="mt-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+              Как это уже произошло
+            </p>
+            <p
+              className="mt-1.5 rounded-xl px-3 py-2.5 text-[13px] leading-snug text-foreground/85 italic whitespace-pre-line"
+              style={{ background: "#FAF6EF" }}
+            >
+              {wish.vision}
+            </p>
+          </>
+        )}
+
         <p className="mt-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
           Почему это важно
         </p>
