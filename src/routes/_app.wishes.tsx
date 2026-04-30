@@ -1856,17 +1856,7 @@ function CreateWishWizard({
                         </div>
                         <p className="text-[14px] leading-snug text-foreground/90 flex-1">{h}</p>
                       </button>
-                      {active && (
-                        <div className="pt-1 pb-2 animate-fade-up">
-                          <button
-                            onClick={() => setStep(2)}
-                            className="tap btn-pill-orange w-full shadow-lg shadow-orange-200/60"
-                          >
-                            Далее → Образ
-                          </button>
-                        </div>
-                      )}
-                    </React.Fragment>
+                     </React.Fragment>
                   );
                 })}
               </div>
@@ -1877,11 +1867,11 @@ function CreateWishWizard({
       )}
 
       {step === 1 && (
-        <div className="fixed bottom-[88px] left-1/2 z-50 w-full max-w-md -translate-x-1/2 bg-gradient-to-t from-background via-background to-background/80 px-4 pb-3 pt-3">
+        <div className="fixed bottom-[110px] left-1/2 z-50 w-full max-w-md -translate-x-1/2 px-4">
           <button
             disabled={title.trim().length < 2}
             onClick={() => setStep(2)}
-            className="tap btn-pill-orange w-full disabled:opacity-40"
+            className="tap btn-pill-orange w-full shadow-lg shadow-orange-200/60 disabled:opacity-40"
           >
             Далее → Образ
           </button>
@@ -1892,7 +1882,7 @@ function CreateWishWizard({
         <div className="px-4 animate-fade-up">
           <h2 className="text-[18px] font-bold leading-tight">Опиши детальнее желание</h2>
           <p className="mt-1.5 text-[14px] text-[#FF6D00]">
-            Представь, что оно уже произошло. Опиши его так, как будто проживаешь этот момент прямо сейчас — что ты видишь, слышишь, чувствуешь.
+            Представь, что оно уже произошло. Опиши так, как будто проживаешь это прямо сейчас — что ты видишь, слышишь, чувствуешь.
           </p>
 
           <textarea
