@@ -2205,8 +2205,8 @@ function EditWishScreen({
               onClick={() => setTab(t.id)}
               className={
                 active
-                  ? "tap btn-pill-orange btn-sm flex-1"
-                  : "tap flex-1 rounded-full px-3 py-1.5 text-[12px] font-medium bg-card text-muted-foreground hairline"
+                  ? "tap btn-pill-orange btn-sm"
+                  : "tap rounded-full px-3 py-1.5 text-[12px] font-medium bg-card text-muted-foreground hairline"
               }
             >
               {t.label}
