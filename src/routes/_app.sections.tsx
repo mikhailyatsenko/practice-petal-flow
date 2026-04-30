@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { SECTION_INFO, type SectionInfo } from "@/lib/sectionInfo";
-import { LockedFeatureCard } from "@/components/section/LockedFeatureCard";
+import { SectionsLockedPreview } from "@/components/section/SectionsLockedPreview";
 import { isFeatureUnlocked, unlockLevelOf, usePreviewLevel } from "@/lib/previewLevel";
 
 export const Route = createFileRoute("/_app/sections")({
@@ -39,13 +39,7 @@ function SectionsScreen() {
     return (
       <div className="px-4">
         <SectionHeader emoji="🧩" title="Разделы магазина" subtitle="Открывай дополнительные разделы за очки" />
-        <LockedFeatureCard
-          emoji="🧩"
-          title="Магазин разделов"
-          hint="Дополнительные разделы клуба за очки"
-          unlockLevel={unlockLevelOf("sections")}
-          theme="blue"
-        />
+        <SectionsLockedPreview unlockLevel={unlockLevelOf("sections")} />
       </div>
     );
   }
