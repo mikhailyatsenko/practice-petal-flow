@@ -439,7 +439,7 @@ function CreateFlow({
     const value = (answers[q.key as string] ?? text) || "";
     return (
       <div style={{ padding: 16 }}>
-        <Header title={`Шаг ${step + 1} из 9`} onBack={back} />
+        <Header title={q.title} onBack={back} />
         <p style={{ fontSize: 14, color: "#111", margin: "14px 0 8px", lineHeight: 1.4 }}>{q.label}</p>
         {q.multi ? (
           <textarea
