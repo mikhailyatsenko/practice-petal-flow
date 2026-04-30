@@ -155,8 +155,8 @@ function MistakesScreen() {
       <EditScreen
         mistake={m}
         onBack={() => setView({ kind: "main" })}
-        onSave={(text, lesson, lessons, prevention) => {
-          persist(store.map((x) => (x.id === m.id ? { ...x, text, lesson, lessons, prevention } : x)));
+        onSave={(title, text, lessons, prevention) => {
+          persist(store.map((x) => (x.id === m.id ? { ...x, title, text, lessons, prevention } : x)));
           setView({ kind: "main" });
         }}
         onDelete={() => {
