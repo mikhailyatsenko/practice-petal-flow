@@ -460,10 +460,23 @@ function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             {howTab === "text" ? (
               <div className="space-y-3">
                 {INSTRUCTION_CARDS.map((c, i) => (
-                  <Card key={i} className="p-4">
+                  <Card
+                    key={i}
+                    className="p-4"
+                    style={
+                      c.important
+                        ? { background: "#fff7ed", border: "1.5px solid #FB923C" }
+                        : undefined
+                    }
+                  >
                     <div className="flex items-center gap-2 mb-1.5">
                       <span className="text-[20px]">{c.emoji}</span>
-                      <span className="text-[14px] font-bold">{c.title}</span>
+                      <span
+                        className="text-[14px] font-bold"
+                        style={c.important ? { color: "#C2410C" } : undefined}
+                      >
+                        {c.title}
+                      </span>
                     </div>
                     <p className="text-[13px] text-foreground/85 whitespace-pre-line" style={{ lineHeight: 1.65 }}>
                       {c.text}
@@ -567,10 +580,23 @@ function Instructions({ onBack }: { onBack: () => void }) {
       {tab === "text" ? (
         <div className="space-y-3">
           {INSTRUCTION_CARDS.map((c, i) => (
-            <Card key={i} className="p-4">
+            <Card
+              key={i}
+              className="p-4"
+              style={
+                c.important
+                  ? { background: "#fff7ed", border: "1.5px solid #FB923C" }
+                  : undefined
+              }
+            >
               <div className="flex items-center gap-2 mb-1.5">
                 <span className="text-[20px]">{c.emoji}</span>
-                <span className="text-[14px] font-bold">{c.title}</span>
+                <span
+                  className="text-[14px] font-bold"
+                  style={c.important ? { color: "#C2410C" } : undefined}
+                >
+                  {c.title}
+                </span>
               </div>
               <p className="text-[13px] text-foreground/85 whitespace-pre-line" style={{ lineHeight: 1.65 }}>
                 {c.text}
@@ -598,7 +624,14 @@ function Instructions({ onBack }: { onBack: () => void }) {
   );
 }
 
-const INSTRUCTION_CARDS = [
+const INSTRUCTION_CARDS: { emoji: string; title: string; text: string; important?: boolean }[] = [
+  {
+    important: true,
+    emoji: "⚠️",
+    title: "Важно! Как сочетаются созвоны с бадди и Четвёркой",
+    text:
+      "Созвон с бадди проходит каждую неделю. Но в первую неделю каждого месяца ваш обычный созвон с бадди ЗАМЕНЯЕТСЯ на созвон Четвёркой — он не добавляется сверху.\n\nДругими словами: созвонов в этой неделе всё равно один, просто вместо разговора вдвоём вы встречаетесь вчетвером (вы, ваш бадди и вторая пара).\n\n📅 Как это выглядит по неделям месяца:\n• 1-я неделя — созвон Четвёркой (вместо бадди)\n• 2-я неделя — созвон с бадди\n• 3-я неделя — созвон с бадди\n• 4-я неделя — созвон с бадди\n\nТак что Четвёрка не добавляет нагрузки — она просто один раз в месяц расширяет ваш привычный созвон до четырёх человек.",
+  },
   {
     emoji: "👥👥",
     title: "Что такое Четвёрка",
