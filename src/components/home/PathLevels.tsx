@@ -295,7 +295,7 @@ export function PathLevels() {
         onClick={next}
         className="relative w-full text-left px-4 py-4 text-white overflow-hidden"
         style={{ background: lvl.gradient }}
-        aria-label={`Перейти к следующему уровню (сейчас ${idx + 1} из ${LEVELS.length})`}
+        aria-label={`Уровень ${currentIdx} из ${totalLevels}`}
       >
         {/* Декоративные полупрозрачные круги */}
         <span
@@ -336,7 +336,7 @@ export function PathLevels() {
               {lvl.emoji}
             </div>
             <span className="inline-block rounded-full bg-white/15 backdrop-blur px-2.5 py-0.5 text-[10.5px] font-medium mb-0.5">
-              Уровень {idx + 1} из {LEVELS.length}
+              Уровень {currentIdx} из {totalLevels}
             </span>
           </div>
 
@@ -487,7 +487,7 @@ export function PathLevels() {
       <LevelTaskSheet
         open={sheetOpen}
         onClose={() => setSheetOpen(false)}
-        levelNumber={idx + 1}
+        levelNumber={currentIdx}
         levelTitle={lvl.title}
         emoji={lvl.emoji}
         content={lvl.task}
