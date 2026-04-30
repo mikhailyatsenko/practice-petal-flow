@@ -1930,7 +1930,7 @@ function CreateWishWizard({
         </div>
       )}
 
-      {step === 3 && (
+      {step === 2 && (
         <div className="px-4 animate-fade-up">
           <h2 className="text-[18px] font-bold leading-tight">Почему это важно?</h2>
           <p className="mt-1.5 text-[14px] text-[#FF6D00]">
