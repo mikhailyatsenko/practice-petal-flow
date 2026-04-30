@@ -3109,15 +3109,15 @@ function EditGoalScreen({
     });
   };
 
-  // Порядок: Название → Причины → Картинка → Срок → Критерий → План → Прогресс
+  // Порядок: Название → Причины → Образ → Картинка → Срок → Критерий → План
   const tabs: { id: GoalEditTab; label: string }[] = [
     { id: "title",    label: "✏️ Название"  },
     { id: "reasons",  label: "💡 Причины"  },
+    { id: "vision",   label: "✨ Образ"    },
     { id: "image",    label: "🖼 Картинка"  },
     { id: "deadline", label: "📅 Срок"      },
     { id: "criteria", label: "✅ Критерий" },
     { id: "plan",     label: "🗺 План"      },
-    { id: "progress", label: "📊 Прогресс" },
   ];
 
   return (
