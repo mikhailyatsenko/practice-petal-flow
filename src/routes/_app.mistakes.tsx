@@ -56,7 +56,7 @@ type View =
   | { kind: "add1" }
   | { kind: "add2"; text: string }
   | { kind: "add3"; text: string; lesson: string }
-  | { kind: "add4"; text: string; lesson: string; prevention: string }
+  | { kind: "add4"; text: string; lesson: string; lessons: string }
   | { kind: "affirm" }
   | { kind: "edit"; id: string };
 
@@ -106,16 +106,31 @@ function MistakesScreen() {
     return (
       <StepScreen
         key="add3"
+        title="Уроки из ошибки"
+        prompt="Какие уроки вы вынесли из этой ошибки? (не более 500 символов)"
+        max={500}
+        minHeight={100}
+        onBack={() => setView({ kind: "add2", text: view.text })}
+        onSave={(lessons) => setView({ kind: "add4", text: view.text, lesson: view.lesson, lessons })}
+      />
+    );
+  }
+
+  if (view.kind === "add4") {
+    return (
+      <StepScreen
+        key="add4"
         title="Страховка от повторения"
         prompt="Что нужно сделать, чтобы такая ошибка больше не повторилась? (не более 500 символов)"
         max={500}
         minHeight={100}
-        onBack={() => setView({ kind: "add2", text: view.text })}
+        onBack={() => setView({ kind: "add3", text: view.text, lesson: view.lesson })}
         onSave={(prevention) => {
           const m: Mistake = {
             id: newId(),
             text: view.text,
             lesson: view.lesson,
+            lessons: view.lessons,
             prevention,
             createdAt: Date.now(),
           };
