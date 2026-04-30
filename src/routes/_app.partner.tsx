@@ -34,12 +34,28 @@ function PartnerScreen() {
 
       {/* Short bonus description */}
       <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
-        <p className="text-[14px] leading-snug text-foreground">
-          Каждый раз когда твой друг оплачивает клуб — тебе начисляется столько бонусных рублей, сколько он заплатил.
-        </p>
-        <p className="mt-1.5 text-[12.5px] leading-snug text-muted-foreground">
-          Бонусы списываются вместо реальных денег при твоей следующей оплате.
-        </p>
+        <div className="flex items-start gap-3">
+          <div
+            className="shrink-0 flex items-center justify-center text-[18px]"
+            style={{ width: 36, height: 36, borderRadius: 10, background: "#FFF3E0" }}
+          >
+            💰
+          </div>
+          <p className="text-[14px]" style={{ color: "#1a1a1a", lineHeight: 1.6 }}>
+            Каждый раз когда твой друг оплачивает клуб — тебе начисляется столько бонусных рублей, сколько он заплатил.
+          </p>
+        </div>
+        <div className="flex items-start gap-3" style={{ marginTop: 10 }}>
+          <div
+            className="shrink-0 flex items-center justify-center text-[18px]"
+            style={{ width: 36, height: 36, borderRadius: 10, background: "#E8F5E9" }}
+          >
+            ✅
+          </div>
+          <p className="text-[13px]" style={{ color: "#8a8a8a", lineHeight: 1.6 }}>
+            Бонусы списываются вместо реальных денег при твоей следующей оплате.
+          </p>
+        </div>
       </div>
 
       <h2 className="mt-5 px-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
@@ -52,30 +68,21 @@ function PartnerScreen() {
         ]}
       />
 
-      {/* How it works — expandable */}
-      <div className="mt-2 rounded-xl bg-card hairline shadow-card overflow-hidden">
+      {/* How it works — expandable (same style as habits/practices) */}
+      <section className="mt-6">
         <button
           onClick={() => setHowOpen((v) => !v)}
-          className="tap w-full px-3.5 py-3 flex items-center gap-3 text-left"
+          className="tap w-full bg-card hairline rounded-2xl shadow-card px-4 py-3 flex items-center justify-between"
         >
-          <div className="h-10 w-10 shrink-0 rounded-xl bg-secondary flex items-center justify-center text-xl">
-            ℹ️
-          </div>
-          <div className="min-w-0 flex-1">
-            <h3 className="text-[14px] font-medium leading-tight">Как это работает</h3>
-            <p className="mt-0.5 text-[11.5px] text-muted-foreground leading-snug">
-              Условия, схема и пример расчёта
-            </p>
-          </div>
+          <span className="text-[14px] font-medium">❓ Как это работает</span>
           <ChevronDown
-            className={`h-4 w-4 text-muted-foreground shrink-0 transition-transform duration-200 ${
-              howOpen ? "rotate-180" : ""
-            }`}
+            className="h-5 w-5 transition-transform"
+            style={{ transform: howOpen ? "rotate(180deg)" : "none" }}
           />
         </button>
 
         {howOpen && (
-          <div className="px-4 pb-4 pt-1 animate-fade-up">
+          <div className="mt-3 animate-fade-up">
             <div className="space-y-3 text-[13.5px] leading-relaxed text-foreground/90">
               <p>
                 Партнёрка — это способ сделать участие в клубе бесплатным. Ты делишься своей ссылкой
@@ -139,7 +146,7 @@ function PartnerScreen() {
             </div>
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }
