@@ -16,6 +16,7 @@ interface Mistake {
   id: string;
   text: string;
   lesson: string;
+  prevention: string;
   createdAt: number;
 }
 
@@ -53,6 +54,8 @@ type View =
   | { kind: "main" }
   | { kind: "add1" }
   | { kind: "add2"; text: string }
+  | { kind: "add3"; text: string; lesson: string }
+  | { kind: "add4"; text: string; lesson: string; prevention: string }
   | { kind: "affirm" }
   | { kind: "edit"; id: string };
 
@@ -73,6 +76,7 @@ function MistakesScreen() {
   if (view.kind === "add1") {
     return (
       <StepScreen
+        key="add1"
         title="Новая ошибка"
         prompt="Опишите ошибку (не более 200 символов)"
         max={200}
@@ -86,16 +90,32 @@ function MistakesScreen() {
   if (view.kind === "add2") {
     return (
       <StepScreen
-        title="Новая ошибка"
+        key="add2"
+        title="Чему научила ошибка"
         prompt="Напишите, чему вас научила эта ошибка (не более 500 символов)"
         max={500}
         minHeight={100}
         onBack={() => setView({ kind: "add1" })}
-        onSave={(lesson) => {
+        onSave={(lesson) => setView({ kind: "add3", text: view.text, lesson })}
+      />
+    );
+  }
+
+  if (view.kind === "add3") {
+    return (
+      <StepScreen
+        key="add3"
+        title="Страховка от повторения"
+        prompt="Что нужно сделать, чтобы такая ошибка больше не повторилась? (не более 500 символов)"
+        max={500}
+        minHeight={100}
+        onBack={() => setView({ kind: "add2", text: view.text })}
+        onSave={(prevention) => {
           const m: Mistake = {
             id: newId(),
             text: view.text,
-            lesson,
+            lesson: view.lesson,
+            prevention,
             createdAt: Date.now(),
           };
           persist([m, ...store]);
@@ -119,8 +139,8 @@ function MistakesScreen() {
       <EditScreen
         mistake={m}
         onBack={() => setView({ kind: "main" })}
-        onSave={(text, lesson) => {
-          persist(store.map((x) => (x.id === m.id ? { ...x, text, lesson } : x)));
+        onSave={(text, lesson, prevention) => {
+          persist(store.map((x) => (x.id === m.id ? { ...x, text, lesson, prevention } : x)));
           setView({ kind: "main" });
         }}
       />
@@ -193,6 +213,11 @@ function MistakesScreen() {
                 <div style={{ fontSize: 13, color: "#555", lineHeight: 1.5 }}>
                   Научила меня: {m.lesson}
                 </div>
+                {m.prevention && (
+                  <div style={{ fontSize: 13, color: "#555", lineHeight: 1.5, marginTop: 4 }}>
+                    Страховка: {m.prevention}
+                  </div>
+                )}
               </button>
             ))}
           </div>
@@ -357,11 +382,12 @@ function EditScreen({
 }: {
   mistake: Mistake;
   onBack: () => void;
-  onSave: (text: string, lesson: string) => void;
+  onSave: (text: string, lesson: string, prevention: string) => void;
 }) {
   const [text, setText] = useState(mistake.text);
   const [lesson, setLesson] = useState(mistake.lesson);
-  const valid = text.trim().length > 0 && lesson.trim().length > 0;
+  const [prevention, setPrevention] = useState(mistake.prevention || "");
+  const valid = text.trim().length > 0 && lesson.trim().length > 0 && prevention.trim().length > 0;
   return (
     <div style={{ padding: 16 }}>
       <Header title="Изменить ошибку" onBack={onBack} />
@@ -382,8 +408,16 @@ function EditScreen({
         {lesson.length} / 500
       </div>
 
+      <p style={{ fontSize: 14, fontWeight: 600, margin: "14px 0 6px", color: "#1a1a1a" }}>
+        Страховка от повторения
+      </p>
+      <AutoTextarea value={prevention} onChange={setPrevention} max={500} minHeight={100} />
+      <div style={{ textAlign: "right", color: "#9CA3AF", fontSize: 12, marginTop: 4 }}>
+        {prevention.length} / 500
+      </div>
+
       <div style={{ marginTop: 16 }}>
-        <PrimaryButton disabled={!valid} onClick={() => onSave(text.trim(), lesson.trim())}>
+        <PrimaryButton disabled={!valid} onClick={() => onSave(text.trim(), lesson.trim(), prevention.trim())}>
           ✅ Сохранить изменения
         </PrimaryButton>
       </div>
