@@ -3304,26 +3304,21 @@ function EditGoalScreen({
           </div>
         )}
 
-        {tab === "progress" && (
+        {tab === "vision" && (
           <div className="animate-fade-up">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[13px] text-[#FF6D00]">Текущий прогресс</span>
-              <span
-                className="text-[13px] font-bold text-white px-3 py-1 rounded-full"
-                style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
-              >
-                {progress}%
-              </span>
-            </div>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              value={progress}
-              onChange={(e) => setProgress(Number(e.target.value))}
-              className="w-full accent-orange-500"
-              style={{ accentColor: "#FF6D00" }}
+            <p className="text-[13px] text-[#FF6D00] mb-2">
+              Представь, что оно уже произошло. Опиши так, как будто проживаешь это прямо сейчас — что ты видишь, слышишь, чувствуешь.
+            </p>
+            <textarea
+              value={vision}
+              onChange={(e) => setVision(e.target.value)}
+              maxLength={800}
+              rows={8}
+              placeholder="Я стою на финише и чувствую..."
+              className="w-full rounded-xl bg-card px-3.5 py-3 text-[14px] outline-none transition-colors resize-none"
+              style={{ border: `1px solid ${vision.trim() ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
             />
+            <div className="mt-1.5 text-right text-[11px] text-muted-foreground">{vision.length}/800</div>
           </div>
         )}
       </div>
