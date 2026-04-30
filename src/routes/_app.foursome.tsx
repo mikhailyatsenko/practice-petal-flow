@@ -411,10 +411,10 @@ function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       {/* Формат */}
       <Card className="p-4 mb-4">
         <SectionLabel>Формат созвона · 80 минут</SectionLabel>
-        <FormatRow time="15 мин" text="Первый участник делится успехами" />
-        <FormatRow time="15 мин" text="Второй участник делится успехами" />
-        <FormatRow time="15 мин" text="Третий участник делится успехами" />
-        <FormatRow time="15 мин" text="Четвёртый участник делится успехами" />
+        <FormatRow time="15 мин" text="Первый участник делится успехами за месяц" />
+        <FormatRow time="15 мин" text="Второй участник делится успехами за месяц" />
+        <FormatRow time="15 мин" text="Третий участник делится успехами за месяц" />
+        <FormatRow time="15 мин" text="Четвёртый участник делится успехами за месяц" />
         <FormatRow time="20 мин" text="Все ставят задачи на следующий месяц" />
       </Card>
 
@@ -1047,10 +1047,10 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
       {/* Format */}
       <Card className="p-4">
         <SectionLabel>Формат созвона · 80 мин</SectionLabel>
-        <FormatRow lime time="15 мин" text="Первый участник делится успехами" />
-        <FormatRow lime time="15 мин" text="Второй участник делится успехами" />
-        <FormatRow lime time="15 мин" text="Третий участник делится успехами" />
-        <FormatRow lime time="15 мин" text="Четвёртый участник делится успехами" />
+        <FormatRow lime time="15 мин" text="Первый участник делится успехами за месяц" />
+        <FormatRow lime time="15 мин" text="Второй участник делится успехами за месяц" />
+        <FormatRow lime time="15 мин" text="Третий участник делится успехами за месяц" />
+        <FormatRow lime time="15 мин" text="Четвёртый участник делится успехами за месяц" />
         <FormatRow lime time="20 мин" text="Все ставят задачи на следующий месяц" />
       </Card>
     </div>
