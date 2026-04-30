@@ -1802,7 +1802,7 @@ function CreateWishWizard({
                 </span>
                 <div className="h-px flex-1 bg-border/60" />
               </div>
-              <div className="space-y-2 max-h-[40vh] overflow-y-auto -mx-1 px-1 pb-1">
+              <div className="space-y-2 -mx-1 px-1 pb-1">
                 {hotelki.map((h, i) => {
                   const active = fromHotelkaIdx === i;
                   return (
