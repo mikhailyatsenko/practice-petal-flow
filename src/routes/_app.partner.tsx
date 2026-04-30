@@ -155,7 +155,7 @@ function PartnerScreen() {
                 <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
                   <p className="text-[14px] font-semibold mb-2">🔥 Бонусы не сгорают</p>
                   <p className="text-[13px] leading-relaxed text-foreground/85">
-                    Они копятся на твоём балансе 💰, пока ты их не используешь. В день твоей оплаты
+                    Они копятся на твоём балансе, пока ты их не используешь. В день твоей оплаты
                     система сначала спишет бонусы, и только если их не хватит — попросит доплатить
                     разницу.
                   </p>
