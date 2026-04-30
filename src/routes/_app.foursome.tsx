@@ -580,10 +580,23 @@ function Instructions({ onBack }: { onBack: () => void }) {
       {tab === "text" ? (
         <div className="space-y-3">
           {INSTRUCTION_CARDS.map((c, i) => (
-            <Card key={i} className="p-4">
+            <Card
+              key={i}
+              className="p-4"
+              style={
+                c.important
+                  ? { background: "#fff7ed", border: "1.5px solid #FB923C" }
+                  : undefined
+              }
+            >
               <div className="flex items-center gap-2 mb-1.5">
                 <span className="text-[20px]">{c.emoji}</span>
-                <span className="text-[14px] font-bold">{c.title}</span>
+                <span
+                  className="text-[14px] font-bold"
+                  style={c.important ? { color: "#C2410C" } : undefined}
+                >
+                  {c.title}
+                </span>
               </div>
               <p className="text-[13px] text-foreground/85 whitespace-pre-line" style={{ lineHeight: 1.65 }}>
                 {c.text}
