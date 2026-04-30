@@ -55,6 +55,20 @@ type ImageAspect = "portrait" | "landscape" | "square";
 const aspectClass = (a?: ImageAspect) =>
   a === "landscape" ? "aspect-[16/10]" : a === "square" ? "aspect-square" : "aspect-[4/5]";
 
+const detectAspectFromUrl = (url: string): Promise<ImageAspect> =>
+  new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio > 1.15) resolve("landscape");
+      else if (ratio < 0.9) resolve("portrait");
+      else resolve("square");
+    };
+    img.onerror = () => resolve("portrait");
+    img.src = url;
+  });
+
+
 interface Wish {
   id: string;
   image: string;
