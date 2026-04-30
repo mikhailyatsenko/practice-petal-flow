@@ -390,28 +390,43 @@ function HomeScreen() {
         <PathLevels />
       </section>
 
-      <section id="today-practices" className="mt-5">
-        <div className="px-1 mb-2 flex items-end justify-between">
-          <h2 className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-            Практики сегодня
-          </h2>
-          <span className="text-[11px] text-muted-foreground tabular-nums">
-            {doneToday}/{practices.length}
-          </span>
-        </div>
+      {flywheelOpen ? (
+        <section id="today-practices" className="mt-5">
+          <div className="px-1 mb-2 flex items-end justify-between">
+            <h2 className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+              Практики сегодня
+            </h2>
+            <span className="text-[11px] text-muted-foreground tabular-nums">
+              {doneToday}/{practices.length}
+            </span>
+          </div>
 
-        <div className="space-y-2">
-          {practices.map((p) => (
-            <div key={p.id} data-practice-card data-done={p.doneToday ? "1" : "0"}>
-              <PracticeRowCard
-                practice={p}
-                onToggle={togglePractice}
-                onMarkDone={markDone}
-              />
-            </div>
-          ))}
-        </div>
-      </section>
+          <div className="space-y-2">
+            {practices.map((p) => (
+              <div key={p.id} data-practice-card data-done={p.doneToday ? "1" : "0"}>
+                <PracticeRowCard
+                  practice={p}
+                  onToggle={togglePractice}
+                  onMarkDone={markDone}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : (
+        <section className="mt-5">
+          <h2 className="px-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
+            Маховик успеха
+          </h2>
+          <LockedFeatureCard
+            emoji="⚙️"
+            title="Маховик успеха"
+            hint="5 главных привычек откроются после Бадди"
+            unlockLevel={unlockLevelOf("flywheel")}
+            theme="warm"
+          />
+        </section>
+      )}
 
       <div className="h-2" />
       <span className="hidden">{String(!!navigate)} {pathSteps.length}</span>
