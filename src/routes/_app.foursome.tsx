@@ -1099,30 +1099,23 @@ function IncomingFoursomeCard({
   const allButMe = totalConfirmed === 3;
 
   return (
-    <div className="bg-card hairline shadow-card rounded-2xl p-3.5 animate-fade-up">
-      {/* Бейдж статуса */}
-      <div className="flex items-center justify-between mb-3">
-        <span
-          className="text-[11px] font-bold px-2.5 py-1 rounded-full"
-          style={
-            allButMe
-              ? { background: "#FF6D00", color: "#fff" }
-              : { background: "#fff8dc", color: "#b45309" }
-          }
-        >
-          {allButMe ? "🔥 Ждут только тебя" : `${totalConfirmed}/3 подтвердили`}
-        </span>
-        <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
-          {req.day} · {req.time}
+    <div className="bg-card hairline shadow-card rounded-2xl overflow-hidden animate-fade-up">
+      {/* Шапка: дата/время созвона */}
+      <div
+        className="px-4 py-3 flex items-center gap-2"
+        style={{ background: "linear-gradient(135deg, #fff8ee, #ffeacc)", borderBottom: "1px solid #ffe0a3" }}
+      >
+        <Calendar className="h-4 w-4" style={{ color: "#FF6D00" }} />
+        <span className="text-[13px] font-bold" style={{ color: "#b45309" }}>
+          {DAY_FULL[req.day] ?? req.day} · {req.time}
         </span>
       </div>
 
-      {/* Состав их пары */}
-      <div className="space-y-2.5">
-        {req.members.map((m, idx) => {
-          const key = idx === 0 ? "theirA" : "theirB";
-          const ok = status(key as any) === "ok";
-          return (
+      <div className="p-4">
+        {/* Раздел 1 — Их пара */}
+        <SectionLabel>Их пара</SectionLabel>
+        <div className="space-y-2.5">
+          {req.members.map((m) => (
             <div key={m.userId} className="flex items-center gap-3">
               <div
                 className="h-10 w-10 shrink-0 rounded-[12px] flex items-center justify-center text-[20px]"
@@ -1134,65 +1127,63 @@ function IncomingFoursomeCard({
                 <div className="text-[14px] font-bold leading-tight truncate">{m.name}</div>
                 <div className="text-[12px] text-muted-foreground truncate">{m.job}</div>
               </div>
-              <StatusPill ok={ok} />
             </div>
-          );
-        })}
-      </div>
-
-      {/* Краткое био */}
-      <div className="mt-3 rounded-[10px] p-3 text-[13px]" style={{ background: "#FAF6EF", lineHeight: 1.5 }}>
-        {req.members.map((m, i) => (
-          <p key={m.userId} className={i > 0 ? "mt-2" : ""}>
-            <span className="font-semibold">{m.name}:</span> {m.bio}
-          </p>
-        ))}
-      </div>
-
-      {/* Прогресс подтверждений */}
-      <div className="mt-3 rounded-[10px] p-3" style={{ background: "#fff8ee", border: "1px solid #ffe0a3" }}>
-        <div className="text-[11px] font-bold uppercase mb-2" style={{ color: "#FF6D00", letterSpacing: 0.4 }}>
-          ✅ Кто уже подтвердил
+          ))}
         </div>
-        <div className="grid grid-cols-2 gap-1.5">
-          <ConfirmRow label={`${req.members[0].name} (их пара)`} ok={status("theirA") === "ok"} />
-          <ConfirmRow label={`${req.members[1].name} (их пара)`} ok={status("theirB") === "ok"} />
-          <ConfirmRow label="Твой бадди (Алексей)" ok={status("myBuddy") === "ok"} />
-          <ConfirmRow label="Ты" ok={false} pending />
+
+        {/* Раздел 2 — О себе */}
+        <div className="mt-4">
+          <SectionLabel>О себе</SectionLabel>
+          <div className="rounded-[12px] p-3 text-[13px] space-y-2" style={{ background: "#FAF6EF", lineHeight: 1.55 }}>
+            {req.members.map((m) => (
+              <p key={m.userId}>
+                <span className="font-semibold">{m.name}:</span> {m.bio}
+              </p>
+            ))}
+          </div>
         </div>
-        <p className="mt-2 text-[12px] text-foreground/80 leading-snug">{note}</p>
-      </div>
 
-      {/* Действия */}
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <button
-          onClick={onAccept}
-          className="tap rounded-xl py-2.5 text-[13px] font-bold text-white inline-flex items-center justify-center gap-1.5"
-          style={{
-            background: ORANGE_GRADIENT,
-            boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
-          }}
-        >
-          <Check className="h-4 w-4" /> Подтвердить
-        </button>
-        <button
-          onClick={onDecline}
-          className="tap rounded-xl py-2.5 text-[13px] font-medium inline-flex items-center justify-center gap-1.5"
-          style={{ background: "transparent", border: "1px solid #ede8df", color: "var(--muted-foreground)" }}
-        >
-          <X className="h-4 w-4" /> Отклонить
-        </button>
-      </div>
+        {/* Раздел 3 — Статус подтверждений */}
+        <div className="mt-4">
+          <SectionLabel>Статус подтверждений</SectionLabel>
+          <div className="rounded-[12px] p-3 space-y-1.5" style={{ background: "#fff", border: "1px solid #ede8df" }}>
+            <ConfirmRow label={`${req.members[0].name} (их пара)`} ok={status("theirA") === "ok"} />
+            <ConfirmRow label={`${req.members[1].name} (их пара)`} ok={status("theirB") === "ok"} />
+            <ConfirmRow label="Твой бадди (Алексей)" ok={status("myBuddy") === "ok"} />
+            <div className="my-1 h-px" style={{ background: "#f1ebe0" }} />
+            <ConfirmRow label="Ты — твоё решение" ok={false} pending />
+          </div>
+          <p className="mt-2 text-[12px] text-muted-foreground leading-snug px-1">{note}</p>
+        </div>
 
-      <a
-        href="https://t.me/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="tap mt-2 w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5"
-        style={{ background: "#FAF6EF", color: "#FF6D00", border: "1px solid #ede8df" }}
-      >
-        <Send className="h-4 w-4" /> Написать в мессенджере
-      </a>
+        {/* Действия */}
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <button
+            onClick={onAccept}
+            className="tap rounded-xl py-3 text-[13px] font-bold text-white inline-flex items-center justify-center gap-1.5"
+            style={{ background: ORANGE_GRADIENT, boxShadow: "0 4px 14px rgba(255,109,0,0.35)" }}
+          >
+            <Check className="h-4 w-4" /> Подтвердить
+          </button>
+          <button
+            onClick={onDecline}
+            className="tap rounded-xl py-3 text-[13px] font-medium inline-flex items-center justify-center gap-1.5"
+            style={{ background: "transparent", border: "1px solid #ede8df", color: "var(--muted-foreground)" }}
+          >
+            <X className="h-4 w-4" /> Отклонить
+          </button>
+        </div>
+
+        <a
+          href="https://t.me/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="tap mt-2 w-full rounded-xl py-3 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5"
+          style={{ background: "#FAF6EF", color: "#FF6D00", border: "1px solid #ede8df" }}
+        >
+          <Send className="h-4 w-4" /> Написать в мессенджере
+        </a>
+      </div>
     </div>
   );
 }
