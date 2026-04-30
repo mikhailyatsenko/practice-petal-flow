@@ -558,7 +558,7 @@ function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () 
             <textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder="Например: Развиваю онлайн-школу, хочу выйти на 500к/мес. Ищу партнёра с конкретными целями и без отговорок..."
+              placeholder="Например: Развиваю онлайн-школу, хочу выйти на 500к/мес."
               className="w-full bg-card rounded-xl px-3.5 py-3 pb-7 text-[14px] outline-none transition-colors resize-none"
               style={{ minHeight: 120, border: `1px solid ${bio ? "#FF6D00" : "#ede8df"}` }}
             />
