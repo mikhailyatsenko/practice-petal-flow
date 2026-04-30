@@ -234,6 +234,11 @@ function MistakesScreen() {
                 <div style={{ fontSize: 13, color: "#555", lineHeight: 1.5 }}>
                   Научила меня: {m.lesson}
                 </div>
+                {m.lessons && (
+                  <div style={{ fontSize: 13, color: "#555", lineHeight: 1.5, marginTop: 4 }}>
+                    Уроки: {m.lessons}
+                  </div>
+                )}
                 {m.prevention && (
                   <div style={{ fontSize: 13, color: "#555", lineHeight: 1.5, marginTop: 4 }}>
                     Страховка: {m.prevention}
