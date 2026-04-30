@@ -1766,12 +1766,12 @@ function CreateWishWizard({
   }
 
   return (
-    <div className="min-h-screen bg-background pb-8">
+    <div className="min-h-screen bg-background pb-32">
       <WizardHeader title="Новое желание" onBack={onClose} />
       <StepIndicator step={step} />
 
       {step === 1 && (
-        <div className="px-4 animate-fade-up">
+        <div className="px-4 animate-fade-up pb-24">
           <h2 className="text-[18px] font-bold leading-tight">Как называется твоё желание?</h2>
           <p className="mt-1.5 text-[14px] text-[#FF6D00]">
             Напиши своё желание или выбери одну из хотелок ниже, чтобы превратить её в желание.
