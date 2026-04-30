@@ -182,6 +182,7 @@ function DecisionsScreen() {
       <DetailScreen
         decision={dec}
         onBack={() => setView({ kind: "list", status: dec.status })}
+        onAccepted={() => setView({ kind: "main" })}
         onUpdate={(patch) => updateDecision(dec.id, patch)}
       />
     );
@@ -754,10 +755,12 @@ function ListScreen({
 function DetailScreen({
   decision,
   onBack,
+  onAccepted,
   onUpdate,
 }: {
   decision: Decision;
   onBack: () => void;
+  onAccepted: () => void;
   onUpdate: (patch: Partial<Decision>) => void;
 }) {
   const tm = typeMeta(decision.type);
@@ -778,6 +781,7 @@ function DetailScreen({
     const target = customMs ?? Date.now() + days * 86400000;
     onUpdate({ status: "accepted", concludeBy: target, decideBy: undefined });
     setMode("view");
+    onAccepted();
   }
 
   function saveConclusion() {
@@ -834,8 +838,8 @@ function DetailScreen({
               <div
                 key={i}
                 style={{
-                  background: "#F9FAFB",
-                  border: "1px solid #E5E7EB",
+                  background: "transparent",
+                  border: "1px solid #E7DFCF",
                   borderRadius: 10,
                   padding: 10,
                   fontSize: 14,
