@@ -32,10 +32,10 @@ export function FoursomeRequestBanner() {
         />
 
         <span
-          className="relative h-9 w-9 shrink-0 rounded-full bg-white/20 flex items-center justify-center"
+          className="relative h-9 w-9 shrink-0 rounded-full bg-white/20 flex items-center justify-center text-[18px]"
           style={{ animation: "foursome-banner-bell 1.2s ease-in-out infinite" }}
         >
-          <Bell className="h-5 w-5" fill="#fff" />
+          4️⃣
         </span>
 
         <div className="relative min-w-0 flex-1">
@@ -54,8 +54,8 @@ export function FoursomeRequestBanner() {
 
       <style>{`
         @keyframes foursome-banner-pulse {
-          0%, 100% { transform: translateY(0); box-shadow: 0 10px 30px rgba(124,58,237,0.45); }
-          50% { transform: translateY(-1px); box-shadow: 0 14px 36px rgba(124,58,237,0.6); }
+          0%, 100% { transform: translateY(0); box-shadow: 0 10px 30px rgba(255,109,0,0.45); }
+          50% { transform: translateY(-1px); box-shadow: 0 14px 36px rgba(255,109,0,0.6); }
         }
         @keyframes foursome-banner-shine {
           0% { transform: translateX(0); }
