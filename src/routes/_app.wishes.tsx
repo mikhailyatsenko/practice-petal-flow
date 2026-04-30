@@ -1880,58 +1880,6 @@ function CreateWishWizard({
 
       {step === 2 && (
         <div className="px-4 animate-fade-up">
-          <h2 className="text-[18px] font-bold leading-tight">Опиши детальнее желание</h2>
-          <p className="mt-1.5 text-[14px] text-[#FF6D00]">
-            Представь, что оно уже произошло. Опиши так, как будто проживаешь это прямо сейчас — что ты видишь, слышишь, чувствуешь.
-          </p>
-
-          <textarea
-            autoFocus
-            value={vision}
-            maxLength={800}
-            onChange={(e) => setVision(e.target.value)}
-            placeholder="Например: я просыпаюсь в своём доме у океана, слышу шум волн, выхожу на террасу с чашкой кофе..."
-            rows={8}
-            className="mt-5 w-full rounded-xl bg-card px-4 py-3.5 text-[14px] leading-relaxed outline-none transition-colors resize-none"
-            style={{ border: `1px solid ${vision.trim() ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
-          />
-          <div className="mt-1.5 text-right text-[11px] text-muted-foreground">
-            {vision.length}/800
-          </div>
-
-          <div
-            className="mt-2 rounded-xl px-3.5 py-3 text-[12px] leading-snug text-foreground/80"
-            style={{ background: "#fff8ee", border: "1px solid #ffe0a3" }}
-          >
-            ✨ Пиши в настоящем времени, от первого лица. Чем ярче картинка — тем сильнее желание тянет тебя к себе.
-          </div>
-
-          <div className="mt-6 flex gap-2">
-            <button
-              onClick={() => setStep(1)}
-              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
-            >
-              ← Назад
-            </button>
-            <button
-              disabled={vision.trim().length < 10}
-              onClick={() => setStep(3)}
-              className="tap btn-pill-orange flex-1 disabled:opacity-40"
-            >
-              Далее → Причины
-            </button>
-          </div>
-          <button
-            onClick={() => setStep(3)}
-            className="tap mt-3 w-full text-center text-[12px] text-muted-foreground underline-offset-2 hover:underline"
-          >
-            Пропустить
-          </button>
-        </div>
-      )}
-
-      {step === 3 && (
-        <div className="px-4 animate-fade-up">
           <h2 className="text-[18px] font-bold leading-tight">Почему это важно?</h2>
           <p className="mt-1.5 text-[14px] text-[#FF6D00]">
             Запиши причины — они держат мотивацию когда становится трудно.
@@ -1996,13 +1944,65 @@ function CreateWishWizard({
 
           <div className="mt-6 flex gap-2">
             <button
-              onClick={() => setStep(2)}
+              onClick={() => setStep(1)}
               className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
             >
               ← Назад
             </button>
             <button
               disabled={filledReasons.length === 0}
+              onClick={() => setStep(3)}
+              className="tap btn-pill-orange flex-1 disabled:opacity-40"
+            >
+              Далее → Образ
+            </button>
+          </div>
+          <button
+            onClick={() => setStep(3)}
+            className="tap mt-3 w-full text-center text-[12px] text-muted-foreground underline-offset-2 hover:underline"
+          >
+            Пропустить
+          </button>
+        </div>
+      )}
+
+      {step === 3 && (
+        <div className="px-4 animate-fade-up">
+          <h2 className="text-[18px] font-bold leading-tight">Опиши детальнее желание</h2>
+          <p className="mt-1.5 text-[14px] text-[#FF6D00]">
+            Представь, что оно уже произошло. Опиши так, как будто проживаешь это прямо сейчас — что ты видишь, слышишь, чувствуешь.
+          </p>
+
+          <textarea
+            autoFocus
+            value={vision}
+            maxLength={800}
+            onChange={(e) => setVision(e.target.value)}
+            placeholder="Например: я просыпаюсь в своём доме у океана, слышу шум волн, выхожу на террасу с чашкой кофе..."
+            rows={8}
+            className="mt-5 w-full rounded-xl bg-card px-4 py-3.5 text-[14px] leading-relaxed outline-none transition-colors resize-none"
+            style={{ border: `1px solid ${vision.trim() ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
+          />
+          <div className="mt-1.5 text-right text-[11px] text-muted-foreground">
+            {vision.length}/800
+          </div>
+
+          <div
+            className="mt-2 rounded-xl px-3.5 py-3 text-[12px] leading-snug text-foreground/80"
+            style={{ background: "#fff8ee", border: "1px solid #ffe0a3" }}
+          >
+            ✨ Пиши в настоящем времени, от первого лица. Чем ярче картинка — тем сильнее желание тянет тебя к себе.
+          </div>
+
+          <div className="mt-6 flex gap-2">
+            <button
+              onClick={() => setStep(2)}
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
+            >
+              ← Назад
+            </button>
+            <button
+              disabled={vision.trim().length < 10}
               onClick={() => setStep(4)}
               className="tap btn-pill-orange flex-1 disabled:opacity-40"
             >
