@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SectionHeader, SubItemList } from "@/components/section/SubItemList";
-import { LockedFeatureCard } from "@/components/section/LockedFeatureCard";
+import { BuddyLockedPreview } from "@/components/section/BuddyLockedPreview";
+import { FoursomeLockedPreview } from "@/components/section/FoursomeLockedPreview";
 import { isFeatureUnlocked, unlockLevelOf, usePreviewLevel } from "@/lib/previewLevel";
 
 export const Route = createFileRoute("/_app/community")({
@@ -46,13 +47,7 @@ function CommunityScreen() {
             ]}
           />
         ) : (
-          <LockedFeatureCard
-            emoji="🤝"
-            title="Бадди"
-            hint="Партнёр для еженедельных созвонов"
-            unlockLevel={unlockLevelOf("buddy")}
-            theme="warm"
-          />
+          <BuddyLockedPreview unlockLevel={unlockLevelOf("buddy")} />
         )}
 
         {foursomeOpen ? (
@@ -67,13 +62,7 @@ function CommunityScreen() {
             ]}
           />
         ) : (
-          <LockedFeatureCard
-            emoji="👥"
-            title="Четвёрка"
-            hint="Группа из 4 человек, созвон раз в месяц"
-            unlockLevel={unlockLevelOf("foursome")}
-            theme="green"
-          />
+          <FoursomeLockedPreview unlockLevel={unlockLevelOf("foursome")} />
         )}
       </div>
     </div>
