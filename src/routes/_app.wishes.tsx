@@ -2289,6 +2289,24 @@ function EditWishScreen({
           </div>
         )}
 
+        {tab === "vision" && (
+          <div className="animate-fade-up">
+            <p className="text-[13px] text-[#FF6D00] mb-2">
+              Представь, что оно уже произошло. Опиши так, как будто проживаешь это прямо сейчас — что ты видишь, слышишь, чувствуешь.
+            </p>
+            <textarea
+              value={vision}
+              onChange={(e) => setVision(e.target.value)}
+              maxLength={800}
+              rows={8}
+              placeholder="Я вижу, как..."
+              className="w-full rounded-xl bg-card px-3.5 py-3 text-[14px] outline-none transition-colors resize-none"
+              style={{ border: `1px solid ${vision.trim() ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
+            />
+            <div className="mt-1.5 text-right text-[11px] text-muted-foreground">{vision.length}/800</div>
+          </div>
+        )}
+
         {tab === "image" && (
           <div className="animate-fade-up">
             <label
