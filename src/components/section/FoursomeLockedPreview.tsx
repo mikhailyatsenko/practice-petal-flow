@@ -56,13 +56,14 @@ export function FoursomeLockedPreview({ unlockLevel = 3 }: FoursomeLockedPreview
               animation: `${id}-spin 14s linear infinite`,
             }}
           />
-          {/* Внутренний градиентный диск */}
+          {/* Внутренний нейтральный диск */}
           <div
             className="absolute rounded-full"
             style={{
               top: 14, left: 14, right: 14, bottom: 14,
-              background: `linear-gradient(135deg, ${from}, ${to})`,
-              boxShadow: `0 6px 18px ${from}55`,
+              background: "#F5F1EA",
+              border: "1px solid rgba(0,0,0,0.05)",
+              boxShadow: "inset 0 1px 2px rgba(0,0,0,0.04)",
               animation: `${id}-pulse 2.4s ease-in-out infinite`,
             }}
           />
