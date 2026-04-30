@@ -687,7 +687,7 @@ function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () 
           Ваша пара
         </div>
         <MemberRow m={ME} />
-        <MemberRow m={MY_BUDDY} />
+        <MemberRow m={MY_BUDDY} withMessage />
       </div>
 
       <Card className="p-4 mb-3">
