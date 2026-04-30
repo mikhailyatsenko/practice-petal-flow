@@ -265,8 +265,7 @@ function AnswerScreen({
   }, [store, q]);
 
   const len = text.length;
-  const enough = len >= 100;
-  const need = Math.max(0, 100 - len);
+  const enough = len > 0;
 
   function autosize() {
     const el = taRef.current;
