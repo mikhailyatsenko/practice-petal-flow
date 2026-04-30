@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Calendar, Globe, MessageCircle, Users } from "lucide-react";
+import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Calendar, Globe, MessageCircle, Users, Check, X, Send } from "lucide-react";
 import { BackButton } from "@/components/layout/BackButton";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 
@@ -959,60 +959,283 @@ function ConfirmSheet({
 
 // ───────────────────────── Screen 6: Waiting ─────────────────────────
 
+// Входящие заявки от пар (демо)
+const INCOMING_FOURSOME_REQUESTS: Array<{
+  req: FoursomeRequest;
+  // Кто из тройки уже подтвердил (помимо тебя). Возможные id: "theirA","theirB","myBuddy"
+  confirmed: Array<"theirA" | "theirB" | "myBuddy">;
+  note: string;
+}> = [
+  {
+    req: DEMO_REQUESTS[1],
+    confirmed: ["theirA"],
+    note: "Их бадди уже подтвердил. Ждут тебя и твоего бадди.",
+  },
+  {
+    req: DEMO_REQUESTS[2],
+    confirmed: ["theirA", "theirB", "myBuddy"],
+    note: "Все трое уже подтвердили. Ждут только твоего решения.",
+  },
+];
+
 function Waiting({ to, onBack }: { to: FoursomeRequest; onBack: () => void }) {
+  const [incoming, setIncoming] = useState(INCOMING_FOURSOME_REQUESTS);
+  const [accepted, setAccepted] = useState<FoursomeRequest | null>(null);
+
+  const decline = (id: string) => setIncoming((prev) => prev.filter((x) => x.req.id !== id));
+  const accept = (req: FoursomeRequest) => {
+    setAccepted(req);
+    setIncoming([]);
+  };
+
   return (
     <div className="px-4 pb-8">
-      <PageHeader title="Четвёрка" onBack={onBack} />
+      <PageHeader title="Ожидание" onBack={onBack} />
 
-      <div className="flex flex-col items-center text-center py-4">
-        <div className="text-[56px] leading-none mb-3">⏳</div>
-        <h2 className="text-[18px] font-bold mb-2">Запрос отправлен!</h2>
-        <p className="text-[14px] text-muted-foreground max-w-xs" style={{ lineHeight: 1.6 }}>
-          Ждём подтверждений от всех участников. Уведомление придёт как только все ответят.
-        </p>
-      </div>
-
-      <Card className="p-4 mt-4 mb-3">
-        <SectionLabel>Процесс подтверждения</SectionLabel>
-        <div className="space-y-2.5 mt-1">
-          <StepRow
-            n={1}
-            active
-            title="Твой бадди подтверждает"
-            sub="Уведомление уже отправлено"
-          />
-          <StepRow n={2} title="Первый участник пары подтверждает" sub="Ожидает шага 1" />
-          <StepRow n={3} title="Второй участник пары подтверждает" sub="Ожидает шага 1" />
+      {accepted ? (
+        <div className="text-center pt-4 pb-5 animate-fade-up">
+          <div className="text-[56px] leading-none">🎉</div>
+          <h2 className="mt-3 text-[18px] font-bold">Четвёрка собрана!</h2>
+          <p className="mt-2 text-[14px] text-muted-foreground leading-snug max-w-[320px] mx-auto">
+            Ты подтвердил пару {accepted.members.map((m) => m.name).join(" и ")}. Согласуйте первый созвон в чате.
+          </p>
         </div>
-      </Card>
+      ) : (
+        <div className="text-center pt-4 pb-5 animate-fade-up">
+          <div className="text-[56px] leading-none">⏳</div>
+          <h2 className="mt-3 text-[18px] font-bold">Сейчас твоя очередь ответить</h2>
+          <p className="mt-2 text-[14px] text-muted-foreground leading-snug max-w-[320px] mx-auto">
+            На твою заявку откликнулись {incoming.length} пары. Подтверди подходящую — четвёрка соберётся сразу после твоего ответа.
+          </p>
+        </div>
+      )}
 
-      <Card className="p-4 mb-4 space-y-2.5">
-        {to.members.map((m) => (
-          <MemberRow key={m.userId} m={m} />
-        ))}
-        <div className="flex flex-wrap gap-2 pt-1">
-          <span
-            className="text-[11px] font-bold px-2.5 py-1 rounded-full"
-            style={{ background: "#fff3e0", color: "#FF6D00" }}
-          >
+      {/* Твоя заявка */}
+      <h3 className="mt-2 px-1 text-[11px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
+        Твоя заявка
+      </h3>
+      <Card className="p-3.5">
+        <div className="space-y-2">
+          {to.members.map((m) => (
+            <MemberRow key={m.userId} m={m} />
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2 pt-2 mt-2 border-t border-border/50">
+          <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
             📅 {DAY_FULL[to.day]}
           </span>
-          <span
-            className="text-[11px] font-bold px-2.5 py-1 rounded-full"
-            style={{ background: "#fff3e0", color: "#FF6D00" }}
-          >
+          <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
             🕐 {to.time} МСК
+          </span>
+          <span className="text-[11px] font-bold px-2.5 py-1 rounded-full ml-auto" style={{ background: "#fff8dc", color: "#b45309" }}>
+            Ожидание
           </span>
         </div>
       </Card>
+
+      {/* Входящие заявки */}
+      {incoming.length > 0 && (
+        <>
+          <div className="mt-5 flex items-center justify-between px-1 mb-2">
+            <h3 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+              Запросы на твою заявку
+            </h3>
+            <span
+              className="text-[11px] font-bold text-white px-2.5 py-0.5 rounded-full"
+              style={{ background: ORANGE_GRADIENT }}
+            >
+              {incoming.length}
+            </span>
+          </div>
+          <p className="px-1 text-[12px] text-muted-foreground mb-3 leading-snug">
+            Эти пары хотят встать с вами в четвёрку. Подтверди подходящую или отклони.
+          </p>
+
+          <div className="space-y-3">
+            {incoming.map((item) => (
+              <IncomingFoursomeCard
+                key={item.req.id}
+                req={item.req}
+                confirmed={item.confirmed}
+                note={item.note}
+                onAccept={() => accept(item.req)}
+                onDecline={() => decline(item.req.id)}
+              />
+            ))}
+          </div>
+        </>
+      )}
 
       <button
         onClick={onBack}
-        className="tap w-full py-3.5 rounded-2xl text-[14px] font-semibold"
+        className="tap mt-6 w-full py-3.5 rounded-2xl text-[14px] font-semibold"
         style={{ background: "#FAF6EF", color: "#FF6D00", border: "1px solid #ede8df" }}
       >
         Вернуться назад
       </button>
+    </div>
+  );
+}
+
+function IncomingFoursomeCard({
+  req,
+  confirmed,
+  note,
+  onAccept,
+  onDecline,
+}: {
+  req: FoursomeRequest;
+  confirmed: Array<"theirA" | "theirB" | "myBuddy">;
+  note: string;
+  onAccept: () => void;
+  onDecline: () => void;
+}) {
+  // 4 участника: их пара (theirA, theirB), мой бадди (myBuddy), я (me)
+  const status = (key: "theirA" | "theirB" | "myBuddy" | "me") => {
+    if (key === "me") return "wait"; // решение пользователя сейчас
+    return confirmed.includes(key as any) ? "ok" : "wait";
+  };
+  const totalConfirmed = confirmed.length;
+  const allButMe = totalConfirmed === 3;
+
+  return (
+    <div className="bg-card hairline shadow-card rounded-2xl p-3.5 animate-fade-up">
+      {/* Бейдж статуса */}
+      <div className="flex items-center justify-between mb-3">
+        <span
+          className="text-[11px] font-bold px-2.5 py-1 rounded-full"
+          style={
+            allButMe
+              ? { background: "#FF6D00", color: "#fff" }
+              : { background: "#fff8dc", color: "#b45309" }
+          }
+        >
+          {allButMe ? "🔥 Ждут только тебя" : `${totalConfirmed}/3 подтвердили`}
+        </span>
+        <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
+          {req.day} · {req.time}
+        </span>
+      </div>
+
+      {/* Состав их пары */}
+      <div className="space-y-2.5">
+        {req.members.map((m, idx) => {
+          const key = idx === 0 ? "theirA" : "theirB";
+          const ok = status(key as any) === "ok";
+          return (
+            <div key={m.userId} className="flex items-center gap-3">
+              <div
+                className="h-10 w-10 shrink-0 rounded-[12px] flex items-center justify-center text-[20px]"
+                style={{ background: "#FAF6EF" }}
+              >
+                {m.avatar}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-[14px] font-bold leading-tight truncate">{m.name}</div>
+                <div className="text-[12px] text-muted-foreground truncate">{m.job}</div>
+              </div>
+              <StatusPill ok={ok} />
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Краткое био */}
+      <div className="mt-3 rounded-[10px] p-3 text-[13px]" style={{ background: "#FAF6EF", lineHeight: 1.5 }}>
+        {req.members.map((m, i) => (
+          <p key={m.userId} className={i > 0 ? "mt-2" : ""}>
+            <span className="font-semibold">{m.name}:</span> {m.bio}
+          </p>
+        ))}
+      </div>
+
+      {/* Прогресс подтверждений */}
+      <div className="mt-3 rounded-[10px] p-3" style={{ background: "#fff8ee", border: "1px solid #ffe0a3" }}>
+        <div className="text-[11px] font-bold uppercase mb-2" style={{ color: "#FF6D00", letterSpacing: 0.4 }}>
+          ✅ Кто уже подтвердил
+        </div>
+        <div className="grid grid-cols-2 gap-1.5">
+          <ConfirmRow label={`${req.members[0].name} (их пара)`} ok={status("theirA") === "ok"} />
+          <ConfirmRow label={`${req.members[1].name} (их пара)`} ok={status("theirB") === "ok"} />
+          <ConfirmRow label="Твой бадди (Алексей)" ok={status("myBuddy") === "ok"} />
+          <ConfirmRow label="Ты" ok={false} pending />
+        </div>
+        <p className="mt-2 text-[12px] text-foreground/80 leading-snug">{note}</p>
+      </div>
+
+      {/* Действия */}
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <button
+          onClick={onAccept}
+          className="tap rounded-xl py-2.5 text-[13px] font-bold text-white inline-flex items-center justify-center gap-1.5"
+          style={{
+            background: ORANGE_GRADIENT,
+            boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
+          }}
+        >
+          <Check className="h-4 w-4" /> Подтвердить
+        </button>
+        <button
+          onClick={onDecline}
+          className="tap rounded-xl py-2.5 text-[13px] font-medium inline-flex items-center justify-center gap-1.5"
+          style={{ background: "transparent", border: "1px solid #ede8df", color: "var(--muted-foreground)" }}
+        >
+          <X className="h-4 w-4" /> Отклонить
+        </button>
+      </div>
+
+      <a
+        href="https://t.me/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="tap mt-2 w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5"
+        style={{ background: "#FAF6EF", color: "#FF6D00", border: "1px solid #ede8df" }}
+      >
+        <Send className="h-4 w-4" /> Написать в мессенджере
+      </a>
+    </div>
+  );
+}
+
+function StatusPill({ ok }: { ok: boolean }) {
+  return ok ? (
+    <span
+      className="text-[11px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1 shrink-0"
+      style={{ background: "#e8f5e9", color: "#2e7d32" }}
+    >
+      <Check className="h-3 w-3" /> ✓
+    </span>
+  ) : (
+    <span
+      className="text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0"
+      style={{ background: "#fff8dc", color: "#b45309" }}
+    >
+      ждём
+    </span>
+  );
+}
+
+function ConfirmRow({ label, ok, pending }: { label: string; ok: boolean; pending?: boolean }) {
+  return (
+    <div className="flex items-center gap-1.5 text-[12px]">
+      <span
+        className="h-4 w-4 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
+        style={
+          ok
+            ? { background: "#2e7d32", color: "#fff" }
+            : pending
+              ? { background: "#FF6D00", color: "#fff" }
+              : { background: "#fff", color: "#b45309", border: "1px solid #ffd28a" }
+        }
+      >
+        {ok ? "✓" : pending ? "?" : "…"}
+      </span>
+      <span
+        className="truncate"
+        style={{ color: ok ? "#2e7d32" : pending ? "#b45309" : "var(--muted-foreground)", fontWeight: pending ? 700 : 500 }}
+      >
+        {label}
+      </span>
     </div>
   );
 }

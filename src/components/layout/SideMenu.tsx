@@ -124,7 +124,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
               toggleFoursomeRequestMode();
             }}
             className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
-            style={{ color: foursomeMode ? "#E53935" : "#6d28d9" }}
+            style={{ color: foursomeMode ? "#E53935" : "#FF6D00" }}
           >
             {foursomeMode ? (
               <BellOff className="h-[18px] w-[18px]" strokeWidth={2} />
