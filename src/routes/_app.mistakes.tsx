@@ -16,6 +16,7 @@ interface Mistake {
   id: string;
   text: string;
   lesson: string;
+  lessons: string;
   prevention: string;
   createdAt: number;
 }
