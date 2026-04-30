@@ -15,14 +15,13 @@ export const Route = createFileRoute("/_app/partner")({
 function PartnerScreen() {
   return (
     <div className="px-4">
-      {/* Header — иконка share + название (по референсу) */}
-      <div className="flex flex-col items-center pt-6 pb-5">
-        <Share2 className="h-9 w-9 text-muted-foreground" strokeWidth={1.75} />
-        <h1 className="mt-2 text-[15px] font-medium text-muted-foreground tracking-wide">
-          Партнёрка
+      {/* Header — название раздела в едином стиле */}
+      <div className="pt-4 pb-4">
+        <h1 className="text-[26px] font-bold leading-tight text-[#1a1a1a]">
+          📍 Партнёрка
         </h1>
-        <p className="mt-2 text-[12.5px] text-muted-foreground/90 text-center max-w-[280px] leading-snug">
-          1 друг = 1000 ₽ бонусов = бесплатное участие
+        <p className="mt-1.5 text-[15px] text-[#555]">
+          Пригласи друга и сделай клуб бесплатным
         </p>
       </div>
 
