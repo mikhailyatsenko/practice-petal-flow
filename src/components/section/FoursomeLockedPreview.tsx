@@ -22,13 +22,39 @@ export function FoursomeLockedPreview({ unlockLevel = 3 }: FoursomeLockedPreview
       aria-disabled="true"
     >
       {/* Заголовок над анимацией */}
-      <div className="text-center mb-3">
-        <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1a1a", lineHeight: 1.3 }}>
+      <div className="flex items-center justify-center gap-2 mb-3">
+        <span
+          aria-hidden
+          style={{
+            display: "inline-block",
+            width: 6,
+            height: 6,
+            borderRadius: "50%",
+            background: to,
+          }}
+        />
+        <p
+          style={{
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            color: to,
+            lineHeight: 1,
+          }}
+        >
           Раздел закрыт
         </p>
-        <p style={{ fontSize: 12, color: "#8a8a8a", lineHeight: 1.4, marginTop: 2 }}>
-          Четвёрка откроется на {unlockLevel} уровне
-        </p>
+        <span
+          aria-hidden
+          style={{
+            display: "inline-block",
+            width: 6,
+            height: 6,
+            borderRadius: "50%",
+            background: to,
+          }}
+        />
       </div>
       <style>{`
         @keyframes ${id}-spin {
