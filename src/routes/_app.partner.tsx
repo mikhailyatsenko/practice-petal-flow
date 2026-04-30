@@ -34,12 +34,28 @@ function PartnerScreen() {
 
       {/* Short bonus description */}
       <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
-        <p className="text-[14px] leading-snug text-foreground">
-          Каждый раз когда твой друг оплачивает клуб — тебе начисляется столько бонусных рублей, сколько он заплатил.
-        </p>
-        <p className="mt-1.5 text-[12.5px] leading-snug text-muted-foreground">
-          Бонусы списываются вместо реальных денег при твоей следующей оплате.
-        </p>
+        <div className="flex items-start gap-3">
+          <div
+            className="shrink-0 flex items-center justify-center text-[18px]"
+            style={{ width: 36, height: 36, borderRadius: 10, background: "#FFF3E0" }}
+          >
+            💰
+          </div>
+          <p className="text-[14px]" style={{ color: "#1a1a1a", lineHeight: 1.6 }}>
+            Каждый раз когда твой друг оплачивает клуб — тебе начисляется столько бонусных рублей, сколько он заплатил.
+          </p>
+        </div>
+        <div className="flex items-start gap-3" style={{ marginTop: 10 }}>
+          <div
+            className="shrink-0 flex items-center justify-center text-[18px]"
+            style={{ width: 36, height: 36, borderRadius: 10, background: "#E8F5E9" }}
+          >
+            ✅
+          </div>
+          <p className="text-[13px]" style={{ color: "#8a8a8a", lineHeight: 1.6 }}>
+            Бонусы списываются вместо реальных денег при твоей следующей оплате.
+          </p>
+        </div>
       </div>
 
       <h2 className="mt-5 px-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
