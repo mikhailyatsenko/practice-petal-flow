@@ -593,9 +593,14 @@ function DetailScreen({
       </div>
 
       <div className="px-4 space-y-4">
-        <p className="text-[14px]" style={{ color: "#555", lineHeight: 1.7 }}>
-          {item.description}
-        </p>
+        <div
+          className="rounded-[16px] bg-white p-4"
+          style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.07)" }}
+        >
+          <p className="text-[14px]" style={{ color: "#555", lineHeight: 1.7 }}>
+            {item.description}
+          </p>
+        </div>
 
         <div
           className="rounded-[16px] bg-white p-4"
