@@ -188,6 +188,10 @@ function DecisionsScreen() {
         onBack={() => setView({ kind: "list", status: dec.status })}
         onAccepted={() => setView({ kind: "main" })}
         onUpdate={(patch) => updateDecision(dec.id, patch)}
+        onDelete={() => {
+          deleteDecision(dec.id);
+          setView({ kind: "main" });
+        }}
       />
     );
   }
