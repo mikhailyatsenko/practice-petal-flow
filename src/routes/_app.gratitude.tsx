@@ -1,5 +1,19 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { Pencil } from "lucide-react";
+
+function EditIconButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-label="Изменить"
+      className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full"
+      style={{ background: "#f5efe4", border: "1px solid #e7dfcf" }}
+    >
+      <Pencil size={14} strokeWidth={2} style={{ color: "#9c8f7a" }} />
+    </button>
+  );
+}
 
 import { BackButton } from "@/components/layout/BackButton";
 export const Route = createFileRoute("/_app/gratitude")({
