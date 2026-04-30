@@ -149,6 +149,10 @@ function DecisionsScreen() {
     persist(store.map((d) => (d.id === id ? { ...d, ...patch } : d)));
   }
 
+  function deleteDecision(id: string) {
+    persist(store.filter((d) => d.id !== id));
+  }
+
   if (view.kind === "create") {
     return (
       <CreateFlow
@@ -184,6 +188,10 @@ function DecisionsScreen() {
         onBack={() => setView({ kind: "list", status: dec.status })}
         onAccepted={() => setView({ kind: "main" })}
         onUpdate={(patch) => updateDecision(dec.id, patch)}
+        onDelete={() => {
+          deleteDecision(dec.id);
+          setView({ kind: "main" });
+        }}
       />
     );
   }
@@ -757,11 +765,13 @@ function DetailScreen({
   onBack,
   onAccepted,
   onUpdate,
+  onDelete,
 }: {
   decision: Decision;
   onBack: () => void;
   onAccepted: () => void;
   onUpdate: (patch: Partial<Decision>) => void;
+  onDelete: () => void;
 }) {
   const tm = typeMeta(decision.type);
   const [mode, setMode] = useState<"view" | "accept" | "conclude" | "comment">("view");
@@ -892,6 +902,27 @@ function DetailScreen({
           {decision.status === "completed" ? (
             <OutlineButton onClick={() => setMode("comment")}>📝 Добавить комментарий</OutlineButton>
           ) : null}
+          <button
+            onClick={() => {
+              if (confirm("Удалить это решение? Действие нельзя отменить.")) {
+                onDelete();
+              }
+            }}
+            style={{
+              marginTop: 4,
+              width: "100%",
+              padding: "12px 16px",
+              borderRadius: 12,
+              border: "1px solid #FCA5A5",
+              background: "transparent",
+              color: "#DC2626",
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            🗑 Удалить решение
+          </button>
         </div>
       ) : null}
 
