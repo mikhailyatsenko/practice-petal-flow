@@ -31,13 +31,7 @@ function LibraryScreen() {
           ]}
         />
       ) : (
-        <LockedFeatureCard
-          emoji="📚"
-          title="Библиотека знаний"
-          hint="Инструкции, база знаний и материалы клуба"
-          unlockLevel={unlockLevelOf("library")}
-          theme="violet"
-        />
+        <LibraryLockedPreview unlockLevel={unlockLevelOf("library")} />
       )}
     </div>
   );
