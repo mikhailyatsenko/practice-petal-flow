@@ -789,6 +789,7 @@ function DetailScreen({
     onUpdate({ status: "completed", conclusion: text.trim(), concludeBy: undefined });
     setMode("view");
     setText("");
+    onAccepted();
   }
 
   function saveComment() {
