@@ -267,7 +267,8 @@ type HowBlock =
   | { kind: "list"; title: string; items: { label: string; text: string }[] };
 
 type HowVideo = { title: string; duration: string; caption: string };
-const HOW_IT_WORKS: Record<TabId, { videos: [HowVideo, HowVideo]; blocks: HowBlock[] }> = {
+type HowKey = TabId | "brainstorm";
+const HOW_IT_WORKS: Record<HowKey, { videos: [HowVideo, HowVideo]; blocks: HowBlock[] }> = {
   wants: {
     videos: [
       {
@@ -535,6 +536,58 @@ const HOW_IT_WORKS: Record<TabId, { videos: [HowVideo, HowVideo]; blocks: HowBlo
       },
     ],
   },
+  brainstorm: {
+    videos: [
+      {
+        title: "🧠 Что такое Мозговой штурм",
+        duration: "4:20",
+        caption:
+          "Зачем включать мозговой штурм по цели и как 30 вопросов помогают увидеть путь, который ты раньше не замечал.",
+      },
+      {
+        title: "✍️ Как отвечать на вопросы",
+        duration: "3:40",
+        caption:
+          "Лучший способ отвечать — без фильтра и без оценок. Разбираем, как поймать поток и достать настоящие ответы из себя.",
+      },
+    ],
+    blocks: [
+      {
+        kind: "card",
+        title: "🧠 Что такое Мозговой штурм",
+        text: `Мозговой штурм — это твой личный разговор с целью. Ты задаёшь себе 30 вопросов и честно на них отвечаешь. Не для отчётности, не для красоты — для ясности.
+
+Часто мы не двигаемся к цели не потому, что лень, а потому что не видим следующий шаг. Мозговой штурм вытаскивает из головы ответы, которые там уже есть, но прячутся за шумом и сомнениями.`,
+      },
+      {
+        kind: "card",
+        title: "🎯 Как это работает?",
+        text: `Открой мозговой штурм у любой цели. Перед тобой список из 30 вопросов про эту цель: что мешает, что помогает, какие ресурсы есть, кто может помочь, что ты уже пробовал и так далее.
+
+Шаг 1. Выбери любой вопрос — не обязательно по порядку.
+Шаг 2. Напиши ответ свободно, в потоке. Минимум 100 символов — чтобы успеть подумать.
+Шаг 3. Сохрани и иди к следующему. Ответы остаются — можно вернуться и дополнить.`,
+      },
+      {
+        kind: "callout",
+        text: "💡 Не пытайся ответить на все 30 вопросов за раз. Лучше 2–3 в день, но честно и глубоко. Часто самый ценный ответ приходит на третий день после вопроса.",
+      },
+      {
+        kind: "list",
+        title: "Зачем вообще это нужно:",
+        items: [
+          { label: "🔍 Видишь препятствия", text: "Замечаешь, что именно тормозит тебя — и перестаёшь биться о невидимую стену." },
+          { label: "🗺 Появляются шаги", text: "Из ответов сами рождаются конкретные задачи, которые потом превращаются в действия." },
+          { label: "💪 Растёт уверенность", text: "Когда ты видишь свой путь на бумаге, цель перестаёт быть пугающей и становится понятным проектом." },
+        ],
+      },
+      {
+        kind: "card",
+        title: "💎 Что ты получаешь?",
+        text: `Ясность вместо тумана. Конкретные шаги вместо «надо что-то делать». И ощущение, что ты не один на один с целью — у тебя есть карта, которую ты сам нарисовал.`,
+      },
+    ],
+  },
 };
 
 function HowBlockView({ block }: { block: HowBlock }) {
@@ -595,7 +648,7 @@ function HowBlockView({ block }: { block: HowBlock }) {
   );
 }
 
-function HowItWorks({ tab }: { tab: TabId }) {
+function HowItWorks({ tab }: { tab: HowKey }) {
   const [open, setOpen] = useState(false);
   const [howTab, setHowTab] = useState<"text" | "video">("text");
   const data = HOW_IT_WORKS[tab];
@@ -715,6 +768,7 @@ function WishesScreen() {
   // Раздел «Задачи»: фильтр по конкретной цели (когда переходим из «Цели → К задачам»)
   const [tasksFromGoalId, setTasksFromGoalId] = useState<string | null>(null);
   const [brainstormFromGoalId, setBrainstormFromGoalId] = useState<string | null>(null);
+  const [brainstormingActive, setBrainstormingActive] = useState(false);
 
   // Центральное хранилище задач (используется и в TasksModule, и в карточке цели)
   const [moduleTasks, setModuleTasks] = useState<ModuleTask[]>([
@@ -1113,13 +1167,18 @@ function WishesScreen() {
           onClearGoalFilter={() => setTasksFromGoalId(null)}
           initialBrainstormGoalId={brainstormFromGoalId}
           onClearBrainstormGoalId={() => setBrainstormFromGoalId(null)}
+          onBrainstormingChange={setBrainstormingActive}
           tasks={moduleTasks}
           onTasksChange={(updater) => setModuleTasks(updater)}
           onUpdateGoalPlan={(goalId, plan) =>
             setGoals((prev) => prev.map((g) => (g.id === goalId ? { ...g, plan } : g)))
           }
         />
-        <HowItWorks key="tasks" tab="tasks" />
+        {brainstormingActive ? (
+          <HowItWorks key="brainstorm" tab="brainstorm" />
+        ) : (
+          <HowItWorks key="tasks" tab="tasks" />
+        )}
         </>
       );
     }
