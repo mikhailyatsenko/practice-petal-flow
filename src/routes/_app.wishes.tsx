@@ -2746,6 +2746,7 @@ function CreateGoalWizard({
         deadline: formatDeadline(dlDay, dlMonth, dlYear),
         progress: 0,
         reasons: selectedWish.reasons,
+        vision: selectedWish.vision,
         criteria: criteria.trim(),
         plan: plan.trim(),
         tasks: [],
