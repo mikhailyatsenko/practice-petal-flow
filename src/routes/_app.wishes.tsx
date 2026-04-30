@@ -2892,25 +2892,9 @@ function CreateGoalWizard({
             Твоя цель добавлена в ленту целей
           </p>
 
-          {selectedWish && (
-            <article className="mt-6 mx-auto max-w-sm bg-card hairline rounded-[20px] overflow-hidden shadow-card text-left">
-              <div className="relative w-full" style={{ aspectRatio: "16 / 9" }}>
-                <img src={selectedWish.image} alt={selectedWish.title} className="absolute inset-0 h-full w-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                <div className="absolute left-3 bottom-2 text-white text-[15px] font-semibold drop-shadow">
-                  {selectedWish.title}
-                </div>
-              </div>
-              <div className="px-4 py-3.5">
-                <div className="h-1.5 w-full rounded-full" style={{ background: "#ede8df" }} />
-                <p className="mt-1 text-right text-[11px] text-muted-foreground">0%</p>
-              </div>
-            </article>
-          )}
-
           <button
             onClick={finalize}
-            className="tap btn-pill-orange mt-6 inline-flex items-center justify-center gap-1.5 px-6"
+            className="tap btn-pill-orange mt-8 inline-flex items-center justify-center gap-1.5 px-8 py-4 text-[16px] font-semibold"
           >
             Посмотреть в ленте целей
           </button>
