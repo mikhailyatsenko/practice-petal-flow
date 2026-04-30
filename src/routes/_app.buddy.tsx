@@ -238,7 +238,7 @@ function NoBuddy({ onNavigate }: { onNavigate: (s: Screen) => void }) {
             Ожидание ответа
           </h3>
           <p className="mt-0.5 text-[12px] leading-snug" style={{ color: "#b45309" }}>
-            Зайди и посмотри отклики на твою заявку
+            Посмотри отклики на твою заявку
           </p>
         </div>
         <span
