@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { SubItemList, SectionHeader } from "@/components/section/SubItemList";
+import { SubItemList } from "@/components/section/SubItemList";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { Copy, ArrowDown, ChevronDown } from "lucide-react";
 
@@ -20,7 +20,17 @@ function PartnerScreen() {
 
   return (
     <div className="px-4">
-      <SectionHeader emoji="📍" title="Партнёрка" subtitle="Пригласи друга — и клуб станет бесплатным." />
+      <div className="px-1 pt-2 pb-3">
+        <h1 className="text-[22px] font-semibold leading-tight">
+          <span className="mr-1.5">📍</span>Партнёрка
+        </h1>
+        <p
+          className="mt-1.5 text-[14px] font-medium leading-snug"
+          style={{ color: "#1a1a1a" }}
+        >
+          Пригласи друга — и клуб станет бесплатным.
+        </p>
+      </div>
 
       {/* Balance */}
       <div className="rounded-2xl bg-card hairline shadow-card p-4">
@@ -116,36 +126,36 @@ function PartnerScreen() {
             {howTab === "text" && (
               <div className="space-y-3">
                 <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
-                  <p className="text-[14px] font-semibold mb-2">Что такое партнёрка</p>
+                  <p className="text-[14px] font-semibold mb-2">🤝 Что такое партнёрка</p>
                   <p className="text-[13px] leading-relaxed text-foreground/85">
                     Партнёрка — это способ сделать участие в клубе бесплатным. Ты делишься своей
-                    ссылкой с друзьями, а клуб награждает тебя бонусными рублями за каждую оплату,
-                    которую они совершают.
+                    ссылкой с друзьями 🔗, а клуб награждает тебя бонусными рублями за каждую
+                    оплату, которую они совершают.
                   </p>
                 </div>
 
                 <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
-                  <p className="text-[14px] font-semibold mb-2">Курс бонусов</p>
+                  <p className="text-[14px] font-semibold mb-2">💱 Курс бонусов</p>
                   <p className="text-[13px] leading-relaxed text-foreground/85">
-                    1 бонусный ₽ = 1 реальному ₽. Бонусы автоматически списываются вместо денег,
+                    1 бонусный ₽ = 1 реальному ₽. Бонусы автоматически списываются вместо денег 💳,
                     когда наступает твой следующий платёж.
                   </p>
                 </div>
 
                 <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
-                  <p className="text-[14px] font-semibold mb-2">Как считается начисление</p>
+                  <p className="text-[14px] font-semibold mb-2">🧮 Как считается начисление</p>
                   <p className="text-[13px] leading-relaxed text-foreground/85">
-                    Тебе начисляется ровно та сумма, которую заплатил друг. Если друг только начал и
-                    платит 1 ₽ за первый месяц — ты получаешь 1 бонусный ₽. Когда он переходит на
-                    регулярную оплату 1 000 ₽ в месяц — ты получаешь 1 000 бонусов с каждой его
+                    Тебе начисляется ровно та сумма, которую заплатил друг. Если друг только начал
+                    и платит 1 ₽ за первый месяц — ты получаешь 1 бонусный ₽. Когда он переходит на
+                    регулярную оплату 1 000 ₽ в месяц — ты получаешь 1 000 бонусов 🎁 с каждой его
                     оплаты.
                   </p>
                 </div>
 
                 <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
-                  <p className="text-[14px] font-semibold mb-2">Бонусы не сгорают</p>
+                  <p className="text-[14px] font-semibold mb-2">🔥 Бонусы не сгорают</p>
                   <p className="text-[13px] leading-relaxed text-foreground/85">
-                    Они копятся на твоём балансе, пока ты их не используешь. В день твоей оплаты
+                    Они копятся на твоём балансе 💰, пока ты их не используешь. В день твоей оплаты
                     система сначала спишет бонусы, и только если их не хватит — попросит доплатить
                     разницу.
                   </p>
@@ -179,13 +189,34 @@ function PartnerScreen() {
                   </div>
                 </div>
 
-                <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
-                  <p className="text-[14px] font-semibold mb-2">Пример</p>
+                <div
+                  className="hairline shadow-card p-4"
+                  style={{ borderRadius: 14, background: "#FFF8EC" }}
+                >
+                  <p className="text-[14px] font-semibold mb-2">
+                    🚀 А что если я приведу больше одного друга?
+                  </p>
                   <p className="text-[13px] leading-relaxed text-foreground/85">
-                    Ты пригласил 2 друзей. Оба перешли на регулярную оплату 1 000 ₽/мес. За месяц
+                    Тогда бонусы начнут копиться быстрее 📈. За каждого друга и за каждую его оплату
+                    тебе начисляется отдельная сумма — и всё это складывается на одном балансе.
+                  </p>
+                  <p className="text-[13px] leading-relaxed text-foreground/85 mt-2">
+                    Например, привёл 3 друзей — за месяц получаешь 3 000 бонусов. Привёл 10 друзей —
+                    уже 10 000 бонусов в месяц. Этими бонусами ты сможешь оплачивать клуб в будущем
+                    👇 — иногда на месяцы вперёд, без единого рубля из своего кармана.
+                  </p>
+                  <p className="text-[13px] leading-relaxed text-foreground/85 mt-2">
+                    Чем больше друзей в клубе — тем дольше твоё участие остаётся бесплатным 🎉.
+                  </p>
+                </div>
+
+                <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
+                  <p className="text-[14px] font-semibold mb-2">📊 Пример</p>
+                  <p className="text-[13px] leading-relaxed text-foreground/85">
+                    Ты пригласил 2 друзей 👫. Оба перешли на регулярную оплату 1 000 ₽/мес. За месяц
                     тебе начислится 2 000 бонусов. Когда наступит твой день оплаты — система спишет
                     1 000 бонусов вместо денег, а 1 000 останутся на следующий месяц. Так твоё
-                    участие становится полностью бесплатным.
+                    участие становится полностью бесплатным ✨.
                   </p>
                 </div>
               </div>
