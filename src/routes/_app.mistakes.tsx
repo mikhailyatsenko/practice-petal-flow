@@ -229,11 +229,13 @@ function MistakesScreen() {
                 }}
               >
                 <div style={{ fontWeight: 700, fontSize: 15, color: "#1a1a1a", marginBottom: 4 }}>
-                  {m.text}
+                  {m.title || m.text}
                 </div>
-                <div style={{ fontSize: 13, color: "#555", lineHeight: 1.5 }}>
-                  Научила меня: {m.lesson}
-                </div>
+                {m.title && m.text && (
+                  <div style={{ fontSize: 13, color: "#555", lineHeight: 1.5 }}>
+                    {m.text}
+                  </div>
+                )}
                 {m.lessons && (
                   <div style={{ fontSize: 13, color: "#555", lineHeight: 1.5, marginTop: 4 }}>
                     Уроки: {m.lessons}
