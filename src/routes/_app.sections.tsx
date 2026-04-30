@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { SECTION_INFO, type SectionInfo } from "@/lib/sectionInfo";
-import { LockedFeatureCard } from "@/components/section/LockedFeatureCard";
+import { SectionsLockedPreview } from "@/components/section/SectionsLockedPreview";
 import { isFeatureUnlocked, unlockLevelOf, usePreviewLevel } from "@/lib/previewLevel";
 
 export const Route = createFileRoute("/_app/sections")({
