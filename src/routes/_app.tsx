@@ -19,15 +19,12 @@ function AppLayout() {
   const [demoOnboarding, setDemoOnboarding] = useState(false);
   const buddyMode = useBuddyRequestMode();
   const foursomeMode = useFoursomeRequestMode();
-  const previewLevel = usePreviewLevel();
 
   const BANNER_H = 76;
-  const previewH = previewLevel != null ? PREVIEW_BANNER_HEIGHT : 0;
-  const topPad = previewH + (buddyMode ? BANNER_H : 0) + (foursomeMode ? BANNER_H : 0);
+  const topPad = (buddyMode ? BANNER_H : 0) + (foursomeMode ? BANNER_H : 0);
 
   return (
     <div className="mx-auto min-h-screen max-w-md bg-background">
-      <PreviewLevelBanner />
       <BuddyRequestBanner />
       {/* Если активен и бадди-баннер, четвёрка-баннер опускается ниже него */}
       <div
