@@ -15,15 +15,7 @@ export const Route = createFileRoute("/_app/partner")({
 function PartnerScreen() {
   return (
     <div className="px-4">
-      {/* Header — название раздела в едином стиле */}
-      <div className="pt-4 pb-4">
-        <h1 className="text-[26px] font-bold leading-tight text-[#1a1a1a]">
-          📍 Партнёрка
-        </h1>
-        <p className="mt-1.5 text-[15px] text-[#555]">
-          Пригласи друга и сделай клуб бесплатным
-        </p>
-      </div>
+      <SectionHeader emoji="📍" title="Партнёрка" subtitle="Пригласи друга — и клуб станет бесплатным." />
 
       {/* Balance */}
       <div className="rounded-2xl bg-card hairline shadow-card p-4">
