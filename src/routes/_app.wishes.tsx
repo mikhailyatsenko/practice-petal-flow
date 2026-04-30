@@ -2388,8 +2388,10 @@ function GoalCard({
             <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
               Это уже произошло
             </p>
-            <p className="mt-1.5 border-l-2 border-primary pl-3 text-[13px] leading-snug text-foreground/85 italic whitespace-pre-line">
+            <p className="mt-1.5 text-[13px] leading-snug text-foreground/85 italic whitespace-pre-line">
+              <span className="not-italic font-serif" style={{ fontSize: 32, lineHeight: 0, verticalAlign: -12, color: "#FFB300", marginRight: 2 }}>&ldquo;</span>
               {goal.vision}
+              <span className="not-italic font-serif" style={{ fontSize: 32, lineHeight: 0, verticalAlign: -12, color: "#FFB300", marginLeft: 2 }}>&rdquo;</span>
             </p>
           </>
         )}
