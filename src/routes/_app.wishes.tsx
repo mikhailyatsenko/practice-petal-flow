@@ -1658,7 +1658,7 @@ function DesireCharge({ level, onTap, mode = "inspire", id }: { level: number; o
 /* ============================================================
    ====================  МАСТЕР СОЗДАНИЯ  ===================== */
 
-const STEP_LABELS = ["Название", "Образ", "Причины", "Картинка"] as const;
+const STEP_LABELS = ["Название", "Причины", "Образ", "Картинка"] as const;
 
 function StepIndicator({ step }: { step: 1 | 2 | 3 | 4 | 5 }) {
   return (
