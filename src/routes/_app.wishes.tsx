@@ -1470,9 +1470,7 @@ function WishCard({
               Это уже произошло
             </p>
             <p className="mt-1.5 text-[13px] leading-snug text-foreground/85 italic whitespace-pre-line">
-              <span className="not-italic font-serif" style={{ fontSize: 32, lineHeight: 0, verticalAlign: -12, color: "#FFB300", marginRight: 2 }}>&ldquo;</span>
               {wish.vision}
-              <span className="not-italic font-serif" style={{ fontSize: 32, lineHeight: 0, verticalAlign: -12, color: "#FFB300", marginLeft: 2 }}>&rdquo;</span>
             </p>
           </>
         )}
@@ -2389,9 +2387,7 @@ function GoalCard({
               Это уже произошло
             </p>
             <p className="mt-1.5 text-[13px] leading-snug text-foreground/85 italic whitespace-pre-line">
-              <span className="not-italic font-serif" style={{ fontSize: 32, lineHeight: 0, verticalAlign: -12, color: "#FFB300", marginRight: 2 }}>&ldquo;</span>
               {goal.vision}
-              <span className="not-italic font-serif" style={{ fontSize: 32, lineHeight: 0, verticalAlign: -12, color: "#FFB300", marginLeft: 2 }}>&rdquo;</span>
             </p>
           </>
         )}
