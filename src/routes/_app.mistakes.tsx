@@ -54,9 +54,9 @@ const AFFIRMATION =
 type View =
   | { kind: "main" }
   | { kind: "add1" }
-  | { kind: "add2"; text: string }
-  | { kind: "add3"; text: string; lesson: string }
-  | { kind: "add4"; text: string; lesson: string; lessons: string }
+  | { kind: "add2"; title: string }
+  | { kind: "add3"; title: string; text: string }
+  | { kind: "add4"; title: string; text: string; lessons: string }
   | { kind: "affirm" }
   | { kind: "edit"; id: string };
 
@@ -78,12 +78,12 @@ function MistakesScreen() {
     return (
       <StepScreen
         key="add1"
-        title="Новая ошибка"
-        prompt="Опишите ошибку (не более 200 символов)"
+        title="Название ошибки"
+        prompt="Задайте название этой ошибке (не более 200 символов)"
         max={200}
-        minHeight={80}
+        minHeight={60}
         onBack={() => setView({ kind: "main" })}
-        onSave={(t) => setView({ kind: "add2", text: t })}
+        onSave={(t) => setView({ kind: "add2", title: t })}
       />
     );
   }
@@ -92,12 +92,12 @@ function MistakesScreen() {
     return (
       <StepScreen
         key="add2"
-        title="Чему научила ошибка"
-        prompt="Напишите, чему вас научила эта ошибка (не более 500 символов)"
-        max={500}
-        minHeight={100}
+        title="Описание ошибки"
+        prompt="Опишите, что именно произошло (не более 1000 символов)"
+        max={1000}
+        minHeight={120}
         onBack={() => setView({ kind: "add1" })}
-        onSave={(lesson) => setView({ kind: "add3", text: view.text, lesson })}
+        onSave={(text) => setView({ kind: "add3", title: view.title, text })}
       />
     );
   }
@@ -110,8 +110,8 @@ function MistakesScreen() {
         prompt="Какие уроки вы вынесли из этой ошибки? (не более 500 символов)"
         max={500}
         minHeight={100}
-        onBack={() => setView({ kind: "add2", text: view.text })}
-        onSave={(lessons) => setView({ kind: "add4", text: view.text, lesson: view.lesson, lessons })}
+        onBack={() => setView({ kind: "add2", title: view.title })}
+        onSave={(lessons) => setView({ kind: "add4", title: view.title, text: view.text, lessons })}
       />
     );
   }
@@ -124,12 +124,12 @@ function MistakesScreen() {
         prompt="Что нужно сделать, чтобы такая ошибка больше не повторилась? (не более 500 символов)"
         max={500}
         minHeight={100}
-        onBack={() => setView({ kind: "add3", text: view.text, lesson: view.lesson })}
+        onBack={() => setView({ kind: "add3", title: view.title, text: view.text })}
         onSave={(prevention) => {
           const m: Mistake = {
             id: newId(),
+            title: view.title,
             text: view.text,
-            lesson: view.lesson,
             lessons: view.lessons,
             prevention,
             createdAt: Date.now(),
