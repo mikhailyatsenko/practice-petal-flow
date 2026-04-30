@@ -838,8 +838,8 @@ function DetailScreen({
               <div
                 key={i}
                 style={{
-                  background: "#F9FAFB",
-                  border: "1px solid #E5E7EB",
+                  background: "transparent",
+                  border: "1px solid #E7DFCF",
                   borderRadius: 10,
                   padding: 10,
                   fontSize: 14,
