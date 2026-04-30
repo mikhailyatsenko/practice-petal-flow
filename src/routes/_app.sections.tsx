@@ -39,13 +39,7 @@ function SectionsScreen() {
     return (
       <div className="px-4">
         <SectionHeader emoji="🧩" title="Разделы магазина" subtitle="Открывай дополнительные разделы за очки" />
-        <LockedFeatureCard
-          emoji="🧩"
-          title="Магазин разделов"
-          hint="Дополнительные разделы клуба за очки"
-          unlockLevel={unlockLevelOf("sections")}
-          theme="blue"
-        />
+        <SectionsLockedPreview unlockLevel={unlockLevelOf("sections")} />
       </div>
     );
   }
