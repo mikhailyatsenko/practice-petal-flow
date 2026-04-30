@@ -812,7 +812,10 @@ function TaskDetailScreen({
       <button
         onClick={onMarkDone}
         className="tap w-full rounded-full py-3 text-[14px] font-semibold text-white"
-        style={{ background: "linear-gradient(135deg,#34d399,#16a34a)" }}
+        style={{
+          background: "linear-gradient(135deg, #8BC34A, #4CAF50)",
+          boxShadow: "0 6px 20px rgba(76,175,80,0.35)",
+        }}
       >
         ✅ Задача сделана!
       </button>
