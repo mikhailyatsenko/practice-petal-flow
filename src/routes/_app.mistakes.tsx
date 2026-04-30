@@ -143,6 +143,11 @@ function MistakesScreen() {
           persist(store.map((x) => (x.id === m.id ? { ...x, text, lesson, prevention } : x)));
           setView({ kind: "main" });
         }}
+        onDelete={() => {
+          if (!confirm("Удалить эту ошибку?")) return;
+          persist(store.filter((x) => x.id !== m.id));
+          setView({ kind: "main" });
+        }}
       />
     );
   }
@@ -379,10 +384,12 @@ function EditScreen({
   mistake,
   onBack,
   onSave,
+  onDelete,
 }: {
   mistake: Mistake;
   onBack: () => void;
   onSave: (text: string, lesson: string, prevention: string) => void;
+  onDelete: () => void;
 }) {
   const [text, setText] = useState(mistake.text);
   const [lesson, setLesson] = useState(mistake.lesson);
@@ -421,6 +428,24 @@ function EditScreen({
           ✅ Сохранить изменения
         </PrimaryButton>
       </div>
+
+      <button
+        onClick={onDelete}
+        style={{
+          width: "100%",
+          marginTop: 12,
+          padding: 14,
+          borderRadius: 14,
+          border: "1.5px solid #fee2e2",
+          background: "#fff",
+          color: "#ef4444",
+          fontWeight: 600,
+          fontSize: 14,
+          cursor: "pointer",
+        }}
+      >
+        🗑 Удалить ошибку
+      </button>
     </div>
   );
 }
