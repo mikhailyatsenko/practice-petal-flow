@@ -368,7 +368,7 @@ function CreateFlow({
   onCancel: () => void;
   onCreated: (d: Decision) => void;
 }) {
-  // step: 0 = type, 1..7 = questions, 8 = readiness, 9 = accept-days, 10 = wait-days
+  // step: 0 = type, 1 = title, 2 = all questions on one page, 8 = readiness, 9 = accept-days, 10 = wait-days
   const [step, setStep] = useState(0);
   const [type, setType] = useState<DType | null>(null);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -378,6 +378,8 @@ function CreateFlow({
   function back() {
     if (step === 0) onCancel();
     else if (step === 9 || step === 10) setStep(8);
+    else if (step === 8) setStep(2);
+    else if (step === 2) setStep(1);
     else setStep(step - 1);
   }
 
