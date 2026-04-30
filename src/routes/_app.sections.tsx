@@ -5,6 +5,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { SECTION_INFO, type SectionInfo } from "@/lib/sectionInfo";
+import { LockedFeatureCard } from "@/components/section/LockedFeatureCard";
+import { isFeatureUnlocked, unlockLevelOf, usePreviewLevel } from "@/lib/previewLevel";
 
 export const Route = createFileRoute("/_app/sections")({
   head: () => ({
@@ -25,11 +27,28 @@ type Confirm =
 
 function SectionsScreen() {
   const navigate = useNavigate();
+  const previewLevel = usePreviewLevel();
+  const sectionsOpen = isFeatureUnlocked("sections", previewLevel);
   const [extra, setExtra] = useState<ExtraKey>(null);
   const [sectionKey, setSectionKey] = useState<string | null>(null);
   const [confirm, setConfirm] = useState<Confirm>(null);
 
   const open = (key: string) => setSectionKey(key);
+
+  if (!sectionsOpen) {
+    return (
+      <div className="px-4">
+        <SectionHeader emoji="🧩" title="Разделы магазина" subtitle="Открывай дополнительные разделы за очки" />
+        <LockedFeatureCard
+          emoji="🧩"
+          title="Магазин разделов"
+          hint="Дополнительные разделы клуба за очки"
+          unlockLevel={unlockLevelOf("sections")}
+          theme="blue"
+        />
+      </div>
+    );
+  }
 
   const confirmPurchase = () => {
     if (!confirm) return;
