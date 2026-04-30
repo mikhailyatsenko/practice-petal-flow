@@ -902,6 +902,27 @@ function DetailScreen({
           {decision.status === "completed" ? (
             <OutlineButton onClick={() => setMode("comment")}>📝 Добавить комментарий</OutlineButton>
           ) : null}
+          <button
+            onClick={() => {
+              if (confirm("Удалить это решение? Действие нельзя отменить.")) {
+                onDelete();
+              }
+            }}
+            style={{
+              marginTop: 4,
+              width: "100%",
+              padding: "12px 16px",
+              borderRadius: 12,
+              border: "1px solid #FCA5A5",
+              background: "transparent",
+              color: "#DC2626",
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            🗑 Удалить решение
+          </button>
         </div>
       ) : null}
 
