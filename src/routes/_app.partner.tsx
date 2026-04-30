@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { SubItemList, SectionHeader } from "@/components/section/SubItemList";
-import { Copy, ArrowDown } from "lucide-react";
+import { Copy, ArrowDown, ChevronDown } from "lucide-react";
 
 export const Route = createFileRoute("/_app/partner")({
   head: () => ({
@@ -13,6 +14,8 @@ export const Route = createFileRoute("/_app/partner")({
 });
 
 function PartnerScreen() {
+  const [howOpen, setHowOpen] = useState(false);
+
   return (
     <div className="px-4">
       <SectionHeader emoji="📍" title="Партнёрка" subtitle="Пригласи друга — и клуб станет бесплатным." />
@@ -29,7 +32,7 @@ function PartnerScreen() {
         </button>
       </div>
 
-      {/* How bonuses work */}
+      {/* Short bonus description */}
       <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
         <p className="text-[14px] leading-snug text-foreground">
           Каждый раз когда твой друг оплачивает клуб — тебе начисляется столько бонусных рублей, сколько он заплатил.
@@ -37,29 +40,6 @@ function PartnerScreen() {
         <p className="mt-1.5 text-[12.5px] leading-snug text-muted-foreground">
           Бонусы списываются вместо реальных денег при твоей следующей оплате.
         </p>
-
-        <div className="mt-4 flex flex-col gap-2">
-          <BonusStep
-            variant="orange"
-            title="Друг платит"
-            line1="1 ₽ — первый месяц"
-            line2="1 000 ₽ — каждый следующий"
-          />
-          <StepArrow />
-          <BonusStep
-            variant="green"
-            title="Тебе начисляется"
-            line1="1 бонусный ₽ — в первый месяц"
-            line2="1 000 бонусов ₽ — с каждой оплаты"
-          />
-          <StepArrow />
-          <BonusStep
-            variant="blue"
-            title="Ты не платишь"
-            line1="когда наступает твой день оплаты"
-            line2="списываются бонусные рубли"
-          />
-        </div>
       </div>
 
       <h2 className="mt-5 px-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
@@ -69,9 +49,97 @@ function PartnerScreen() {
         items={[
           { emoji: "👫", title: "Приглашённые друзья", subtitle: "Список тех, кто пришёл по твоей ссылке" },
           { emoji: "📜", title: "История начислений", subtitle: "Все партнёрские бонусы за период" },
-          { emoji: "ℹ️", title: "Как это работает", subtitle: "Условия и пример расчёта" },
         ]}
       />
+
+      {/* How it works — expandable */}
+      <div className="mt-2 rounded-xl bg-card hairline shadow-card overflow-hidden">
+        <button
+          onClick={() => setHowOpen((v) => !v)}
+          className="tap w-full px-3.5 py-3 flex items-center gap-3 text-left"
+        >
+          <div className="h-10 w-10 shrink-0 rounded-xl bg-secondary flex items-center justify-center text-xl">
+            ℹ️
+          </div>
+          <div className="min-w-0 flex-1">
+            <h3 className="text-[14px] font-medium leading-tight">Как это работает</h3>
+            <p className="mt-0.5 text-[11.5px] text-muted-foreground leading-snug">
+              Условия, схема и пример расчёта
+            </p>
+          </div>
+          <ChevronDown
+            className={`h-4 w-4 text-muted-foreground shrink-0 transition-transform duration-200 ${
+              howOpen ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+
+        {howOpen && (
+          <div className="px-4 pb-4 pt-1 animate-fade-up">
+            <div className="space-y-3 text-[13.5px] leading-relaxed text-foreground/90">
+              <p>
+                Партнёрка — это способ сделать участие в клубе бесплатным. Ты делишься своей ссылкой
+                с друзьями, а клуб награждает тебя бонусными рублями за каждую оплату, которую они
+                совершают.
+              </p>
+              <p>
+                <span className="font-semibold">1 бонусный ₽ = 1 реальному ₽.</span> Бонусы
+                автоматически списываются вместо денег, когда наступает твой следующий платёж.
+              </p>
+              <p>
+                <span className="font-semibold">Как считается начисление.</span> Тебе начисляется
+                ровно та сумма, которую заплатил друг. Если друг только начал и платит 1 ₽ за первый
+                месяц — ты получаешь 1 бонусный ₽. Когда он переходит на регулярную оплату 1 000 ₽ в
+                месяц — ты получаешь 1 000 бонусов с каждой его оплаты.
+              </p>
+              <p>
+                <span className="font-semibold">Бонусы не сгорают.</span> Они копятся на твоём
+                балансе, пока ты их не используешь. В день твоей оплаты система сначала спишет
+                бонусы, и только если их не хватит — попросит доплатить разницу.
+              </p>
+
+              <p className="pt-1 text-[12px] uppercase tracking-wider text-muted-foreground">
+                Схема
+              </p>
+
+              <div className="flex flex-col gap-2">
+                <BonusStep
+                  variant="orange"
+                  title="Друг платит"
+                  line1="1 ₽ — первый месяц"
+                  line2="1 000 ₽ — каждый следующий"
+                />
+                <StepArrow />
+                <BonusStep
+                  variant="green"
+                  title="Тебе начисляется"
+                  line1="1 бонусный ₽ — в первый месяц"
+                  line2="1 000 бонусов ₽ — с каждой оплаты"
+                />
+                <StepArrow />
+                <BonusStep
+                  variant="blue"
+                  title="Ты не платишь"
+                  line1="когда наступает твой день оплаты"
+                  line2="списываются бонусные рубли"
+                />
+              </div>
+
+              <div className="mt-1 rounded-xl bg-secondary p-3">
+                <p className="text-[12px] uppercase tracking-wider text-muted-foreground">
+                  Пример
+                </p>
+                <p className="mt-1.5 text-[13px] leading-relaxed">
+                  Ты пригласил 2 друзей. Оба перешли на регулярную оплату 1 000 ₽/мес. За месяц тебе
+                  начислится 2 000 бонусов. Когда наступит твой день оплаты — система спишет 1 000
+                  бонусов вместо денег, а 1 000 останутся на следующий месяц. Так твоё участие
+                  становится полностью бесплатным.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
