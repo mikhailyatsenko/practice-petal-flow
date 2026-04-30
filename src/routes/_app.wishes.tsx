@@ -2151,6 +2151,7 @@ function EditWishScreen({
   const [tab, setTab] = useState<EditTab>("title");
   const [title, setTitle] = useState(wish.title);
   const [reasons, setReasons] = useState<string[]>(wish.reasons.length ? wish.reasons : [""]);
+  const [vision, setVision] = useState<string>(wish.vision ?? "");
   const [image, setImage] = useState<string>(wish.image);
 
   const handleSave = () => {
@@ -2158,6 +2159,7 @@ function EditWishScreen({
       ...wish,
       title: title.trim() || wish.title,
       reasons: reasons.map((r) => r.trim()).filter(Boolean),
+      vision: vision.trim(),
       image,
     });
   };
