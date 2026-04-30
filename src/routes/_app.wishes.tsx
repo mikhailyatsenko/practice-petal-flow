@@ -60,6 +60,7 @@ interface Wish {
   image: string;
   title: string;
   reasons: string[];
+  vision?: string;
   aspect?: ImageAspect;
 }
 
