@@ -374,31 +374,45 @@ export function PathLevels() {
           </>
         )}
 
-        <ul className={`${lvl.progress ? "mt-3" : ""} space-y-1.5`}>
-          {lvl.steps.map((s) => (
-            <li key={s.id} className="flex items-center gap-2.5 text-[13px]">
-              {s.done ? (
-                <span className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-success text-white">
-                  <Check className="h-3 w-3" strokeWidth={3.5} />
+        <div className={lvl.progress ? "mt-3" : ""}>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "#b8a888",
+              marginBottom: 8,
+            }}
+          >
+            Задание
+          </div>
+          <ul className="space-y-1.5">
+            {lvl.steps.map((s) => (
+              <li key={s.id} className="flex items-center gap-2.5 text-[13px]">
+                {s.done ? (
+                  <span className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-success text-white">
+                    <Check className="h-3 w-3" strokeWidth={3.5} />
+                  </span>
+                ) : (
+                  <Circle
+                    className="h-[18px] w-[18px] text-muted-foreground/60"
+                    strokeWidth={1.6}
+                  />
+                )}
+                <span
+                  className={
+                    s.done
+                      ? "line-through text-muted-foreground"
+                      : "text-foreground"
+                  }
+                >
+                  {s.label}
                 </span>
-              ) : (
-                <Circle
-                  className="h-[18px] w-[18px] text-muted-foreground/60"
-                  strokeWidth={1.6}
-                />
-              )}
-              <span
-                className={
-                  s.done
-                    ? "line-through text-muted-foreground"
-                    : "text-foreground"
-                }
-              >
-                {s.label}
-              </span>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         {lvl.footer && (
           <p className="mt-3 text-[12px] text-muted-foreground">{lvl.footer}</p>
