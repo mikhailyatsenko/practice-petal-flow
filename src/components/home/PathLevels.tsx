@@ -183,7 +183,7 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
       { id: "s1", label: "Создать 5 желаний", done: false },
       { id: "s2", label: "Создать 1 цель", done: false },
     ],
-    reward: "Открывается возможность соединиться с Бадди",
+    reward: "Открывается Бадди",
     task: {
       videoTitle: "Уровень 1 — Старт",
       caption: "Введение • Уровень 1",
@@ -201,7 +201,11 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
       { id: "s1", label: "Соединиться с Бадди", done: false },
       { id: "s2", label: "Созвониться и заполнить карточку Бадди", done: false },
     ],
-    reward: "+2 ⭐ в день за Бадди",
+    reward: [
+      "Открывается Четвёрка",
+      "Открывается Маховик успеха",
+      "+2 очка в день за Бадди",
+    ],
     task: {
       videoTitle: "Уровень 2 — Бадди",
       caption: "Введение • Уровень 2",
@@ -218,7 +222,10 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
     steps: [
       { id: "s1", label: "Соединиться в четвёрку", done: false },
     ],
-    reward: ["Открывается Маховик успеха", "Открывается раздел Четвёрка"],
+    reward: [
+      "Открывается Библиотека знаний",
+      "+2 очка в день за Четвёрку",
+    ],
     task: {
       videoTitle: "Уровень 3 — Четвёрка",
       caption: "Введение • Уровень 3",
@@ -236,7 +243,10 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
       { id: "s1", label: "Прослушать «Закон притяжения» 6 ч", done: false },
       { id: "s2", label: "Сдать тест ИИ на 50%", done: false },
     ],
-    reward: "Открывается раздел Библиотека знаний",
+    reward: [
+      "Открывается Разделы магазинов",
+      "+100 бонусных очков",
+    ],
     task: {
       videoTitle: "Уровень 4 — Формула",
       caption: "Введение • Уровень 4",
@@ -254,7 +264,7 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
     steps: [
       { id: "s1", label: "Сделать Хит 30 дней подряд", done: false },
     ],
-    reward: ["Открывается раздел Магазин разделов", "+200 ⭐"],
+    reward: ["+200 бонусных очков"],
     task: {
       videoTitle: "Уровень 5 — 30 хитов",
       caption: "Введение • Уровень 5",
