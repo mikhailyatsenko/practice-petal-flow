@@ -146,7 +146,7 @@ function PartnerScreen() {
             </div>
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }
