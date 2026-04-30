@@ -648,7 +648,7 @@ function HowBlockView({ block }: { block: HowBlock }) {
   );
 }
 
-function HowItWorks({ tab }: { tab: TabId }) {
+function HowItWorks({ tab }: { tab: HowKey }) {
   const [open, setOpen] = useState(false);
   const [howTab, setHowTab] = useState<"text" | "video">("text");
   const data = HOW_IT_WORKS[tab];
