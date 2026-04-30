@@ -281,7 +281,7 @@ function BonusStep({
     <div className={`w-full rounded-xl p-3.5 border ${s.bg} ${s.border}`}>
       <p className={`text-[14px] font-semibold leading-tight ${s.title}`}>{title}</p>
       <p className="mt-1.5 text-[13px] leading-snug text-foreground/85">{line1}</p>
-      <p className="mt-0.5 text-[13px] leading-snug text-muted-foreground">{line2}</p>
+      <p className="mt-0.5 text-[13px] leading-snug text-foreground/85">{line2}</p>
     </div>
   );
 }
