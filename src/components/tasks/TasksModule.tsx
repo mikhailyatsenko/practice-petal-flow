@@ -153,6 +153,11 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     }
   }, [initialBrainstormGoalId]);
 
+  // Уведомляем родителя об открытии/закрытии мозгового штурма
+  useEffect(() => {
+    onBrainstormingChange?.(brainstormGoalId != null);
+  }, [brainstormGoalId, onBrainstormingChange]);
+
   // Таймеры — поддерживаем несколько активных параллельно
   const [activeTimerIds, setActiveTimerIds] = useState<Set<string>>(new Set());
   const [elapsedMap, setElapsedMap] = useState<Record<string, number>>({});
