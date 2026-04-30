@@ -313,18 +313,15 @@ function AnswerScreen({
             ref={taRef}
             value={text}
             onChange={(e) => setText(e.target.value.slice(0, 4000))}
-            placeholder="Напишите ответ (минимум 100 символов)..."
+            placeholder="Напишите ответ..."
             maxLength={4000}
             className="w-full resize-none rounded-t-[14px] bg-transparent px-4 py-3.5 text-[14px] leading-[1.7] text-[#1a1a1a] outline-none"
             style={{ minHeight: 120 }}
           />
           <div
-            className="flex items-center justify-between px-4 py-2.5 text-[12px]"
+            className="flex items-center justify-end px-4 py-2.5 text-[12px]"
             style={{ borderTop: "1px solid #ede8df" }}
           >
-            <span className={enough ? "text-[#16a34a]" : "text-[#8a8a8a]"}>
-              {enough ? "✓ достаточно" : `нужно ещё ${need} символов`}
-            </span>
             <span className="text-[#8a8a8a]">{len} / 4000</span>
           </div>
         </div>
