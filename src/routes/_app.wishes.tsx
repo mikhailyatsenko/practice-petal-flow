@@ -768,6 +768,7 @@ function WishesScreen() {
   // Раздел «Задачи»: фильтр по конкретной цели (когда переходим из «Цели → К задачам»)
   const [tasksFromGoalId, setTasksFromGoalId] = useState<string | null>(null);
   const [brainstormFromGoalId, setBrainstormFromGoalId] = useState<string | null>(null);
+  const [brainstormingActive, setBrainstormingActive] = useState(false);
 
   // Центральное хранилище задач (используется и в TasksModule, и в карточке цели)
   const [moduleTasks, setModuleTasks] = useState<ModuleTask[]>([
