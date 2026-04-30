@@ -104,7 +104,7 @@ export function SectionsLockedPreview({ unlockLevel = 4 }: SectionsLockedPreview
           Раздел закрыт
         </p>
         <p style={{ fontSize: 13, color: "#8a8a8a", lineHeight: 1.5, marginTop: 4 }}>
-          Дополнительные разделы клуба за очки откроются на {unlockLevel} уровне
+          Дополнительные разделы клуба откроются на {unlockLevel} уровне
         </p>
       </div>
 
