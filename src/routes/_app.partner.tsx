@@ -64,7 +64,7 @@ function PartnerScreen() {
           >
             ✅
           </div>
-          <p className="text-[13px]" style={{ color: "#8a8a8a", lineHeight: 1.6 }}>
+          <p className="text-[13px]" style={{ color: "#1a1a1a", lineHeight: 1.6 }}>
             Бонусы списываются вместо реальных денег при твоей следующей оплате.
           </p>
         </div>
