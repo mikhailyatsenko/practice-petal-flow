@@ -1824,9 +1824,16 @@ function CreateWishWizard({
   const [vision, setVision] = useState("");
   const [reasons, setReasons] = useState<string[]>(["", "", ""]);
   const [image, setImage] = useState<string>("");
+  const [aspect, setAspect] = useState<ImageAspect>("portrait");
   const [fromHotelkaIdx, setFromHotelkaIdx] = useState<number | null>(null);
 
   const filledReasons = reasons.map((r) => r.trim()).filter(Boolean);
+
+  const handlePickImage = async (f: File) => {
+    const url = URL.createObjectURL(f);
+    setImage(url);
+    setAspect(await detectAspectFromUrl(url));
+  };
 
   const handleCreate = () => {
     if (fromHotelkaIdx !== null) {
@@ -1837,6 +1844,7 @@ function CreateWishWizard({
       vision: vision.trim(),
       reasons: filledReasons,
       image,
+      aspect,
     });
   };
 
