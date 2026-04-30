@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { SubItemList, SectionHeader } from "@/components/section/SubItemList";
+import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { Copy, ArrowDown, ChevronDown } from "lucide-react";
 
 export const Route = createFileRoute("/_app/partner")({
