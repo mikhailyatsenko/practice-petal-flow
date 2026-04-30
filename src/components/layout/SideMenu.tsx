@@ -3,6 +3,7 @@ import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound
 import { Link } from "@tanstack/react-router";
 import { resetAllPractices, advanceToNextDay } from "@/lib/practicesStore";
 import { useBuddyRequestMode, toggleBuddyRequestMode } from "@/lib/buddyRequestMode";
+import { useFoursomeRequestMode, toggleFoursomeRequestMode } from "@/lib/foursomeRequestMode";
 
 interface SideMenuProps {
   open: boolean;
