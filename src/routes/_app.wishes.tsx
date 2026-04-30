@@ -2134,7 +2134,7 @@ function CreateWishWizard({
 /* ============================================================
    ===================  ЭКРАН РЕДАКТИРОВАНИЯ  ================= */
 
-type EditTab = "title" | "reasons" | "image";
+type EditTab = "title" | "reasons" | "vision" | "image";
 
 function EditWishScreen({
   wish,
