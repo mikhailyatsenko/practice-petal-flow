@@ -135,7 +135,7 @@ export function FoursomeLockedPreview({ unlockLevel = 3 }: FoursomeLockedPreview
         <div className="min-w-0 flex-1" style={{ animation: `${id}-float 3s ease-in-out infinite` }}>
           <h3 className="text-[15px] font-semibold leading-tight flex items-center gap-1.5">
             Четвёрка
-            <Lock className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={2.5} />
+            <span style={{ fontFamily: '"Apple Color Emoji","Segoe UI Emoji",sans-serif', fontSize: 14 }}>🔓</span>
           </h3>
           <p className="mt-1 text-[11.5px] text-muted-foreground leading-snug">
             Группа из 4 человек, созвон раз в месяц
