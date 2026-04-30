@@ -60,6 +60,7 @@ interface Wish {
   image: string;
   title: string;
   reasons: string[];
+  vision?: string;
   aspect?: ImageAspect;
 }
 
@@ -69,6 +70,8 @@ const INITIAL_WISHES: Wish[] = [
     image: wishHouse,
     title: "Дом у океана",
     aspect: "portrait",
+    vision:
+      "Я просыпаюсь рано утром, открываю окно — и комнату наполняет солёный воздух. Босиком выхожу на тёплую террасу с чашкой кофе, слышу шум прибоя и крики чаек. Дети бегут по песку, смеются. Это мой дом — светлый, просторный, наполненный любовью и спокойствием.",
     reasons: [
       "Просыпаться под шум волн и встречать рассветы у воды",
       "Свобода и пространство для семьи и творчества",
@@ -80,6 +83,8 @@ const INITIAL_WISHES: Wish[] = [
     image: wishBali,
     title: "Зимовка на Бали",
     aspect: "landscape",
+    vision:
+      "Я живу в уютной вилле среди джунглей. По утрам — йога на открытой террасе, потом сёрфинг на тёплых волнах. Днём работаю в кафе с видом на рисовые поля, вечером — закаты с новыми друзьями. Голова ясная, тело лёгкое, душа в полном балансе.",
     reasons: [
       "Сменить обстановку и перезагрузить голову",
       "Жить среди природы, тепла и спокойствия",
@@ -91,6 +96,8 @@ const INITIAL_WISHES: Wish[] = [
     image: wishBody,
     title: "Тело, в котором энергия",
     aspect: "square",
+    vision:
+      "Я смотрю в зеркало и вижу подтянутое, сильное тело. Поднимаюсь по лестнице — дыхание ровное, мышцы упругие. Утром бегу 5 км и чувствую только лёгкость. Одежда сидит идеально, и я с удовольствием встречаю каждый новый день в этом теле.",
     reasons: [
       "Чувствовать лёгкость и силу каждый день",
       "Уверенность в себе и в зеркале",
@@ -102,6 +109,8 @@ const INITIAL_WISHES: Wish[] = [
     image: wishBook,
     title: "Написать свою книгу",
     aspect: "landscape",
+    vision:
+      "Я держу в руках напечатанный экземпляр своей книги. На обложке — моё имя. Читатели пишут, что книга помогла им посмотреть на жизнь по-новому. Я провожу презентации, отвечаю на вопросы — и понимаю, что мой опыт реально нужен людям.",
     reasons: [
       "Оставить след и поделиться опытом с другими",
       "Структурировать свои мысли и путь",
@@ -113,6 +122,8 @@ const INITIAL_WISHES: Wish[] = [
     image: wishBusiness,
     title: "Своё дело, которое вдохновляет",
     aspect: "portrait",
+    vision:
+      "Я просыпаюсь и сам выбираю, чем заняться. Мой проект работает, команда живая и любит дело. Клиенты благодарят за результат. Деньги приходят стабильно, я свободно распоряжаюсь временем — могу уехать в путешествие или провести день с семьёй, не теряя в доходе.",
     reasons: [
       "Заниматься тем, что зажигает по утрам",
       "Финансовая свобода и контроль над временем",
@@ -147,6 +158,7 @@ interface Goal {
   deadline: string;
   progress: number;
   reasons: string[];
+  vision?: string;
   criteria: string;
   plan: string;
   tasks: GoalTask[];
@@ -173,6 +185,8 @@ const INITIAL_GOALS: Goal[] = [
     aspect: "landscape",
     deadline: "1 октября 2026",
     progress: 35,
+    vision:
+      "Я стою на финише марафона. Ноги горят, но я улыбаюсь — пробежал все 42,2 км. На груди медаль, рядом — близкие, которые поддерживали весь путь. Я знаю, что прошёл этот путь сам, шаг за шагом, и теперь нет ничего, чего я не смогу.",
     reasons: [
       "Доказать себе, что могу больше",
       "Построить выносливость и здоровье",
@@ -192,6 +206,8 @@ const INITIAL_GOALS: Goal[] = [
     aspect: "portrait",
     deadline: "1 июня 2027",
     progress: 20,
+    vision:
+      "Я свободно говорю с барменом в Барселоне, шучу с продавцом на рынке, понимаю фильмы Альмодовара без субтитров. Испанский больше не «иностранный» — это часть меня, ключ к новой культуре и людям.",
     reasons: [
       "Свободно общаться в путешествиях",
       "Открыть мир испаноязычной культуры",
@@ -210,6 +226,8 @@ const INITIAL_GOALS: Goal[] = [
     aspect: "square",
     deadline: "31 декабря 2026",
     progress: 45,
+    vision:
+      "Я открываю приложение банка и вижу сумму, равную 6 месяцам моих расходов. Никакой тревоги, никакой зависимости от завтрашнего дня. Я знаю, что могу спокойно сменить работу, взять паузу или вложиться в новый проект — у меня есть подушка и свобода выбора.",
     reasons: [
       "Чувствовать уверенность и спокойствие",
       "Иметь свободу выбирать, а не выживать",
@@ -228,6 +246,8 @@ const INITIAL_GOALS: Goal[] = [
     aspect: "square",
     deadline: "31 декабря 2026",
     progress: 15,
+    vision:
+      "31 декабря я листаю свой читательский дневник — 24 книги, каждая со своими заметками и инсайтами. Голова полна новых идей, мышление стало острее, а вечера с книгой превратились в любимый ритуал вместо листания ленты.",
     reasons: [
       "Расширять кругозор и мышление",
       "Возвращать привычку к глубокому чтению",
@@ -1444,6 +1464,20 @@ function WishCard({
           )}
         </div>
 
+        {wish.vision && wish.vision.trim() && (
+          <>
+            <p className="mt-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+              Как это уже произошло
+            </p>
+            <p
+              className="mt-1.5 rounded-xl px-3 py-2.5 text-[13px] leading-snug text-foreground/85 italic whitespace-pre-line"
+              style={{ background: "#FAF6EF" }}
+            >
+              {wish.vision}
+            </p>
+          </>
+        )}
+
         <p className="mt-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
           Почему это важно
         </p>
@@ -1627,9 +1661,9 @@ function DesireCharge({ level, onTap, mode = "inspire", id }: { level: number; o
 /* ============================================================
    ====================  МАСТЕР СОЗДАНИЯ  ===================== */
 
-const STEP_LABELS = ["Название", "Причины", "Картинка"] as const;
+const STEP_LABELS = ["Название", "Образ", "Причины", "Картинка"] as const;
 
-function StepIndicator({ step }: { step: 1 | 2 | 3 | 4 }) {
+function StepIndicator({ step }: { step: 1 | 2 | 3 | 4 | 5 }) {
   return (
     <div className="px-4 pt-3 pb-4">
       <div className="flex items-start justify-between max-w-[420px] mx-auto">
@@ -1693,8 +1727,9 @@ function CreateWishWizard({
   hotelki: string[];
   onConsumeHotelka: (idx: number) => void;
 }) {
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [title, setTitle] = useState("");
+  const [vision, setVision] = useState("");
   const [reasons, setReasons] = useState<string[]>(["", "", ""]);
   const [image, setImage] = useState<string>("");
   const [fromHotelkaIdx, setFromHotelkaIdx] = useState<number | null>(null);
@@ -1707,6 +1742,7 @@ function CreateWishWizard({
     }
     onCreate({
       title: title.trim(),
+      vision: vision.trim(),
       reasons: filledReasons,
       image,
     });
@@ -1722,7 +1758,7 @@ function CreateWishWizard({
     }
   };
 
-  if (step === 4) {
+  if (step === 5) {
     return (
       <div className="min-h-screen bg-background pb-8">
         <WizardHeader title="Готово" onBack={onClose} />
@@ -1839,12 +1875,64 @@ function CreateWishWizard({
             onClick={() => setStep(2)}
             className="tap btn-pill-orange w-full disabled:opacity-40"
           >
-            Далее → Причины
+            Далее → Образ
           </button>
         </div>
       )}
 
       {step === 2 && (
+        <div className="px-4 animate-fade-up">
+          <h2 className="text-[18px] font-bold leading-tight">Опиши детальнее желание</h2>
+          <p className="mt-1.5 text-[14px] text-[#FF6D00]">
+            Представь, что оно уже произошло. Опиши его так, как будто проживаешь этот момент прямо сейчас — что ты видишь, слышишь, чувствуешь.
+          </p>
+
+          <textarea
+            autoFocus
+            value={vision}
+            maxLength={800}
+            onChange={(e) => setVision(e.target.value)}
+            placeholder="Например: я просыпаюсь в своём доме у океана, слышу шум волн, выхожу на террасу с чашкой кофе..."
+            rows={8}
+            className="mt-5 w-full rounded-xl bg-card px-4 py-3.5 text-[14px] leading-relaxed outline-none transition-colors resize-none"
+            style={{ border: `1px solid ${vision.trim() ? "#FF6D00" : "rgba(0,0,0,0.08)"}` }}
+          />
+          <div className="mt-1.5 text-right text-[11px] text-muted-foreground">
+            {vision.length}/800
+          </div>
+
+          <div
+            className="mt-2 rounded-xl px-3.5 py-3 text-[12px] leading-snug text-foreground/80"
+            style={{ background: "#fff8ee", border: "1px solid #ffe0a3" }}
+          >
+            ✨ Пиши в настоящем времени, от первого лица. Чем ярче картинка — тем сильнее желание тянет тебя к себе.
+          </div>
+
+          <div className="mt-6 flex gap-2">
+            <button
+              onClick={() => setStep(1)}
+              className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
+            >
+              ← Назад
+            </button>
+            <button
+              disabled={vision.trim().length < 10}
+              onClick={() => setStep(3)}
+              className="tap btn-pill-orange flex-1 disabled:opacity-40"
+            >
+              Далее → Причины
+            </button>
+          </div>
+          <button
+            onClick={() => setStep(3)}
+            className="tap mt-3 w-full text-center text-[12px] text-muted-foreground underline-offset-2 hover:underline"
+          >
+            Пропустить
+          </button>
+        </div>
+      )}
+
+      {step === 3 && (
         <div className="px-4 animate-fade-up">
           <h2 className="text-[18px] font-bold leading-tight">Почему это важно?</h2>
           <p className="mt-1.5 text-[14px] text-[#FF6D00]">
@@ -1910,21 +1998,21 @@ function CreateWishWizard({
 
           <div className="mt-6 flex gap-2">
             <button
-              onClick={() => setStep(1)}
+              onClick={() => setStep(2)}
               className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
             >
               ← Назад
             </button>
             <button
               disabled={filledReasons.length === 0}
-              onClick={() => setStep(3)}
+              onClick={() => setStep(4)}
               className="tap btn-pill-orange flex-1 disabled:opacity-40"
             >
               Далее → Картинка
             </button>
           </div>
           <button
-            onClick={() => setStep(3)}
+            onClick={() => setStep(4)}
             className="tap mt-3 w-full text-center text-[12px] text-muted-foreground underline-offset-2 hover:underline"
           >
             Пропустить
@@ -1932,7 +2020,7 @@ function CreateWishWizard({
         </div>
       )}
 
-      {step === 3 && (
+      {step === 4 && (
         <div className="px-4 animate-fade-up">
           <h2 className="text-[18px] font-bold leading-tight">Добавь картинку</h2>
           <p className="mt-1.5 text-[14px] text-[#FF6D00]">
@@ -1999,14 +2087,14 @@ function CreateWishWizard({
 
           <div className="mt-6 flex gap-2">
             <button
-              onClick={() => setStep(2)}
+              onClick={() => setStep(3)}
               className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
             >
               ← Назад
             </button>
             <button
               disabled={!image}
-              onClick={() => setStep(4)}
+              onClick={() => setStep(5)}
               className="tap btn-pill-orange flex-1 inline-flex items-center justify-center gap-1.5 disabled:opacity-40"
             >
               <Sparkles className="h-4 w-4" /> Создать желание
@@ -2294,6 +2382,21 @@ function GoalCard({
             />
           </div>
         </div>
+
+        {goal.vision && goal.vision.trim() && (
+          <>
+            <div className="my-3 h-px bg-border/60" />
+            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+              Как это уже произошло
+            </p>
+            <p
+              className="mt-1.5 rounded-xl px-3 py-2.5 text-[13px] leading-snug text-foreground/85 italic whitespace-pre-line"
+              style={{ background: "#FAF6EF" }}
+            >
+              {goal.vision}
+            </p>
+          </>
+        )}
 
         <div className="my-3 h-px bg-border/60" />
 
@@ -2643,6 +2746,7 @@ function CreateGoalWizard({
         deadline: formatDeadline(dlDay, dlMonth, dlYear),
         progress: 0,
         reasons: selectedWish.reasons,
+        vision: selectedWish.vision,
         criteria: criteria.trim(),
         plan: plan.trim(),
         tasks: [],
