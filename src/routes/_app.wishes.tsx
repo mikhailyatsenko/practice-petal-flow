@@ -1661,9 +1661,9 @@ function DesireCharge({ level, onTap, mode = "inspire", id }: { level: number; o
 /* ============================================================
    ====================  МАСТЕР СОЗДАНИЯ  ===================== */
 
-const STEP_LABELS = ["Название", "Причины", "Картинка"] as const;
+const STEP_LABELS = ["Название", "Образ", "Причины", "Картинка"] as const;
 
-function StepIndicator({ step }: { step: 1 | 2 | 3 | 4 }) {
+function StepIndicator({ step }: { step: 1 | 2 | 3 | 4 | 5 }) {
   return (
     <div className="px-4 pt-3 pb-4">
       <div className="flex items-start justify-between max-w-[420px] mx-auto">
