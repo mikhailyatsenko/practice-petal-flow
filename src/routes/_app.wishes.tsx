@@ -1908,21 +1908,21 @@ function CreateWishWizard({
 
           <div className="mt-6 flex gap-2">
             <button
-              onClick={() => setStep(1)}
+              onClick={() => setStep(2)}
               className="tap flex-1 rounded-full px-3.5 py-2 text-[13px] font-medium bg-white text-[#FF6D00] border border-[#FF6D00]"
             >
               ← Назад
             </button>
             <button
               disabled={vision.trim().length < 10}
-              onClick={() => setStep(3)}
+              onClick={() => setStep(4)}
               className="tap btn-pill-orange flex-1 disabled:opacity-40"
             >
-              Далее → Причины
+              Далее → Картинка
             </button>
           </div>
           <button
-            onClick={() => setStep(3)}
+            onClick={() => setStep(4)}
             className="tap mt-3 w-full text-center text-[12px] text-muted-foreground underline-offset-2 hover:underline"
           >
             Пропустить
