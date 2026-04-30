@@ -1167,13 +1167,18 @@ function WishesScreen() {
           onClearGoalFilter={() => setTasksFromGoalId(null)}
           initialBrainstormGoalId={brainstormFromGoalId}
           onClearBrainstormGoalId={() => setBrainstormFromGoalId(null)}
+          onBrainstormingChange={setBrainstormingActive}
           tasks={moduleTasks}
           onTasksChange={(updater) => setModuleTasks(updater)}
           onUpdateGoalPlan={(goalId, plan) =>
             setGoals((prev) => prev.map((g) => (g.id === goalId ? { ...g, plan } : g)))
           }
         />
-        <HowItWorks key="tasks" tab="tasks" />
+        {brainstormingActive ? (
+          <HowItWorks key="brainstorm" tab="brainstorm" />
+        ) : (
+          <HowItWorks key="tasks" tab="tasks" />
+        )}
         </>
       );
     }
