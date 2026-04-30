@@ -7,10 +7,8 @@ import { Onboarding } from "@/components/onboarding/Onboarding";
 import { OnboardingGate } from "@/components/onboarding/OnboardingGate";
 import { BuddyRequestBanner } from "@/components/layout/BuddyRequestBanner";
 import { FoursomeRequestBanner } from "@/components/layout/FoursomeRequestBanner";
-import { PreviewLevelBanner, PREVIEW_BANNER_HEIGHT } from "@/components/layout/PreviewLevelBanner";
 import { useBuddyRequestMode } from "@/lib/buddyRequestMode";
 import { useFoursomeRequestMode } from "@/lib/foursomeRequestMode";
-import { usePreviewLevel } from "@/lib/previewLevel";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
