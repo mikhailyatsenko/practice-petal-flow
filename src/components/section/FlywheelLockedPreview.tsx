@@ -118,19 +118,20 @@ export function FlywheelLockedPreview({ unlockLevel = 3 }: FlywheelLockedPreview
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-2 mt-8">
-        {[0, 0.3, 0.6].map((delay, i) => (
-          <span
-            key={i}
-            className="fwlp-dot"
-            style={{
-              width: 6, height: 6, borderRadius: "50%",
-              background: "#FFB300",
-              display: "inline-block",
-              animationDelay: `${delay}s`,
-            }}
-          />
-        ))}
+      {/* Бейдж внизу */}
+      <div className="flex justify-center mt-6">
+        <span
+          className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5"
+          style={{
+            background: "rgba(255,109,0,0.10)",
+            color: "#FF6D00",
+            fontSize: 12,
+            fontWeight: 600,
+          }}
+        >
+          <span style={{ fontFamily: '"Apple Color Emoji","Segoe UI Emoji",sans-serif' }}>🔒</span>
+          Откроется на уровне {unlockLevel}
+        </span>
       </div>
     </div>
   );
