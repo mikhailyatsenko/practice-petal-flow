@@ -413,6 +413,7 @@ function HistoryScreen({
   onPatch: (id: string, text: string) => void;
 }) {
   const maxLen = cat === "daily" ? 200 : 500;
+  const isDaily = cat === "daily";
   const grouped = useMemo(() => {
     const map: Record<string, Entry[]> = {};
     for (const e of store[cat]) {
@@ -426,19 +427,39 @@ function HistoryScreen({
       }));
   }, [store, cat]);
 
+  // For non-daily: per-entry edit
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
 
-  function startEdit(e: Entry) {
+  // For daily: edit whole day's group together
+  const [editingDate, setEditingDate] = useState<string | null>(null);
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+
+  function startEditEntry(e: Entry) {
     setEditingId(e.id);
     setDraft(e.text);
   }
-  function commitEdit() {
+  function commitEditEntry() {
     if (editingId && draft.trim().length >= 1) {
       onPatch(editingId, draft);
     }
     setEditingId(null);
     setDraft("");
+  }
+
+  function startEditDay(list: Entry[]) {
+    setEditingDate(list[0]?.date ?? null);
+    const d: Record<string, string> = {};
+    for (const e of list) d[e.id] = e.text;
+    setDrafts(d);
+  }
+  function commitEditDay(list: Entry[]) {
+    for (const e of list) {
+      const v = (drafts[e.id] ?? "").trim();
+      if (v.length >= 1 && v !== e.text) onPatch(e.id, v);
+    }
+    setEditingDate(null);
+    setDrafts({});
   }
 
   return (
@@ -458,49 +479,113 @@ function HistoryScreen({
               >
                 Благодарности за {fmtDate(date)}
               </div>
-              <div className="flex flex-col gap-2">
-                {list.map((e) => (
-                  <div
-                    key={e.id}
-                    className="rounded-[12px] bg-white px-4 py-3"
-                    style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
-                  >
-                    {editingId === e.id ? (
-                      <>
-                        <textarea
-                          value={draft}
-                          onChange={(ev) => setDraft(ev.target.value.slice(0, maxLen))}
-                          maxLength={maxLen}
-                          className="min-h-[90px] w-full resize-none rounded-[10px] border border-black/10 bg-white px-3 py-2 text-[14px] leading-[1.6] text-[#1a1a1a] outline-none focus:border-[#FF6D00]"
-                        />
-                        <div className="mt-1 flex items-center justify-between text-[12px] text-[#8a8a8a]">
-                          <span>{draft.length} / {maxLen}</span>
-                          <button
-                            onClick={commitEdit}
-                            disabled={draft.trim().length < 1}
-                            className="rounded-[10px] px-4 py-1.5 text-[13px] font-semibold text-white disabled:opacity-50"
-                            style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
-                          >
-                            ✅ Сохранить
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="whitespace-pre-wrap text-[14px] leading-[1.6] text-[#1a1a1a]">
-                          {e.text}
-                        </div>
+
+              {isDaily ? (
+                <div
+                  className="rounded-[12px] bg-white px-4 py-3 relative"
+                  style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+                >
+                  {editingDate === date ? (
+                    <>
+                      <div className="flex flex-col gap-3">
+                        {list.map((e, i) => (
+                          <div key={e.id}>
+                            <div className="mb-1 text-[12px] font-bold text-[#FF6D00]">
+                              {i + 1}.
+                            </div>
+                            <textarea
+                              value={drafts[e.id] ?? ""}
+                              onChange={(ev) =>
+                                setDrafts((p) => ({
+                                  ...p,
+                                  [e.id]: ev.target.value.slice(0, maxLen),
+                                }))
+                              }
+                              maxLength={maxLen}
+                              className="min-h-[70px] w-full resize-none rounded-[10px] border border-black/10 bg-white px-3 py-2 text-[14px] leading-[1.6] text-[#1a1a1a] outline-none focus:border-[#FF6D00]"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-3 flex justify-end">
                         <button
-                          onClick={() => startEdit(e)}
-                          className="mt-2 text-[12px] font-semibold text-[#FF6D00]"
+                          onClick={() => commitEditDay(list)}
+                          className="rounded-[10px] px-4 py-1.5 text-[13px] font-semibold text-white"
+                          style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
                         >
-                          ✏️ Изменить
+                          ✅ Сохранить
                         </button>
-                      </>
-                    )}
-                  </div>
-                ))}
-              </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => startEditDay(list)}
+                        aria-label="Изменить"
+                        className="absolute right-3 top-3 text-[18px] leading-none"
+                      >
+                        ✏️
+                      </button>
+                      <div className="flex flex-col gap-2 pr-8">
+                        {list.map((e, i) => (
+                          <div
+                            key={e.id}
+                            className="whitespace-pre-wrap text-[14px] leading-[1.6] text-[#1a1a1a]"
+                          >
+                            <span className="mr-2 font-bold text-[#FF6D00]">{i + 1}.</span>
+                            {e.text}
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {list.map((e) => (
+                    <div
+                      key={e.id}
+                      className="rounded-[12px] bg-white px-4 py-3 relative"
+                      style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+                    >
+                      {editingId === e.id ? (
+                        <>
+                          <textarea
+                            value={draft}
+                            onChange={(ev) => setDraft(ev.target.value.slice(0, maxLen))}
+                            maxLength={maxLen}
+                            className="min-h-[90px] w-full resize-none rounded-[10px] border border-black/10 bg-white px-3 py-2 text-[14px] leading-[1.6] text-[#1a1a1a] outline-none focus:border-[#FF6D00]"
+                          />
+                          <div className="mt-1 flex items-center justify-between text-[12px] text-[#8a8a8a]">
+                            <span>{draft.length} / {maxLen}</span>
+                            <button
+                              onClick={commitEditEntry}
+                              disabled={draft.trim().length < 1}
+                              className="rounded-[10px] px-4 py-1.5 text-[13px] font-semibold text-white disabled:opacity-50"
+                              style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+                            >
+                              ✅ Сохранить
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => startEditEntry(e)}
+                            aria-label="Изменить"
+                            className="absolute right-3 top-3 text-[18px] leading-none"
+                          >
+                            ✏️
+                          </button>
+                          <div className="whitespace-pre-wrap pr-8 text-[14px] leading-[1.6] text-[#1a1a1a]">
+                            {e.text}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))
         )}
