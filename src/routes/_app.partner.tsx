@@ -137,7 +137,7 @@ function PartnerScreen() {
                 <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
                   <p className="text-[14px] font-semibold mb-2">💱 Курс бонусов</p>
                   <p className="text-[13px] leading-relaxed text-foreground/85">
-                    1 бонусный ₽ = 1 реальному ₽. Бонусы автоматически списываются вместо денег 💳,
+                    1 бонусный ₽ = 1 реальному ₽. Бонусы автоматически списываются вместо денег,
                     когда наступает твой следующий платёж.
                   </p>
                 </div>
