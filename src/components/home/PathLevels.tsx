@@ -18,7 +18,7 @@ interface Level {
   steps: LevelStep[];
   progress?: { done: number; total: number; unit?: string };
   footer?: string;
-  reward: string;
+  reward: string | string[];
   task: LevelTaskContent;
 }
 
@@ -218,7 +218,7 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
     steps: [
       { id: "s1", label: "Соединиться в четвёрку", done: false },
     ],
-    reward: "Открывается Маховик успеха + раздел Четвёрка",
+    reward: ["Открывается Маховик успеха", "Открывается раздел Четвёрка"],
     task: {
       videoTitle: "Уровень 3 — Четвёрка",
       caption: "Введение • Уровень 3",
@@ -254,7 +254,7 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
     steps: [
       { id: "s1", label: "Сделать Хит 30 дней подряд", done: false },
     ],
-    reward: "Открывается раздел Магазин разделов + 200 ⭐",
+    reward: ["Открывается раздел Магазин разделов", "+200 ⭐"],
     task: {
       videoTitle: "Уровень 5 — 30 хитов",
       caption: "Введение • Уровень 5",
@@ -374,93 +374,118 @@ export function PathLevels() {
           </>
         )}
 
-        <ul className={`${lvl.progress ? "mt-3" : ""} space-y-1.5`}>
-          {lvl.steps.map((s) => (
-            <li key={s.id} className="flex items-center gap-2.5 text-[13px]">
-              {s.done ? (
-                <span className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-success text-white">
-                  <Check className="h-3 w-3" strokeWidth={3.5} />
+        <div className={lvl.progress ? "mt-3" : ""}>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "#b8a888",
+              marginBottom: 8,
+            }}
+          >
+            Задание
+          </div>
+          <ul className="space-y-1.5">
+            {lvl.steps.map((s) => (
+              <li key={s.id} className="flex items-center gap-2.5 text-[13px]">
+                {s.done ? (
+                  <span className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-success text-white">
+                    <Check className="h-3 w-3" strokeWidth={3.5} />
+                  </span>
+                ) : (
+                  <Circle
+                    className="h-[18px] w-[18px] text-muted-foreground/60"
+                    strokeWidth={1.6}
+                  />
+                )}
+                <span
+                  className={
+                    s.done
+                      ? "line-through text-muted-foreground"
+                      : "text-foreground"
+                  }
+                >
+                  {s.label}
                 </span>
-              ) : (
-                <Circle
-                  className="h-[18px] w-[18px] text-muted-foreground/60"
-                  strokeWidth={1.6}
-                />
-              )}
-              <span
-                className={
-                  s.done
-                    ? "line-through text-muted-foreground"
-                    : "text-foreground"
-                }
-              >
-                {s.label}
-              </span>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         {lvl.footer && (
           <p className="mt-3 text-[12px] text-muted-foreground">{lvl.footer}</p>
         )}
 
-        {/* Награда */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-start",
-            gap: 10,
-            padding: "12px 12px",
-            marginTop: 12,
-            background: "linear-gradient(135deg, rgba(255,179,0,0.10), rgba(255,109,0,0.08))",
-            border: "1px solid rgba(255,109,0,0.18)",
-            borderRadius: 12,
-          }}
-        >
-          <div
-            style={{
-              flexShrink: 0,
-              width: 32,
-              height: 32,
-              borderRadius: 10,
-              background: "linear-gradient(135deg,#FFB300,#FF6D00)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 16,
-              boxShadow: "0 2px 6px rgba(255,109,0,0.25)",
-              fontFamily: '"Apple Color Emoji","Segoe UI Emoji",sans-serif',
-            }}
-            aria-hidden
-          >
-            🎁
-          </div>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <div
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                color: "#b8a888",
-                lineHeight: 1,
-                marginBottom: 4,
-              }}
-            >
-              Награда
+        {/* Награды */}
+        {(() => {
+          const rewards = Array.isArray(lvl.reward) ? lvl.reward : [lvl.reward];
+          const isMulti = rewards.length > 1;
+          return (
+            <div style={{ marginTop: 14 }}>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  color: "#b8a888",
+                  marginBottom: 8,
+                }}
+              >
+                {isMulti ? "Награды" : "Награда"}
+              </div>
+              <ul style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {rewards.map((r, i) => (
+                  <li
+                    key={i}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      padding: "10px 12px",
+                      background: "#FFF7EC",
+                      border: "1px solid rgba(255,109,0,0.18)",
+                      borderRadius: 12,
+                    }}
+                  >
+                    <span
+                      aria-hidden
+                      style={{
+                        flexShrink: 0,
+                        width: 22,
+                        height: 22,
+                        borderRadius: "50%",
+                        background: "linear-gradient(135deg,#FFB300,#FF6D00)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 12,
+                        boxShadow: "0 2px 4px rgba(255,109,0,0.25)",
+                        fontFamily: '"Apple Color Emoji","Segoe UI Emoji",sans-serif',
+                      }}
+                    >
+                      🎁
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 500,
+                        color: "#1a1a1a",
+                        lineHeight: 1.35,
+                        minWidth: 0,
+                        flex: 1,
+                      }}
+                    >
+                      {r.replace(/^🎁\s*/, "")}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div
-              style={{
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#1a1a1a",
-                lineHeight: 1.35,
-              }}
-            >
-              {lvl.reward}
-            </div>
-          </div>
-        </div>
+          );
+        })()}
 
         {/* CTA: Посмотреть задание */}
         <div
