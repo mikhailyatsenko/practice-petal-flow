@@ -765,11 +765,13 @@ function DetailScreen({
   onBack,
   onAccepted,
   onUpdate,
+  onDelete,
 }: {
   decision: Decision;
   onBack: () => void;
   onAccepted: () => void;
   onUpdate: (patch: Partial<Decision>) => void;
+  onDelete: () => void;
 }) {
   const tm = typeMeta(decision.type);
   const [mode, setMode] = useState<"view" | "accept" | "conclude" | "comment">("view");
