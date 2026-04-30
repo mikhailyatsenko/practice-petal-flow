@@ -488,22 +488,83 @@ function CreateFlow({
   // step 2 — все остальные вопросы на одной странице
   if (step === 2) {
     const restQuestions = QUESTIONS.slice(1);
-    const allFilled = restQuestions.every(
+    const filledCount = restQuestions.filter(
       (q) => (answers[q.key as string] ?? "").trim().length > 0,
-    );
+    ).length;
+    const total = restQuestions.length;
+    const allFilled = filledCount === total;
+    const progress = Math.round((filledCount / total) * 100);
     return (
-      <div style={{ padding: 16 }}>
+      <div style={{ padding: 16, paddingBottom: 24 }}>
         <Header title="Анализ решения" onBack={back} />
-        <p style={{ fontSize: 13, color: "#6B7280", margin: "14px 0 12px", lineHeight: 1.5 }}>
-          Заполните пункты — можно выборочно. Кнопка «Сохранить» активна, когда во всех полях есть хотя бы 1 символ.
-        </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          {restQuestions.map((q) => {
+
+        {/* Прогресс-блок */}
+        <div
+          style={{
+            marginTop: 14,
+            padding: 12,
+            borderRadius: 12,
+            background: allFilled ? "#ECFDF5" : "#EFF6FF",
+            border: `1px solid ${allFilled ? "#A7F3D0" : "#BFDBFE"}`,
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>
+              {allFilled ? "✅ Все пункты заполнены" : "📝 Заполните все пункты"}
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: allFilled ? "#059669" : "#2563EB" }}>
+              {filledCount}/{total}
+            </div>
+          </div>
+          <div style={{ height: 6, background: "#E5E7EB", borderRadius: 999, overflow: "hidden" }}>
+            <div
+              style={{
+                width: `${progress}%`,
+                height: "100%",
+                background: allFilled ? "#10B981" : "#3B82F6",
+                transition: "width 200ms ease",
+              }}
+            />
+          </div>
+          <div style={{ fontSize: 12, color: "#6B7280", marginTop: 8, lineHeight: 1.4 }}>
+            Кнопка «Сохранить» станет активной, когда во всех полях будет хотя бы 1 символ.
+          </div>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 14 }}>
+          {restQuestions.map((q, idx) => {
             const val = answers[q.key as string] ?? "";
+            const isFilled = val.trim().length > 0;
             return (
-              <div key={q.key as string}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "#111", marginBottom: 6 }}>
-                  {q.title}
+              <div
+                key={q.key as string}
+                style={{
+                  padding: 12,
+                  borderRadius: 12,
+                  border: `1px solid ${isFilled ? "#A7F3D0" : "#E5E7EB"}`,
+                  background: isFilled ? "#F0FDF4" : "#FFFFFF",
+                  transition: "background 200ms, border-color 200ms",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                  <div
+                    style={{
+                      width: 22,
+                      height: 22,
+                      borderRadius: "50%",
+                      background: isFilled ? "#10B981" : "#E5E7EB",
+                      color: isFilled ? "#fff" : "#6B7280",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {isFilled ? "✓" : idx + 1}
+                  </div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "#111" }}>{q.title}</div>
                 </div>
                 <div style={{ fontSize: 12.5, color: "#6B7280", marginBottom: 6, lineHeight: 1.4 }}>
                   {q.label}
@@ -514,16 +575,18 @@ function CreateFlow({
                     setAnswers({ ...answers, [q.key as string]: e.target.value.slice(0, q.max) })
                   }
                   maxLength={q.max}
+                  placeholder="Напишите хотя бы 1 символ…"
                   style={{
                     width: "100%",
                     minHeight: 90,
                     padding: 10,
-                    border: "1px solid #D1D5DB",
+                    border: `1px solid ${isFilled ? "#A7F3D0" : "#D1D5DB"}`,
                     borderRadius: 10,
                     fontSize: 14,
                     outline: "none",
                     resize: "vertical",
                     fontFamily: "inherit",
+                    background: "#fff",
                   }}
                 />
                 <div style={{ textAlign: "right", color: "#9CA3AF", fontSize: 11, marginTop: 2 }}>
@@ -533,9 +596,12 @@ function CreateFlow({
             );
           })}
         </div>
+
         <div style={{ marginTop: 16, marginBottom: 8 }}>
           <PrimaryButton disabled={!allFilled} onClick={() => setStep(8)}>
-            ✅ Сохранить
+            {allFilled
+              ? "✅ Сохранить"
+              : `Осталось заполнить: ${total - filledCount}`}
           </PrimaryButton>
         </div>
       </div>
