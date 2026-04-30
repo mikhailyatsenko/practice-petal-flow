@@ -384,10 +384,12 @@ function EditScreen({
   mistake,
   onBack,
   onSave,
+  onDelete,
 }: {
   mistake: Mistake;
   onBack: () => void;
   onSave: (text: string, lesson: string, prevention: string) => void;
+  onDelete: () => void;
 }) {
   const [text, setText] = useState(mistake.text);
   const [lesson, setLesson] = useState(mistake.lesson);
