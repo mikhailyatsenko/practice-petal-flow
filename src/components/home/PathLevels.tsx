@@ -171,16 +171,117 @@ const LEVELS: Level[] = [
   },
 ];
 
+// Контент по ТЗ для режима предпросмотра уровней (1..5)
+const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
+  1: {
+    id: "p1",
+    title: "Старт пути",
+    subtitle: "Создай желания и первую цель",
+    emoji: "🌱",
+    gradient: "linear-gradient(135deg, #993C1D, #D85A30)",
+    steps: [
+      { id: "s1", label: "Создать 5 желаний", done: false },
+      { id: "s2", label: "Создать 1 цель", done: false },
+    ],
+    reward: "🎁 Открывается возможность соединиться с Бадди",
+    task: {
+      videoTitle: "Уровень 1 — Старт",
+      caption: "Введение • Уровень 1",
+      duration: "5:00",
+      description: "Создай 5 желаний и поставь первую цель.",
+    },
+  },
+  2: {
+    id: "p2",
+    title: "Найди Бадди",
+    subtitle: "Соединись и заполни карточку",
+    emoji: "🤝",
+    gradient: "linear-gradient(135deg, #185FA5, #378ADD)",
+    steps: [
+      { id: "s1", label: "Соединиться с Бадди", done: false },
+      { id: "s2", label: "Созвониться и заполнить карточку Бадди", done: false },
+    ],
+    reward: "🎁 Маховик успеха + 2 ⭐ в день за Бадди",
+    task: {
+      videoTitle: "Уровень 2 — Бадди",
+      caption: "Введение • Уровень 2",
+      duration: "8:00",
+      description: "Найди Бадди и заполни его карточку после созвона.",
+    },
+  },
+  3: {
+    id: "p3",
+    title: "Создай Четвёрку",
+    subtitle: "Объединись с другой парой",
+    emoji: "👥",
+    gradient: "linear-gradient(135deg, #0F6E56, #1D9E75)",
+    steps: [
+      { id: "s1", label: "Соединиться в четвёрку", done: false },
+    ],
+    reward: "🎁 +2 ⭐ за четвёрку каждый день · Открывается Библиотека знаний",
+    task: {
+      videoTitle: "Уровень 3 — Четвёрка",
+      caption: "Введение • Уровень 3",
+      duration: "9:00",
+      description: "Объединись с другой парой Бадди и создайте Четвёрку.",
+    },
+  },
+  4: {
+    id: "p4",
+    title: "Изучи формулу",
+    subtitle: "Книга + ИИ-тест",
+    emoji: "📖",
+    gradient: "linear-gradient(135deg, #412402, #854F0B)",
+    steps: [
+      { id: "s1", label: "Прослушать «Закон притяжения» 6 ч", done: false },
+      { id: "s2", label: "Сдать тест ИИ на 50%", done: false },
+    ],
+    reward: "🎁 Открывается Магазин разделов",
+    task: {
+      videoTitle: "Уровень 4 — Формула",
+      caption: "Введение • Уровень 4",
+      duration: "12:00",
+      description: "Прослушай книгу и сдай тест ИИ на 50%+.",
+    },
+  },
+  5: {
+    id: "p5",
+    title: "Закрепись",
+    subtitle: "Хит 30 дней подряд",
+    emoji: "🏆",
+    gradient: "linear-gradient(135deg, #3B6D11, #639922)",
+    progress: { done: 0, total: 30, unit: "дней" },
+    steps: [
+      { id: "s1", label: "Сделать Хит 30 дней подряд", done: false },
+    ],
+    reward: "🎁 +200 ⭐",
+    task: {
+      videoTitle: "Уровень 5 — 30 хитов",
+      caption: "Введение • Уровень 5",
+      duration: "7:00",
+      description: "Все 5 практик 30 дней без пропуска.",
+    },
+  },
+};
+
 export function PathLevels() {
+  const previewLevel = usePreviewLevel();
   const [idx, setIdx] = useState(0);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const lvl = LEVELS[idx];
+
+  const isPreview = previewLevel != null;
+  const lvl = isPreview ? PREVIEW_LEVELS[previewLevel] : LEVELS[idx];
+  const totalLevels = isPreview ? 5 : LEVELS.length;
+  const currentIdx = isPreview ? previewLevel : idx + 1;
   const doneCount = lvl.steps.filter((s) => s.done).length;
   const pct = lvl.progress
     ? Math.round((lvl.progress.done / lvl.progress.total) * 100)
     : Math.round((doneCount / lvl.steps.length) * 100);
 
-  const next = () => setIdx((i) => (i + 1) % LEVELS.length);
+  const next = () => {
+    if (isPreview) return; // в предпросмотре уровень фиксирован
+    setIdx((i) => (i + 1) % LEVELS.length);
+  };
 
   return (
     <article
