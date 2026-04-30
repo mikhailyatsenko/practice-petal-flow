@@ -149,6 +149,10 @@ function DecisionsScreen() {
     persist(store.map((d) => (d.id === id ? { ...d, ...patch } : d)));
   }
 
+  function deleteDecision(id: string) {
+    persist(store.filter((d) => d.id !== id));
+  }
+
   if (view.kind === "create") {
     return (
       <CreateFlow
