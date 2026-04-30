@@ -3,6 +3,7 @@ import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound
 import { Link } from "@tanstack/react-router";
 import { resetAllPractices, advanceToNextDay } from "@/lib/practicesStore";
 import { useBuddyRequestMode, toggleBuddyRequestMode } from "@/lib/buddyRequestMode";
+import { useFoursomeRequestMode, toggleFoursomeRequestMode } from "@/lib/foursomeRequestMode";
 
 interface SideMenuProps {
   open: boolean;
@@ -11,7 +12,8 @@ interface SideMenuProps {
 }
 
 export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps) {
-  const requestMode = useBuddyRequestMode();
+  const buddyMode = useBuddyRequestMode();
+  const foursomeMode = useFoursomeRequestMode();
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-[300px] sm:w-[320px] bg-background p-0 overflow-y-auto" data-version="v2">
@@ -97,15 +99,15 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
               toggleBuddyRequestMode();
             }}
             className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
-            style={{ color: requestMode ? "#E53935" : "#FF6D00" }}
+            style={{ color: buddyMode ? "#E53935" : "#FF6D00" }}
           >
-            {requestMode ? (
+            {buddyMode ? (
               <BellOff className="h-[18px] w-[18px]" strokeWidth={2} />
             ) : (
               <Bell className="h-[18px] w-[18px]" strokeWidth={2} />
             )}
             <span>
-              {requestMode ? "Выключить режим запроса бадди" : "Включить режим запроса бадди"}
+              {buddyMode ? "Выключить режим запроса бадди" : "Включить режим запроса бадди"}
             </span>
           </button>
           <Link
@@ -117,15 +119,22 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             <UsersRound className="h-[18px] w-[18px]" strokeWidth={2} />
             <span>Четвёрка — есть четвёрка</span>
           </Link>
-          <Link
-            to="/foursome"
-            search={{ demo: "waiting" }}
-            onClick={() => onOpenChange(false)}
-            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          <button
+            onClick={() => {
+              toggleFoursomeRequestMode();
+            }}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+            style={{ color: foursomeMode ? "#E53935" : "#6d28d9" }}
           >
-            <Hourglass className="h-[18px] w-[18px]" strokeWidth={2} />
-            <span>Четвёрка — ожидание</span>
-          </Link>
+            {foursomeMode ? (
+              <BellOff className="h-[18px] w-[18px]" strokeWidth={2} />
+            ) : (
+              <Bell className="h-[18px] w-[18px]" strokeWidth={2} />
+            )}
+            <span>
+              {foursomeMode ? "Выключить режим запроса четвёрки" : "Включить режим запроса четвёрки"}
+            </span>
+          </button>
 
           <div className="my-2 border-t border-border" />
           <MenuItem icon={Settings} label="Настройки" />

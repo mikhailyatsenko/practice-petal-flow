@@ -408,6 +408,37 @@ function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         />
       </div>
 
+      {/* Ожидание — переход к откликам */}
+      <button
+        onClick={() => onNavigate({ name: "waiting", to: DEMO_REQUESTS[0] })}
+        className="tap mb-4 w-full rounded-2xl px-3.5 py-3 flex items-center gap-3 text-left animate-fade-up"
+        style={{
+          background: "linear-gradient(135deg, #f5f3ff, #ede9fe)",
+          border: "1px solid #c4b5fd",
+        }}
+      >
+        <div
+          className="h-11 w-11 shrink-0 rounded-xl flex items-center justify-center text-[22px]"
+          style={{ background: "rgba(124,58,237,0.15)" }}
+        >
+          ⏳
+        </div>
+        <div className="min-w-0 flex-1">
+          <h3 className="text-[15px] font-semibold leading-tight" style={{ color: "#6d28d9" }}>
+            Ожидание ответа
+          </h3>
+          <p className="mt-0.5 text-[12px] leading-snug" style={{ color: "#7c3aed" }}>
+            Посмотри отклики на твою заявку
+          </p>
+        </div>
+        <span
+          className="text-[11px] font-bold text-white px-2.5 py-1 rounded-full"
+          style={{ background: "linear-gradient(135deg, #a78bfa, #6d28d9)" }}
+        >
+          {DEMO_REQUESTS.length}
+        </span>
+      </button>
+
       {/* Формат */}
       <Card className="p-4 mb-4">
         <SectionLabel>Формат созвона · 80 минут</SectionLabel>
