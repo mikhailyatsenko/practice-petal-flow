@@ -183,7 +183,7 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
       { id: "s1", label: "Создать 5 желаний", done: false },
       { id: "s2", label: "Создать 1 цель", done: false },
     ],
-    reward: "Открывается возможность соединиться с Бадди",
+    reward: "Открывается Бадди",
     task: {
       videoTitle: "Уровень 1 — Старт",
       caption: "Введение • Уровень 1",
@@ -201,7 +201,11 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
       { id: "s1", label: "Соединиться с Бадди", done: false },
       { id: "s2", label: "Созвониться и заполнить карточку Бадди", done: false },
     ],
-    reward: "+2 ⭐ в день за Бадди",
+    reward: [
+      "Открывается Четвёрка",
+      "Открывается Маховик успеха",
+      "+2 очка в день за Бадди",
+    ],
     task: {
       videoTitle: "Уровень 2 — Бадди",
       caption: "Введение • Уровень 2",
@@ -218,7 +222,10 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
     steps: [
       { id: "s1", label: "Соединиться в четвёрку", done: false },
     ],
-    reward: ["Открывается Маховик успеха", "Открывается раздел Четвёрка"],
+    reward: [
+      "Открывается Библиотека знаний",
+      "+2 очка в день за Четвёрку",
+    ],
     task: {
       videoTitle: "Уровень 3 — Четвёрка",
       caption: "Введение • Уровень 3",
@@ -236,7 +243,10 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
       { id: "s1", label: "Прослушать «Закон притяжения» 6 ч", done: false },
       { id: "s2", label: "Сдать тест ИИ на 50%", done: false },
     ],
-    reward: "Открывается раздел Библиотека знаний",
+    reward: [
+      "Открывается Разделы магазинов",
+      "+100 бонусных очков",
+    ],
     task: {
       videoTitle: "Уровень 4 — Формула",
       caption: "Введение • Уровень 4",
@@ -254,7 +264,7 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
     steps: [
       { id: "s1", label: "Сделать Хит 30 дней подряд", done: false },
     ],
-    reward: ["Открывается раздел Магазин разделов", "+200 ⭐"],
+    reward: ["+200 бонусных очков"],
     task: {
       videoTitle: "Уровень 5 — 30 хитов",
       caption: "Введение • Уровень 5",
@@ -434,54 +444,68 @@ export function PathLevels() {
                   marginBottom: 8,
                 }}
               >
-                {isMulti ? "Награды" : "Награда"}
+                Награда 🎁
               </div>
               <ul style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {rewards.map((r, i) => (
-                  <li
-                    key={i}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      padding: "10px 12px",
-                      background: "#FFF7EC",
-                      border: "1px solid rgba(255,109,0,0.18)",
-                      borderRadius: 12,
-                    }}
-                  >
-                    <span
-                      aria-hidden
+                {rewards.map((r, i) => {
+                  const clean = r.replace(/^🎁\s*/, "");
+                  return (
+                    <li
+                      key={i}
                       style={{
-                        flexShrink: 0,
-                        width: 22,
-                        height: 22,
-                        borderRadius: "50%",
-                        background: "linear-gradient(135deg,#FFB300,#FF6D00)",
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 12,
-                        boxShadow: "0 2px 4px rgba(255,109,0,0.25)",
-                        fontFamily: '"Apple Color Emoji","Segoe UI Emoji",sans-serif',
+                        gap: 8,
                       }}
                     >
-                      🎁
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 13,
-                        fontWeight: 500,
-                        color: "#1a1a1a",
-                        lineHeight: 1.35,
-                        minWidth: 0,
-                        flex: 1,
-                      }}
-                    >
-                      {r.replace(/^🎁\s*/, "")}
-                    </span>
-                  </li>
-                ))}
+                      {isMulti ? (
+                        <span
+                          aria-hidden
+                          style={{
+                            flexShrink: 0,
+                            width: 20,
+                            height: 20,
+                            borderRadius: "50%",
+                            background: "#FFB300",
+                            color: "#fff",
+                            fontSize: 11,
+                            fontWeight: 600,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            lineHeight: 1,
+                          }}
+                        >
+                          {i + 1}
+                        </span>
+                      ) : (
+                        <span
+                          aria-hidden
+                          style={{
+                            flexShrink: 0,
+                            fontSize: 16,
+                            lineHeight: 1,
+                            fontFamily:
+                              '"Apple Color Emoji","Segoe UI Emoji",sans-serif',
+                          }}
+                        >
+                          🎁
+                        </span>
+                      )}
+                      <span
+                        style={{
+                          fontSize: 13,
+                          color: "#1a1a1a",
+                          lineHeight: 1.35,
+                          minWidth: 0,
+                          flex: 1,
+                        }}
+                      >
+                        {clean}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           );
