@@ -2195,6 +2195,7 @@ function EditWishScreen({
         {([
           { id: "title",   label: "✏️ Название" },
           { id: "reasons", label: "💡 Причины"  },
+          { id: "vision",  label: "✨ Образ"    },
           { id: "image",   label: "🖼 Картинка"  },
         ] as { id: EditTab; label: string }[]).map((t) => {
           const active = t.id === tab;
