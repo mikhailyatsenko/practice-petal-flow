@@ -55,6 +55,20 @@ type ImageAspect = "portrait" | "landscape" | "square";
 const aspectClass = (a?: ImageAspect) =>
   a === "landscape" ? "aspect-[16/10]" : a === "square" ? "aspect-square" : "aspect-[4/5]";
 
+const detectAspectFromUrl = (url: string): Promise<ImageAspect> =>
+  new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio > 1.15) resolve("landscape");
+      else if (ratio < 0.9) resolve("portrait");
+      else resolve("square");
+    };
+    img.onerror = () => resolve("portrait");
+    img.src = url;
+  });
+
+
 interface Wish {
   id: string;
   image: string;
@@ -1810,9 +1824,16 @@ function CreateWishWizard({
   const [vision, setVision] = useState("");
   const [reasons, setReasons] = useState<string[]>(["", "", ""]);
   const [image, setImage] = useState<string>("");
+  const [aspect, setAspect] = useState<ImageAspect>("portrait");
   const [fromHotelkaIdx, setFromHotelkaIdx] = useState<number | null>(null);
 
   const filledReasons = reasons.map((r) => r.trim()).filter(Boolean);
+
+  const handlePickImage = async (f: File) => {
+    const url = URL.createObjectURL(f);
+    setImage(url);
+    setAspect(await detectAspectFromUrl(url));
+  };
 
   const handleCreate = () => {
     if (fromHotelkaIdx !== null) {
@@ -1823,6 +1844,7 @@ function CreateWishWizard({
       vision: vision.trim(),
       reasons: filledReasons,
       image,
+      aspect,
     });
   };
 
@@ -1849,7 +1871,7 @@ function CreateWishWizard({
 
           <article className="mt-6 mx-auto max-w-sm bg-card hairline rounded-2xl overflow-hidden shadow-card text-left">
             {image && (
-              <div className="aspect-[4/5] w-full overflow-hidden bg-muted">
+              <div className={`${aspectClass(aspect)} w-full overflow-hidden bg-muted`}>
                 <img src={image} alt={title} className="h-full w-full object-cover" />
               </div>
             )}
@@ -2130,7 +2152,7 @@ function CreateWishWizard({
                 hidden
                 onChange={(e) => {
                   const f = e.target.files?.[0];
-                  if (f) setImage(URL.createObjectURL(f));
+                  if (f) handlePickImage(f);
                 }}
               />
             </label>
@@ -2157,7 +2179,7 @@ function CreateWishWizard({
                   hidden
                   onChange={(e) => {
                     const f = e.target.files?.[0];
-                    if (f) setImage(URL.createObjectURL(f));
+                    if (f) handlePickImage(f);
                   }}
                 />
               </label>
@@ -2212,6 +2234,13 @@ function EditWishScreen({
   const [reasons, setReasons] = useState<string[]>(wish.reasons.length ? wish.reasons : [""]);
   const [vision, setVision] = useState<string>(wish.vision ?? "");
   const [image, setImage] = useState<string>(wish.image);
+  const [aspect, setAspect] = useState<ImageAspect>(wish.aspect ?? "portrait");
+
+  const handlePickImage = async (f: File) => {
+    const url = URL.createObjectURL(f);
+    setImage(url);
+    setAspect(await detectAspectFromUrl(url));
+  };
 
   const handleSave = () => {
     onSave({
@@ -2220,6 +2249,7 @@ function EditWishScreen({
       reasons: reasons.map((r) => r.trim()).filter(Boolean),
       vision: vision.trim(),
       image,
+      aspect,
     });
   };
 
@@ -2388,7 +2418,7 @@ function EditWishScreen({
                 hidden
                 onChange={(e) => {
                   const f = e.target.files?.[0];
-                  if (f) setImage(URL.createObjectURL(f));
+                  if (f) handlePickImage(f);
                 }}
               />
             </label>
@@ -2854,6 +2884,7 @@ function CreateGoalWizard({
       {
         title: selectedWish.title,
         image: selectedWish.image,
+        aspect: selectedWish.aspect,
         deadline: formatDeadline(dlDay, dlMonth, dlYear),
         progress: 0,
         reasons: selectedWish.reasons,
@@ -3170,6 +3201,13 @@ function EditGoalScreen({
   const [plan, setPlan] = useState(goal.plan);
   const [vision, setVision] = useState(goal.vision ?? "");
   const [image, setImage] = useState(goal.image);
+  const [aspect, setAspect] = useState<ImageAspect>(goal.aspect ?? "portrait");
+
+  const handlePickImage = async (f: File) => {
+    const url = URL.createObjectURL(f);
+    setImage(url);
+    setAspect(await detectAspectFromUrl(url));
+  };
 
   const initDl = parseDeadline(goal.deadline);
   const [dlDay, setDlDay] = useState<number>(initDl.d);
@@ -3186,6 +3224,7 @@ function EditGoalScreen({
       plan: plan.trim() || goal.plan,
       vision: vision.trim(),
       image,
+      aspect,
     });
   };
 
@@ -3353,7 +3392,7 @@ function EditGoalScreen({
                 hidden
                 onChange={(e) => {
                   const f = e.target.files?.[0];
-                  if (f) setImage(URL.createObjectURL(f));
+                  if (f) handlePickImage(f);
                 }}
               />
             </label>
