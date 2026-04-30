@@ -1661,16 +1661,39 @@ function DesireCharge({ level, onTap, mode = "inspire", id }: { level: number; o
 const STEP_LABELS = ["Название", "Причины", "Образ", "Картинка"] as const;
 
 function StepIndicator({ step }: { step: 1 | 2 | 3 | 4 | 5 }) {
+  const labels = STEP_LABELS;
+  const n = labels.length;
+  const progressPct = n > 1 ? Math.min(Math.max((step - 1) / (n - 1), 0), 1) * 100 : 0;
   return (
     <div className="px-4 pt-3 pb-4">
-      <div className="flex items-start justify-between max-w-[420px] mx-auto">
-        {STEP_LABELS.map((label, i) => {
-          const idx = i + 1;
-          const done = step > idx;
-          const active = step === idx;
-          return (
-            <React.Fragment key={label}>
-              <div className="flex flex-col items-center gap-1.5 min-w-0 shrink-0">
+      <div className="relative max-w-[420px] mx-auto">
+        <div
+          className="absolute top-[14px] h-[2px] rounded"
+          style={{
+            left: `calc((100% / ${n}) / 2)`,
+            right: `calc((100% / ${n}) / 2)`,
+            background: "var(--secondary)",
+          }}
+        />
+        <div
+          className="absolute top-[14px] h-[2px] rounded transition-[width]"
+          style={{
+            left: `calc((100% / ${n}) / 2)`,
+            width: `calc((100% - (100% / ${n})) * ${progressPct / 100})`,
+            background: "#FF6D00",
+          }}
+        />
+        <div className="relative flex items-start">
+          {labels.map((label, i) => {
+            const idx = i + 1;
+            const done = step > idx;
+            const active = step === idx;
+            return (
+              <div
+                key={label}
+                className="flex flex-col items-center gap-1.5"
+                style={{ width: `${100 / n}%` }}
+              >
                 <div
                   className="h-7 w-7 rounded-full flex items-center justify-center text-[12px] font-semibold transition-colors"
                   style={
@@ -1682,19 +1705,15 @@ function StepIndicator({ step }: { step: 1 | 2 | 3 | 4 | 5 }) {
                   {done ? <Check className="h-3.5 w-3.5" /> : idx}
                 </div>
                 <span
-                  className="text-[10px] font-medium"
+                  className="text-[10px] font-medium whitespace-nowrap"
                   style={{ color: active || done ? "var(--foreground)" : "var(--muted-foreground)" }}
                 >
                   {label}
                 </span>
               </div>
-              {i < STEP_LABELS.length - 1 && (
-                <div className="flex-1 h-[2px] mx-1 mt-3 rounded"
-                     style={{ background: step > idx ? "#FF6D00" : "var(--secondary)" }} />
-              )}
-            </React.Fragment>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
