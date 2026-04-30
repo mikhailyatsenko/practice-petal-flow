@@ -784,19 +784,65 @@ function ConfirmSheet({
 
 // ───────────────────────── Screen 5: Waiting ─────────────────────────
 
+const INCOMING_REQUESTS: BuddyRequest[] = [
+  {
+    id: "in1",
+    name: "Сергей",
+    avatar: "🧗",
+    job: "Основатель стартапа",
+    day: "Ср",
+    time: "19:00",
+    bio: "Запускаю SaaS для логистики. Хочу бадди, который держит фокус и не сливается через месяц.",
+    extra: "Свободен также по понедельникам вечером. Telegram: @sergey_demo",
+  },
+  {
+    id: "in2",
+    name: "Ольга",
+    avatar: "🌿",
+    job: "Психолог · частная практика",
+    day: "Ср",
+    time: "19:00",
+    bio: "Развиваю практику и личный бренд. Ищу системного партнёра на длинную дистанцию.",
+    extra: "Запасные слоты — четверг и пятница после 18:00 МСК. Telegram: @olga_demo",
+  },
+];
+
 function Waiting({ to, onBack }: { to: BuddyRequest; onBack: () => void }) {
+  const [incoming, setIncoming] = useState<BuddyRequest[]>(INCOMING_REQUESTS);
+  const [accepted, setAccepted] = useState<BuddyRequest | null>(null);
+
+  const decline = (id: string) => setIncoming((prev) => prev.filter((r) => r.id !== id));
+  const accept = (req: BuddyRequest) => {
+    setAccepted(req);
+    setIncoming([]);
+  };
+
   return (
     <div className="px-4 pb-6">
-      <PageHeader title="Бадди" onBack={onBack} />
+      <PageHeader title="Ожидание" onBack={onBack} />
 
-      <div className="text-center pt-4 pb-5 animate-fade-up">
-        <div className="text-[56px] leading-none">⏳</div>
-        <h2 className="mt-3 text-[18px] font-bold">Запрос отправлен!</h2>
-        <p className="mt-2 text-[14px] text-muted-foreground leading-snug max-w-[300px] mx-auto">
-          Ждём подтверждения от {to.name}. Придёт уведомление, когда он ответит.
-        </p>
-      </div>
+      {accepted ? (
+        <div className="text-center pt-4 pb-5 animate-fade-up">
+          <div className="text-[56px] leading-none">🎉</div>
+          <h2 className="mt-3 text-[18px] font-bold">Бадди найден!</h2>
+          <p className="mt-2 text-[14px] text-muted-foreground leading-snug max-w-[320px] mx-auto">
+            Ты подтвердил {accepted.name}. Напишите друг другу и согласуйте первый созвон.
+          </p>
+        </div>
+      ) : (
+        <div className="text-center pt-4 pb-5 animate-fade-up">
+          <div className="text-[56px] leading-none">⏳</div>
+          <h2 className="mt-3 text-[18px] font-bold">Твоя заявка опубликована</h2>
+          <p className="mt-2 text-[14px] text-muted-foreground leading-snug max-w-[320px] mx-auto">
+            Ждём отклика от {to.name}. Также сюда приходят запросы от других участников, которым подходит твоя заявка.
+          </p>
+        </div>
+      )}
 
+      {/* Outgoing request */}
+      <h3 className="mt-2 px-1 text-[11px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
+        Твой запрос
+      </h3>
       <div className="bg-card hairline shadow-card rounded-2xl p-3.5 animate-fade-up">
         <div className="flex items-center gap-3">
           <div
@@ -820,9 +866,40 @@ function Waiting({ to, onBack }: { to: BuddyRequest; onBack: () => void }) {
         </div>
       </div>
 
+      {/* Incoming requests */}
+      {incoming.length > 0 && (
+        <>
+          <div className="mt-5 flex items-center justify-between px-1 mb-2">
+            <h3 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+              Запросы на твою заявку
+            </h3>
+            <span
+              className="text-[11px] font-bold text-white px-2.5 py-0.5 rounded-full"
+              style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+            >
+              {incoming.length}
+            </span>
+          </div>
+          <p className="px-1 text-[12px] text-muted-foreground mb-3 leading-snug">
+            Эти участники хотят стать твоим бадди. Подтверди подходящего или отклони.
+          </p>
+
+          <div className="space-y-3">
+            {incoming.map((r) => (
+              <IncomingRequestCard
+                key={r.id}
+                req={r}
+                onAccept={() => accept(r)}
+                onDecline={() => decline(r.id)}
+              />
+            ))}
+          </div>
+        </>
+      )}
+
       <button
         onClick={onBack}
-        className="tap mt-4 w-full rounded-2xl py-3.5 text-[14px] font-bold"
+        className="tap mt-6 w-full rounded-2xl py-3.5 text-[14px] font-bold"
         style={{
           background: "#FAF6EF",
           color: "#FF6D00",
@@ -831,6 +908,88 @@ function Waiting({ to, onBack }: { to: BuddyRequest; onBack: () => void }) {
       >
         Вернуться назад
       </button>
+    </div>
+  );
+}
+
+function IncomingRequestCard({
+  req,
+  onAccept,
+  onDecline,
+}: {
+  req: BuddyRequest;
+  onAccept: () => void;
+  onDecline: () => void;
+}) {
+  return (
+    <div className="bg-card hairline shadow-card rounded-2xl p-3.5 animate-fade-up">
+      <div className="flex items-start gap-3">
+        <div
+          className="h-12 w-12 shrink-0 rounded-[14px] flex items-center justify-center text-[24px]"
+          style={{ background: "#FAF6EF" }}
+        >
+          {req.avatar}
+        </div>
+        <div className="min-w-0 flex-1">
+          <h3 className="text-[15px] font-bold leading-tight">{req.name}</h3>
+          <p className="text-[12px] text-muted-foreground mt-0.5">{req.job}</p>
+        </div>
+        <span
+          className="text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0"
+          style={{ background: "#fff3e0", color: "#FF6D00" }}
+        >
+          {req.day} · {req.time}
+        </span>
+      </div>
+
+      <div
+        className="mt-3 rounded-[10px] p-3 text-[13px]"
+        style={{ background: "#FAF6EF", lineHeight: 1.5 }}
+      >
+        {req.bio}
+      </div>
+
+      {req.extra && (
+        <div
+          className="mt-2 rounded-[10px] p-3 text-[13px]"
+          style={{ background: "#fff8ee", border: "1px solid #ffe0a3", lineHeight: 1.5 }}
+        >
+          <div className="text-[11px] font-bold uppercase mb-1" style={{ color: "#FF6D00", letterSpacing: 0.4 }}>
+            💬 Доп. комментарии
+          </div>
+          <p className="text-foreground/85">{req.extra}</p>
+        </div>
+      )}
+
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <button
+          onClick={onAccept}
+          className="tap rounded-xl py-2.5 text-[13px] font-bold text-white inline-flex items-center justify-center gap-1.5"
+          style={{
+            background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+            boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
+          }}
+        >
+          <Check className="h-4 w-4" /> Подтвердить
+        </button>
+        <button
+          onClick={onDecline}
+          className="tap rounded-xl py-2.5 text-[13px] font-medium inline-flex items-center justify-center gap-1.5"
+          style={{ background: "transparent", border: "1px solid #ede8df", color: "var(--muted-foreground)" }}
+        >
+          <X className="h-4 w-4" /> Отклонить
+        </button>
+      </div>
+
+      <a
+        href="https://t.me/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="tap mt-2 w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5"
+        style={{ background: "#FAF6EF", color: "#FF6D00", border: "1px solid #ede8df" }}
+      >
+        <Send className="h-4 w-4" /> Написать в мессенджере
+      </a>
     </div>
   );
 }
