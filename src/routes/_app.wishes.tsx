@@ -1867,11 +1867,11 @@ function CreateWishWizard({
       )}
 
       {step === 1 && (
-        <div className="fixed bottom-[88px] left-1/2 z-50 w-full max-w-md -translate-x-1/2 bg-gradient-to-t from-background via-background to-background/80 px-4 pb-3 pt-3">
+        <div className="fixed bottom-[110px] left-1/2 z-50 w-full max-w-md -translate-x-1/2 px-4">
           <button
             disabled={title.trim().length < 2}
             onClick={() => setStep(2)}
-            className="tap btn-pill-orange w-full disabled:opacity-40"
+            className="tap btn-pill-orange w-full shadow-lg shadow-orange-200/60 disabled:opacity-40"
           >
             Далее → Образ
           </button>
