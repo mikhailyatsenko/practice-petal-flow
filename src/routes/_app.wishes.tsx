@@ -2340,6 +2340,7 @@ function GoalCard({
   tasksDoneCount = 0,
   onAddTask,
   readOnly = false,
+  onProgressChange,
 }: {
   goal: Goal;
   count: number;
@@ -2354,6 +2355,7 @@ function GoalCard({
   tasksDoneCount?: number;
   onAddTask?: () => void;
   readOnly?: boolean;
+  onProgressChange?: (value: number) => void;
 }) {
   void isDone;
   const openTasks = tasksAll.filter((t) => !t.done);
