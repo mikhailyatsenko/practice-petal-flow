@@ -1030,6 +1030,9 @@ function IncomingRequestCard({
 
 function HasBuddy({ buddy, onBack }: { buddy: BuddyRequest; onBack: () => void }) {
   const navigate = useNavigate();
+  const card = useBuddyCard();
+  const filled = isBuddyCardFilled(card);
+
   return (
     <div className="px-4 pb-6">
       <PageHeader title="Мой Бадди" onBack={() => navigate({ to: "/community" })} />
@@ -1073,8 +1076,101 @@ function HasBuddy({ buddy, onBack }: { buddy: BuddyRequest; onBack: () => void }
           {buddy.bio}
         </div>
 
+        {/* Divider */}
+        <div className="my-4 border-t border-border" />
+
+        {/* Buddy filled card section */}
+        {filled ? (
+          <div className="animate-fade-up">
+            <div className="flex items-center justify-between mb-3">
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.1em",
+                  color: "#FF6D00",
+                }}
+              >
+                КАРТОЧКА БАДДИ
+              </span>
+              <button
+                onClick={() => navigate({ to: "/my-buddy-card" })}
+                className="tap inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-full"
+                style={{
+                  color: "#FF6D00",
+                  background: "rgba(255,109,0,0.10)",
+                }}
+              >
+                <Pencil className="h-3 w-3" /> Изменить
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <AnswerBlock title="Главная цель на 1–2 года" text={card.goal} />
+              <div>
+                <p
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    letterSpacing: "0.1em",
+                    color: "#a59a85",
+                    textTransform: "uppercase",
+                    marginBottom: 6,
+                  }}
+                >
+                  3 сферы жизни
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {card.spheres.map((s, i) => (
+                    <span
+                      key={i}
+                      className="text-[12px] font-medium px-2.5 py-1 rounded-full"
+                      style={{
+                        background: "linear-gradient(135deg, #fff8ee, #fff3e0)",
+                        color: "#FF6D00",
+                        border: "1px solid #ffd089",
+                      }}
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <AnswerBlock title="Сильные стороны" text={card.strengths} />
+              <AnswerBlock title="Что мешает достигать успеха" text={card.blockers} />
+              <AnswerBlock title="В чём нужна моя поддержка" text={card.support} />
+            </div>
+          </div>
+        ) : (
+          <div className="text-center animate-fade-up py-2">
+            <div
+              className="mx-auto h-14 w-14 rounded-2xl flex items-center justify-center text-[28px]"
+              style={{ background: "#FAF6EF" }}
+            >
+              📋
+            </div>
+            <h4 className="mt-3 text-[15px] font-bold">Карточка Бадди не заполнена</h4>
+            <p className="mt-1.5 text-[12.5px] text-muted-foreground leading-snug max-w-[280px] mx-auto">
+              Заполни карточку после первого созвона — так ты лучше узнаешь своего Бадди
+            </p>
+            <button
+              onClick={() => navigate({ to: "/my-buddy-card" })}
+              className="tap mt-4 w-full rounded-2xl py-3 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
+              style={{
+                background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                boxShadow: "0 6px 20px rgba(255,109,0,0.35)",
+              }}
+            >
+              <ClipboardList className="h-4 w-4" /> Заполнить карточку Бадди
+            </button>
+          </div>
+        )}
+
+        {/* Divider before Telegram */}
+        <div className="my-4 border-t border-border" />
+
         <button
-          className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
+          className="tap w-full rounded-2xl py-3 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
           style={{
             background: "linear-gradient(135deg, #8BC34A, #4CAF50)",
             boxShadow: "0 6px 20px rgba(76,175,80,0.35)",
@@ -1093,27 +1189,32 @@ function HasBuddy({ buddy, onBack }: { buddy: BuddyRequest; onBack: () => void }
         <FormatRowGreen time="20 мин" text={`${buddy.name} делится своими успехами`} />
         <FormatRowGreen time="20 мин" text="Вместе ставите задачи на неделю" />
       </div>
-
-      {/* Quad teaser */}
-      <button
-        className="tap mt-4 w-full rounded-2xl p-4 flex items-center gap-3 text-left animate-fade-up"
-        style={{
-          background: "linear-gradient(135deg, #f5f3ff, #ede9fe)",
-          border: "1px solid #c4b5fd",
-        }}
-      >
-        <span className="text-[26px]">👥👥</span>
-        <div className="min-w-0 flex-1">
-          <p className="text-[14px] font-bold leading-tight" style={{ color: "#6d28d9" }}>
-            Теперь доступна Четвёрка!
-          </p>
-          <p className="text-[12px] mt-0.5" style={{ color: "#7c3aed" }}>
-            Созвон раз в месяц с группой из 4 человек
-          </p>
-        </div>
-        <ChevronRight className="h-5 w-5 shrink-0" style={{ color: "#6d28d9" }} />
-      </button>
-
     </div>
   );
 }
+
+function AnswerBlock({ title, text }: { title: string; text: string }) {
+  return (
+    <div>
+      <p
+        style={{
+          fontSize: 10,
+          fontWeight: 700,
+          letterSpacing: "0.1em",
+          color: "#a59a85",
+          textTransform: "uppercase",
+          marginBottom: 6,
+        }}
+      >
+        {title}
+      </p>
+      <div
+        className="rounded-[10px] p-3 text-[13px]"
+        style={{ background: "#FAF6EF", lineHeight: 1.5, whiteSpace: "pre-wrap" }}
+      >
+        {text}
+      </div>
+    </div>
+  );
+}
+
