@@ -28,6 +28,7 @@ import { Route as AppFoursomeRouteImport } from './routes/_app.foursome'
 import { Route as AppFlywheelRouteImport } from './routes/_app.flywheel'
 import { Route as AppDecisionsRouteImport } from './routes/_app.decisions'
 import { Route as AppCommunityRouteImport } from './routes/_app.community'
+import { Route as AppBuddyCardRouteImport } from './routes/_app.buddy-card'
 import { Route as AppBuddyRouteImport } from './routes/_app.buddy'
 import { Route as AppPracticeWishesChargeRouteImport } from './routes/_app.practice.wishes-charge'
 import { Route as AppPracticeWishesRouteImport } from './routes/_app.practice.wishes'
@@ -35,7 +36,6 @@ import { Route as AppPracticeStepRouteImport } from './routes/_app.practice.step
 import { Route as AppPracticeSkillRouteImport } from './routes/_app.practice.skill'
 import { Route as AppPracticeSelfProgRouteImport } from './routes/_app.practice.self-prog'
 import { Route as AppPracticeEssayRouteImport } from './routes/_app.practice.essay'
-import { Route as AppBuddyCardRouteImport } from './routes/_app.buddy.card'
 
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
@@ -131,6 +131,11 @@ const AppCommunityRoute = AppCommunityRouteImport.update({
   path: '/community',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBuddyCardRoute = AppBuddyCardRouteImport.update({
+  id: '/buddy-card',
+  path: '/buddy-card',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppBuddyRoute = AppBuddyRouteImport.update({
   id: '/buddy',
   path: '/buddy',
@@ -166,16 +171,12 @@ const AppPracticeEssayRoute = AppPracticeEssayRouteImport.update({
   path: '/practice/essay',
   getParentRoute: () => AppRoute,
 } as any)
-const AppBuddyCardRoute = AppBuddyCardRouteImport.update({
-  id: '/card',
-  path: '/card',
-  getParentRoute: () => AppBuddyRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/onboarding': typeof OnboardingRoute
-  '/buddy': typeof AppBuddyRouteWithChildren
+  '/buddy': typeof AppBuddyRoute
+  '/buddy-card': typeof AppBuddyCardRoute
   '/community': typeof AppCommunityRoute
   '/decisions': typeof AppDecisionsRoute
   '/flywheel': typeof AppFlywheelRoute
@@ -192,7 +193,6 @@ export interface FileRoutesByFullPath {
   '/self-improve': typeof AppSelfImproveRoute
   '/values': typeof AppValuesRoute
   '/wishes': typeof AppWishesRoute
-  '/buddy/card': typeof AppBuddyCardRoute
   '/practice/essay': typeof AppPracticeEssayRoute
   '/practice/self-prog': typeof AppPracticeSelfProgRoute
   '/practice/skill': typeof AppPracticeSkillRoute
@@ -202,7 +202,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
-  '/buddy': typeof AppBuddyRouteWithChildren
+  '/buddy': typeof AppBuddyRoute
+  '/buddy-card': typeof AppBuddyCardRoute
   '/community': typeof AppCommunityRoute
   '/decisions': typeof AppDecisionsRoute
   '/flywheel': typeof AppFlywheelRoute
@@ -220,7 +221,6 @@ export interface FileRoutesByTo {
   '/values': typeof AppValuesRoute
   '/wishes': typeof AppWishesRoute
   '/': typeof AppIndexRoute
-  '/buddy/card': typeof AppBuddyCardRoute
   '/practice/essay': typeof AppPracticeEssayRoute
   '/practice/self-prog': typeof AppPracticeSelfProgRoute
   '/practice/skill': typeof AppPracticeSkillRoute
@@ -232,7 +232,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/onboarding': typeof OnboardingRoute
-  '/_app/buddy': typeof AppBuddyRouteWithChildren
+  '/_app/buddy': typeof AppBuddyRoute
+  '/_app/buddy-card': typeof AppBuddyCardRoute
   '/_app/community': typeof AppCommunityRoute
   '/_app/decisions': typeof AppDecisionsRoute
   '/_app/flywheel': typeof AppFlywheelRoute
@@ -250,7 +251,6 @@ export interface FileRoutesById {
   '/_app/values': typeof AppValuesRoute
   '/_app/wishes': typeof AppWishesRoute
   '/_app/': typeof AppIndexRoute
-  '/_app/buddy/card': typeof AppBuddyCardRoute
   '/_app/practice/essay': typeof AppPracticeEssayRoute
   '/_app/practice/self-prog': typeof AppPracticeSelfProgRoute
   '/_app/practice/skill': typeof AppPracticeSkillRoute
@@ -264,6 +264,7 @@ export interface FileRouteTypes {
     | '/'
     | '/onboarding'
     | '/buddy'
+    | '/buddy-card'
     | '/community'
     | '/decisions'
     | '/flywheel'
@@ -280,7 +281,6 @@ export interface FileRouteTypes {
     | '/self-improve'
     | '/values'
     | '/wishes'
-    | '/buddy/card'
     | '/practice/essay'
     | '/practice/self-prog'
     | '/practice/skill'
@@ -291,6 +291,7 @@ export interface FileRouteTypes {
   to:
     | '/onboarding'
     | '/buddy'
+    | '/buddy-card'
     | '/community'
     | '/decisions'
     | '/flywheel'
@@ -308,7 +309,6 @@ export interface FileRouteTypes {
     | '/values'
     | '/wishes'
     | '/'
-    | '/buddy/card'
     | '/practice/essay'
     | '/practice/self-prog'
     | '/practice/skill'
@@ -320,6 +320,7 @@ export interface FileRouteTypes {
     | '/_app'
     | '/onboarding'
     | '/_app/buddy'
+    | '/_app/buddy-card'
     | '/_app/community'
     | '/_app/decisions'
     | '/_app/flywheel'
@@ -337,7 +338,6 @@ export interface FileRouteTypes {
     | '/_app/values'
     | '/_app/wishes'
     | '/_app/'
-    | '/_app/buddy/card'
     | '/_app/practice/essay'
     | '/_app/practice/self-prog'
     | '/_app/practice/skill'
@@ -486,6 +486,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCommunityRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/buddy-card': {
+      id: '/_app/buddy-card'
+      path: '/buddy-card'
+      fullPath: '/buddy-card'
+      preLoaderRoute: typeof AppBuddyCardRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/buddy': {
       id: '/_app/buddy'
       path: '/buddy'
@@ -535,30 +542,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPracticeEssayRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/buddy/card': {
-      id: '/_app/buddy/card'
-      path: '/card'
-      fullPath: '/buddy/card'
-      preLoaderRoute: typeof AppBuddyCardRouteImport
-      parentRoute: typeof AppBuddyRoute
-    }
   }
 }
 
-interface AppBuddyRouteChildren {
-  AppBuddyCardRoute: typeof AppBuddyCardRoute
-}
-
-const AppBuddyRouteChildren: AppBuddyRouteChildren = {
-  AppBuddyCardRoute: AppBuddyCardRoute,
-}
-
-const AppBuddyRouteWithChildren = AppBuddyRoute._addFileChildren(
-  AppBuddyRouteChildren,
-)
-
 interface AppRouteChildren {
-  AppBuddyRoute: typeof AppBuddyRouteWithChildren
+  AppBuddyRoute: typeof AppBuddyRoute
+  AppBuddyCardRoute: typeof AppBuddyCardRoute
   AppCommunityRoute: typeof AppCommunityRoute
   AppDecisionsRoute: typeof AppDecisionsRoute
   AppFlywheelRoute: typeof AppFlywheelRoute
@@ -585,7 +574,8 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppBuddyRoute: AppBuddyRouteWithChildren,
+  AppBuddyRoute: AppBuddyRoute,
+  AppBuddyCardRoute: AppBuddyCardRoute,
   AppCommunityRoute: AppCommunityRoute,
   AppDecisionsRoute: AppDecisionsRoute,
   AppFlywheelRoute: AppFlywheelRoute,
