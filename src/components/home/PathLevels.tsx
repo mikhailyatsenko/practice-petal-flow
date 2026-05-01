@@ -448,6 +448,8 @@ export function PathLevels() {
               </div>
               <ul style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {rewards.map((r, i) => {
+                  const leadMatch = r.match(/^(🎁|🛍️|👥)\s*/);
+                  const bulletEmoji = leadMatch ? leadMatch[1] : "🎁";
                   const clean = r.replace(/^(?:🎁|🛍️|👥)\s*/, "");
                   return (
                     <li
@@ -489,7 +491,7 @@ export function PathLevels() {
                               '"Apple Color Emoji","Segoe UI Emoji",sans-serif',
                           }}
                         >
-                          🎁
+                          {bulletEmoji}
                         </span>
                       )}
                       <span
