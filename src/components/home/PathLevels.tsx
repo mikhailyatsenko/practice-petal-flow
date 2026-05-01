@@ -448,7 +448,7 @@ export function PathLevels() {
               </div>
               <ul style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {rewards.map((r, i) => {
-                  const clean = r.replace(/^🎁\s*/, "");
+                  const clean = r.replace(/^(?:🎁|🛍️|👥)\s*/, "");
                   return (
                     <li
                       key={i}
