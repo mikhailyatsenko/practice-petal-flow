@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Play, Check, ArrowRight } from "lucide-react";
 
 export interface LevelTaskItem {
