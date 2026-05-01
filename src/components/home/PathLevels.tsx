@@ -341,7 +341,9 @@ export function PathLevels() {
   const [idx, setIdx] = useState(0);
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  const lvl = previewLevel != null ? PREVIEW_LEVELS[previewLevel] : LEVELS[idx];
+  const lvl = previewLevel != null
+    ? { ...PREVIEW_LEVELS[previewLevel], task: LEVELS[previewLevel - 1].task }
+    : LEVELS[idx];
   const totalLevels = previewLevel != null ? 5 : LEVELS.length;
   const currentIdx = previewLevel != null ? previewLevel : idx + 1;
   const isPreview = previewLevel != null;
