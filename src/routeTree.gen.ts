@@ -28,7 +28,6 @@ import { Route as AppFoursomeRouteImport } from './routes/_app.foursome'
 import { Route as AppFlywheelRouteImport } from './routes/_app.flywheel'
 import { Route as AppDecisionsRouteImport } from './routes/_app.decisions'
 import { Route as AppCommunityRouteImport } from './routes/_app.community'
-import { Route as AppBuddyCardRouteImport } from './routes/_app.buddy-card'
 import { Route as AppBuddyRouteImport } from './routes/_app.buddy'
 import { Route as AppPracticeWishesChargeRouteImport } from './routes/_app.practice.wishes-charge'
 import { Route as AppPracticeWishesRouteImport } from './routes/_app.practice.wishes'
@@ -131,11 +130,6 @@ const AppCommunityRoute = AppCommunityRouteImport.update({
   path: '/community',
   getParentRoute: () => AppRoute,
 } as any)
-const AppBuddyCardRoute = AppBuddyCardRouteImport.update({
-  id: '/buddy-card',
-  path: '/buddy-card',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppBuddyRoute = AppBuddyRouteImport.update({
   id: '/buddy',
   path: '/buddy',
@@ -176,7 +170,6 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/onboarding': typeof OnboardingRoute
   '/buddy': typeof AppBuddyRoute
-  '/buddy-card': typeof AppBuddyCardRoute
   '/community': typeof AppCommunityRoute
   '/decisions': typeof AppDecisionsRoute
   '/flywheel': typeof AppFlywheelRoute
@@ -203,7 +196,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/buddy': typeof AppBuddyRoute
-  '/buddy-card': typeof AppBuddyCardRoute
   '/community': typeof AppCommunityRoute
   '/decisions': typeof AppDecisionsRoute
   '/flywheel': typeof AppFlywheelRoute
@@ -233,7 +225,6 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/onboarding': typeof OnboardingRoute
   '/_app/buddy': typeof AppBuddyRoute
-  '/_app/buddy-card': typeof AppBuddyCardRoute
   '/_app/community': typeof AppCommunityRoute
   '/_app/decisions': typeof AppDecisionsRoute
   '/_app/flywheel': typeof AppFlywheelRoute
@@ -264,7 +255,6 @@ export interface FileRouteTypes {
     | '/'
     | '/onboarding'
     | '/buddy'
-    | '/buddy-card'
     | '/community'
     | '/decisions'
     | '/flywheel'
@@ -291,7 +281,6 @@ export interface FileRouteTypes {
   to:
     | '/onboarding'
     | '/buddy'
-    | '/buddy-card'
     | '/community'
     | '/decisions'
     | '/flywheel'
@@ -320,7 +309,6 @@ export interface FileRouteTypes {
     | '/_app'
     | '/onboarding'
     | '/_app/buddy'
-    | '/_app/buddy-card'
     | '/_app/community'
     | '/_app/decisions'
     | '/_app/flywheel'
@@ -486,13 +474,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCommunityRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/buddy-card': {
-      id: '/_app/buddy-card'
-      path: '/buddy-card'
-      fullPath: '/buddy-card'
-      preLoaderRoute: typeof AppBuddyCardRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/buddy': {
       id: '/_app/buddy'
       path: '/buddy'
@@ -547,7 +528,6 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppBuddyRoute: typeof AppBuddyRoute
-  AppBuddyCardRoute: typeof AppBuddyCardRoute
   AppCommunityRoute: typeof AppCommunityRoute
   AppDecisionsRoute: typeof AppDecisionsRoute
   AppFlywheelRoute: typeof AppFlywheelRoute
@@ -575,7 +555,6 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppBuddyRoute: AppBuddyRoute,
-  AppBuddyCardRoute: AppBuddyCardRoute,
   AppCommunityRoute: AppCommunityRoute,
   AppDecisionsRoute: AppDecisionsRoute,
   AppFlywheelRoute: AppFlywheelRoute,

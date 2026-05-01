@@ -1,5 +1,5 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, UsersRound, RotateCcw, CalendarPlus, Cog, Bell, BellOff } from "lucide-react";
+import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, RotateCcw, CalendarPlus, Cog, Bell, BellOff } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { resetAllPractices, advanceToNextDay } from "@/lib/practicesStore";
 import { useBuddyRequestMode, toggleBuddyRequestMode } from "@/lib/buddyRequestMode";
@@ -87,6 +87,15 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
           <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
             Демо-страницы
           </div>
+          <Link
+            to="/buddy"
+            search={{ demo: "has" }}
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <Users className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>Бадди — есть бадди</span>
+          </Link>
           <button
             onClick={() => {
               toggleBuddyRequestMode();
