@@ -1,5 +1,5 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, RotateCcw, CalendarPlus, Cog, Bell, BellOff } from "lucide-react";
+import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, RotateCcw, CalendarPlus, Bell, BellOff } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { resetAllPractices, advanceToNextDay } from "@/lib/practicesStore";
 import { useBuddyRequestMode, toggleBuddyRequestMode } from "@/lib/buddyRequestMode";
@@ -44,15 +44,6 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
         </div>
 
         <nav className="px-2 py-3">
-          <Link
-            to="/flywheel"
-            onClick={() => onOpenChange(false)}
-            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
-          >
-            <Cog className="h-[18px] w-[18px]" strokeWidth={2} />
-            <span>⚙️ Маховик успеха</span>
-          </Link>
-
           <Link
             to="/onboarding"
             onClick={() => onOpenChange(false)}
