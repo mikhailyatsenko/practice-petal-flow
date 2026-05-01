@@ -78,7 +78,7 @@ function MyBuddyCardForm() {
       <FieldCard
         num={1}
         title="Главная цель на 1–2 года"
-        hint="Опиши одним предложением куда он движется — что хочет создать, достичь или изменить в своей жизни за ближайшие 1–2 года"
+        hint="Опиши его цель — какой один большой результат он хотел бы получить за ближайшие 1–2 года"
       >
         <textarea
           value={card.goal}
@@ -93,8 +93,8 @@ function MyBuddyCardForm() {
       {/* Q2 */}
       <FieldCard
         num={2}
-        title="3 сферы жизни"
-        hint="В каких трёх сферах он хочет получить результат в первую очередь — где ему важнее всего сдвинуться с места"
+        title="3 желания Бадди"
+        hint="Напиши три желания которые он хочет чтобы случились. Желание — это не цель с планом, а просто то чего он хочет"
       >
         <div className="space-y-2">
           {[0, 1, 2].map((i) => (
@@ -119,7 +119,7 @@ function MyBuddyCardForm() {
               <input
                 value={card.spheres[i]}
                 onChange={(e) => updateSphere(i as 0 | 1 | 2, e.target.value)}
-                placeholder={["Например: финансы", "Например: здоровье", "Например: отношения"][i]}
+                placeholder={["Например: съездить в Японию", "Например: научиться готовить", "Например: купить велосипед"][i]}
                 className="flex-1 rounded-xl px-3 py-2.5 text-[14px] outline-none transition-colors focus:border-[#FF6D00]"
                 style={{ background: "#FAF6EF", border: "1px solid #ece4d4" }}
               />
