@@ -1030,6 +1030,9 @@ function IncomingRequestCard({
 
 function HasBuddy({ buddy, onBack }: { buddy: BuddyRequest; onBack: () => void }) {
   const navigate = useNavigate();
+  const card = useBuddyCard();
+  const filled = isBuddyCardFilled(card);
+
   return (
     <div className="px-4 pb-6">
       <PageHeader title="Мой Бадди" onBack={() => navigate({ to: "/community" })} />
@@ -1048,6 +1051,7 @@ function HasBuddy({ buddy, onBack }: { buddy: BuddyRequest; onBack: () => void }
 
       {/* Buddy card */}
       <div className="mt-4 bg-card hairline shadow-card rounded-2xl p-4 animate-fade-up">
+        {/* Header */}
         <div className="flex items-center gap-3">
           <div
             className="h-14 w-14 shrink-0 rounded-2xl flex items-center justify-center text-[28px]"
@@ -1066,6 +1070,7 @@ function HasBuddy({ buddy, onBack }: { buddy: BuddyRequest; onBack: () => void }
           </div>
         </div>
 
+        {/* Beige description */}
         <div
           className="mt-3 rounded-[10px] p-3 text-[13px]"
           style={{ background: "#FAF6EF", lineHeight: 1.5 }}
@@ -1073,8 +1078,81 @@ function HasBuddy({ buddy, onBack }: { buddy: BuddyRequest; onBack: () => void }
           {buddy.bio}
         </div>
 
+        {/* Buddy card block */}
+        <div className="mt-4">
+          <div className="flex items-center justify-between mb-2 px-0.5">
+            <h4 className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "#9a8e7a", letterSpacing: 0.6 }}>
+              Карточка Бадди
+            </h4>
+            {filled && (
+              <button
+                onClick={() => navigate({ to: "/buddy/card" })}
+                className="tap inline-flex items-center gap-1 text-[12px] font-semibold"
+                style={{ color: "#FF6D00" }}
+              >
+                <Pencil className="h-3.5 w-3.5" /> Изменить
+              </button>
+            )}
+          </div>
+
+          {!filled ? (
+            <div
+              className="rounded-2xl p-4 text-center"
+              style={{ background: "#FAF6EF", border: "1px dashed #e6d9bf" }}
+            >
+              <div
+                className="h-12 w-12 mx-auto rounded-2xl flex items-center justify-center"
+                style={{ background: "#fff3e0" }}
+              >
+                <ClipboardList className="h-6 w-6" style={{ color: "#FF6D00" }} />
+              </div>
+              <p className="mt-2.5 text-[14px] font-bold">Карточка Бадди не заполнена</p>
+              <p className="mt-1 text-[12px] text-muted-foreground leading-snug max-w-[280px] mx-auto">
+                Заполни карточку после первого созвона — так ты лучше узнаешь своего Бадди
+              </p>
+              <button
+                onClick={() => navigate({ to: "/buddy/card" })}
+                className="tap mt-3 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-bold text-white"
+                style={{
+                  background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                  boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
+                }}
+              >
+                <Pencil className="h-4 w-4" /> Заполнить карточку Бадди
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              <BuddyCardAnswer label="🎯 Главная цель на 1–2 года" text={card.goal} />
+              <div
+                className="rounded-xl p-3"
+                style={{ background: "#fff", border: "1px solid #ede8df" }}
+              >
+                <p className="text-[11px] font-bold uppercase mb-2" style={{ color: "#9a8e7a", letterSpacing: 0.4 }}>
+                  🌱 3 сферы жизни
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {card.spheres.map((s, i) => (
+                    <span
+                      key={i}
+                      className="text-[12px] font-semibold rounded-full px-3 py-1"
+                      style={{ background: "#fff3e0", color: "#FF6D00", border: "1px solid #ffd089" }}
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <BuddyCardAnswer label="💪 Сильные стороны" text={card.strengths} />
+              <BuddyCardAnswer label="🚧 Что мешает достигать успеха" text={card.obstacles} />
+              <BuddyCardAnswer label="🤝 В чём нужна моя поддержка" text={card.support} />
+            </div>
+          )}
+        </div>
+
+        {/* Telegram CTA */}
         <button
-          className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
+          className="tap mt-4 w-full rounded-2xl py-3 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
           style={{
             background: "linear-gradient(135deg, #8BC34A, #4CAF50)",
             boxShadow: "0 6px 20px rgba(76,175,80,0.35)",
@@ -1117,3 +1195,20 @@ function HasBuddy({ buddy, onBack }: { buddy: BuddyRequest; onBack: () => void }
     </div>
   );
 }
+
+function BuddyCardAnswer({ label, text }: { label: string; text: string }) {
+  return (
+    <div
+      className="rounded-xl p-3"
+      style={{ background: "#fff", border: "1px solid #ede8df" }}
+    >
+      <p className="text-[11px] font-bold uppercase mb-1.5" style={{ color: "#9a8e7a", letterSpacing: 0.4 }}>
+        {label}
+      </p>
+      <p className="text-[13px] text-foreground/85" style={{ lineHeight: 1.5 }}>
+        {text}
+      </p>
+    </div>
+  );
+}
+
