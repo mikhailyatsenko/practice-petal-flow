@@ -20,6 +20,7 @@ import { Route as AppResponsibilityRouteImport } from './routes/_app.responsibil
 import { Route as AppQualitiesRouteImport } from './routes/_app.qualities'
 import { Route as AppPartnerRouteImport } from './routes/_app.partner'
 import { Route as AppNeedsRouteImport } from './routes/_app.needs'
+import { Route as AppMyBuddyCardRouteImport } from './routes/_app.my-buddy-card'
 import { Route as AppMistakesRouteImport } from './routes/_app.mistakes'
 import { Route as AppLibraryRouteImport } from './routes/_app.library'
 import { Route as AppHabitsRouteImport } from './routes/_app.habits'
@@ -88,6 +89,11 @@ const AppPartnerRoute = AppPartnerRouteImport.update({
 const AppNeedsRoute = AppNeedsRouteImport.update({
   id: '/needs',
   path: '/needs',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMyBuddyCardRoute = AppMyBuddyCardRouteImport.update({
+  id: '/my-buddy-card',
+  path: '/my-buddy-card',
   getParentRoute: () => AppRoute,
 } as any)
 const AppMistakesRoute = AppMistakesRouteImport.update({
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/habits': typeof AppHabitsRoute
   '/library': typeof AppLibraryRoute
   '/mistakes': typeof AppMistakesRoute
+  '/my-buddy-card': typeof AppMyBuddyCardRoute
   '/needs': typeof AppNeedsRoute
   '/partner': typeof AppPartnerRoute
   '/qualities': typeof AppQualitiesRoute
@@ -204,6 +211,7 @@ export interface FileRoutesByTo {
   '/habits': typeof AppHabitsRoute
   '/library': typeof AppLibraryRoute
   '/mistakes': typeof AppMistakesRoute
+  '/my-buddy-card': typeof AppMyBuddyCardRoute
   '/needs': typeof AppNeedsRoute
   '/partner': typeof AppPartnerRoute
   '/qualities': typeof AppQualitiesRoute
@@ -233,6 +241,7 @@ export interface FileRoutesById {
   '/_app/habits': typeof AppHabitsRoute
   '/_app/library': typeof AppLibraryRoute
   '/_app/mistakes': typeof AppMistakesRoute
+  '/_app/my-buddy-card': typeof AppMyBuddyCardRoute
   '/_app/needs': typeof AppNeedsRoute
   '/_app/partner': typeof AppPartnerRoute
   '/_app/qualities': typeof AppQualitiesRoute
@@ -263,6 +272,7 @@ export interface FileRouteTypes {
     | '/habits'
     | '/library'
     | '/mistakes'
+    | '/my-buddy-card'
     | '/needs'
     | '/partner'
     | '/qualities'
@@ -289,6 +299,7 @@ export interface FileRouteTypes {
     | '/habits'
     | '/library'
     | '/mistakes'
+    | '/my-buddy-card'
     | '/needs'
     | '/partner'
     | '/qualities'
@@ -317,6 +328,7 @@ export interface FileRouteTypes {
     | '/_app/habits'
     | '/_app/library'
     | '/_app/mistakes'
+    | '/_app/my-buddy-card'
     | '/_app/needs'
     | '/_app/partner'
     | '/_app/qualities'
@@ -416,6 +428,13 @@ declare module '@tanstack/react-router' {
       path: '/needs'
       fullPath: '/needs'
       preLoaderRoute: typeof AppNeedsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/my-buddy-card': {
+      id: '/_app/my-buddy-card'
+      path: '/my-buddy-card'
+      fullPath: '/my-buddy-card'
+      preLoaderRoute: typeof AppMyBuddyCardRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/mistakes': {
@@ -536,6 +555,7 @@ interface AppRouteChildren {
   AppHabitsRoute: typeof AppHabitsRoute
   AppLibraryRoute: typeof AppLibraryRoute
   AppMistakesRoute: typeof AppMistakesRoute
+  AppMyBuddyCardRoute: typeof AppMyBuddyCardRoute
   AppNeedsRoute: typeof AppNeedsRoute
   AppPartnerRoute: typeof AppPartnerRoute
   AppQualitiesRoute: typeof AppQualitiesRoute
@@ -563,6 +583,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppHabitsRoute: AppHabitsRoute,
   AppLibraryRoute: AppLibraryRoute,
   AppMistakesRoute: AppMistakesRoute,
+  AppMyBuddyCardRoute: AppMyBuddyCardRoute,
   AppNeedsRoute: AppNeedsRoute,
   AppPartnerRoute: AppPartnerRoute,
   AppQualitiesRoute: AppQualitiesRoute,
