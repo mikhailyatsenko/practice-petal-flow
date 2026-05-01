@@ -288,6 +288,8 @@ export function LevelTaskSheet({ open, onClose, levelNumber, levelTitle, emoji, 
         }
       `}</style>
     </div>
+    </>,
+    document.body,
   );
 }
 
