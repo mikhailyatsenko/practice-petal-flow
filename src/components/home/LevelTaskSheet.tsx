@@ -134,8 +134,8 @@ export function LevelTaskSheet({ open, onClose, levelNumber, levelTitle, emoji, 
         >
           {(
             [
-              { id: "desc", label: "Описание" },
-              { id: "video", label: "Видео" },
+              { id: "desc", label: "Текст", icon: "📖" },
+              { id: "video", label: "Видео", icon: "▶️" },
             ] as const
           ).map((t) => {
             const active = tab === t.id;
@@ -146,16 +146,34 @@ export function LevelTaskSheet({ open, onClose, levelNumber, levelTitle, emoji, 
                 onClick={() => setTab(t.id)}
                 style={{
                   flex: 1,
-                  padding: "8px 10px",
-                  borderRadius: 9,
-                  fontSize: 13,
-                  fontWeight: active ? 600 : 500,
-                  color: active ? "#1a0e00" : "#8a7c63",
-                  background: active ? "#fff" : "transparent",
-                  boxShadow: active ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                  transition: "all 0.15s",
+                  padding: "10px 12px",
+                  borderRadius: 999,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: active ? "#fff" : "#8a7c63",
+                  background: active
+                    ? "linear-gradient(135deg,#FFB300,#FF6D00)"
+                    : "transparent",
+                  boxShadow: active ? "0 4px 12px rgba(255,109,0,0.35)" : "none",
+                  transition: "all 0.2s",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  border: "none",
+                  cursor: "pointer",
                 }}
               >
+                <span
+                  aria-hidden
+                  style={{
+                    fontFamily: '"Apple Color Emoji","Segoe UI Emoji",sans-serif',
+                    fontSize: 15,
+                    lineHeight: 1,
+                  }}
+                >
+                  {t.icon}
+                </span>
                 {t.label}
               </button>
             );
