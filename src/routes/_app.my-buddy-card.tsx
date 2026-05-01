@@ -129,7 +129,11 @@ function MyBuddyCardForm() {
       </FieldCard>
 
       {/* Q3 */}
-      <FieldCard num={3} title="Сильные стороны">
+      <FieldCard
+        num={3}
+        title="Сильные стороны"
+        hint="В чём он действительно силён — его таланты, качества и преимущества которые помогают ему достигать результатов"
+      >
         <textarea
           value={card.strengths}
           onChange={(e) => update({ strengths: e.target.value })}
@@ -141,7 +145,11 @@ function MyBuddyCardForm() {
       </FieldCard>
 
       {/* Q4 */}
-      <FieldCard num={4} title="Что мешает достигать успеха">
+      <FieldCard
+        num={4}
+        title="Что мешает достигать успеха"
+        hint="Что чаще всего останавливает его на пути к цели — какие внутренние препятствия он сам признаёт, которые мешают ему достигать результатов"
+      >
         <textarea
           value={card.blockers}
           onChange={(e) => update({ blockers: e.target.value })}
@@ -153,7 +161,11 @@ function MyBuddyCardForm() {
       </FieldCard>
 
       {/* Q5 */}
-      <FieldCard num={5} title="В чём нужна моя поддержка">
+      <FieldCard
+        num={5}
+        title="В чём нужна моя поддержка"
+        hint="Какая поддержка для него важнее всего — где твоя помощь будет для него наиболее ценной"
+      >
         <textarea
           value={card.support}
           onChange={(e) => update({ support: e.target.value })}
