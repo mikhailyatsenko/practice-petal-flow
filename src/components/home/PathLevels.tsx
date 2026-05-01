@@ -495,8 +495,7 @@ export function PathLevels() {
             cursor: "pointer",
             position: "relative",
             overflow: "hidden",
-            marginTop: "auto",
-            marginBottom: "auto",
+            marginTop: 16,
           }}
         >
           <span
