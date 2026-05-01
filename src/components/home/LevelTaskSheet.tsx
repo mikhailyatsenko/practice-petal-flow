@@ -56,18 +56,33 @@ export function LevelTaskSheet({ open, onClose, levelNumber, levelTitle, emoji, 
   const tasks = content.tasks ?? [];
   const chapters = content.videoChapters ?? [];
 
-  return (
-    <div
-      className="fixed inset-0 z-[100] flex items-end animate-fade-in"
-      style={{ background: "rgba(0,0,0,0.5)" }}
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={`Уровень ${levelNumber} — ${levelTitle}`}
-    >
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
+    <>
+      {/* Overlay */}
       <div
-        className="w-full"
+        onClick={onClose}
+        aria-hidden
+        className="animate-fade-in"
         style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(0,0,0,0.5)",
+          zIndex: 999,
+        }}
+      />
+      {/* Bottom sheet */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Уровень ${levelNumber} — ${levelTitle}`}
+        style={{
+          position: "fixed",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 1000,
           background: "#fff",
           borderRadius: "20px 20px 0 0",
           padding: "20px 16px 24px",
@@ -75,7 +90,6 @@ export function LevelTaskSheet({ open, onClose, levelNumber, levelTitle, emoji, 
           overflowY: "auto",
           animation: "slide-up 0.25s ease-out",
         }}
-        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-start justify-between mb-1">
