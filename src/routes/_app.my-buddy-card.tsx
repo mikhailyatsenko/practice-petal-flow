@@ -75,7 +75,11 @@ function MyBuddyCardForm() {
       </div>
 
       {/* Q1 */}
-      <FieldCard num={1} title="Главная цель на 1–2 года">
+      <FieldCard
+        num={1}
+        title="Главная цель на 1–2 года"
+        hint="Опиши одним предложением куда он движется — что хочет создать, достичь или изменить в своей жизни за ближайшие 1–2 года"
+      >
         <textarea
           value={card.goal}
           onChange={(e) => update({ goal: e.target.value })}
@@ -87,7 +91,11 @@ function MyBuddyCardForm() {
       </FieldCard>
 
       {/* Q2 */}
-      <FieldCard num={2} title="3 сферы жизни">
+      <FieldCard
+        num={2}
+        title="3 сферы жизни"
+        hint="В каких трёх сферах он хочет получить результат в первую очередь — где ему важнее всего сдвинуться с места"
+      >
         <div className="space-y-2">
           {[0, 1, 2].map((i) => (
             <div key={i} className="flex items-center gap-2">
