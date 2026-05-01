@@ -407,7 +407,9 @@ export function PathLevels() {
         {/* Награды */}
         {(() => {
           const rewards = Array.isArray(lvl.reward) ? lvl.reward : [lvl.reward];
-          const isMulti = rewards.length > 1;
+          // Извлекаем ведущий эмодзи (любой) из строки награды
+          const EMOJI_RE =
+            /^(\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic})*)\s*/u;
           return (
             <div style={{ marginTop: 14 }}>
               <div
@@ -424,9 +426,9 @@ export function PathLevels() {
               </div>
               <ul style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {rewards.map((r, i) => {
-                  const leadMatch = r.match(/^(🎁|🛍️|👥)\s*/);
-                  const bulletEmoji = leadMatch ? leadMatch[1] : "🎁";
-                  const clean = r.replace(/^(?:🎁|🛍️|👥)\s*/, "");
+                  const m = r.match(EMOJI_RE);
+                  const bulletEmoji = m ? m[1] : "✨";
+                  const clean = m ? r.slice(m[0].length) : r;
                   return (
                     <li
                       key={i}
@@ -436,40 +438,23 @@ export function PathLevels() {
                         gap: 8,
                       }}
                     >
-                      {isMulti ? (
-                        <span
-                          aria-hidden
-                          style={{
-                            flexShrink: 0,
-                            width: 20,
-                            height: 20,
-                            borderRadius: "50%",
-                            background: "#FFB300",
-                            color: "#fff",
-                            fontSize: 11,
-                            fontWeight: 600,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            lineHeight: 1,
-                          }}
-                        >
-                          {i + 1}
-                        </span>
-                      ) : (
-                        <span
-                          aria-hidden
-                          style={{
-                            flexShrink: 0,
-                            fontSize: 16,
-                            lineHeight: 1,
-                            fontFamily:
-                              '"Apple Color Emoji","Segoe UI Emoji",sans-serif',
-                          }}
-                        >
-                          {bulletEmoji}
-                        </span>
-                      )}
+                      <span
+                        aria-hidden
+                        style={{
+                          flexShrink: 0,
+                          width: 22,
+                          height: 22,
+                          fontSize: 16,
+                          lineHeight: 1,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontFamily:
+                            '"Apple Color Emoji","Segoe UI Emoji",sans-serif',
+                        }}
+                      >
+                        {bulletEmoji}
+                      </span>
                       <span
                         style={{
                           fontSize: 13,
