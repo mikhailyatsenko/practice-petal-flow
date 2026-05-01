@@ -9,7 +9,7 @@ import {
   type BuddyCardData,
 } from "@/lib/buddyCardStore";
 
-export const Route = createFileRoute("/_app/buddy/card")({
+export const Route = createFileRoute("/_app/buddy-card")({
   head: () => ({
     meta: [
       { title: "Карточка Бадди" },
