@@ -204,10 +204,12 @@ function MyBuddyCardForm() {
 function FieldCard({
   num,
   title,
+  hint,
   children,
 }: {
   num: number;
   title: string;
+  hint?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -224,9 +226,17 @@ function FieldCard({
           ВОПРОС {num}
         </span>
       </div>
-      <h3 className="text-[14px] font-bold mb-3" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
+      <h3 className="text-[14px] font-bold mb-2" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
         {title}
       </h3>
+      {hint && (
+        <p
+          className="mb-3 text-[12px] leading-snug"
+          style={{ color: "#a59a85" }}
+        >
+          {hint}
+        </p>
+      )}
       {children}
     </div>
   );
