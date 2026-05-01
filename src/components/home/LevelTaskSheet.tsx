@@ -280,14 +280,12 @@ export function LevelTaskSheet({ open, onClose, levelNumber, levelTitle, emoji, 
           </div>
         )}
       </div>
-
       <style>{`
         @keyframes slide-up {
           from { transform: translateY(100%); }
           to { transform: translateY(0); }
         }
       `}</style>
-    </div>
     </>,
     document.body,
   );
