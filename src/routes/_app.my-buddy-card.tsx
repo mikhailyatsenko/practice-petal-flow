@@ -75,7 +75,11 @@ function MyBuddyCardForm() {
       </div>
 
       {/* Q1 */}
-      <FieldCard num={1} title="Главная цель на 1–2 года">
+      <FieldCard
+        num={1}
+        title="Главная цель на 1–2 года"
+        hint="Опиши одним предложением куда он движется — что хочет создать, достичь или изменить в своей жизни за ближайшие 1–2 года"
+      >
         <textarea
           value={card.goal}
           onChange={(e) => update({ goal: e.target.value })}
@@ -87,7 +91,11 @@ function MyBuddyCardForm() {
       </FieldCard>
 
       {/* Q2 */}
-      <FieldCard num={2} title="3 сферы жизни">
+      <FieldCard
+        num={2}
+        title="3 сферы жизни"
+        hint="В каких трёх сферах он хочет получить результат в первую очередь — где ему важнее всего сдвинуться с места"
+      >
         <div className="space-y-2">
           {[0, 1, 2].map((i) => (
             <div key={i} className="flex items-center gap-2">
@@ -121,7 +129,11 @@ function MyBuddyCardForm() {
       </FieldCard>
 
       {/* Q3 */}
-      <FieldCard num={3} title="Сильные стороны">
+      <FieldCard
+        num={3}
+        title="Сильные стороны"
+        hint="В чём он действительно силён — его таланты, качества и преимущества которые помогают ему достигать результатов"
+      >
         <textarea
           value={card.strengths}
           onChange={(e) => update({ strengths: e.target.value })}
@@ -133,7 +145,11 @@ function MyBuddyCardForm() {
       </FieldCard>
 
       {/* Q4 */}
-      <FieldCard num={4} title="Что мешает достигать успеха">
+      <FieldCard
+        num={4}
+        title="Что мешает достигать успеха"
+        hint="Что чаще всего останавливает его на пути к цели — какие внутренние препятствия он сам признаёт, которые мешают ему достигать результатов"
+      >
         <textarea
           value={card.blockers}
           onChange={(e) => update({ blockers: e.target.value })}
@@ -145,7 +161,11 @@ function MyBuddyCardForm() {
       </FieldCard>
 
       {/* Q5 */}
-      <FieldCard num={5} title="В чём нужна моя поддержка">
+      <FieldCard
+        num={5}
+        title="В чём нужна моя поддержка"
+        hint="Какая поддержка для него важнее всего — где твоя помощь будет для него наиболее ценной"
+      >
         <textarea
           value={card.support}
           onChange={(e) => update({ support: e.target.value })}
@@ -184,10 +204,12 @@ function MyBuddyCardForm() {
 function FieldCard({
   num,
   title,
+  hint,
   children,
 }: {
   num: number;
   title: string;
+  hint?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -204,9 +226,17 @@ function FieldCard({
           ВОПРОС {num}
         </span>
       </div>
-      <h3 className="text-[14px] font-bold mb-3" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
+      <h3 className="text-[14px] font-bold mb-2" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
         {title}
       </h3>
+      {hint && (
+        <p
+          className="mb-3 text-[12px] leading-snug"
+          style={{ color: "#a59a85" }}
+        >
+          {hint}
+        </p>
+      )}
       {children}
     </div>
   );
