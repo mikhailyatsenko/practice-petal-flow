@@ -46,7 +46,7 @@ function TrialScreen() {
         to="/subscribe/confirm"
         search={{ amount: 1 }}
         className="mt-6 flex w-full items-center justify-center rounded-2xl py-4 text-[16px] font-semibold text-white"
-        style={{ background: "linear-gradient(135deg,#FF8A3D,#FF5E62)" }}
+        style={{ background: "linear-gradient(135deg,#F2A65A,#FF6D00)" }}
       >
         Вступить за 1₽
       </Link>
