@@ -30,6 +30,7 @@ import { Route as AppFlywheelRouteImport } from './routes/_app.flywheel'
 import { Route as AppDecisionsRouteImport } from './routes/_app.decisions'
 import { Route as AppCommunityRouteImport } from './routes/_app.community'
 import { Route as AppBuddyRouteImport } from './routes/_app.buddy'
+import { Route as AppSubscribeTrialRouteImport } from './routes/_app.subscribe.trial'
 import { Route as AppPracticeWishesChargeRouteImport } from './routes/_app.practice.wishes-charge'
 import { Route as AppPracticeWishesRouteImport } from './routes/_app.practice.wishes'
 import { Route as AppPracticeStepRouteImport } from './routes/_app.practice.step'
@@ -141,6 +142,11 @@ const AppBuddyRoute = AppBuddyRouteImport.update({
   path: '/buddy',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSubscribeTrialRoute = AppSubscribeTrialRouteImport.update({
+  id: '/subscribe/trial',
+  path: '/subscribe/trial',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppPracticeWishesChargeRoute = AppPracticeWishesChargeRouteImport.update({
   id: '/practice/wishes-charge',
   path: '/practice/wishes-charge',
@@ -199,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/practice/step': typeof AppPracticeStepRoute
   '/practice/wishes': typeof AppPracticeWishesRoute
   '/practice/wishes-charge': typeof AppPracticeWishesChargeRoute
+  '/subscribe/trial': typeof AppSubscribeTrialRoute
 }
 export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
@@ -227,6 +234,7 @@ export interface FileRoutesByTo {
   '/practice/step': typeof AppPracticeStepRoute
   '/practice/wishes': typeof AppPracticeWishesRoute
   '/practice/wishes-charge': typeof AppPracticeWishesChargeRoute
+  '/subscribe/trial': typeof AppSubscribeTrialRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -257,6 +265,7 @@ export interface FileRoutesById {
   '/_app/practice/step': typeof AppPracticeStepRoute
   '/_app/practice/wishes': typeof AppPracticeWishesRoute
   '/_app/practice/wishes-charge': typeof AppPracticeWishesChargeRoute
+  '/_app/subscribe/trial': typeof AppSubscribeTrialRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -287,6 +296,7 @@ export interface FileRouteTypes {
     | '/practice/step'
     | '/practice/wishes'
     | '/practice/wishes-charge'
+    | '/subscribe/trial'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/onboarding'
@@ -315,6 +325,7 @@ export interface FileRouteTypes {
     | '/practice/step'
     | '/practice/wishes'
     | '/practice/wishes-charge'
+    | '/subscribe/trial'
   id:
     | '__root__'
     | '/_app'
@@ -344,6 +355,7 @@ export interface FileRouteTypes {
     | '/_app/practice/step'
     | '/_app/practice/wishes'
     | '/_app/practice/wishes-charge'
+    | '/_app/subscribe/trial'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -500,6 +512,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBuddyRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/subscribe/trial': {
+      id: '/_app/subscribe/trial'
+      path: '/subscribe/trial'
+      fullPath: '/subscribe/trial'
+      preLoaderRoute: typeof AppSubscribeTrialRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/practice/wishes-charge': {
       id: '/_app/practice/wishes-charge'
       path: '/practice/wishes-charge'
@@ -571,6 +590,7 @@ interface AppRouteChildren {
   AppPracticeStepRoute: typeof AppPracticeStepRoute
   AppPracticeWishesRoute: typeof AppPracticeWishesRoute
   AppPracticeWishesChargeRoute: typeof AppPracticeWishesChargeRoute
+  AppSubscribeTrialRoute: typeof AppSubscribeTrialRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -599,6 +619,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppPracticeStepRoute: AppPracticeStepRoute,
   AppPracticeWishesRoute: AppPracticeWishesRoute,
   AppPracticeWishesChargeRoute: AppPracticeWishesChargeRoute,
+  AppSubscribeTrialRoute: AppSubscribeTrialRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -610,12 +631,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
