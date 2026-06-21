@@ -32,6 +32,7 @@ import { Route as AppCommunityRouteImport } from './routes/_app.community'
 import { Route as AppBuddyRouteImport } from './routes/_app.buddy'
 import { Route as AppSubscribeTrialRouteImport } from './routes/_app.subscribe.trial'
 import { Route as AppSubscribeFullRouteImport } from './routes/_app.subscribe.full'
+import { Route as AppSubscribeConfirmRouteImport } from './routes/_app.subscribe.confirm'
 import { Route as AppPracticeWishesChargeRouteImport } from './routes/_app.practice.wishes-charge'
 import { Route as AppPracticeWishesRouteImport } from './routes/_app.practice.wishes'
 import { Route as AppPracticeStepRouteImport } from './routes/_app.practice.step'
@@ -153,6 +154,11 @@ const AppSubscribeFullRoute = AppSubscribeFullRouteImport.update({
   path: '/subscribe/full',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSubscribeConfirmRoute = AppSubscribeConfirmRouteImport.update({
+  id: '/subscribe/confirm',
+  path: '/subscribe/confirm',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppPracticeWishesChargeRoute = AppPracticeWishesChargeRouteImport.update({
   id: '/practice/wishes-charge',
   path: '/practice/wishes-charge',
@@ -211,6 +217,7 @@ export interface FileRoutesByFullPath {
   '/practice/step': typeof AppPracticeStepRoute
   '/practice/wishes': typeof AppPracticeWishesRoute
   '/practice/wishes-charge': typeof AppPracticeWishesChargeRoute
+  '/subscribe/confirm': typeof AppSubscribeConfirmRoute
   '/subscribe/full': typeof AppSubscribeFullRoute
   '/subscribe/trial': typeof AppSubscribeTrialRoute
 }
@@ -241,6 +248,7 @@ export interface FileRoutesByTo {
   '/practice/step': typeof AppPracticeStepRoute
   '/practice/wishes': typeof AppPracticeWishesRoute
   '/practice/wishes-charge': typeof AppPracticeWishesChargeRoute
+  '/subscribe/confirm': typeof AppSubscribeConfirmRoute
   '/subscribe/full': typeof AppSubscribeFullRoute
   '/subscribe/trial': typeof AppSubscribeTrialRoute
 }
@@ -273,6 +281,7 @@ export interface FileRoutesById {
   '/_app/practice/step': typeof AppPracticeStepRoute
   '/_app/practice/wishes': typeof AppPracticeWishesRoute
   '/_app/practice/wishes-charge': typeof AppPracticeWishesChargeRoute
+  '/_app/subscribe/confirm': typeof AppSubscribeConfirmRoute
   '/_app/subscribe/full': typeof AppSubscribeFullRoute
   '/_app/subscribe/trial': typeof AppSubscribeTrialRoute
 }
@@ -305,6 +314,7 @@ export interface FileRouteTypes {
     | '/practice/step'
     | '/practice/wishes'
     | '/practice/wishes-charge'
+    | '/subscribe/confirm'
     | '/subscribe/full'
     | '/subscribe/trial'
   fileRoutesByTo: FileRoutesByTo
@@ -335,6 +345,7 @@ export interface FileRouteTypes {
     | '/practice/step'
     | '/practice/wishes'
     | '/practice/wishes-charge'
+    | '/subscribe/confirm'
     | '/subscribe/full'
     | '/subscribe/trial'
   id:
@@ -366,6 +377,7 @@ export interface FileRouteTypes {
     | '/_app/practice/step'
     | '/_app/practice/wishes'
     | '/_app/practice/wishes-charge'
+    | '/_app/subscribe/confirm'
     | '/_app/subscribe/full'
     | '/_app/subscribe/trial'
   fileRoutesById: FileRoutesById
@@ -538,6 +550,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSubscribeFullRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/subscribe/confirm': {
+      id: '/_app/subscribe/confirm'
+      path: '/subscribe/confirm'
+      fullPath: '/subscribe/confirm'
+      preLoaderRoute: typeof AppSubscribeConfirmRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/practice/wishes-charge': {
       id: '/_app/practice/wishes-charge'
       path: '/practice/wishes-charge'
@@ -609,6 +628,7 @@ interface AppRouteChildren {
   AppPracticeStepRoute: typeof AppPracticeStepRoute
   AppPracticeWishesRoute: typeof AppPracticeWishesRoute
   AppPracticeWishesChargeRoute: typeof AppPracticeWishesChargeRoute
+  AppSubscribeConfirmRoute: typeof AppSubscribeConfirmRoute
   AppSubscribeFullRoute: typeof AppSubscribeFullRoute
   AppSubscribeTrialRoute: typeof AppSubscribeTrialRoute
 }
@@ -639,6 +659,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppPracticeStepRoute: AppPracticeStepRoute,
   AppPracticeWishesRoute: AppPracticeWishesRoute,
   AppPracticeWishesChargeRoute: AppPracticeWishesChargeRoute,
+  AppSubscribeConfirmRoute: AppSubscribeConfirmRoute,
   AppSubscribeFullRoute: AppSubscribeFullRoute,
   AppSubscribeTrialRoute: AppSubscribeTrialRoute,
 }
