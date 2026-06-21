@@ -31,7 +31,7 @@ function ConfirmScreen() {
         style={{ background: "#E8F2EA", border: "1px solid #cfe3d3" }}
       >
         <p className="text-[15px] font-semibold text-[#1f2937]">
-          В клубе действует абонплата, которая списывается каждое 1 число месяца.
+          В клубе действует абонплата, которая списывается каждые 30 дней.
         </p>
         <p className="mt-3 text-[14px] text-[#1f2937]">
           💳 Абонплата <b>{amount}₽</b> (отписаться можно в любой момент).
