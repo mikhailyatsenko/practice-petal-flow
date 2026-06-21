@@ -1,5 +1,5 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, RotateCcw, CalendarPlus, Bell, BellOff } from "lucide-react";
+import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, RotateCcw, CalendarPlus, Bell, BellOff, Sparkles, Crown, ShieldCheck } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { resetAllPractices, advanceToNextDay } from "@/lib/practicesStore";
 import { useBuddyRequestMode, toggleBuddyRequestMode } from "@/lib/buddyRequestMode";
@@ -51,6 +51,32 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
           >
             <PlayCircle className="h-[18px] w-[18px]" strokeWidth={2} />
             <span>Вводная страница</span>
+          </Link>
+
+          <Link
+            to="/subscribe/trial"
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <Sparkles className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>Подписка за 1₽</span>
+          </Link>
+          <Link
+            to="/subscribe/full"
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <Crown className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>Подписка 1000₽</span>
+          </Link>
+          <Link
+            to="/subscribe/confirm"
+            search={{ amount: 1000 }}
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <ShieldCheck className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>Подтверждение подписки</span>
           </Link>
 
           <button
