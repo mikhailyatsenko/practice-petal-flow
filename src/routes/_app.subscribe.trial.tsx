@@ -25,7 +25,7 @@ function TrialScreen() {
   return (
     <div className="px-5 pt-3 pb-10">
       <BackButton onClick={() => router.history.back()} />
-      <div className="mt-3 rounded-2xl p-5 text-white" style={{ background: "linear-gradient(135deg,#FF8A3D,#FF5E62)" }}>
+      <div className="mt-3 rounded-2xl p-5 text-white" style={{ background: "linear-gradient(135deg,#F2A65A,#FF6D00)" }}>
         <div className="text-[12px] uppercase opacity-90" style={{ letterSpacing: 1 }}>Специальное предложение</div>
         <h1 className="mt-1 text-[26px] font-bold leading-tight">Вступить в клуб за 1₽</h1>
         <p className="mt-2 text-[14px] opacity-95">Только 24 часа — попробуйте все возможности клуба за символическую цену.</p>
