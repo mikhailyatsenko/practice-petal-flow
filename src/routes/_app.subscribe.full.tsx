@@ -11,7 +11,7 @@ function FullScreen() {
   return (
     <div className="px-5 pt-3 pb-10">
       <BackButton onClick={() => router.history.back()} />
-      <div className="mt-3 rounded-2xl p-5 text-white" style={{ background: "linear-gradient(135deg,#3B82F6,#6366F1)" }}>
+      <div className="mt-3 rounded-2xl p-5 text-white" style={{ background: "linear-gradient(135deg,#F2A65A,#FF6D00)" }}>
         <div className="text-[12px] uppercase opacity-90" style={{ letterSpacing: 1 }}>Членство в клубе</div>
         <h1 className="mt-1 text-[26px] font-bold leading-tight">Полный доступ к клубу</h1>
         <p className="mt-2 text-[14px] opacity-95">Развивайтесь вместе с сообществом единомышленников и наставниками.</p>
@@ -33,7 +33,7 @@ function FullScreen() {
         to="/subscribe/confirm"
         search={{ amount: 1000 }}
         className="mt-6 flex w-full items-center justify-center rounded-2xl py-4 text-[16px] font-semibold text-white"
-        style={{ background: "linear-gradient(135deg,#3B82F6,#6366F1)" }}
+        style={{ background: "linear-gradient(135deg,#F2A65A,#FF6D00)" }}
       >
         Вступить за 1000₽
       </Link>
