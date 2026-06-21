@@ -25,44 +25,45 @@ function TrialScreen() {
   return (
     <div className="px-5 pt-3 pb-10">
       <BackButton onClick={() => router.history.back()} />
-      <div className="mt-3 rounded-2xl p-5 text-white" style={{ background: "linear-gradient(135deg,#F2A65A,#FF6D00)" }}>
-        <div className="text-[12px] uppercase opacity-90" style={{ letterSpacing: 1 }}>Специальное предложение</div>
-        <h1 className="mt-1 text-[26px] font-bold leading-tight">Вступить в клуб за 1₽</h1>
-        <p className="mt-2 text-[14px] opacity-95">Только 24 часа — попробуйте все возможности клуба за символическую цену.</p>
-        <div className="mt-4 rounded-xl bg-white/15 px-4 py-3 backdrop-blur">
+
+      <div
+        className="mt-3 rounded-3xl p-6 text-white shadow-lg"
+        style={{
+          background: "linear-gradient(135deg,#16a34a 0%,#22c55e 50%,#4ade80 100%)",
+          boxShadow: "0 20px 40px -15px rgba(22,163,74,0.45)",
+        }}
+      >
+        <div className="text-[12px] uppercase opacity-95" style={{ letterSpacing: 1 }}>
+          Специальное предложение
+        </div>
+        <h1 className="mt-1 text-[26px] font-bold leading-tight">
+          Первый месяц за 1₽
+        </h1>
+        <p className="mt-2 text-[14px] opacity-95">
+          Попробуйте все возможности клуба за 1₽. Через 30 дней — 1000₽ за следующий месяц. Отписаться можно в любой момент.
+        </p>
+        <div className="mt-4 rounded-2xl bg-white/15 px-4 py-3 backdrop-blur">
           <div className="text-[11px] opacity-90">До конца предложения</div>
           <div className="text-[28px] font-bold tabular-nums">{time}</div>
         </div>
       </div>
 
-      <div className="mt-5 space-y-3">
-        <Feature emoji="🎯" title="Все практики и задания" text="Полный доступ к программе развития." />
-        <Feature emoji="👥" title="Бадди и четвёрки" text="Поддержка единомышленников каждый день." />
-        <Feature emoji="📚" title="Библиотека материалов" text="Видео, статьи и упражнения." />
-        <Feature emoji="🤖" title="AI-наставник" text="Помощь и проверка заданий." />
-      </div>
-
       <Link
         to="/subscribe/confirm"
         search={{ amount: 1 }}
-        className="mt-6 flex w-full items-center justify-center rounded-2xl py-4 text-[16px] font-semibold text-white"
-        style={{ background: "linear-gradient(135deg,#F2A65A,#FF6D00)" }}
+        className="mt-8 flex w-full items-center justify-center rounded-full py-5 text-[17px] font-semibold text-white transition-transform active:scale-[0.98]"
+        style={{
+          background:
+            "linear-gradient(135deg,#16a34a 0%,#22c55e 45%,#4ade80 100%)",
+          boxShadow:
+            "0 18px 35px -10px rgba(34,197,94,0.55), inset 0 1px 0 rgba(255,255,255,0.35)",
+        }}
       >
-        Вступить за 1₽
+        Вступить в клуб за 1₽
       </Link>
-      <p className="mt-3 text-center text-[12px] text-muted-foreground">Отписаться можно в любой момент</p>
-    </div>
-  );
-}
-
-function Feature({ emoji, title, text }: { emoji: string; title: string; text: string }) {
-  return (
-    <div className="rounded-xl bg-card hairline p-4 flex gap-3">
-      <div className="text-[22px]">{emoji}</div>
-      <div>
-        <div className="text-[15px] font-semibold">{title}</div>
-        <div className="text-[13px] text-muted-foreground">{text}</div>
-      </div>
+      <p className="mt-3 text-center text-[12px] text-muted-foreground">
+        Списание каждые 30 дней · отписаться можно в любой момент
+      </p>
     </div>
   );
 }
