@@ -182,7 +182,14 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
           })}
 
           <div className="my-2 border-t border-border" />
-          <MenuItem icon={Settings} label="Настройки" />
+          <Link
+            to="/settings"
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <Settings className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>Настройки</span>
+          </Link>
           <MenuItem icon={LifeBuoy} label="Поддержка" />
           <MenuItem icon={LogOut} label="Выход" danger />
         </nav>
