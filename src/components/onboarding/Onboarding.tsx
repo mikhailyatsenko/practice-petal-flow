@@ -13,14 +13,21 @@ const CODE_WORD = "клуб";
 export function Onboarding({ onComplete, onClose }: OnboardingProps) {
   const [code, setCode] = useState("");
   const [error, setError] = useState(false);
+  const [step, setStep] = useState<"code" | "tz">("code");
+  const [tz, setTz] = useState<string>(() => getTimezone());
 
   const handleSubmit = () => {
     if (code.trim().toLowerCase() === CODE_WORD) {
       setError(false);
-      onComplete();
+      setStep("tz");
     } else {
       setError(true);
     }
+  };
+
+  const handleSaveTz = () => {
+    setTimezone(tz);
+    onComplete();
   };
 
   return (
