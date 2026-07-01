@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Play, Sparkles, X } from "lucide-react";
+import { Clock, Play, Sparkles, X } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TIMEZONES, getTimezone, setTimezone } from "@/lib/timezoneStore";
 
 interface OnboardingProps {
   onComplete: () => void;
