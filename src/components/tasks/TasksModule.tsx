@@ -251,6 +251,9 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     setCreating(false);
     setCreateForGoalId(null);
   };
+  const attachToKey = (taskId: string, parentId: string | null) => {
+    setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, isKeyTask: true, parentTaskId: parentId } : t)));
+  };
   const handleSaveEdit = (updated: Task) => {
     setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
     setEditingTask(null);
