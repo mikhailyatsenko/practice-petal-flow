@@ -597,19 +597,34 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
 
 
             {/* Задачи */}
-            <div className="space-y-2">
-              {row.items.map((t) => (
-                <TaskRow
-                  key={t.id}
-                  task={t}
-                  isTimerActive={activeTimerIds.has(t.id)}
-                  liveSeconds={elapsedMap[t.id] ?? 0}
-                  isShattering={shatteringId === t.id}
-                  onOpen={() => setOpenTaskId(t.id)}
-                  onComplete={() => handleMarkDone(t.id)}
-                />
-              ))}
-            </div>
+            {viewMode === "list" ? (
+              <div className="space-y-2">
+                {row.items.map((t) => (
+                  <TaskRow
+                    key={t.id}
+                    task={t}
+                    isTimerActive={activeTimerIds.has(t.id)}
+                    liveSeconds={elapsedMap[t.id] ?? 0}
+                    isShattering={shatteringId === t.id}
+                    onOpen={() => setOpenTaskId(t.id)}
+                    onComplete={() => handleMarkDone(t.id)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <KeyTreeSection
+                goalId={row.gid}
+                tasks={tasks}
+                expanded={keyExpanded}
+                onToggle={(id) => setKeyExpanded((prev) => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; })}
+                onOpenTask={(id) => setOpenTaskId(id)}
+                onAdd={() => setAddKeyGoalId(row.gid)}
+                freeOpen={freeTasksExpanded.has(row.gid)}
+                onToggleFree={() => setFreeTasksExpanded((prev) => { const n = new Set(prev); n.has(row.gid) ? n.delete(row.gid) : n.add(row.gid); return n; })}
+                onAttachExisting={(taskId) => { setAttachExistingTaskId(taskId); setAddKeyGoalId(row.gid); }}
+              />
+            )}
+
           </div>
         );
       })}
