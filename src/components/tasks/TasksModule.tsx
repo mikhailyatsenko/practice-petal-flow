@@ -373,19 +373,38 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
         </div>
       )}
 
-      {/* Фильтры — 2 ряда по центру */}
-      <div className="space-y-1.5">
-        <div className="flex justify-center gap-1.5 flex-wrap">
-          {FILTERS_ROW1.map((f) => (
-            <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
-          ))}
-        </div>
-        <div className="flex justify-center gap-1.5 flex-wrap">
-          {FILTERS_ROW2.map((f) => (
-            <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
-          ))}
+      {/* Переключатель режима: Список / Ключевые */}
+      <div className="flex justify-center">
+        <div className="inline-flex rounded-full p-1" style={{ background: "#f3efe7", border: "1px solid #ede8df" }}>
+          {(["list", "key"] as ViewMode[]).map((m) => {
+            const active = viewMode === m;
+            return (
+              <button
+                key={m}
+                onClick={() => setViewMode(m)}
+                className="tap rounded-full px-4 py-1.5 text-[12.5px] font-medium transition-colors"
+                style={
+                  active
+                    ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }
+                    : { background: "transparent", color: "#8a8a8a" }
+                }
+              >
+                {m === "list" ? "📋 Список" : "🔑 Ключевые"}
+              </button>
+            );
+          })}
         </div>
       </div>
+
+      {/* Фильтры — только в режиме "Список" */}
+      {viewMode === "list" && (
+        <div className="flex justify-center gap-1.5 flex-wrap">
+          {FILTERS.map((f) => (
+            <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
+          ))}
+        </div>
+      )}
+
 
       {grouped.length === 0 && (
         <div className="text-center text-[13px] text-[#FF6D00] py-10">
