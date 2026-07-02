@@ -618,7 +618,14 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
                 expanded={keyExpanded}
                 onToggle={(id) => setKeyExpanded((prev) => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; })}
                 onOpenTask={(id) => setOpenTaskId(id)}
-                onAdd={() => setAddKeyGoalId(row.gid)}
+                onAdd={() => {
+                  const hasKey = tasks.some((t) => t.goalId === row.gid && t.isKeyTask);
+                  if (!hasKey) {
+                    setPendingParentInsert({ goalId: row.gid, parentId: null, level: 1 });
+                  } else {
+                    setAddKeyGoalId(row.gid);
+                  }
+                }}
                 freeOpen={freeTasksExpanded.has(row.gid)}
                 onToggleFree={() => setFreeTasksExpanded((prev) => { const n = new Set(prev); n.has(row.gid) ? n.delete(row.gid) : n.add(row.gid); return n; })}
                 onAttachExisting={(taskId) => { setAttachExistingTaskId(taskId); setAddKeyGoalId(row.gid); }}
