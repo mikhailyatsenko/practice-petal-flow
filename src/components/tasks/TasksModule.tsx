@@ -88,6 +88,9 @@ const FILTERS: { id: FilterId; label: string }[] = [
   { id: "quarter", label: "🟩 Квартал" },
 ];
 
+type ViewMode = "list" | "key";
+
+
 
 const SAMPLE_TASKS = (goals: TaskGoalRef[]): Task[] => {
   if (goals.length === 0) return [];
