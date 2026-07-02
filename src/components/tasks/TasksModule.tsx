@@ -23,7 +23,7 @@ export type TaskDeadline =
   | "🟧 На день"
   | "🟦 На неделю"
   | "🟪 На месяц"
-  | "🟥 Главная задача";
+  | "🟩 Квартал";
 
 export interface Task {
   id: string;
@@ -34,23 +34,27 @@ export interface Task {
   feeling: number; // 1..10
   done: boolean;
   timeSpent: number; // секунды
+  parentTaskId?: string | null;
+  isKeyTask?: boolean;
+  isRecurring?: boolean;
 }
 
 const DEADLINES: { value: TaskDeadline; label: string }[] = [
-  { value: "⬜ Не определён",   label: "⬜ Не определён" },
-  { value: "🟧 На день",        label: "🟧 На день" },
-  { value: "🟦 На неделю",      label: "🟦 На неделю" },
-  { value: "🟪 На месяц",       label: "🟪 На месяц" },
-  { value: "🟥 Главная задача", label: "🏁 Главная задача" },
+  { value: "⬜ Не определён", label: "⬜ Не определён" },
+  { value: "🟧 На день",      label: "🟧 На день" },
+  { value: "🟦 На неделю",    label: "🟦 На неделю" },
+  { value: "🟪 На месяц",     label: "🟪 На месяц" },
+  { value: "🟩 Квартал",      label: "🟩 Квартал" },
 ];
 
 const DEADLINE_COLORS: Record<TaskDeadline, { bg: string; border?: string }> = {
-  "⬜ Не определён":   { bg: "#d1d5db", border: "#b8b8b8" },
-  "🟧 На день":        { bg: "#FF6D00" },
-  "🟦 На неделю":      { bg: "#2563eb" },
-  "🟪 На месяц":       { bg: "#7c3aed" },
-  "🟥 Главная задача": { bg: "#e53e3e" },
+  "⬜ Не определён": { bg: "#D3D1C7", border: "#b8b8b8" },
+  "🟧 На день":      { bg: "#E88200" },
+  "🟦 На неделю":    { bg: "#378ADD" },
+  "🟪 На месяц":     { bg: "#7F77DD" },
+  "🟩 Квартал":      { bg: "#639922" },
 };
+
 
 const DURATIONS = [
   "3 мин","5 мин","10 мин","15 мин","20 мин","30 мин",
