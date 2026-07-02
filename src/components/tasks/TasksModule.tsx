@@ -773,6 +773,9 @@ function TaskRow({
               {task.duration && task.duration !== "—" && (
                 <span className="text-[11px] leading-none" style={{ color: "#8a8a8a" }}>{task.duration}</span>
               )}
+              {task.isRecurring && (
+                <span className="text-[12px] leading-none" aria-label="Повторяющаяся">🔁</span>
+              )}
             </div>
             <button
               type="button"
