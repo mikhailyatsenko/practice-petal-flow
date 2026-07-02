@@ -325,6 +325,19 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     );
   }
 
+  if (pendingParentInsert && !attachExistingTaskId) {
+    return (
+      <CreateOrEditTaskScreen
+        mode="create"
+        goals={goals}
+        defaultGoalId={pendingParentInsert.goalId}
+        forceKeyContext={{ parentTaskId: pendingParentInsert.parentId, level: pendingParentInsert.level }}
+        onCancel={() => setPendingParentInsert(null)}
+        onSubmit={(d) => { handleCreate(d); setPendingParentInsert(null); }}
+      />
+    );
+  }
+
   if (editingTask) {
     return (
       <CreateOrEditTaskScreen
@@ -336,6 +349,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       />
     );
   }
+
 
   if (openTaskId) {
     const t = tasks.find((x) => x.id === openTaskId);
