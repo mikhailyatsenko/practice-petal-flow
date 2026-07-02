@@ -759,7 +759,7 @@ function TaskRow({
           )}
           <div className="flex items-center gap-2.5">
             {task.isKeyTask && (
-              <Key className="shrink-0" style={{ width: 14, height: 14, color: "#E88200" }} strokeWidth={2.5} />
+              <span aria-label="Ключевая задача" className="shrink-0 text-[14px] leading-none">🔑</span>
             )}
             <span
               className="flex-1 text-[14px] font-semibold leading-snug break-words"
