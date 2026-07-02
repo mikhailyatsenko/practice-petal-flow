@@ -766,15 +766,13 @@ function TaskRow({
               style={task.done ? { textDecoration: "line-through", color: "#8a8a8a" } : undefined}
             >
               {task.title}
+              {task.isRecurring && <span aria-label="Повторяющаяся"> 🔁</span>}
             </span>
 
             <div className="shrink-0 flex flex-col items-end" style={{ gap: 2 }}>
               <span className="text-[17px] leading-none" aria-label={f.label}>{f.emoji}</span>
               {task.duration && task.duration !== "—" && (
                 <span className="text-[11px] leading-none" style={{ color: "#8a8a8a" }}>{task.duration}</span>
-              )}
-              {task.isRecurring && (
-                <span className="text-[12px] leading-none" aria-label="Повторяющаяся">🔁</span>
               )}
             </div>
             <button
@@ -1331,11 +1329,9 @@ function KeyTreeSection({
           style={{
             background: bg,
             border: "1px solid #ede8df",
-            paddingRight: 14,
             cursor: canExpand ? "pointer" : "default",
           }}
         >
-          <span aria-hidden style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 5, background: color }} />
           <div className="flex items-center gap-2.5">
             {/* Кружок статуса — только визуал */}
             <span
