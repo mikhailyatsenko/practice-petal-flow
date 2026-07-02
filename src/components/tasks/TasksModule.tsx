@@ -1515,15 +1515,16 @@ function AddKeyLevelPopup({
       onClick={onClose}
       style={{
         position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 100,
-        display: "flex", alignItems: "flex-end", justifyContent: "center",
+        display: "flex", alignItems: "center", justifyContent: "center", padding: 16,
       }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: "100%", maxWidth: 520,
-          background: "#F5F1EA", borderTopLeftRadius: 24, borderTopRightRadius: 24,
+          width: "100%", maxWidth: 480,
+          background: "#F5F1EA", borderRadius: 20,
           padding: 16, maxHeight: "85vh", overflowY: "auto",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
         }}
         className="animate-fade-up"
       >
