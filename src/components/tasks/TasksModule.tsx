@@ -1004,6 +1004,7 @@ export function CreateOrEditTaskScreen({
       {/* Название */}
       <Section title="Название задачи">
         <input
+          autoFocus
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Например: Написать первую главу"
