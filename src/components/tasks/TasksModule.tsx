@@ -213,12 +213,13 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     let list = tasks.filter((t) => !t.done);
     if (initialGoalId) list = list.filter((t) => t.goalId === initialGoalId);
     switch (filter) {
-      case "open":  list = list.filter((t) => t.deadline === "⬜ Не определён"); break;
-      case "main":  list = list.filter((t) => t.deadline === "🟥 Главная задача"); break;
-      case "day":   list = list.filter((t) => t.deadline === "🟧 На день"); break;
-      case "week":  list = list.filter((t) => t.deadline === "🟦 На неделю"); break;
-      case "month": list = list.filter((t) => t.deadline === "🟪 На месяц"); break;
+      case "open":    list = list.filter((t) => t.deadline === "⬜ Не определён"); break;
+      case "day":     list = list.filter((t) => t.deadline === "🟧 На день"); break;
+      case "week":    list = list.filter((t) => t.deadline === "🟦 На неделю"); break;
+      case "month":   list = list.filter((t) => t.deadline === "🟪 На месяц"); break;
+      case "quarter": list = list.filter((t) => t.deadline === "🟩 Квартал"); break;
     }
+
     return list;
   }, [tasks, filter, initialGoalId]);
 
