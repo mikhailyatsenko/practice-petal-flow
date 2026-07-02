@@ -880,7 +880,7 @@ function TaskDetailScreen({
 /* ---------------- Создание / редактирование задачи ---------------- */
 
 export function CreateOrEditTaskScreen({
-  mode, goals, task, defaultGoalId, onCancel, onSubmit,
+  mode, goals, task, defaultGoalId, onCancel, onSubmit, forceKeyContext,
 }: {
   mode: "create" | "edit";
   goals: TaskGoalRef[];
@@ -888,14 +888,18 @@ export function CreateOrEditTaskScreen({
   defaultGoalId?: string | null;
   onCancel: () => void;
   onSubmit: (data: Omit<Task, "id" | "done" | "timeSpent">) => void;
+  /** Если задан — задача создаётся в дереве ключевых, поля скрыты, показывается ярлык уровня. */
+  forceKeyContext?: { parentTaskId: string | null; level: number };
 }) {
   const [goalId, setGoalId] = useState<string>(task?.goalId ?? defaultGoalId ?? "");
   const [title, setTitle] = useState<string>(task?.title ?? "");
   const [deadline, setDeadline] = useState<TaskDeadline>(task?.deadline ?? "⬜ Не определён");
   const [duration, setDuration] = useState<string>(task?.duration ?? "");
   const [feeling, setFeeling] = useState<number>(task?.feeling ?? 0);
+  const [isRecurring, setIsRecurring] = useState<boolean>(task?.isRecurring ?? false);
 
   const valid = title.trim().length >= 3 && duration.length > 0 && feeling > 0;
+
 
   return (
     <div className="px-4 pt-3 pb-6 space-y-4">
