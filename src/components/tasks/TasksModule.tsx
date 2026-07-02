@@ -77,18 +77,17 @@ const FEELINGS: { value: number; emoji: string; label: string }[] = [
 
 const feelingOf = (v: number) => FEELINGS.find((f) => f.value === v) ?? FEELINGS[5];
 
-type FilterId = "all" | "open" | "main" | "day" | "week" | "month";
+type FilterId = "all" | "open" | "day" | "week" | "month" | "quarter";
 
-const FILTERS_ROW1: { id: FilterId; label: string }[] = [
-  { id: "all",   label: "📋 Все задачи" },
-  { id: "open",  label: "⬜ Открытые" },
-  { id: "main",  label: "🟥 Главные" },
+const FILTERS: { id: FilterId; label: string }[] = [
+  { id: "all",     label: "📋 Все задачи" },
+  { id: "open",    label: "⬜ Открытые" },
+  { id: "day",     label: "🟧 День" },
+  { id: "week",    label: "🟦 Неделя" },
+  { id: "month",   label: "🟪 Месяц" },
+  { id: "quarter", label: "🟩 Квартал" },
 ];
-const FILTERS_ROW2: { id: FilterId; label: string }[] = [
-  { id: "day",   label: "🟧 На день" },
-  { id: "week",  label: "🟦 На неделю" },
-  { id: "month", label: "🟪 На месяц" },
-];
+
 
 const SAMPLE_TASKS = (goals: TaskGoalRef[]): Task[] => {
   if (goals.length === 0) return [];
