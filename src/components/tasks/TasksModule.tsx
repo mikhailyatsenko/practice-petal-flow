@@ -134,6 +134,10 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     else setInternalTasks(updater);
   };
   const [filter, setFilter] = useState<FilterId>("all");
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [addKeyForGoalId, setAddKeyForGoalId] = useState<string | null>(null);
+  const [pendingParentInsert, setPendingParentInsert] = useState<{ goalId: string; parentId: string | null; level: number } | null>(null);
+  const [attachExistingTaskId, setAttachExistingTaskId] = useState<string | null>(null);
   const [openGoalId, setOpenGoalId] = useState<string | null>(initialGoalId ?? null);
   const [creating, setCreating] = useState(false);
   const [createForGoalId, setCreateForGoalId] = useState<string | null>(null);
