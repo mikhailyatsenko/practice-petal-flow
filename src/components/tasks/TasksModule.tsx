@@ -1327,11 +1327,11 @@ function KeyTreeSection({
           style={{
             background: bg,
             border: "1px solid #ede8df",
-            paddingLeft: 14,
+            paddingRight: 14,
             cursor: canExpand ? "pointer" : "default",
           }}
         >
-          <span aria-hidden style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: color }} />
+          <span aria-hidden style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 5, background: color }} />
           <div className="flex items-center gap-2.5">
             {/* Кружок статуса — только визуал */}
             <span
