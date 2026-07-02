@@ -680,27 +680,32 @@ function TaskRow({
           onClick={() => { if (stage === "idle") onOpen(); }}
           role="button"
           tabIndex={0}
-          className={`tap w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed] cursor-pointer animate-fade-up`}
+          className={`tap relative w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed] cursor-pointer animate-fade-up overflow-hidden`}
           style={{
             border: isTimerActive ? "2px solid #FF6D00" : "1px solid #ede8df",
+            paddingLeft: task.deadline === "⬜ Не определён" ? undefined : 14,
           }}
         >
-          <div className="flex items-center gap-2.5">
+          {task.deadline !== "⬜ Не определён" && (
             <span
-              className="shrink-0 rounded-[3px]"
+              aria-hidden
               style={{
-                width: 10,
-                height: 10,
-                background: c.bg,
-                border: c.border ? `1px solid ${c.border}` : "none",
+                position: "absolute", left: 0, top: 0, bottom: 0,
+                width: 5, background: c.bg,
               }}
             />
+          )}
+          <div className="flex items-center gap-2.5">
+            {task.isKeyTask && (
+              <Key className="shrink-0" style={{ width: 14, height: 14, color: "#E88200" }} strokeWidth={2.5} />
+            )}
             <span
               className="flex-1 text-[14px] font-semibold leading-snug break-words"
               style={task.done ? { textDecoration: "line-through", color: "#8a8a8a" } : undefined}
             >
               {task.title}
             </span>
+
             <div className="shrink-0 flex flex-col items-end" style={{ gap: 2 }}>
               <span className="text-[17px] leading-none" aria-label={f.label}>{f.emoji}</span>
               {task.duration && task.duration !== "—" && (
