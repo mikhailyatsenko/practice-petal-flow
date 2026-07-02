@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Plus, Pencil, Trash2, Check, Play, Square, ChevronDown, X, Brain } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, Check, Play, Square, ChevronDown, X, Brain, Key, ChevronRight, ChevronLeft } from "lucide-react";
 import { BrainstormListScreen, BrainstormAnswerScreen } from "./Brainstorm";
+
 
 /* =====================================================================
    Раздел «Задачи». Самодостаточный модуль — НЕ трогает существующий код.
