@@ -135,7 +135,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   };
   const [filter, setFilter] = useState<FilterId>("all");
   const [viewMode, setViewMode] = useState<ViewMode>("list");
-  const [addKeyForGoalId, setAddKeyForGoalId] = useState<string | null>(null);
+  
   const [pendingParentInsert, setPendingParentInsert] = useState<{ goalId: string; parentId: string | null; level: number } | null>(null);
   const [attachExistingTaskId, setAttachExistingTaskId] = useState<string | null>(null);
   const [keyExpanded, setKeyExpanded] = useState<Set<string>>(new Set());
