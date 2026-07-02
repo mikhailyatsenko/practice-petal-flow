@@ -242,8 +242,9 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     for (const k of map.keys()) if (!order.includes(k)) order.push(k);
     return order
       .map((gid) => ({ goal: goals.find((g) => g.id === gid), gid, items: map.get(gid) ?? [] }))
-      .filter((row) => row.items.length > 0);
-  }, [visibleTasks, goals]);
+      .filter((row) => viewMode === "key" ? !!row.goal : row.items.length > 0);
+  }, [visibleTasks, goals, viewMode]);
+
 
   const handleCreate = (data: Omit<Task, "id" | "done" | "timeSpent">) => {
     const newTask: Task = { ...data, id: `t${Date.now()}`, done: false, timeSpent: 0 };
