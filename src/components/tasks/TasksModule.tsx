@@ -1021,9 +1021,56 @@ export function CreateOrEditTaskScreen({
         </div>
       </Section>
 
+      {/* Регулярная задача */}
+      <Section title="Регулярная задача">
+        <button
+          onClick={() => setIsRecurring((v) => !v)}
+          className="tap w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-left"
+          style={
+            isRecurring
+              ? { background: "#fff3e0", border: "1px solid #FF6D00" }
+              : { background: "#fff", border: "1px solid #ede8df" }
+          }
+        >
+          <span
+            className="shrink-0 inline-flex items-center justify-center rounded-md"
+            style={{
+              width: 22, height: 22,
+              background: isRecurring ? "#FF6D00" : "#fff",
+              border: `2px solid ${isRecurring ? "#FF6D00" : "#d1d5db"}`,
+            }}
+          >
+            {isRecurring && <Check className="h-3.5 w-3.5" style={{ color: "#fff" }} />}
+          </span>
+          <span className="flex-1 text-[14px] font-medium">🔁 Задача повторяется</span>
+        </button>
+      </Section>
+
+      {forceKeyContext && (
+        <div
+          className="rounded-xl px-3 py-2 text-[12px]"
+          style={{ background: "#fff3e0", border: "1px solid #FF6D00", color: "#B45309" }}
+        >
+          🔑 Задача будет добавлена в дерево ключевых, уровень {forceKeyContext.level}
+        </div>
+      )}
+
       <button
         disabled={!valid}
-        onClick={() => valid && onSubmit({ goalId, title: title.trim(), deadline, duration, feeling })}
+        onClick={() =>
+          valid &&
+          onSubmit({
+            goalId,
+            title: title.trim(),
+            deadline,
+            duration,
+            feeling,
+            isRecurring,
+            ...(forceKeyContext
+              ? { isKeyTask: true, parentTaskId: forceKeyContext.parentTaskId }
+              : {}),
+          })
+        }
         className="tap w-full rounded-full py-3 text-[14px] font-semibold transition-colors"
         style={
           valid
@@ -1033,6 +1080,7 @@ export function CreateOrEditTaskScreen({
       >
         ✅ {mode === "create" ? "Создать задачу" : "Сохранить"}
       </button>
+
     </div>
   );
 }
