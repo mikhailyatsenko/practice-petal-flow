@@ -618,7 +618,14 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
                 expanded={keyExpanded}
                 onToggle={(id) => setKeyExpanded((prev) => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; })}
                 onOpenTask={(id) => setOpenTaskId(id)}
-                onAdd={() => setAddKeyGoalId(row.gid)}
+                onAdd={() => {
+                  const hasKey = tasks.some((t) => t.goalId === row.gid && t.isKeyTask);
+                  if (!hasKey) {
+                    setPendingParentInsert({ goalId: row.gid, parentId: null, level: 1 });
+                  } else {
+                    setAddKeyGoalId(row.gid);
+                  }
+                }}
                 freeOpen={freeTasksExpanded.has(row.gid)}
                 onToggleFree={() => setFreeTasksExpanded((prev) => { const n = new Set(prev); n.has(row.gid) ? n.delete(row.gid) : n.add(row.gid); return n; })}
                 onAttachExisting={(taskId) => { setAttachExistingTaskId(taskId); setAddKeyGoalId(row.gid); }}
@@ -1508,15 +1515,16 @@ function AddKeyLevelPopup({
       onClick={onClose}
       style={{
         position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 100,
-        display: "flex", alignItems: "flex-end", justifyContent: "center",
+        display: "flex", alignItems: "center", justifyContent: "center", padding: 16,
       }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: "100%", maxWidth: 520,
-          background: "#F5F1EA", borderTopLeftRadius: 24, borderTopRightRadius: 24,
+          width: "100%", maxWidth: 480,
+          background: "#F5F1EA", borderRadius: 20,
           padding: 16, maxHeight: "85vh", overflowY: "auto",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
         }}
         className="animate-fade-up"
       >
