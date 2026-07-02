@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Plus, Pencil, Trash2, Check, Play, Square, ChevronDown, X, Brain } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, Check, Play, Square, ChevronDown, X, Brain, Key, ChevronRight, ChevronLeft } from "lucide-react";
 import { BrainstormListScreen, BrainstormAnswerScreen } from "./Brainstorm";
+
 
 /* =====================================================================
    Раздел «Задачи». Самодостаточный модуль — НЕ трогает существующий код.
@@ -22,7 +23,7 @@ export type TaskDeadline =
   | "🟧 На день"
   | "🟦 На неделю"
   | "🟪 На месяц"
-  | "🟥 Главная задача";
+  | "🟩 Квартал";
 
 export interface Task {
   id: string;
@@ -33,23 +34,27 @@ export interface Task {
   feeling: number; // 1..10
   done: boolean;
   timeSpent: number; // секунды
+  parentTaskId?: string | null;
+  isKeyTask?: boolean;
+  isRecurring?: boolean;
 }
 
 const DEADLINES: { value: TaskDeadline; label: string }[] = [
-  { value: "⬜ Не определён",   label: "⬜ Не определён" },
-  { value: "🟧 На день",        label: "🟧 На день" },
-  { value: "🟦 На неделю",      label: "🟦 На неделю" },
-  { value: "🟪 На месяц",       label: "🟪 На месяц" },
-  { value: "🟥 Главная задача", label: "🏁 Главная задача" },
+  { value: "⬜ Не определён", label: "⬜ Не определён" },
+  { value: "🟧 На день",      label: "🟧 На день" },
+  { value: "🟦 На неделю",    label: "🟦 На неделю" },
+  { value: "🟪 На месяц",     label: "🟪 На месяц" },
+  { value: "🟩 Квартал",      label: "🟩 Квартал" },
 ];
 
 const DEADLINE_COLORS: Record<TaskDeadline, { bg: string; border?: string }> = {
-  "⬜ Не определён":   { bg: "#d1d5db", border: "#b8b8b8" },
-  "🟧 На день":        { bg: "#FF6D00" },
-  "🟦 На неделю":      { bg: "#2563eb" },
-  "🟪 На месяц":       { bg: "#7c3aed" },
-  "🟥 Главная задача": { bg: "#e53e3e" },
+  "⬜ Не определён": { bg: "#D3D1C7", border: "#b8b8b8" },
+  "🟧 На день":      { bg: "#E88200" },
+  "🟦 На неделю":    { bg: "#378ADD" },
+  "🟪 На месяц":     { bg: "#7F77DD" },
+  "🟩 Квартал":      { bg: "#639922" },
 };
+
 
 const DURATIONS = [
   "3 мин","5 мин","10 мин","15 мин","20 мин","30 мин",
@@ -72,18 +77,20 @@ const FEELINGS: { value: number; emoji: string; label: string }[] = [
 
 const feelingOf = (v: number) => FEELINGS.find((f) => f.value === v) ?? FEELINGS[5];
 
-type FilterId = "all" | "open" | "main" | "day" | "week" | "month";
+type FilterId = "all" | "open" | "day" | "week" | "month" | "quarter";
 
-const FILTERS_ROW1: { id: FilterId; label: string }[] = [
-  { id: "all",   label: "📋 Все задачи" },
-  { id: "open",  label: "⬜ Открытые" },
-  { id: "main",  label: "🟥 Главные" },
+const FILTERS: { id: FilterId; label: string }[] = [
+  { id: "all",     label: "📋 Все задачи" },
+  { id: "open",    label: "⬜ Открытые" },
+  { id: "day",     label: "🟧 День" },
+  { id: "week",    label: "🟦 Неделя" },
+  { id: "month",   label: "🟪 Месяц" },
+  { id: "quarter", label: "🟩 Квартал" },
 ];
-const FILTERS_ROW2: { id: FilterId; label: string }[] = [
-  { id: "day",   label: "🟧 На день" },
-  { id: "week",  label: "🟦 На неделю" },
-  { id: "month", label: "🟪 На месяц" },
-];
+
+type ViewMode = "list" | "key";
+
+
 
 const SAMPLE_TASKS = (goals: TaskGoalRef[]): Task[] => {
   if (goals.length === 0) return [];
@@ -92,10 +99,11 @@ const SAMPLE_TASKS = (goals: TaskGoalRef[]): Task[] => {
   const g2 = goals[2]?.id ?? g0;
   return [
     { id: "t1", goalId: g0, title: "Купить кроссовки для длинных дистанций", deadline: "🟧 На день", duration: "1 час", feeling: 8, done: false, timeSpent: 0 },
-    { id: "t2", goalId: g0, title: "Составить план тренировок на месяц", deadline: "🟥 Главная задача", duration: "2 часа", feeling: 7, done: false, timeSpent: 0 },
+    { id: "t2", goalId: g0, title: "Составить план тренировок на месяц", deadline: "🟩 Квартал", duration: "2 часа", feeling: 7, done: false, timeSpent: 0 },
     { id: "t3", goalId: g0, title: "Зарегистрироваться на ближайший полумарафон", deadline: "🟪 На месяц", duration: "30 мин", feeling: 9, done: false, timeSpent: 0 },
     { id: "t4", goalId: g1, title: "Найти преподавателя испанского", deadline: "🟦 На неделю", duration: "1 час", feeling: 6, done: false, timeSpent: 0 },
-    { id: "t5", goalId: g1, title: "Пройти базовый курс грамматики", deadline: "🟥 Главная задача", duration: "Более 10 часов", feeling: 5, done: false, timeSpent: 0 },
+    { id: "t5", goalId: g1, title: "Пройти базовый курс грамматики", deadline: "🟩 Квартал", duration: "Более 10 часов", feeling: 5, done: false, timeSpent: 0 },
+
     { id: "t6", goalId: g2, title: "Открыть накопительный счёт", deadline: "🟧 На день", duration: "30 мин", feeling: 7, done: false, timeSpent: 0 },
     { id: "t7", goalId: g2, title: "Настроить автоперевод 20% от дохода", deadline: "⬜ Не определён", duration: "15 мин", feeling: 8, done: false, timeSpent: 0 },
   ];
@@ -126,6 +134,13 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     else setInternalTasks(updater);
   };
   const [filter, setFilter] = useState<FilterId>("all");
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
+  
+  const [pendingParentInsert, setPendingParentInsert] = useState<{ goalId: string; parentId: string | null; level: number } | null>(null);
+  const [attachExistingTaskId, setAttachExistingTaskId] = useState<string | null>(null);
+  const [keyExpanded, setKeyExpanded] = useState<Set<string>>(new Set());
+  const [addKeyGoalId, setAddKeyGoalId] = useState<string | null>(null);
+  const [freeTasksExpanded, setFreeTasksExpanded] = useState<Set<string>>(new Set());
   const [openGoalId, setOpenGoalId] = useState<string | null>(initialGoalId ?? null);
   const [creating, setCreating] = useState(false);
   const [createForGoalId, setCreateForGoalId] = useState<string | null>(null);
@@ -208,12 +223,13 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     let list = tasks.filter((t) => !t.done);
     if (initialGoalId) list = list.filter((t) => t.goalId === initialGoalId);
     switch (filter) {
-      case "open":  list = list.filter((t) => t.deadline === "⬜ Не определён"); break;
-      case "main":  list = list.filter((t) => t.deadline === "🟥 Главная задача"); break;
-      case "day":   list = list.filter((t) => t.deadline === "🟧 На день"); break;
-      case "week":  list = list.filter((t) => t.deadline === "🟦 На неделю"); break;
-      case "month": list = list.filter((t) => t.deadline === "🟪 На месяц"); break;
+      case "open":    list = list.filter((t) => t.deadline === "⬜ Не определён"); break;
+      case "day":     list = list.filter((t) => t.deadline === "🟧 На день"); break;
+      case "week":    list = list.filter((t) => t.deadline === "🟦 На неделю"); break;
+      case "month":   list = list.filter((t) => t.deadline === "🟪 На месяц"); break;
+      case "quarter": list = list.filter((t) => t.deadline === "🟩 Квартал"); break;
     }
+
     return list;
   }, [tasks, filter, initialGoalId]);
 
@@ -229,14 +245,18 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     for (const k of map.keys()) if (!order.includes(k)) order.push(k);
     return order
       .map((gid) => ({ goal: goals.find((g) => g.id === gid), gid, items: map.get(gid) ?? [] }))
-      .filter((row) => row.items.length > 0);
-  }, [visibleTasks, goals]);
+      .filter((row) => viewMode === "key" ? !!row.goal : row.items.length > 0);
+  }, [visibleTasks, goals, viewMode]);
+
 
   const handleCreate = (data: Omit<Task, "id" | "done" | "timeSpent">) => {
     const newTask: Task = { ...data, id: `t${Date.now()}`, done: false, timeSpent: 0 };
     setTasks((prev) => [newTask, ...prev]);
     setCreating(false);
     setCreateForGoalId(null);
+  };
+  const attachToKey = (taskId: string, parentId: string | null) => {
+    setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, isKeyTask: true, parentTaskId: parentId } : t)));
   };
   const handleSaveEdit = (updated: Task) => {
     setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
@@ -309,6 +329,19 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     );
   }
 
+  if (pendingParentInsert && !attachExistingTaskId) {
+    return (
+      <CreateOrEditTaskScreen
+        mode="create"
+        goals={goals}
+        defaultGoalId={pendingParentInsert.goalId}
+        forceKeyContext={{ parentTaskId: pendingParentInsert.parentId, level: pendingParentInsert.level }}
+        onCancel={() => setPendingParentInsert(null)}
+        onSubmit={(d) => { handleCreate(d); setPendingParentInsert(null); }}
+      />
+    );
+  }
+
   if (editingTask) {
     return (
       <CreateOrEditTaskScreen
@@ -320,6 +353,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       />
     );
   }
+
 
   if (openTaskId) {
     const t = tasks.find((x) => x.id === openTaskId);
@@ -367,19 +401,38 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
         </div>
       )}
 
-      {/* Фильтры — 2 ряда по центру */}
-      <div className="space-y-1.5">
-        <div className="flex justify-center gap-1.5 flex-wrap">
-          {FILTERS_ROW1.map((f) => (
-            <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
-          ))}
-        </div>
-        <div className="flex justify-center gap-1.5 flex-wrap">
-          {FILTERS_ROW2.map((f) => (
-            <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
-          ))}
+      {/* Переключатель режима: Список / Ключевые */}
+      <div className="flex justify-center">
+        <div className="inline-flex rounded-full p-1" style={{ background: "#f3efe7", border: "1px solid #ede8df" }}>
+          {(["list", "key"] as ViewMode[]).map((m) => {
+            const active = viewMode === m;
+            return (
+              <button
+                key={m}
+                onClick={() => setViewMode(m)}
+                className="tap rounded-full px-4 py-1.5 text-[12.5px] font-medium transition-colors"
+                style={
+                  active
+                    ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }
+                    : { background: "transparent", color: "#8a8a8a" }
+                }
+              >
+                {m === "list" ? "📋 Список" : "🔑 Ключевые"}
+              </button>
+            );
+          })}
         </div>
       </div>
+
+      {/* Фильтры — только в режиме "Список" */}
+      {viewMode === "list" && (
+        <div className="flex justify-center gap-1.5 flex-wrap">
+          {FILTERS.map((f) => (
+            <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
+          ))}
+        </div>
+      )}
+
 
       {grouped.length === 0 && (
         <div className="text-center text-[13px] text-[#FF6D00] py-10">
@@ -544,25 +597,59 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
 
 
             {/* Задачи */}
-            <div className="space-y-2">
-              {row.items.map((t) => (
-                <TaskRow
-                  key={t.id}
-                  task={t}
-                  isTimerActive={activeTimerIds.has(t.id)}
-                  liveSeconds={elapsedMap[t.id] ?? 0}
-                  isShattering={shatteringId === t.id}
-                  onOpen={() => setOpenTaskId(t.id)}
-                  onComplete={() => handleMarkDone(t.id)}
-                />
-              ))}
-            </div>
+            {viewMode === "list" ? (
+              <div className="space-y-2">
+                {row.items.map((t) => (
+                  <TaskRow
+                    key={t.id}
+                    task={t}
+                    isTimerActive={activeTimerIds.has(t.id)}
+                    liveSeconds={elapsedMap[t.id] ?? 0}
+                    isShattering={shatteringId === t.id}
+                    onOpen={() => setOpenTaskId(t.id)}
+                    onComplete={() => handleMarkDone(t.id)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <KeyTreeSection
+                goalId={row.gid}
+                tasks={tasks}
+                expanded={keyExpanded}
+                onToggle={(id) => setKeyExpanded((prev) => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; })}
+                onOpenTask={(id) => setOpenTaskId(id)}
+                onAdd={() => setAddKeyGoalId(row.gid)}
+                freeOpen={freeTasksExpanded.has(row.gid)}
+                onToggleFree={() => setFreeTasksExpanded((prev) => { const n = new Set(prev); n.has(row.gid) ? n.delete(row.gid) : n.add(row.gid); return n; })}
+                onAttachExisting={(taskId) => { setAttachExistingTaskId(taskId); setAddKeyGoalId(row.gid); }}
+              />
+            )}
+
           </div>
         );
       })}
+
+      {addKeyGoalId && (
+        <AddKeyLevelPopup
+          goalId={addKeyGoalId}
+          tasks={tasks}
+          onClose={() => { setAddKeyGoalId(null); setAttachExistingTaskId(null); }}
+          onPick={(parentId, level) => {
+            if (attachExistingTaskId) {
+              attachToKey(attachExistingTaskId, parentId);
+              setAttachExistingTaskId(null);
+              setAddKeyGoalId(null);
+            } else {
+              setPendingParentInsert({ goalId: addKeyGoalId, parentId, level });
+              setAddKeyGoalId(null);
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
+
 
 function pluralTasks(n: number) {
   const m10 = n % 10;
@@ -648,27 +735,32 @@ function TaskRow({
           onClick={() => { if (stage === "idle") onOpen(); }}
           role="button"
           tabIndex={0}
-          className={`tap w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed] cursor-pointer animate-fade-up`}
+          className={`tap relative w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed] cursor-pointer animate-fade-up overflow-hidden`}
           style={{
             border: isTimerActive ? "2px solid #FF6D00" : "1px solid #ede8df",
+            paddingLeft: task.deadline === "⬜ Не определён" ? undefined : 14,
           }}
         >
-          <div className="flex items-center gap-2.5">
+          {task.deadline !== "⬜ Не определён" && (
             <span
-              className="shrink-0 rounded-[3px]"
+              aria-hidden
               style={{
-                width: 10,
-                height: 10,
-                background: c.bg,
-                border: c.border ? `1px solid ${c.border}` : "none",
+                position: "absolute", left: 0, top: 0, bottom: 0,
+                width: 5, background: c.bg,
               }}
             />
+          )}
+          <div className="flex items-center gap-2.5">
+            {task.isKeyTask && (
+              <Key className="shrink-0" style={{ width: 14, height: 14, color: "#E88200" }} strokeWidth={2.5} />
+            )}
             <span
               className="flex-1 text-[14px] font-semibold leading-snug break-words"
               style={task.done ? { textDecoration: "line-through", color: "#8a8a8a" } : undefined}
             >
               {task.title}
             </span>
+
             <div className="shrink-0 flex flex-col items-end" style={{ gap: 2 }}>
               <span className="text-[17px] leading-none" aria-label={f.label}>{f.emoji}</span>
               {task.duration && task.duration !== "—" && (
@@ -843,7 +935,7 @@ function TaskDetailScreen({
 /* ---------------- Создание / редактирование задачи ---------------- */
 
 export function CreateOrEditTaskScreen({
-  mode, goals, task, defaultGoalId, onCancel, onSubmit,
+  mode, goals, task, defaultGoalId, onCancel, onSubmit, forceKeyContext,
 }: {
   mode: "create" | "edit";
   goals: TaskGoalRef[];
@@ -851,14 +943,18 @@ export function CreateOrEditTaskScreen({
   defaultGoalId?: string | null;
   onCancel: () => void;
   onSubmit: (data: Omit<Task, "id" | "done" | "timeSpent">) => void;
+  /** Если задан — задача создаётся в дереве ключевых, поля скрыты, показывается ярлык уровня. */
+  forceKeyContext?: { parentTaskId: string | null; level: number };
 }) {
   const [goalId, setGoalId] = useState<string>(task?.goalId ?? defaultGoalId ?? "");
   const [title, setTitle] = useState<string>(task?.title ?? "");
   const [deadline, setDeadline] = useState<TaskDeadline>(task?.deadline ?? "⬜ Не определён");
   const [duration, setDuration] = useState<string>(task?.duration ?? "");
   const [feeling, setFeeling] = useState<number>(task?.feeling ?? 0);
+  const [isRecurring, setIsRecurring] = useState<boolean>(task?.isRecurring ?? false);
 
   const valid = title.trim().length >= 3 && duration.length > 0 && feeling > 0;
+
 
   return (
     <div className="px-4 pt-3 pb-6 space-y-4">
@@ -980,9 +1076,56 @@ export function CreateOrEditTaskScreen({
         </div>
       </Section>
 
+      {/* Регулярная задача */}
+      <Section title="Регулярная задача">
+        <button
+          onClick={() => setIsRecurring((v) => !v)}
+          className="tap w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-left"
+          style={
+            isRecurring
+              ? { background: "#fff3e0", border: "1px solid #FF6D00" }
+              : { background: "#fff", border: "1px solid #ede8df" }
+          }
+        >
+          <span
+            className="shrink-0 inline-flex items-center justify-center rounded-md"
+            style={{
+              width: 22, height: 22,
+              background: isRecurring ? "#FF6D00" : "#fff",
+              border: `2px solid ${isRecurring ? "#FF6D00" : "#d1d5db"}`,
+            }}
+          >
+            {isRecurring && <Check className="h-3.5 w-3.5" style={{ color: "#fff" }} />}
+          </span>
+          <span className="flex-1 text-[14px] font-medium">🔁 Задача повторяется</span>
+        </button>
+      </Section>
+
+      {forceKeyContext && (
+        <div
+          className="rounded-xl px-3 py-2 text-[12px]"
+          style={{ background: "#fff3e0", border: "1px solid #FF6D00", color: "#B45309" }}
+        >
+          🔑 Задача будет добавлена в дерево ключевых, уровень {forceKeyContext.level}
+        </div>
+      )}
+
       <button
         disabled={!valid}
-        onClick={() => valid && onSubmit({ goalId, title: title.trim(), deadline, duration, feeling })}
+        onClick={() =>
+          valid &&
+          onSubmit({
+            goalId,
+            title: title.trim(),
+            deadline,
+            duration,
+            feeling,
+            isRecurring,
+            ...(forceKeyContext
+              ? { isKeyTask: true, parentTaskId: forceKeyContext.parentTaskId }
+              : {}),
+          })
+        }
         className="tap w-full rounded-full py-3 text-[14px] font-semibold transition-colors"
         style={
           valid
@@ -992,6 +1135,7 @@ export function CreateOrEditTaskScreen({
       >
         ✅ {mode === "create" ? "Создать задачу" : "Сохранить"}
       </button>
+
     </div>
   );
 }
@@ -1108,3 +1252,343 @@ function NotesCard({
     </article>
   );
 }
+
+/* ============================================================
+   Ключевые задачи (дерево 5×5)
+   ============================================================ */
+
+const KEY_LEVEL_META: Record<number, { label: string; color: string }> = {
+  1: { label: "Ключевые задачи уровень 1", color: "#E88200" },
+  2: { label: "Подзадачи уровень 2", color: "#1D9E75" },
+  3: { label: "Подзадачи уровень 3", color: "#534AB7" },
+  4: { label: "Подзадачи уровень 4", color: "#E24444" },
+  5: { label: "Подзадачи уровень 5", color: "#D4A017" },
+};
+
+function getKeyChildren(tasks: Task[], goalId: string, parentId: string | null): Task[] {
+  return tasks.filter(
+    (t) => t.goalId === goalId && t.isKeyTask && (t.parentTaskId ?? null) === parentId
+  );
+}
+
+function getTaskLevel(tasks: Task[], task: Task): number {
+  let lvl = 1;
+  let cur: Task | undefined = task;
+  const seen = new Set<string>();
+  while (cur?.parentTaskId && !seen.has(cur.id) && lvl < 10) {
+    seen.add(cur.id);
+    const parent = tasks.find((t) => t.id === cur!.parentTaskId);
+    if (!parent) break;
+    cur = parent;
+    lvl++;
+  }
+  return lvl;
+}
+
+function KeyTreeSection({
+  goalId, tasks, expanded, onToggle, onOpenTask, onAdd,
+  freeOpen, onToggleFree, onAttachExisting,
+}: {
+  goalId: string;
+  tasks: Task[];
+  expanded: Set<string>;
+  onToggle: (id: string) => void;
+  onOpenTask: (id: string) => void;
+  onAdd: () => void;
+  freeOpen: boolean;
+  onToggleFree: () => void;
+  onAttachExisting: (taskId: string) => void;
+}) {
+  const roots = getKeyChildren(tasks, goalId, null);
+  const totalKey = tasks.filter((t) => t.goalId === goalId && t.isKeyTask).length;
+  const freeTasks = tasks.filter((t) => t.goalId === goalId && !t.isKeyTask);
+
+  const renderNode = (task: Task, level: number): React.ReactNode => {
+    const meta = KEY_LEVEL_META[level] ?? KEY_LEVEL_META[5];
+    const color = meta.color;
+    const children = getKeyChildren(tasks, goalId, task.id);
+    const canExpand = children.length > 0;
+    const isOpen = expanded.has(task.id);
+    const bg = `linear-gradient(160deg, #ffffff 0%, ${color}12 80%, ${color}35 100%)`;
+
+    return (
+      <div key={task.id} style={{ marginLeft: (level - 1) * 14 }}>
+        <div
+          onClick={() => { if (canExpand) onToggle(task.id); }}
+          role="button"
+          className="tap relative w-full rounded-2xl px-3 py-2.5 shadow-card overflow-hidden animate-fade-up"
+          style={{
+            background: bg,
+            border: "1px solid #ede8df",
+            paddingLeft: 14,
+            cursor: canExpand ? "pointer" : "default",
+          }}
+        >
+          <span aria-hidden style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: color }} />
+          <div className="flex items-center gap-2.5">
+            {/* Кружок статуса — только визуал */}
+            <span
+              className="shrink-0 inline-flex items-center justify-center rounded-full"
+              style={{
+                width: 20, height: 20,
+                border: `2px solid ${task.done ? color : "#d1d5db"}`,
+                background: task.done ? color : "transparent",
+              }}
+            >
+              {task.done && <Check className="h-3 w-3" style={{ color: "#fff" }} />}
+            </span>
+
+            {/* Текст — тап открывает задачу */}
+            <button
+              onClick={(e) => { e.stopPropagation(); onOpenTask(task.id); }}
+              className="tap flex-1 min-w-0 text-left"
+            >
+              <div
+                className="text-[14px] font-semibold leading-snug break-words"
+                style={{ color: "#111111", textDecoration: task.done ? "line-through" : undefined }}
+              >
+                {task.title}
+              </div>
+              <div className="mt-0.5 text-[11px]" style={{ color: "#6b6b6b" }}>
+                {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}
+                {task.isRecurring ? " · 🔁" : ""}
+              </div>
+            </button>
+
+            {/* Круглая стрелочка */}
+            {canExpand && (
+              <span
+                className="shrink-0 inline-flex items-center justify-center rounded-full"
+                style={{
+                  width: 28, height: 28,
+                  background: isOpen ? color : `${color}26`,
+                  transition: "transform 0.2s ease, background 0.2s ease",
+                  transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M4 2 L8 6 L4 10" stroke={isOpen ? "#fff" : color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            )}
+          </div>
+        </div>
+
+        {isOpen && canExpand && (
+          <div className="mt-2 space-y-2">
+            {children.map((c) => renderNode(c, level + 1))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground pl-1">
+        Ключевые задачи · {totalKey} узлов
+      </div>
+
+      {roots.length === 0 && (
+        <div className="text-center text-[12px] text-[#8a8a8a] py-4">
+          Пока нет ключевых задач. Добавь первую ниже.
+        </div>
+      )}
+
+      <div className="space-y-2">
+        {roots.map((r) => renderNode(r, 1))}
+      </div>
+
+      <button
+        onClick={onAdd}
+        className="tap w-full inline-flex items-center justify-center gap-1.5 rounded-full py-2.5 text-[13px] font-semibold"
+        style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }}
+      >
+        <Plus className="h-4 w-4" /> Добавить задачу
+      </button>
+
+      {/* Панель "Задачи из списка" */}
+      <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid #ede8df", background: "#fff" }}>
+        <button
+          onClick={onToggleFree}
+          className="tap w-full flex items-center gap-2 px-3 py-2.5 text-left"
+        >
+          <span className="text-[14px]">📥</span>
+          <span className="flex-1 text-[13px] font-medium">Задачи из списка</span>
+          <span
+            className="text-[11px] px-2 py-0.5 rounded-full"
+            style={{ background: "#f3efe7", color: "#6b6b6b" }}
+          >
+            {freeTasks.length} свободных
+          </span>
+          <ChevronDown
+            className="h-4 w-4 transition-transform"
+            style={{ transform: freeOpen ? "rotate(180deg)" : "none", color: "#8a8a8a" }}
+          />
+        </button>
+        {freeOpen && (
+          <div className="px-3 pb-3 space-y-2">
+            {freeTasks.length === 0 && (
+              <div className="text-center text-[12px] text-[#8a8a8a] py-2">
+                Все задачи этой цели уже в дереве.
+              </div>
+            )}
+            {freeTasks.map((t) => (
+              <div
+                key={t.id}
+                className="flex items-center gap-2 rounded-xl px-3 py-2"
+                style={{ border: "1px solid #ede8df", background: "#fff" }}
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13px] font-medium truncate">{t.title}</div>
+                  <div className="text-[11px]" style={{ color: "#8a8a8a" }}>{t.deadline}</div>
+                </div>
+                <button
+                  onClick={() => onAttachExisting(t.id)}
+                  className="tap shrink-0 rounded-full px-3 py-1 text-[11.5px] font-semibold"
+                  style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }}
+                >
+                  + в ключевые
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Поп-ап выбора уровня для новой ключевой задачи ---------------- */
+
+function AddKeyLevelPopup({
+  goalId, tasks, onClose, onPick,
+}: {
+  goalId: string;
+  tasks: Task[];
+  onClose: () => void;
+  onPick: (parentId: string | null, level: number) => void;
+}) {
+  const [pickingLevel, setPickingLevel] = useState<number | null>(null);
+
+  // Для каждого уровня 1..5: сколько уже задач и список примеров.
+  const levelStats: { level: number; tasks: Task[] }[] = [1, 2, 3, 4, 5].map((lvl) => ({
+    level: lvl,
+    tasks: tasks.filter((t) => t.goalId === goalId && t.isKeyTask && getTaskLevel(tasks, t) === lvl),
+  }));
+
+  // Отображаем: все уровни, где уже есть задачи, + один следующий пустой.
+  const availableLevels: number[] = [];
+  let addedNext = false;
+  for (const s of levelStats) {
+    if (s.tasks.length > 0) availableLevels.push(s.level);
+    else if (!addedNext) { availableLevels.push(s.level); addedNext = true; }
+  }
+  // Первый уровень (корневые ключевые): максимум 5 → если уже 5, скрываем.
+  const rootCount = levelStats[0].tasks.length;
+  const filteredLevels = availableLevels.filter((lvl) => !(lvl === 1 && rootCount >= 5));
+
+  // Если пользователь тапнул уровень → определяем список кандидатов-родителей.
+  const parentCandidates = (level: number): Task[] => {
+    if (level === 1) return [];
+    return tasks.filter((t) => t.goalId === goalId && t.isKeyTask && getTaskLevel(tasks, t) === level - 1
+      && getKeyChildren(tasks, goalId, t.id).length < 5);
+  };
+
+  const handleLevelClick = (level: number) => {
+    if (level === 1) { onPick(null, 1); return; }
+    const cands = parentCandidates(level);
+    if (cands.length === 0) return;
+    if (cands.length === 1) { onPick(cands[0].id, level); return; }
+    setPickingLevel(level);
+  };
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 100,
+        display: "flex", alignItems: "flex-end", justifyContent: "center",
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "100%", maxWidth: 520,
+          background: "#F5F1EA", borderTopLeftRadius: 24, borderTopRightRadius: 24,
+          padding: 16, maxHeight: "85vh", overflowY: "auto",
+        }}
+        className="animate-fade-up"
+      >
+        {pickingLevel == null ? (
+          <>
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-[15px] font-semibold">Куда добавить задачу?</div>
+              <button onClick={onClose} className="tap text-[#8a8a8a]"><X className="h-5 w-5" /></button>
+            </div>
+            <div className="space-y-2">
+              {filteredLevels.map((lvl) => {
+                const meta = KEY_LEVEL_META[lvl];
+                const existing = levelStats[lvl - 1].tasks;
+                const cands = parentCandidates(lvl);
+                const disabled = lvl !== 1 && cands.length === 0;
+                const needsPick = lvl !== 1 && cands.length > 1;
+                return (
+                  <button
+                    key={lvl}
+                    disabled={disabled}
+                    onClick={() => handleLevelClick(lvl)}
+                    className="tap w-full text-left rounded-xl px-3 py-2.5 flex items-center gap-3"
+                    style={{
+                      background: "#fff",
+                      border: `1.5px dashed ${meta.color}80`,
+                      opacity: disabled ? 0.5 : 1,
+                    }}
+                  >
+                    <span style={{ width: 4, alignSelf: "stretch", background: meta.color, borderRadius: 2 }} />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[13px] font-semibold" style={{ color: meta.color }}>{meta.label}</div>
+                      <div className="text-[11px] mt-0.5" style={{ color: "#6b6b6b" }}>
+                        {existing.length === 0
+                          ? "Пока пусто"
+                          : existing.slice(0, 3).map((t) => t.title).join(" · ")
+                            + (existing.length > 3 ? ` +${existing.length - 3}` : "")}
+                      </div>
+                    </div>
+                    {needsPick && (
+                      <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
+                        <path d="M4 2 L8 6 L4 10" stroke={meta.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="flex items-center justify-between mb-3">
+              <button onClick={() => setPickingLevel(null)} className="tap text-[13px] text-[#FF6D00]">‹ Назад к уровням</button>
+              <button onClick={onClose} className="tap text-[#8a8a8a]"><X className="h-5 w-5" /></button>
+            </div>
+            <div className="text-[15px] font-semibold mb-3">К какой из них это относится?</div>
+            <div className="space-y-2">
+              {parentCandidates(pickingLevel).map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => onPick(p.id, pickingLevel)}
+                  className="tap w-full text-left rounded-xl px-3 py-2.5"
+                  style={{ background: "#fff", border: "1px solid #ede8df" }}
+                >
+                  <div className="text-[13px] font-semibold">{p.title}</div>
+                  <div className="text-[11px]" style={{ color: "#8a8a8a" }}>{p.deadline}</div>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
