@@ -1396,10 +1396,6 @@ function KeyTreeSection({
 
   return (
     <div className="space-y-3">
-      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground pl-1">
-        Ключевые задачи · {totalKey} узлов
-      </div>
-
       {roots.length === 0 && (
         <div className="text-center text-[12px] text-[#8a8a8a] py-4">
           Пока нет ключевых задач. Добавь первую ниже.
@@ -1412,8 +1408,8 @@ function KeyTreeSection({
 
       <button
         onClick={onAdd}
-        className="tap w-full inline-flex items-center justify-center gap-1.5 rounded-full py-2.5 text-[13px] font-semibold"
-        style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }}
+        className="tap w-full inline-flex items-center justify-center gap-1.5 rounded-full py-2 text-[13px] font-semibold"
+        style={{ background: "#fff", color: "#FF6D00", border: "1px solid #FF6D00" }}
       >
         <Plus className="h-4 w-4" /> Добавить задачу
       </button>
