@@ -1252,3 +1252,343 @@ function NotesCard({
     </article>
   );
 }
+
+/* ============================================================
+   Ключевые задачи (дерево 5×5)
+   ============================================================ */
+
+const KEY_LEVEL_META: Record<number, { label: string; color: string }> = {
+  1: { label: "Ключевые задачи уровень 1", color: "#E88200" },
+  2: { label: "Подзадачи уровень 2", color: "#1D9E75" },
+  3: { label: "Подзадачи уровень 3", color: "#534AB7" },
+  4: { label: "Подзадачи уровень 4", color: "#E24444" },
+  5: { label: "Подзадачи уровень 5", color: "#D4A017" },
+};
+
+function getKeyChildren(tasks: Task[], goalId: string, parentId: string | null): Task[] {
+  return tasks.filter(
+    (t) => t.goalId === goalId && t.isKeyTask && (t.parentTaskId ?? null) === parentId
+  );
+}
+
+function getTaskLevel(tasks: Task[], task: Task): number {
+  let lvl = 1;
+  let cur: Task | undefined = task;
+  const seen = new Set<string>();
+  while (cur?.parentTaskId && !seen.has(cur.id) && lvl < 10) {
+    seen.add(cur.id);
+    const parent = tasks.find((t) => t.id === cur!.parentTaskId);
+    if (!parent) break;
+    cur = parent;
+    lvl++;
+  }
+  return lvl;
+}
+
+function KeyTreeSection({
+  goalId, tasks, expanded, onToggle, onOpenTask, onAdd,
+  freeOpen, onToggleFree, onAttachExisting,
+}: {
+  goalId: string;
+  tasks: Task[];
+  expanded: Set<string>;
+  onToggle: (id: string) => void;
+  onOpenTask: (id: string) => void;
+  onAdd: () => void;
+  freeOpen: boolean;
+  onToggleFree: () => void;
+  onAttachExisting: (taskId: string) => void;
+}) {
+  const roots = getKeyChildren(tasks, goalId, null);
+  const totalKey = tasks.filter((t) => t.goalId === goalId && t.isKeyTask).length;
+  const freeTasks = tasks.filter((t) => t.goalId === goalId && !t.isKeyTask);
+
+  const renderNode = (task: Task, level: number): React.ReactNode => {
+    const meta = KEY_LEVEL_META[level] ?? KEY_LEVEL_META[5];
+    const color = meta.color;
+    const children = getKeyChildren(tasks, goalId, task.id);
+    const canExpand = children.length > 0;
+    const isOpen = expanded.has(task.id);
+    const bg = `linear-gradient(160deg, #ffffff 0%, ${color}12 80%, ${color}35 100%)`;
+
+    return (
+      <div key={task.id} style={{ marginLeft: (level - 1) * 14 }}>
+        <div
+          onClick={() => { if (canExpand) onToggle(task.id); }}
+          role="button"
+          className="tap relative w-full rounded-2xl px-3 py-2.5 shadow-card overflow-hidden animate-fade-up"
+          style={{
+            background: bg,
+            border: "1px solid #ede8df",
+            paddingLeft: 14,
+            cursor: canExpand ? "pointer" : "default",
+          }}
+        >
+          <span aria-hidden style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: color }} />
+          <div className="flex items-center gap-2.5">
+            {/* Кружок статуса — только визуал */}
+            <span
+              className="shrink-0 inline-flex items-center justify-center rounded-full"
+              style={{
+                width: 20, height: 20,
+                border: `2px solid ${task.done ? color : "#d1d5db"}`,
+                background: task.done ? color : "transparent",
+              }}
+            >
+              {task.done && <Check className="h-3 w-3" style={{ color: "#fff" }} />}
+            </span>
+
+            {/* Текст — тап открывает задачу */}
+            <button
+              onClick={(e) => { e.stopPropagation(); onOpenTask(task.id); }}
+              className="tap flex-1 min-w-0 text-left"
+            >
+              <div
+                className="text-[14px] font-semibold leading-snug break-words"
+                style={{ color: "#111111", textDecoration: task.done ? "line-through" : undefined }}
+              >
+                {task.title}
+              </div>
+              <div className="mt-0.5 text-[11px]" style={{ color: "#6b6b6b" }}>
+                {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}
+                {task.isRecurring ? " · 🔁" : ""}
+              </div>
+            </button>
+
+            {/* Круглая стрелочка */}
+            {canExpand && (
+              <span
+                className="shrink-0 inline-flex items-center justify-center rounded-full"
+                style={{
+                  width: 28, height: 28,
+                  background: isOpen ? color : `${color}26`,
+                  transition: "transform 0.2s ease, background 0.2s ease",
+                  transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M4 2 L8 6 L4 10" stroke={isOpen ? "#fff" : color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            )}
+          </div>
+        </div>
+
+        {isOpen && canExpand && (
+          <div className="mt-2 space-y-2">
+            {children.map((c) => renderNode(c, level + 1))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground pl-1">
+        Ключевые задачи · {totalKey} узлов
+      </div>
+
+      {roots.length === 0 && (
+        <div className="text-center text-[12px] text-[#8a8a8a] py-4">
+          Пока нет ключевых задач. Добавь первую ниже.
+        </div>
+      )}
+
+      <div className="space-y-2">
+        {roots.map((r) => renderNode(r, 1))}
+      </div>
+
+      <button
+        onClick={onAdd}
+        className="tap w-full inline-flex items-center justify-center gap-1.5 rounded-full py-2.5 text-[13px] font-semibold"
+        style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }}
+      >
+        <Plus className="h-4 w-4" /> Добавить задачу
+      </button>
+
+      {/* Панель "Задачи из списка" */}
+      <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid #ede8df", background: "#fff" }}>
+        <button
+          onClick={onToggleFree}
+          className="tap w-full flex items-center gap-2 px-3 py-2.5 text-left"
+        >
+          <span className="text-[14px]">📥</span>
+          <span className="flex-1 text-[13px] font-medium">Задачи из списка</span>
+          <span
+            className="text-[11px] px-2 py-0.5 rounded-full"
+            style={{ background: "#f3efe7", color: "#6b6b6b" }}
+          >
+            {freeTasks.length} свободных
+          </span>
+          <ChevronDown
+            className="h-4 w-4 transition-transform"
+            style={{ transform: freeOpen ? "rotate(180deg)" : "none", color: "#8a8a8a" }}
+          />
+        </button>
+        {freeOpen && (
+          <div className="px-3 pb-3 space-y-2">
+            {freeTasks.length === 0 && (
+              <div className="text-center text-[12px] text-[#8a8a8a] py-2">
+                Все задачи этой цели уже в дереве.
+              </div>
+            )}
+            {freeTasks.map((t) => (
+              <div
+                key={t.id}
+                className="flex items-center gap-2 rounded-xl px-3 py-2"
+                style={{ border: "1px solid #ede8df", background: "#fff" }}
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13px] font-medium truncate">{t.title}</div>
+                  <div className="text-[11px]" style={{ color: "#8a8a8a" }}>{t.deadline}</div>
+                </div>
+                <button
+                  onClick={() => onAttachExisting(t.id)}
+                  className="tap shrink-0 rounded-full px-3 py-1 text-[11.5px] font-semibold"
+                  style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }}
+                >
+                  + в ключевые
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- Поп-ап выбора уровня для новой ключевой задачи ---------------- */
+
+function AddKeyLevelPopup({
+  goalId, tasks, onClose, onPick,
+}: {
+  goalId: string;
+  tasks: Task[];
+  onClose: () => void;
+  onPick: (parentId: string | null, level: number) => void;
+}) {
+  const [pickingLevel, setPickingLevel] = useState<number | null>(null);
+
+  // Для каждого уровня 1..5: сколько уже задач и список примеров.
+  const levelStats: { level: number; tasks: Task[] }[] = [1, 2, 3, 4, 5].map((lvl) => ({
+    level: lvl,
+    tasks: tasks.filter((t) => t.goalId === goalId && t.isKeyTask && getTaskLevel(tasks, t) === lvl),
+  }));
+
+  // Отображаем: все уровни, где уже есть задачи, + один следующий пустой.
+  const availableLevels: number[] = [];
+  let addedNext = false;
+  for (const s of levelStats) {
+    if (s.tasks.length > 0) availableLevels.push(s.level);
+    else if (!addedNext) { availableLevels.push(s.level); addedNext = true; }
+  }
+  // Первый уровень (корневые ключевые): максимум 5 → если уже 5, скрываем.
+  const rootCount = levelStats[0].tasks.length;
+  const filteredLevels = availableLevels.filter((lvl) => !(lvl === 1 && rootCount >= 5));
+
+  // Если пользователь тапнул уровень → определяем список кандидатов-родителей.
+  const parentCandidates = (level: number): Task[] => {
+    if (level === 1) return [];
+    return tasks.filter((t) => t.goalId === goalId && t.isKeyTask && getTaskLevel(tasks, t) === level - 1
+      && getKeyChildren(tasks, goalId, t.id).length < 5);
+  };
+
+  const handleLevelClick = (level: number) => {
+    if (level === 1) { onPick(null, 1); return; }
+    const cands = parentCandidates(level);
+    if (cands.length === 0) return;
+    if (cands.length === 1) { onPick(cands[0].id, level); return; }
+    setPickingLevel(level);
+  };
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 100,
+        display: "flex", alignItems: "flex-end", justifyContent: "center",
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "100%", maxWidth: 520,
+          background: "#F5F1EA", borderTopLeftRadius: 24, borderTopRightRadius: 24,
+          padding: 16, maxHeight: "85vh", overflowY: "auto",
+        }}
+        className="animate-fade-up"
+      >
+        {pickingLevel == null ? (
+          <>
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-[15px] font-semibold">Куда добавить задачу?</div>
+              <button onClick={onClose} className="tap text-[#8a8a8a]"><X className="h-5 w-5" /></button>
+            </div>
+            <div className="space-y-2">
+              {filteredLevels.map((lvl) => {
+                const meta = KEY_LEVEL_META[lvl];
+                const existing = levelStats[lvl - 1].tasks;
+                const cands = parentCandidates(lvl);
+                const disabled = lvl !== 1 && cands.length === 0;
+                const needsPick = lvl !== 1 && cands.length > 1;
+                return (
+                  <button
+                    key={lvl}
+                    disabled={disabled}
+                    onClick={() => handleLevelClick(lvl)}
+                    className="tap w-full text-left rounded-xl px-3 py-2.5 flex items-center gap-3"
+                    style={{
+                      background: "#fff",
+                      border: `1.5px dashed ${meta.color}80`,
+                      opacity: disabled ? 0.5 : 1,
+                    }}
+                  >
+                    <span style={{ width: 4, alignSelf: "stretch", background: meta.color, borderRadius: 2 }} />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[13px] font-semibold" style={{ color: meta.color }}>{meta.label}</div>
+                      <div className="text-[11px] mt-0.5" style={{ color: "#6b6b6b" }}>
+                        {existing.length === 0
+                          ? "Пока пусто"
+                          : existing.slice(0, 3).map((t) => t.title).join(" · ")
+                            + (existing.length > 3 ? ` +${existing.length - 3}` : "")}
+                      </div>
+                    </div>
+                    {needsPick && (
+                      <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
+                        <path d="M4 2 L8 6 L4 10" stroke={meta.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="flex items-center justify-between mb-3">
+              <button onClick={() => setPickingLevel(null)} className="tap text-[13px] text-[#FF6D00]">‹ Назад к уровням</button>
+              <button onClick={onClose} className="tap text-[#8a8a8a]"><X className="h-5 w-5" /></button>
+            </div>
+            <div className="text-[15px] font-semibold mb-3">К какой из них это относится?</div>
+            <div className="space-y-2">
+              {parentCandidates(pickingLevel).map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => onPick(p.id, pickingLevel)}
+                  className="tap w-full text-left rounded-xl px-3 py-2.5"
+                  style={{ background: "#fff", border: "1px solid #ede8df" }}
+                >
+                  <div className="text-[13px] font-semibold">{p.title}</div>
+                  <div className="text-[11px]" style={{ color: "#8a8a8a" }}>{p.deadline}</div>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
