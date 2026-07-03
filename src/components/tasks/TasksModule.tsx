@@ -25,7 +25,7 @@ export type TaskDeadline =
   | "🟧 На день"
   | "🟦 На неделю"
   | "🟪 На месяц"
-  | "🟩 Квартал";
+  | "🟥 Квартал";
 
 export interface Task {
   id: string;
@@ -49,7 +49,7 @@ const DEADLINES: { value: TaskDeadline; label: string }[] = [
   { value: "🟧 На день",      label: "🟧 На день" },
   { value: "🟦 На неделю",    label: "🟦 На неделю" },
   { value: "🟪 На месяц",     label: "🟪 На месяц" },
-  { value: "🟩 Квартал",      label: "🟩 Квартал" },
+  { value: "🟥 Квартал",      label: "🟥 Квартал" },
 ];
 
 const DEADLINE_COLORS: Record<TaskDeadline, { bg: string; border?: string }> = {
@@ -57,7 +57,7 @@ const DEADLINE_COLORS: Record<TaskDeadline, { bg: string; border?: string }> = {
   "🟧 На день":      { bg: "#E88200" },
   "🟦 На неделю":    { bg: "#378ADD" },
   "🟪 На месяц":     { bg: "#7F77DD" },
-  "🟩 Квартал":      { bg: "#639922" },
+  "🟥 Квартал":      { bg: "#D14343" },
 };
 
 
@@ -106,7 +106,7 @@ function ganttDatesForDeadline(deadline: TaskDeadline): Pick<Task, "startDate" |
   const spanDays = deadline === "🟧 На день" ? 0
     : deadline === "🟦 На неделю" ? 6
     : deadline === "🟪 На месяц" ? 29
-    : deadline === "🟩 Квартал" ? 89
+    : deadline === "🟥 Квартал" ? 89
     : null;
 
   if (spanDays == null) return { startDate: undefined, endDate: undefined };
@@ -121,7 +121,7 @@ const FILTERS: { id: FilterId; label: string }[] = [
   { id: "day",     label: "🟧 День" },
   { id: "week",    label: "🟦 Неделя" },
   { id: "month",   label: "🟪 Месяц" },
-  { id: "quarter", label: "🟩 Квартал" },
+  { id: "quarter", label: "🟥 Квартал" },
 ];
 
 type ViewMode = "list" | "key" | "gantt";
@@ -135,10 +135,10 @@ const SAMPLE_TASKS = (goals: TaskGoalRef[]): Task[] => {
   const g2 = goals[2]?.id ?? g0;
   return [
     { id: "t1", goalId: g0, title: "Купить кроссовки для длинных дистанций", deadline: "🟧 На день", duration: "1 час", feeling: 8, done: false, timeSpent: 0 },
-    { id: "t2", goalId: g0, title: "Составить план тренировок на месяц", deadline: "🟩 Квартал", duration: "2 часа", feeling: 7, done: false, timeSpent: 0 },
+    { id: "t2", goalId: g0, title: "Составить план тренировок на месяц", deadline: "🟥 Квартал", duration: "2 часа", feeling: 7, done: false, timeSpent: 0 },
     { id: "t3", goalId: g0, title: "Зарегистрироваться на ближайший полумарафон", deadline: "🟪 На месяц", duration: "30 мин", feeling: 9, done: false, timeSpent: 0 },
     { id: "t4", goalId: g1, title: "Найти преподавателя испанского", deadline: "🟦 На неделю", duration: "1 час", feeling: 6, done: false, timeSpent: 0 },
-    { id: "t5", goalId: g1, title: "Пройти базовый курс грамматики", deadline: "🟩 Квартал", duration: "Более 10 часов", feeling: 5, done: false, timeSpent: 0 },
+    { id: "t5", goalId: g1, title: "Пройти базовый курс грамматики", deadline: "🟥 Квартал", duration: "Более 10 часов", feeling: 5, done: false, timeSpent: 0 },
 
     { id: "t6", goalId: g2, title: "Открыть накопительный счёт", deadline: "🟧 На день", duration: "30 мин", feeling: 7, done: false, timeSpent: 0 },
     { id: "t7", goalId: g2, title: "Настроить автоперевод 20% от дохода", deadline: "⬜ Не определён", duration: "15 мин", feeling: 8, done: false, timeSpent: 0 },
@@ -263,7 +263,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       case "day":     list = list.filter((t) => t.deadline === "🟧 На день"); break;
       case "week":    list = list.filter((t) => t.deadline === "🟦 На неделю"); break;
       case "month":   list = list.filter((t) => t.deadline === "🟪 На месяц"); break;
-      case "quarter": list = list.filter((t) => t.deadline === "🟩 Квартал"); break;
+      case "quarter": list = list.filter((t) => t.deadline === "🟥 Квартал"); break;
     }
     // Порядок: сначала ключевые по возрастанию уровня (1..5), затем обычные;
     // внутри каждой группы выполненные задачи опускаются вниз.
@@ -1404,7 +1404,7 @@ function KeyTreeSection({
 }) {
   const roots = getKeyChildren(tasks, goalId, null);
   const totalKey = tasks.filter((t) => t.goalId === goalId && t.isKeyTask).length;
-  const freeTasks = tasks.filter((t) => t.goalId === goalId && !t.isKeyTask);
+  const freeTasks = tasks.filter((t) => t.goalId === goalId && !t.isKeyTask && !t.done);
 
   // Собрать все id-потомков (включая сам корень, кроме первого)
   const collectDescendantIds = (rootId: string): string[] => {
@@ -1487,7 +1487,8 @@ function KeyTreeSection({
         <Plus className="h-4 w-4" /> Добавить задачу
       </button>
 
-      {/* Панель "Задачи из списка" */}
+      {/* Панель "Задачи из списка" — скрываем, если нет свободных задач */}
+      {freeTasks.length > 0 && (
       <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid #ede8df", background: "#fff" }}>
         <button
           onClick={onToggleFree}
@@ -1535,6 +1536,7 @@ function KeyTreeSection({
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }

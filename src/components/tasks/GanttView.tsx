@@ -68,7 +68,7 @@ function rangeFromTag(deadline: TaskDeadline, today: Date): { start: Date; end: 
       return { start: today, end: addDays(today, 6) };
     case "🟪 На месяц":
       return { start: today, end: addDays(today, 29) };
-    case "🟩 Квартал":
+    case "🟥 Квартал":
       return { start: today, end: addDays(today, 89) };
     default:
       return { start: today, end: today };
