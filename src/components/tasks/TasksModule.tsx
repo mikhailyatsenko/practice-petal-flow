@@ -512,12 +512,8 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
               </button>
               <button
                 onClick={() => setOpenGoalId(isOpen ? null : row.gid)}
-                className="tap shrink-0 inline-flex items-center gap-1 text-[11px] font-medium rounded-full px-2 py-0.5"
-                style={
-                  isOpen
-                    ? { background: "rgba(255,109,0,0.10)", color: "#FF6D00", border: "1px solid rgba(255,109,0,0.35)" }
-                    : { background: "transparent", color: "#9a8f7e", border: "1px solid #ede8df" }
-                }
+                className="tap shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold rounded-full px-2.5 py-1"
+                style={{ background: "#fff", color: "#FF6D00", border: "1px solid #FF6D00" }}
               >
                 {isOpen ? "Закрыть план" : "Открыть план"}
                 <ChevronDown
@@ -527,25 +523,24 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
               </button>
             </div>
 
-            {/* Кнопка Мозговой штурм — маленькая, сверху */}
+            {/* Переключатель: План+Заметки / Мозговой штурм */}
             {isOpen && goal && (
               <div className="flex justify-center">
-                <button
-                  onClick={() => { setBrainstormGoalId(row.gid); setBrainstormQuestion(null); }}
-                  className="tap inline-flex items-center gap-1 animate-fade-up"
-                  style={{
-                    background: "linear-gradient(135deg,#FFB300,#FF6D00)",
-                    color: "#fff",
-                    borderRadius: 999,
-                    padding: "5px 12px",
-                    fontSize: 11.5,
-                    fontWeight: 600,
-                    lineHeight: 1.2,
-                    boxShadow: "0 2px 6px rgba(255,109,0,0.25)",
-                  }}
-                >
-                  🧠 Мозговой штурм <span style={{ marginLeft: 2 }}>→</span>
-                </button>
+                <div className="inline-flex rounded-full p-1" style={{ background: "#f3efe7", border: "1px solid #ede8df" }}>
+                  <button
+                    className="tap rounded-full px-3.5 py-1.5 text-[12.5px] font-medium"
+                    style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }}
+                  >
+                    📝 План + Заметки
+                  </button>
+                  <button
+                    onClick={() => { setBrainstormGoalId(row.gid); setBrainstormQuestion(null); }}
+                    className="tap rounded-full px-3.5 py-1.5 text-[12.5px] font-medium"
+                    style={{ background: "transparent", color: "#8a8a8a" }}
+                  >
+                    🧠 Мозговой штурм
+                  </button>
+                </div>
               </div>
             )}
 
@@ -805,40 +800,13 @@ function TaskRow({
           className={`tap relative w-full text-left rounded-2xl px-3 py-2.5 shadow-card transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed] cursor-pointer animate-fade-up overflow-hidden ${keyLevelColor ? "" : "bg-card"}`}
           style={{
             border: isTimerActive ? "2px solid #FF6D00" : "1px solid #ede8df",
-            paddingLeft: task.deadline === "⬜ Не определён" ? undefined : 14,
             background: keyLevelColor
               ? `linear-gradient(160deg, #ffffff 0%, ${keyLevelColor}12 80%, ${keyLevelColor}35 100%)`
               : undefined,
           }}
-
         >
-          {task.deadline !== "⬜ Не определён" && (
-            <span
-              aria-hidden
-              style={{
-                position: "absolute", left: 0, top: 0, bottom: 0,
-                width: 5, background: c.bg,
-              }}
-            />
-          )}
           <div className="flex items-center gap-2.5">
-            {task.isKeyTask && (
-              <span aria-label="Ключевая задача" className="shrink-0 text-[14px] leading-none">🔑</span>
-            )}
-            <span
-              className="flex-1 text-[14px] font-semibold leading-snug break-words"
-              style={task.done ? { textDecoration: "line-through", color: "#8a8a8a" } : undefined}
-            >
-              {task.title}
-              {task.isRecurring && <span aria-label="Повторяющаяся"> 🔁</span>}
-            </span>
-
-            <div className="shrink-0 flex flex-col items-end" style={{ gap: 2 }}>
-              <span className="text-[17px] leading-none" aria-label={f.label}>{f.emoji}</span>
-              {task.duration && task.duration !== "—" && (
-                <span className="text-[11px] leading-none" style={{ color: "#8a8a8a" }}>{task.duration}</span>
-              )}
-            </div>
+            {/* Кружок статуса — слева */}
             <button
               type="button"
               aria-label={checked ? "Задача выполнена" : "Отметить выполненной"}
@@ -871,6 +839,38 @@ function TaskRow({
                 />
               </svg>
             </button>
+
+            {/* Название + метаданные под ним */}
+            <div className="flex-1 min-w-0">
+              <div
+                className="text-[14px] font-semibold leading-snug break-words"
+                style={task.done ? { textDecoration: "line-through", color: "#8a8a8a" } : undefined}
+              >
+                {task.title}
+                {task.isRecurring && <span aria-label="Повторяющаяся"> 🔁</span>}
+              </div>
+              <div className="mt-1 flex items-center gap-1.5 flex-wrap text-[11.5px]" style={{ color: "#6b6b6b" }}>
+                <span
+                  aria-hidden
+                  className="inline-block rounded-[3px]"
+                  style={{ width: 10, height: 10, background: c.bg }}
+                />
+                <span>{task.deadline.replace(/^\S+\s/, "")}</span>
+                {task.duration && task.duration !== "—" && (
+                  <>
+                    <span style={{ color: "#c5c5c5" }}>·</span>
+                    <span>{task.duration}</span>
+                  </>
+                )}
+                <span style={{ color: "#c5c5c5" }}>·</span>
+                <span className="text-[13px] leading-none" aria-label={f.label}>{f.emoji}</span>
+              </div>
+            </div>
+
+            {/* Ключик — справа */}
+            {task.isKeyTask && (
+              <span aria-label="Ключевая задача" className="shrink-0 text-[16px] leading-none">🔑</span>
+            )}
           </div>
           {isTimerActive && (
             <div className="mt-2 flex justify-center">
@@ -1422,6 +1422,7 @@ function KeyTreeSection({
               </div>
               <div className="mt-0.5 text-[11px]" style={{ color: "#6b6b6b" }}>
                 {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}
+                {` · ${feelingOf(task.feeling).emoji}`}
                 {task.isRecurring ? " · 🔁" : ""}
               </div>
             </button>
