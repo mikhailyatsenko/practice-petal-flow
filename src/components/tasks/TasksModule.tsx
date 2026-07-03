@@ -1427,6 +1427,7 @@ function KeyTreeSection({
               </div>
               <div className="mt-0.5 text-[11px]" style={{ color: "#6b6b6b" }}>
                 {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}
+                {` · ${feelingOf(task.feeling).emoji}`}
                 {task.isRecurring ? " · 🔁" : ""}
               </div>
             </button>
