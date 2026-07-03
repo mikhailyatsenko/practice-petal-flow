@@ -871,10 +871,11 @@ function DatesPopup({
         style={{
           width: "100%", maxWidth: 360, background: "#fff",
           borderRadius: 20, padding: 18, boxShadow: "0 10px 40px rgba(0,0,0,0.25)",
+          boxSizing: "border-box", overflow: "hidden",
         }}
       >
         <div className="flex items-start justify-between gap-2 mb-3">
-          <h3 className="text-[15px] font-semibold leading-snug text-foreground" style={{ flex: 1 }}>
+          <h3 className="text-[15px] font-semibold leading-snug text-foreground" style={{ flex: 1, minWidth: 0 }}>
             {task.title}
           </h3>
           <button onClick={onClose} className="tap shrink-0 rounded-full p-1" aria-label="Закрыть">
@@ -883,26 +884,27 @@ function DatesPopup({
         </div>
 
         <div className="space-y-2.5">
-          <label className="block">
+          <label className="block" style={{ minWidth: 0 }}>
             <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Начало</span>
             <input
               type="date"
               value={start}
               onChange={(e) => setStart(e.target.value)}
               className="mt-1 w-full rounded-xl px-3 py-2 text-[14px] outline-none"
-              style={{ border: "1px solid #ede8df", background: "#faf7f1" }}
+              style={{ border: "1px solid #ede8df", background: "#faf7f1", boxSizing: "border-box", maxWidth: "100%", minWidth: 0, WebkitAppearance: "none", appearance: "none" }}
             />
           </label>
-          <label className="block">
+          <label className="block" style={{ minWidth: 0 }}>
             <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Дедлайн</span>
             <input
               type="date"
               value={end}
               onChange={(e) => setEnd(e.target.value)}
               className="mt-1 w-full rounded-xl px-3 py-2 text-[14px] outline-none"
-              style={{ border: "1px solid #ede8df", background: "#faf7f1" }}
+              style={{ border: "1px solid #ede8df", background: "#faf7f1", boxSizing: "border-box", maxWidth: "100%", minWidth: 0, WebkitAppearance: "none", appearance: "none" }}
             />
           </label>
+
           {!valid && (
             <p className="text-[11.5px]" style={{ color: "#DC2626" }}>
               Дата дедлайна должна быть не раньше даты начала
