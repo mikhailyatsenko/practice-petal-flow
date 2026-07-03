@@ -255,7 +255,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   };
 
   const visibleTasks = useMemo(() => {
-    let list = tasks.filter((t) => !t.done);
+    let list = tasks.slice();
     if (initialGoalId) list = list.filter((t) => t.goalId === initialGoalId);
     switch (filter) {
       case "open":    list = list.filter((t) => t.deadline === "⬜ Не определён"); break;
@@ -264,7 +264,8 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       case "month":   list = list.filter((t) => t.deadline === "🟪 На месяц"); break;
       case "quarter": list = list.filter((t) => t.deadline === "🟩 Квартал"); break;
     }
-
+    // Выполненные задачи спускаются вниз (порядок среди невыполненных и выполненных сохраняется)
+    list.sort((a, b) => Number(a.done) - Number(b.done));
     return list;
   }, [tasks, filter, initialGoalId]);
 
