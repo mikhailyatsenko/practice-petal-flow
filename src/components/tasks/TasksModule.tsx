@@ -57,7 +57,7 @@ const DEADLINE_COLORS: Record<TaskDeadline, { bg: string; border?: string }> = {
   "🟧 На день":      { bg: "#E88200" },
   "🟦 На неделю":    { bg: "#378ADD" },
   "🟪 На месяц":     { bg: "#7F77DD" },
-  "🟥 Квартал":      { bg: "#639922" },
+  "🟥 Квартал":      { bg: "#D14343" },
 };
 
 
