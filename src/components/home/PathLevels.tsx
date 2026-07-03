@@ -402,7 +402,7 @@ export function PathLevels() {
   const lvl = previewLevel != null
     ? { ...PREVIEW_LEVELS[previewLevel], task: LEVELS[previewLevel - 1].task, reward: LEVELS[previewLevel - 1].reward }
     : LEVELS[idx];
-  const totalLevels = previewLevel != null ? 5 : LEVELS.length;
+  const totalLevels = previewLevel != null ? 6 : LEVELS.length;
   const currentIdx = previewLevel != null ? previewLevel : idx + 1;
   const isPreview = previewLevel != null;
   const doneCount = lvl.steps.filter((s) => s.done).length;
