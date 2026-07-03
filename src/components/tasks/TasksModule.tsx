@@ -1423,11 +1423,8 @@ function KeyTreeSection({
               {task.done && <Check className="h-3 w-3" style={{ color: "#fff" }} />}
             </span>
 
-            {/* Текст — тап открывает задачу */}
-            <button
-              onClick={(e) => { e.stopPropagation(); onOpenTask(task.id); }}
-              className="tap flex-1 min-w-0 text-left"
-            >
+            {/* Текст — тап по карточке разворачивает подзадачи */}
+            <div className="flex-1 min-w-0">
               <div
                 className="text-[14px] font-semibold leading-snug break-words"
                 style={{ color: "#111111", textDecoration: task.done ? "line-through" : undefined }}
@@ -1438,21 +1435,34 @@ function KeyTreeSection({
               <div className="mt-0.5 text-[11px]" style={{ color: "#6b6b6b" }}>
                 {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}{task.isRecurring ? ` · 🔁 повторяется` : ""}
               </div>
+            </div>
+
+            {/* Кружок с карандашом — открывает карточку задачи */}
+            <button
+              type="button"
+              aria-label="Открыть задачу"
+              onClick={(e) => { e.stopPropagation(); onOpenTask(task.id); }}
+              className="tap shrink-0 inline-flex items-center justify-center rounded-full"
+              style={{
+                width: 28, height: 28,
+                background: `${color}26`,
+              }}
+            >
+              <Pencil className="h-3.5 w-3.5" style={{ color }} />
             </button>
 
-            {/* Круглая стрелочка */}
+            {/* Стрелочка — визуальный индикатор разворота (без фона) */}
             {canExpand && (
               <span
-                className="shrink-0 inline-flex items-center justify-center rounded-full"
+                className="shrink-0 inline-flex items-center justify-center"
                 style={{
-                  width: 28, height: 28,
-                  background: isOpen ? color : `${color}26`,
-                  transition: "transform 0.2s ease, background 0.2s ease",
+                  width: 20, height: 28,
+                  transition: "transform 0.2s ease",
                   transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
                 }}
               >
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path d="M4 2 L8 6 L4 10" stroke={isOpen ? "#fff" : color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M4 2 L8 6 L4 10" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
             )}
