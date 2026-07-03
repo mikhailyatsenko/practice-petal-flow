@@ -554,6 +554,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
             {/* План реализации */}
             {isOpen && goal && (
               <article
+                data-goal-plan={row.gid}
                 className="bg-card rounded-2xl overflow-hidden shadow-card animate-fade-up"
                 style={{ border: "1px solid #ede8df" }}
               >
