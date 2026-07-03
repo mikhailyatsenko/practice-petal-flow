@@ -848,6 +848,7 @@ function TaskRow({
               >
                 {task.title}
                 {task.isRecurring && <span aria-label="Повторяющаяся"> 🔁</span>}
+                <span aria-label={f.label} className="ml-1">{f.emoji}</span>
               </div>
               <div className="mt-1 flex items-center gap-1.5 flex-wrap text-[11.5px]" style={{ color: "#6b6b6b" }}>
                 <span
@@ -862,8 +863,6 @@ function TaskRow({
                     <span>{task.duration}</span>
                   </>
                 )}
-                <span style={{ color: "#c5c5c5" }}>·</span>
-                <span className="text-[13px] leading-none" aria-label={f.label}>{f.emoji}</span>
               </div>
             </div>
 
