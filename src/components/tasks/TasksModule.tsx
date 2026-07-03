@@ -1597,13 +1597,13 @@ function KeyNodeCard({
     >
       <div>
         <div
-          onClick={() => { if (stage === "idle" && canExpand) onToggleTree(); }}
+          onClick={() => { if (stage === "idle") onOpenTask(); }}
           role="button"
           className="tap relative w-full rounded-2xl px-3 py-2.5 shadow-card overflow-hidden animate-fade-up"
           style={{
             background: bg,
             border: isTimerActive ? `2px solid ${color}` : "1px solid #ede8df",
-            cursor: canExpand ? "pointer" : "default",
+            cursor: "pointer",
           }}
         >
           <div className="flex items-center gap-2.5">
@@ -1654,30 +1654,27 @@ function KeyNodeCard({
               </div>
             </div>
 
-            <button
-              type="button"
-              aria-label="Открыть задачу"
-              onClick={(e) => { e.stopPropagation(); onOpenTask(); }}
-              className="tap shrink-0 inline-flex items-center justify-center rounded-full"
-              style={{ width: 28, height: 28, background: `${color}26` }}
-            >
-              <Pencil className="h-3.5 w-3.5" style={{ color }} />
-            </button>
-
             {canExpand && (
-              <span
-                className="shrink-0 inline-flex items-center justify-center"
+              <button
+                type="button"
+                aria-label={isOpen ? "Свернуть подзадачи" : "Раскрыть все подзадачи"}
+                onClick={(e) => { e.stopPropagation(); onToggleTree(); }}
+                className="tap shrink-0 inline-flex items-center justify-center rounded-full"
                 style={{
-                  width: 20, height: 28,
+                  width: 28, height: 28,
+                  background: color,
+                  boxShadow: `0 2px 8px ${color}55`,
                   transition: "transform 0.2s ease",
                   transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
                 }}
               >
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path d="M4 2 L8 6 L4 10" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M4 2 L8 6 L4 10" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-              </span>
+              </button>
             )}
+          </div>
+
           </div>
 
           {isTimerActive && (
