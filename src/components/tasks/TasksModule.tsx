@@ -975,7 +975,7 @@ export function CreateOrEditTaskScreen({
   const [feeling, setFeeling] = useState<number>(task?.feeling ?? 0);
   const [isRecurring, setIsRecurring] = useState<boolean>(task?.isRecurring ?? false);
 
-  const valid = title.trim().length >= 3 && duration.length > 0 && feeling > 0;
+  const valid = title.trim().length >= 3 && duration.length > 0 && feeling > 0 && goalId.length > 0;
 
 
   return (
