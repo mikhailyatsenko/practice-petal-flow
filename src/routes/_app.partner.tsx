@@ -63,7 +63,7 @@ function PartnerScreen() {
         <div className="flex items-start gap-3" style={{ marginTop: 10 }}>
           <div
             className="shrink-0 flex items-center justify-center text-[18px]"
-            style={{ width: 36, height: 36, borderRadius: 10, background: "#E8F5E9" }}
+            style={{ width: 36, height: 36, borderRadius: 10, background: "#FFF3E0" }}
           >
             ✅
           </div>
@@ -74,7 +74,7 @@ function PartnerScreen() {
         <div className="flex items-start gap-3" style={{ marginTop: 10 }}>
           <div
             className="shrink-0 flex items-center justify-center text-[18px]"
-            style={{ width: 36, height: 36, borderRadius: 10, background: "#E3F2FD" }}
+            style={{ width: 36, height: 36, borderRadius: 10, background: "#FFF3E0" }}
           >
             🚀
           </div>
