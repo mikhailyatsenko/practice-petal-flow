@@ -101,7 +101,7 @@ function PartnerScreen() {
             💡
           </div>
           <p className="text-[13px]" style={{ color: "#1a1a1a", lineHeight: 1.6 }}>
-            <span className="font-semibold">Нюанс:</span> Если друг выходит из клуба, то с 1-го числа следующего месяца бонусные рубли больше не начисляются.
+            <span className="font-semibold">Нюанс:</span> Если друг выходит из клуба, то с 1-го числа следующего месяца бонусные рубли за него больше не начисляются.
           </p>
         </div>
       </div>
