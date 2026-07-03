@@ -683,8 +683,12 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
                 goalId={row.gid}
                 tasks={tasks}
                 expanded={keyExpanded}
-                onToggle={(id) => setKeyExpanded((prev) => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; })}
+                onSetExpanded={setKeyExpanded}
                 onOpenTask={(id) => setOpenTaskId(id)}
+                onComplete={(id) => handleMarkDone(id)}
+                shatteringId={shatteringId}
+                activeTimerIds={activeTimerIds}
+                elapsedMap={elapsedMap}
                 onAdd={() => {
                   const hasKey = tasks.some((t) => t.goalId === row.gid && t.isKeyTask);
                   if (!hasKey) {
