@@ -454,7 +454,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
         </div>
       )}
 
-      {grouped.map((row) => {
+      {viewMode !== "gantt" && grouped.map((row) => {
         const isOpen = openGoalId === row.gid;
         const goal = row.goal;
         return (
