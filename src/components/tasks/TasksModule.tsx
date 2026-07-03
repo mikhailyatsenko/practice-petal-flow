@@ -408,20 +408,20 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       {/* Переключатель режима: Список / Ключевые */}
       <div className="flex justify-center">
         <div className="inline-flex rounded-full p-1" style={{ background: "#f3efe7", border: "1px solid #ede8df" }}>
-          {(["list", "key"] as ViewMode[]).map((m) => {
+          {(["list", "key", "gantt"] as ViewMode[]).map((m) => {
             const active = viewMode === m;
             return (
               <button
                 key={m}
                 onClick={() => setViewMode(m)}
-                className="tap rounded-full px-4 py-1.5 text-[12.5px] font-medium transition-colors"
+                className="tap rounded-full px-3.5 py-1.5 text-[12.5px] font-medium transition-colors"
                 style={
                   active
                     ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }
                     : { background: "transparent", color: "#8a8a8a" }
                 }
               >
-                {m === "list" ? "📋 Список" : "🔑 Ключевые"}
+                {m === "list" ? "📋 Список" : m === "key" ? "🔑 Ключевые" : "📊 Гант"}
               </button>
             );
           })}
