@@ -74,7 +74,6 @@ const LEVELS: Level[] = [
       { id: "s2", label: "Созвониться и заполнить карточку Бадди", done: false },
     ],
     reward: [
-      "👥 Открывается Четвёрка",
       "⚙️ Открывается Маховик успеха",
       "⭐ +2 очка в день за Бадди",
     ],
@@ -110,6 +109,44 @@ const LEVELS: Level[] = [
   },
   {
     id: "l3",
+    title: "Активируй маховик успеха",
+    subtitle: "Сделай Хит 5 из 5 семь дней подряд",
+    emoji: "⚙️",
+    gradient: "linear-gradient(135deg, #7A4A00, #E88200)",
+    progress: { done: 0, total: 7, unit: "дней" },
+    steps: [
+      { id: "s1", label: "Сделать Хит 5/5 — 7 дней подряд", done: false },
+    ],
+    reward: [
+      "👥 Открывается Четвёрка",
+      "💯 +100 очков за активацию маховика",
+    ],
+    task: {
+      videoTitle: "Как выполнить уровень 3 — Активировать маховик",
+      caption: "Введение • Уровень 3",
+      duration: "6:30",
+      description: "Сделай Хит 5/5 семь дней подряд и активируй свой маховик успеха.",
+      videoDescription:
+        "Аркадий объясняет что такое маховик успеха и почему семь дней подряд Хита 5/5 — это тот момент, когда он начинает крутиться сам. В видео — как удержать ритм всех пяти практик, что делать, если сорвался, и как поддержать себя на этой неделе.",
+      videoChapters: [
+        { time: "0:00", title: "Что такое маховик успеха" },
+        { time: "1:40", title: "Почему именно 5 из 5 и 7 дней подряд" },
+        { time: "3:20", title: "Как удержать ритм и не сорваться" },
+        { time: "5:00", title: "Что произойдёт после активации" },
+      ],
+      tasks: [
+        {
+          title: "Сделать Хит 5/5 — 7 дней подряд",
+          description:
+            "Хит 5/5 — это день, когда ты выполнил все пять своих практик. Твоя задача — собрать 7 таких дней подряд, без пропусков. Если пропустил хоть один день — счётчик сбрасывается. Это активирует маховик успеха и открывает доступ к Четвёрке.",
+          active: true,
+          goTo: "Маховик успеха → Сегодняшние практики",
+        },
+      ],
+    },
+  },
+  {
+    id: "l4",
     title: "Создай Четвёрку",
     subtitle: "Объединись с другой парой",
     emoji: "👥",
@@ -123,8 +160,8 @@ const LEVELS: Level[] = [
       "⭐ +2 очка в день за Четвёрку",
     ],
     task: {
-      videoTitle: "Как выполнить уровень 3 — Четвёрка",
-      caption: "Введение • Уровень 3",
+      videoTitle: "Как выполнить уровень 4 — Четвёрка",
+      caption: "Введение • Уровень 4",
       duration: "9:00",
       description: "Объединись с другой парой и сделайте 7 хитов подряд.",
       videoDescription:
@@ -153,7 +190,7 @@ const LEVELS: Level[] = [
     },
   },
   {
-    id: "l4",
+    id: "l5",
     title: "Изучи формулу",
     subtitle: "Книга + ИИ-тест",
     emoji: "📖",
@@ -167,8 +204,8 @@ const LEVELS: Level[] = [
       "💯 +100 бонусных очков",
     ],
     task: {
-      videoTitle: "Как выполнить уровень 4 — Формула",
-      caption: "Введение • Уровень 4",
+      videoTitle: "Как выполнить уровень 5 — Формула",
+      caption: "Введение • Уровень 5",
       duration: "12:00",
       description: "Прослушай книгу «Закон притяжения» и сдай тест ИИ на 50%+.",
       videoDescription:
@@ -197,7 +234,7 @@ const LEVELS: Level[] = [
     },
   },
   {
-    id: "l5",
+    id: "l6",
     title: "Закрепись",
     subtitle: "Хит 30 дней подряд",
     emoji: "🏆",
@@ -208,8 +245,8 @@ const LEVELS: Level[] = [
     ],
     reward: ["🏆 +200 бонусных очков"],
     task: {
-      videoTitle: "Как выполнить уровень 5 — 30 хитов",
-      caption: "Введение • Уровень 5",
+      videoTitle: "Как выполнить уровень 6 — 30 хитов",
+      caption: "Введение • Уровень 6",
       duration: "7:00",
       description: "Сделай Хит 30 дней подряд — все 5 практик каждый день без пропуска.",
       videoDescription:
@@ -233,7 +270,7 @@ const LEVELS: Level[] = [
   },
 ];
 
-// Контент по ТЗ для режима предпросмотра уровней (1..5)
+// Контент по ТЗ для режима предпросмотра уровней (1..6)
 const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
   1: {
     id: "p1",
@@ -264,7 +301,6 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
       { id: "s2", label: "Созвониться и заполнить карточку Бадди", done: false },
     ],
     reward: [
-      "Открывается Четвёрка",
       "Открывается Маховик успеха",
       "+2 очка в день за Бадди",
     ],
@@ -277,6 +313,27 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
   },
   3: {
     id: "p3",
+    title: "Активируй маховик успеха",
+    subtitle: "Сделай Хит 5/5 семь дней подряд",
+    emoji: "⚙️",
+    gradient: "linear-gradient(135deg, #7A4A00, #E88200)",
+    progress: { done: 0, total: 7, unit: "дней" },
+    steps: [
+      { id: "s1", label: "Сделать Хит 5/5 — 7 дней подряд", done: false },
+    ],
+    reward: [
+      "Открывается Четвёрка",
+      "+100 очков за активацию маховика",
+    ],
+    task: {
+      videoTitle: "Уровень 3 — Активировать маховик",
+      caption: "Введение • Уровень 3",
+      duration: "6:30",
+      description: "Сделай Хит 5/5 семь дней подряд и активируй маховик успеха.",
+    },
+  },
+  4: {
+    id: "p4",
     title: "Создай Четвёрку",
     subtitle: "Объединись с другой парой",
     emoji: "👥",
@@ -289,14 +346,14 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
       "+2 очка в день за Четвёрку",
     ],
     task: {
-      videoTitle: "Уровень 3 — Четвёрка",
-      caption: "Введение • Уровень 3",
+      videoTitle: "Уровень 4 — Четвёрка",
+      caption: "Введение • Уровень 4",
       duration: "9:00",
       description: "Объединись с другой парой Бадди и создайте Четвёрку.",
     },
   },
-  4: {
-    id: "p4",
+  5: {
+    id: "p5",
     title: "Изучи формулу",
     subtitle: "Книга + ИИ-тест",
     emoji: "📖",
@@ -310,14 +367,14 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
       "+100 бонусных очков",
     ],
     task: {
-      videoTitle: "Уровень 4 — Формула",
-      caption: "Введение • Уровень 4",
+      videoTitle: "Уровень 5 — Формула",
+      caption: "Введение • Уровень 5",
       duration: "12:00",
       description: "Прослушай книгу и сдай тест ИИ на 50%+.",
     },
   },
-  5: {
-    id: "p5",
+  6: {
+    id: "p6",
     title: "Закрепись",
     subtitle: "Хит 30 дней подряд",
     emoji: "🏆",
@@ -328,13 +385,14 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
     ],
     reward: ["+200 бонусных очков"],
     task: {
-      videoTitle: "Уровень 5 — 30 хитов",
-      caption: "Введение • Уровень 5",
+      videoTitle: "Уровень 6 — 30 хитов",
+      caption: "Введение • Уровень 6",
       duration: "7:00",
       description: "Все 5 практик 30 дней без пропуска.",
     },
   },
 };
+
 
 export function PathLevels() {
   const previewLevel = usePreviewLevel();
@@ -344,7 +402,7 @@ export function PathLevels() {
   const lvl = previewLevel != null
     ? { ...PREVIEW_LEVELS[previewLevel], task: LEVELS[previewLevel - 1].task, reward: LEVELS[previewLevel - 1].reward }
     : LEVELS[idx];
-  const totalLevels = previewLevel != null ? 5 : LEVELS.length;
+  const totalLevels = previewLevel != null ? 6 : LEVELS.length;
   const currentIdx = previewLevel != null ? previewLevel : idx + 1;
   const isPreview = previewLevel != null;
   const doneCount = lvl.steps.filter((s) => s.done).length;
