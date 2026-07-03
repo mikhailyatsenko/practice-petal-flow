@@ -1052,33 +1052,35 @@ export function CreateOrEditTaskScreen({
         <span className="w-12" />
       </div>
 
-      {/* Цель */}
-      <Section title="К какой цели?">
-        <div className="space-y-2">
-          {goals.map((g) => {
-            const active = goalId === g.id;
-            return (
-              <button
-                key={g.id}
-                onClick={() => setGoalId(active ? "" : g.id)}
-                className="tap w-full flex items-center gap-3 rounded-xl px-3 py-2.5 bg-card transition-colors text-left"
-                style={{ border: `1px solid ${active ? "#FF6D00" : "#ede8df"}` }}
-              >
-                <span
-                  className="shrink-0 rounded-lg"
-                  style={{ width: 36, height: 36, background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
-                />
+      {/* Цель — скрываем при создании ключевой подзадачи, цель уже выбрана */}
+      {!forceKeyContext && (
+        <Section title="К какой цели?">
+          <div className="space-y-2">
+            {goals.map((g) => {
+              const active = goalId === g.id;
+              return (
+                <button
+                  key={g.id}
+                  onClick={() => setGoalId(active ? "" : g.id)}
+                  className="tap w-full flex items-center gap-3 rounded-xl px-3 py-2.5 bg-card transition-colors text-left"
+                  style={{ border: `1px solid ${active ? "#FF6D00" : "#ede8df"}` }}
+                >
+                  <span
+                    className="shrink-0 rounded-lg"
+                    style={{ width: 36, height: 36, background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
+                  />
 
-                <span className="flex-1 text-[14px] font-medium">{g.title}</span>
-                {active && <Check className="h-4 w-4" style={{ color: "#FF6D00" }} />}
-              </button>
-            );
-          })}
-          {goals.length === 0 && (
-            <p className="text-[12px] text-muted-foreground">Пока нет целей — задача будет без привязки.</p>
-          )}
-        </div>
-      </Section>
+                  <span className="flex-1 text-[14px] font-medium">{g.title}</span>
+                  {active && <Check className="h-4 w-4" style={{ color: "#FF6D00" }} />}
+                </button>
+              );
+            })}
+            {goals.length === 0 && (
+              <p className="text-[12px] text-muted-foreground">Пока нет целей — задача будет без привязки.</p>
+            )}
+          </div>
+        </Section>
+      )}
 
       {/* Название */}
       <Section title="Название задачи">
