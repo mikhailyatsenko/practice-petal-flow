@@ -778,41 +778,29 @@ function TaskRow({
   const f = feelingOf(task.feeling);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
-  // Этапы анимации: tick (0-250ms) → flyOut (250-650ms) → collapse (650-1050ms)
-  const [stage, setStage] = useState<"idle" | "tick" | "flyOut" | "collapse">("idle");
+  // Этапы анимации: tick (0-250ms) → strike (250-800ms) → done (карточка уходит вниз при ре-сортировке)
+  const [stage, setStage] = useState<"idle" | "tick" | "strike">("idle");
   useEffect(() => {
-    if (!isShattering) { setStage("idle"); return; }
+    if (!isShattering) { setStage(task.done ? "strike" : "idle"); return; }
     // Гарантированно показать карточку перед стартом анимации
     wrapperRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     setStage("tick");
-    const t1 = window.setTimeout(() => setStage("flyOut"), 250);
-    const t2 = window.setTimeout(() => setStage("collapse"), 650);
-    return () => { window.clearTimeout(t1); window.clearTimeout(t2); };
-  }, [isShattering]);
+    const t1 = window.setTimeout(() => setStage("strike"), 250);
+    return () => { window.clearTimeout(t1); };
+  }, [isShattering, task.done]);
 
   const checked = task.done || stage !== "idle";
-  const collapsing = stage === "collapse";
-  const flying = stage === "flyOut" || stage === "collapse";
+  const striking = stage === "strike" || task.done;
 
   return (
     <div
       ref={wrapperRef}
       style={{
-        overflow: "hidden",
-        maxHeight: collapsing ? 0 : 200,
-        marginBottom: collapsing ? 0 : undefined,
-        transition: "max-height 0.4s cubic-bezier(0.4,0,0.2,1), margin-bottom 0.4s cubic-bezier(0.4,0,0.2,1)",
+        transition: "opacity 0.5s ease",
+        opacity: task.done ? 0.62 : 1,
       }}
     >
-      <div
-        style={{
-          transform: flying ? "translateX(120%)" : "translateX(0)",
-          opacity: flying ? 0 : 1,
-          transition: flying
-            ? "transform 0.4s cubic-bezier(0.55,0,1,0.45), opacity 0.4s ease"
-            : undefined,
-        }}
-      >
+      <div>
         <div
           onClick={() => { if (stage === "idle") onOpen(); }}
           role="button"
@@ -864,7 +852,14 @@ function TaskRow({
             <div className="flex-1 min-w-0">
               <div
                 className="text-[14px] font-semibold leading-snug break-words"
-                style={task.done ? { textDecoration: "line-through", color: "#8a8a8a" } : undefined}
+                style={{
+                  color: striking ? "#8a8a8a" : undefined,
+                  backgroundImage: "linear-gradient(currentColor, currentColor)",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "left 58%",
+                  backgroundSize: striking ? "100% 1.5px" : "0% 1.5px",
+                  transition: "background-size 0.55s ease, color 0.55s ease",
+                }}
               >
                 {task.title}
                 <span aria-label={f.label} className="ml-1">{f.emoji}</span>
