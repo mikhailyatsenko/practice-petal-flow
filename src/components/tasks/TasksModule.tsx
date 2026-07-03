@@ -171,10 +171,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   };
   const [filter, setFilter] = useState<FilterId>("all");
   const [viewMode, setViewMode] = useState<ViewMode>("list");
-  const [keyGanttUnlocked, setKeyGanttUnlocked] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem("tasks-key-gantt-unlocked") === "1";
-  });
+  const [keyGanttUnlocked, setKeyGanttUnlocked] = useState<boolean>(false);
   const [showUnlockPopup, setShowUnlockPopup] = useState(false);
   const requestViewMode = (m: ViewMode) => {
     if ((m === "key" || m === "gantt") && !keyGanttUnlocked) {
@@ -185,7 +182,6 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   };
   const unlockKeyGantt = () => {
     setKeyGanttUnlocked(true);
-    try { localStorage.setItem("tasks-key-gantt-unlocked", "1"); } catch { /* ignore */ }
     setShowUnlockPopup(false);
   };
   
