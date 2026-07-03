@@ -54,10 +54,21 @@ function PartnerScreen() {
             className="shrink-0 flex items-center justify-center text-[18px]"
             style={{ width: 36, height: 36, borderRadius: 10, background: "#FFF3E0" }}
           >
+            🎁
+          </div>
+          <p className="text-[13px]" style={{ color: "#1a1a1a", lineHeight: 1.6 }}>
+            Если ты привёл друга в клуб, его первый месяц — пробный, и он оплачивает участие всего за 1 рубль.
+          </p>
+        </div>
+        <div className="flex items-start gap-3" style={{ marginTop: 10 }}>
+          <div
+            className="shrink-0 flex items-center justify-center text-[18px]"
+            style={{ width: 36, height: 36, borderRadius: 10, background: "#FFF3E0" }}
+          >
             💰
           </div>
           <p className="text-[13px]" style={{ color: "#1a1a1a", lineHeight: 1.6 }}>
-            Твой друг оплачивает клуб каждый месяц, а тебе за это каждый раз начисляется столько же бонусных рублей.
+            Если твой друг продолжает участие и оплачивает клуб со второго месяца, тебе каждое 1-е число начисляется 1000 бонусных рублей.
           </p>
         </div>
         <div className="flex items-start gap-3" style={{ marginTop: 10 }}>
@@ -68,7 +79,7 @@ function PartnerScreen() {
             ✅
           </div>
           <p className="text-[13px]" style={{ color: "#1a1a1a", lineHeight: 1.6 }}>
-            Когда подходит твой день оплаты, эти бонусы списываются в счёт оплаты клуба.
+            Когда приходит твой день оплаты, эти бонусные рубли автоматически списываются в счёт оплаты клуба.
           </p>
         </div>
         <div className="flex items-start gap-3" style={{ marginTop: 10 }}>
