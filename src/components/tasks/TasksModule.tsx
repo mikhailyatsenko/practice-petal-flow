@@ -672,16 +672,17 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
             {viewMode === "list" ? (
               <div className="space-y-2">
                 {row.items.map((t) => (
-                  <TaskRow
-                    key={t.id}
-                    task={t}
-                    keyLevelColor={t.isKeyTask ? (KEY_LEVEL_META[getTaskLevel(tasks, t)] ?? KEY_LEVEL_META[5]).color : null}
-                    isTimerActive={activeTimerIds.has(t.id)}
-                    liveSeconds={elapsedMap[t.id] ?? 0}
-                    isShattering={shatteringId === t.id}
-                    onOpen={() => setOpenTaskId(t.id)}
-                    onComplete={() => handleMarkDone(t.id)}
-                  />
+                  <motion.div key={t.id} layout="position" transition={{ type: "spring", stiffness: 380, damping: 34, mass: 0.9 }}>
+                    <TaskRow
+                      task={t}
+                      keyLevelColor={t.isKeyTask ? (KEY_LEVEL_META[getTaskLevel(tasks, t)] ?? KEY_LEVEL_META[5]).color : null}
+                      isTimerActive={activeTimerIds.has(t.id)}
+                      liveSeconds={elapsedMap[t.id] ?? 0}
+                      isShattering={shatteringId === t.id}
+                      onOpen={() => setOpenTaskId(t.id)}
+                      onComplete={() => handleMarkDone(t.id)}
+                    />
+                  </motion.div>
                 ))}
               </div>
 
