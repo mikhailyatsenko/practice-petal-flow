@@ -46,15 +46,18 @@ function PartnerScreen() {
 
       {/* Short bonus description */}
       <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
-        <div className="flex items-start gap-3">
+        <p className="text-[15px] font-semibold" style={{ color: "#1a1a1a" }}>
+          Как работает партнёрская система?
+        </p>
+        <div className="flex items-start gap-3" style={{ marginTop: 12 }}>
           <div
             className="shrink-0 flex items-center justify-center text-[18px]"
             style={{ width: 36, height: 36, borderRadius: 10, background: "#FFF3E0" }}
           >
             💰
           </div>
-          <p className="text-[14px]" style={{ color: "#1a1a1a", lineHeight: 1.6 }}>
-            Каждый раз когда твой друг оплачивает клуб — тебе начисляется столько бонусных рублей, сколько он заплатил.
+          <p className="text-[13px]" style={{ color: "#1a1a1a", lineHeight: 1.6 }}>
+            Твой друг оплачивает клуб каждый месяц, а тебе за это каждый раз начисляется столько же бонусных рублей.
           </p>
         </div>
         <div className="flex items-start gap-3" style={{ marginTop: 10 }}>
@@ -65,7 +68,18 @@ function PartnerScreen() {
             ✅
           </div>
           <p className="text-[13px]" style={{ color: "#1a1a1a", lineHeight: 1.6 }}>
-            Бонусы списываются вместо реальных денег при твоей следующей оплате.
+            Когда подходит твой день оплаты, эти бонусы списываются в счёт оплаты клуба.
+          </p>
+        </div>
+        <div className="flex items-start gap-3" style={{ marginTop: 10 }}>
+          <div
+            className="shrink-0 flex items-center justify-center text-[18px]"
+            style={{ width: 36, height: 36, borderRadius: 10, background: "#E3F2FD" }}
+          >
+            🚀
+          </div>
+          <p className="text-[13px]" style={{ color: "#1a1a1a", lineHeight: 1.6 }}>
+            Если ты привёл больше друзей, у тебя накапливается больше бонусных рублей. И значит, ты дольше можешь оплачивать клуб бонусами.
           </p>
         </div>
       </div>
