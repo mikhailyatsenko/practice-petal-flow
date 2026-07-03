@@ -1536,6 +1536,7 @@ function KeyTreeSection({
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }
