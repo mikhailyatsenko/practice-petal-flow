@@ -776,7 +776,7 @@ function TaskRow({
   onComplete: () => void;
 }) {
 
-  void DEADLINE_COLORS;
+  
   const f = feelingOf(task.feeling);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
