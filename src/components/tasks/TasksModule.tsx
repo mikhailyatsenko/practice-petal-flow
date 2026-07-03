@@ -255,7 +255,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   };
 
   const visibleTasks = useMemo(() => {
-    let list = tasks.filter((t) => !t.done);
+    let list = tasks.slice();
     if (initialGoalId) list = list.filter((t) => t.goalId === initialGoalId);
     switch (filter) {
       case "open":    list = list.filter((t) => t.deadline === "⬜ Не определён"); break;
@@ -264,7 +264,8 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       case "month":   list = list.filter((t) => t.deadline === "🟪 На месяц"); break;
       case "quarter": list = list.filter((t) => t.deadline === "🟩 Квартал"); break;
     }
-
+    // Выполненные задачи спускаются вниз (порядок среди невыполненных и выполненных сохраняется)
+    list.sort((a, b) => Number(a.done) - Number(b.done));
     return list;
   }, [tasks, filter, initialGoalId]);
 
@@ -324,12 +325,12 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     // Возвращаемся в ленту, чтобы пользователь увидел свою карточку
     setOpenTaskId(null);
     // Ждём, пока лента отрендерится и доскроллится к карточке
-    window.setTimeout(() => setShatteringId(id), 450);
-    // 450ms скролл + 250ms галочка + 400ms вылет + 400ms схлопывание
+    window.setTimeout(() => setShatteringId(id), 300);
+    // 300ms скролл + 250ms галочка + 550ms зачёркивание = ~1100ms → ставим done и карточка уезжает вниз
     window.setTimeout(() => {
       setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
       setShatteringId((c) => (c === id ? null : c));
-    }, 1600);
+    }, 1150);
   };
 
   // ===== Рендер экранов =====
@@ -777,41 +778,29 @@ function TaskRow({
   const f = feelingOf(task.feeling);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
-  // Этапы анимации: tick (0-250ms) → flyOut (250-650ms) → collapse (650-1050ms)
-  const [stage, setStage] = useState<"idle" | "tick" | "flyOut" | "collapse">("idle");
+  // Этапы анимации: tick (0-250ms) → strike (250-800ms) → done (карточка уходит вниз при ре-сортировке)
+  const [stage, setStage] = useState<"idle" | "tick" | "strike">("idle");
   useEffect(() => {
-    if (!isShattering) { setStage("idle"); return; }
+    if (!isShattering) { setStage(task.done ? "strike" : "idle"); return; }
     // Гарантированно показать карточку перед стартом анимации
     wrapperRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     setStage("tick");
-    const t1 = window.setTimeout(() => setStage("flyOut"), 250);
-    const t2 = window.setTimeout(() => setStage("collapse"), 650);
-    return () => { window.clearTimeout(t1); window.clearTimeout(t2); };
-  }, [isShattering]);
+    const t1 = window.setTimeout(() => setStage("strike"), 250);
+    return () => { window.clearTimeout(t1); };
+  }, [isShattering, task.done]);
 
   const checked = task.done || stage !== "idle";
-  const collapsing = stage === "collapse";
-  const flying = stage === "flyOut" || stage === "collapse";
+  const striking = stage === "strike" || task.done;
 
   return (
     <div
       ref={wrapperRef}
       style={{
-        overflow: "hidden",
-        maxHeight: collapsing ? 0 : 200,
-        marginBottom: collapsing ? 0 : undefined,
-        transition: "max-height 0.4s cubic-bezier(0.4,0,0.2,1), margin-bottom 0.4s cubic-bezier(0.4,0,0.2,1)",
+        transition: "opacity 0.5s ease",
+        opacity: task.done ? 0.62 : 1,
       }}
     >
-      <div
-        style={{
-          transform: flying ? "translateX(120%)" : "translateX(0)",
-          opacity: flying ? 0 : 1,
-          transition: flying
-            ? "transform 0.4s cubic-bezier(0.55,0,1,0.45), opacity 0.4s ease"
-            : undefined,
-        }}
-      >
+      <div>
         <div
           onClick={() => { if (stage === "idle") onOpen(); }}
           role="button"
@@ -863,7 +852,14 @@ function TaskRow({
             <div className="flex-1 min-w-0">
               <div
                 className="text-[14px] font-semibold leading-snug break-words"
-                style={task.done ? { textDecoration: "line-through", color: "#8a8a8a" } : undefined}
+                style={{
+                  color: striking ? "#8a8a8a" : undefined,
+                  backgroundImage: "linear-gradient(currentColor, currentColor)",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "left 58%",
+                  backgroundSize: striking ? "100% 1.5px" : "0% 1.5px",
+                  transition: "background-size 0.55s ease, color 0.55s ease",
+                }}
               >
                 {task.title}
                 <span aria-label={f.label} className="ml-1">{f.emoji}</span>
@@ -1552,36 +1548,27 @@ function KeyNodeCard({
   onComplete: () => void;
 }) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const [stage, setStage] = useState<"idle" | "tick" | "flyOut" | "collapse">("idle");
+  const [stage, setStage] = useState<"idle" | "tick" | "strike">("idle");
   useEffect(() => {
-    if (!isShattering) { setStage("idle"); return; }
+    if (!isShattering) { setStage(task.done ? "strike" : "idle"); return; }
     wrapperRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     setStage("tick");
-    const t1 = window.setTimeout(() => setStage("flyOut"), 250);
-    const t2 = window.setTimeout(() => setStage("collapse"), 650);
-    return () => { window.clearTimeout(t1); window.clearTimeout(t2); };
-  }, [isShattering]);
+    const t1 = window.setTimeout(() => setStage("strike"), 250);
+    return () => { window.clearTimeout(t1); };
+  }, [isShattering, task.done]);
   const checked = task.done || stage !== "idle";
-  const collapsing = stage === "collapse";
-  const flying = stage === "flyOut" || stage === "collapse";
+  const striking = stage === "strike" || task.done;
   const bg = `linear-gradient(160deg, #ffffff 0%, ${color}12 80%, ${color}35 100%)`;
 
   return (
     <div
       ref={wrapperRef}
       style={{
-        overflow: "hidden",
-        maxHeight: collapsing ? 0 : 400,
-        transition: "max-height 0.4s cubic-bezier(0.4,0,0.2,1)",
+        transition: "opacity 0.5s ease",
+        opacity: task.done ? 0.62 : 1,
       }}
     >
-      <div
-        style={{
-          transform: flying ? "translateX(120%)" : "translateX(0)",
-          opacity: flying ? 0 : 1,
-          transition: flying ? "transform 0.4s cubic-bezier(0.55,0,1,0.45), opacity 0.4s ease" : undefined,
-        }}
-      >
+      <div>
         <div
           onClick={() => { if (stage === "idle" && canExpand) onToggleTree(); }}
           role="button"
@@ -1622,7 +1609,14 @@ function KeyNodeCard({
             <div className="flex-1 min-w-0">
               <div
                 className="text-[14px] font-semibold leading-snug break-words"
-                style={{ color: "#111111", textDecoration: task.done ? "line-through" : undefined }}
+                style={{
+                  color: striking ? "#8a8a8a" : "#111111",
+                  backgroundImage: "linear-gradient(currentColor, currentColor)",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "left 58%",
+                  backgroundSize: striking ? "100% 1.5px" : "0% 1.5px",
+                  transition: "background-size 0.55s ease, color 0.55s ease",
+                }}
               >
                 {task.title}
                 <span aria-label={feelingOf(task.feeling).label} className="ml-1">{feelingOf(task.feeling).emoji}</span>
