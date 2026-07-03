@@ -265,10 +265,17 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       case "month":   list = list.filter((t) => t.deadline === "🟪 На месяц"); break;
       case "quarter": list = list.filter((t) => t.deadline === "🟥 Квартал"); break;
     }
-    // Порядок: сначала ключевые по возрастанию уровня (1..5), затем обычные;
-    // внутри каждой группы выполненные задачи опускаются вниз.
+    // Порядок:
+    // • в режиме списка выполненные задачи опускаются в самый низ группы (без учёта уровня);
+    // • в режиме ключевых сначала идут ключевые по уровню (1..5), затем обычные;
+    //   внутри уровня выполненные — вниз.
     const rank = (t: Task) => (t.isKeyTask ? getTaskLevel(tasks, t) : 999);
     list.sort((a, b) => {
+      if (viewMode === "list") {
+        const d = Number(a.done) - Number(b.done);
+        if (d !== 0) return d;
+        return rank(a) - rank(b);
+      }
       const r = rank(a) - rank(b);
       if (r !== 0) return r;
       return Number(a.done) - Number(b.done);
