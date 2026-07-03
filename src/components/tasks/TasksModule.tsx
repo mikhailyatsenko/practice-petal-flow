@@ -1675,7 +1675,7 @@ function KeyNodeCard({
             )}
           </div>
 
-          </div>
+
 
           {isTimerActive && (
             <div className="mt-2 flex justify-center">
