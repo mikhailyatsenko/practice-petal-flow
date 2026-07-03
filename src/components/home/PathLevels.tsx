@@ -234,7 +234,7 @@ const LEVELS: Level[] = [
     },
   },
   {
-    id: "l5",
+    id: "l6",
     title: "Закрепись",
     subtitle: "Хит 30 дней подряд",
     emoji: "🏆",
