@@ -437,8 +437,18 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
         </div>
       )}
 
+      {viewMode === "gantt" && (
+        <GanttView
+          goals={goals}
+          tasks={initialGoalId ? tasks.filter((t) => t.goalId === initialGoalId) : tasks}
+          onUpdateTaskDates={(id, s, e) =>
+            setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, startDate: s, endDate: e } : t)))
+          }
+          onOpenTask={(id) => setOpenTaskId(id)}
+        />
+      )}
 
-      {grouped.length === 0 && (
+      {viewMode !== "gantt" && grouped.length === 0 && (
         <div className="text-center text-[13px] text-[#FF6D00] py-10">
           Пока нет задач по выбранному фильтру. Добавь первую ✨
         </div>
