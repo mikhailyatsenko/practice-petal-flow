@@ -284,11 +284,16 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   }, [visibleTasks, goals, viewMode]);
 
 
+  const scrollToTop = () => {
+    try { window.scrollTo({ top: 0, behavior: "auto" }); } catch { /* noop */ }
+  };
+
   const handleCreate = (data: Omit<Task, "id" | "done" | "timeSpent">) => {
     const newTask: Task = { ...data, ...ganttDatesForDeadline(data.deadline), id: `t${Date.now()}`, done: false, timeSpent: 0 };
     setTasks((prev) => [newTask, ...prev]);
     setCreating(false);
     setCreateForGoalId(null);
+    requestAnimationFrame(scrollToTop);
   };
   const attachToKey = (taskId: string, parentId: string | null) => {
     setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, isKeyTask: true, parentTaskId: parentId } : t)));
@@ -299,7 +304,9 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       : updated;
     setTasks((prev) => prev.map((t) => (t.id === normalized.id ? normalized : t)));
     setEditingTask(null);
+    requestAnimationFrame(scrollToTop);
   };
+
   const handleDelete = (id: string) => {
     setTasks((prev) => prev.filter((t) => t.id !== id));
     if (activeTimerIds.has(id)) {
@@ -651,6 +658,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
                   <TaskRow
                     key={t.id}
                     task={t}
+                    keyLevelColor={t.isKeyTask ? (KEY_LEVEL_META[getTaskLevel(tasks, t)] ?? KEY_LEVEL_META[5]).color : null}
                     isTimerActive={activeTimerIds.has(t.id)}
                     liveSeconds={elapsedMap[t.id] ?? 0}
                     isShattering={shatteringId === t.id}
@@ -659,6 +667,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
                   />
                 ))}
               </div>
+
             ) : (
               <KeyTreeSection
                 goalId={row.gid}
@@ -734,6 +743,7 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
 
 function TaskRow({
   task,
+  keyLevelColor,
   isTimerActive,
   liveSeconds,
   isShattering,
@@ -741,12 +751,14 @@ function TaskRow({
   onComplete,
 }: {
   task: Task;
+  keyLevelColor?: string | null;
   isTimerActive: boolean;
   liveSeconds: number;
   isShattering?: boolean;
   onOpen: () => void;
   onComplete: () => void;
 }) {
+
   const c = DEADLINE_COLORS[task.deadline];
   const f = feelingOf(task.feeling);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -790,11 +802,15 @@ function TaskRow({
           onClick={() => { if (stage === "idle") onOpen(); }}
           role="button"
           tabIndex={0}
-          className={`tap relative w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed] cursor-pointer animate-fade-up overflow-hidden`}
+          className={`tap relative w-full text-left rounded-2xl px-3 py-2.5 shadow-card transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed] cursor-pointer animate-fade-up overflow-hidden ${keyLevelColor ? "" : "bg-card"}`}
           style={{
             border: isTimerActive ? "2px solid #FF6D00" : "1px solid #ede8df",
             paddingLeft: task.deadline === "⬜ Не определён" ? undefined : 14,
+            background: keyLevelColor
+              ? `linear-gradient(160deg, #ffffff 0%, ${keyLevelColor}12 80%, ${keyLevelColor}35 100%)`
+              : undefined,
           }}
+
         >
           {task.deadline !== "⬜ Не определён" && (
             <span
