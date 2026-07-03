@@ -775,7 +775,7 @@ function DatesPopup({
 }) {
   const initial = task.startDate && task.endDate
     ? { start: task.startDate, end: task.endDate }
-    : (() => { const r = rangeFromTag(task.deadline, today); return { start: iso(r.start), end: iso(r.end) }; })();
+    : (() => { const r = getTaskRange(task, today); return { start: iso(r.start), end: iso(r.end) }; })();
   const [start, setStart] = useState(initial.start);
   const [end, setEnd] = useState(initial.end);
   const valid = start && end && start <= end;
