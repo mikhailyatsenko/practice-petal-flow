@@ -856,19 +856,21 @@ function TaskRow({
 
             {/* Название + метаданные под ним */}
             <div className="flex-1 min-w-0">
-              <div
-                className="text-[14px] font-semibold leading-snug break-words"
-                style={{
-                  color: striking ? "#8a8a8a" : undefined,
-                  backgroundImage: "linear-gradient(currentColor, currentColor)",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "left 58%",
-                  backgroundSize: striking ? "100% 1.5px" : "0% 1.5px",
-                  transition: "background-size 0.55s ease, color 0.55s ease",
-                }}
-              >
-                {task.title}
-                <span aria-label={f.label} className="ml-1">{f.emoji}</span>
+              <div className="text-[14px] font-semibold leading-snug break-words">
+                <span
+                  style={{
+                    color: striking ? "#8a8a8a" : undefined,
+                    backgroundImage: "linear-gradient(currentColor, currentColor)",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "left 52%",
+                    backgroundSize: striking ? "100% 1.5px" : "0% 1.5px",
+                    transition: "background-size 0.55s ease, color 0.55s ease",
+                    boxDecorationBreak: "clone",
+                    WebkitBoxDecorationBreak: "clone",
+                  }}
+                >
+                  {task.title}<span aria-label={f.label} className="ml-1">{f.emoji}</span>
+                </span>
               </div>
               <div className="mt-1 flex items-center gap-1.5 flex-wrap text-[11.5px]" style={{ color: "#6b6b6b" }}>
                 <span>{task.deadline}</span>
