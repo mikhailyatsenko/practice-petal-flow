@@ -297,7 +297,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
 
   const handleCreate = (data: Omit<Task, "id" | "done" | "timeSpent">) => {
     const newTask: Task = { ...data, ...ganttDatesForDeadline(data.deadline), id: `t${Date.now()}`, done: false, timeSpent: 0 };
-    setTasks((prev) => [newTask, ...prev]);
+    setTasks((prev) => [...prev, newTask]);
     setCreating(false);
     setCreateForGoalId(null);
     requestAnimationFrame(scrollToTop);
