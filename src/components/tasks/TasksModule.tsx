@@ -1492,11 +1492,12 @@ function KeyTreeSection({
 
       <button
         onClick={onAdd}
-        className="tap w-full inline-flex items-center justify-center gap-1.5 rounded-full py-2 text-[13px] font-semibold"
+        className="tap inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold"
         style={{ background: "#fff", color: "#FF6D00", border: "1px solid #FF6D00" }}
       >
         <Plus className="h-4 w-4" /> Добавить задачу
       </button>
+
 
       {/* Панель "Задачи из списка" — скрываем, если нет свободных задач */}
       {freeTasks.length > 0 && (
