@@ -457,15 +457,15 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       )}
 
       {/* Переключатель режима: Список / Ключевые */}
-      <div className="flex justify-center">
-        <div className="inline-flex rounded-full p-1" style={{ background: "#f3efe7", border: "1px solid #ede8df" }}>
+      <div className="w-full">
+        <div className="flex w-full rounded-full p-1" style={{ background: "#f3efe7", border: "1px solid #ede8df" }}>
           {(["list", "key", "gantt"] as ViewMode[]).map((m) => {
             const active = viewMode === m;
             return (
               <button
                 key={m}
                 onClick={() => setViewMode(m)}
-                className="tap rounded-full px-3.5 py-1.5 text-[12.5px] font-medium transition-colors"
+                className="tap flex-1 rounded-full px-3 py-2 text-[13px] font-semibold transition-colors"
                 style={
                   active
                     ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }
@@ -481,17 +481,10 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
 
       {/* Фильтры — только в режиме "Список" */}
       {viewMode === "list" && (
-        <div className="space-y-1.5">
-          <div className="flex justify-center gap-1.5 flex-wrap">
-            {FILTERS.slice(0, 3).map((f) => (
-              <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
-            ))}
-          </div>
-          <div className="flex justify-center gap-1.5 flex-wrap">
-            {FILTERS.slice(3).map((f) => (
-              <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
-            ))}
-          </div>
+        <div className="flex justify-center gap-1.5 flex-wrap pt-0.5">
+          {FILTERS.map((f) => (
+            <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
+          ))}
         </div>
       )}
 
