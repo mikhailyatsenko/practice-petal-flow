@@ -1361,9 +1361,9 @@ const KEY_LEVEL_META: Record<number, { label: string; color: string }> = {
 };
 
 function getKeyChildren(tasks: Task[], goalId: string, parentId: string | null): Task[] {
-  return tasks.filter(
-    (t) => t.goalId === goalId && t.isKeyTask && (t.parentTaskId ?? null) === parentId
-  );
+  return tasks
+    .filter((t) => t.goalId === goalId && t.isKeyTask && (t.parentTaskId ?? null) === parentId)
+    .sort((a, b) => Number(a.done) - Number(b.done));
 }
 
 function getTaskLevel(tasks: Task[], task: Task): number {
