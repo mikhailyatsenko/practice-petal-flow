@@ -409,8 +409,11 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
     setOffset(clamp(targetX));
   };
   const goToday = () => {
-    const todayX = daysBetween(rangeStart, today) * PX_PER_DAY;
-    setOffset(clamp(todayX));
+    const dayInMonth = today.getDate();
+    const anchorDay = Math.max(1, Math.floor(dayInMonth / 5) * 5);
+    const anchor = new Date(today.getFullYear(), today.getMonth(), anchorDay);
+    const anchorX = daysBetween(rangeStart, anchor) * PX_PER_DAY;
+    setOffset(clamp(anchorX));
   };
 
   // Popup редактирования дат
@@ -459,7 +462,7 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
           </button>
         </div>
         <div className="text-[11px] text-muted-foreground">
-          {VIEW_MONTHS} мес · свайп ←→
+          1 месяц · свайп ←→
         </div>
       </div>
 
