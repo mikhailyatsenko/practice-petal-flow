@@ -761,6 +761,13 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
           }}
         />
       )}
+
+      {showUnlockPopup && (
+        <UnlockKeyGanttPopup
+          onClose={() => setShowUnlockPopup(false)}
+          onUnlock={unlockKeyGantt}
+        />
+      )}
     </div>
   );
 }
