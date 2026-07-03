@@ -1107,7 +1107,7 @@ export function CreateOrEditTaskScreen({
       </div>
 
       {/* Цель — скрываем при создании ключевой подзадачи, цель уже выбрана */}
-      {!forceKeyContext && (
+      {!forceKeyContext && !defaultGoalId && (
         <Section title="К какой цели?">
           <div className="space-y-2">
             {goals.map((g) => {
@@ -1527,7 +1527,7 @@ function KeyTreeSection({
         <button
           onClick={onAdd}
           className="tap inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
-          style={{ background: "rgba(255,109,0,0.06)", color: "#FF6D00", border: "1px dashed rgba(255,109,0,0.4)" }}
+          style={{ background: "rgba(0,0,0,0.03)", color: "#8a8a8a", border: "1px dashed #d4d4d4" }}
         >
           <Plus className="h-3.5 w-3.5" /> Добавить ключевую задачу
         </button>
@@ -1911,15 +1911,18 @@ function UnlockKeyGanttPopup({
         </p>
 
         <div
-          className="rounded-xl mb-3 overflow-hidden"
+          className="rounded-xl mb-3 overflow-hidden relative aspect-video w-full flex items-center justify-center"
           style={{
-            aspectRatio: "16 / 9",
-            background: "#000",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            color: "#fff", fontSize: 13,
+            background: "linear-gradient(135deg, #2a1a05 0%, #4a2c0a 50%, #1a0e00 100%)",
           }}
         >
-          <span style={{ opacity: 0.6 }}>▶ Видео (скоро)</span>
+          <button
+            aria-label="Воспроизвести"
+            className="tap h-16 w-16 rounded-full flex items-center justify-center text-white shadow-lg"
+            style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+          >
+            <Play className="h-7 w-7 fill-white ml-1" />
+          </button>
         </div>
 
         <label className="block">
@@ -1930,7 +1933,6 @@ function UnlockKeyGanttPopup({
             onChange={(e) => { setCode(e.target.value); if (error) setError(false); }}
             onKeyDown={(e) => { if (e.key === "Enter") submit(); }}
             placeholder="Введи кодовое слово"
-            autoFocus
             maxLength={40}
             className="mt-1 w-full rounded-xl px-3 py-2.5 text-[14px] outline-none"
             style={{ border: `1px solid ${error ? "#DC2626" : "#ede8df"}`, background: "#faf7f1", boxSizing: "border-box" }}
