@@ -92,7 +92,7 @@ const FILTERS: { id: FilterId; label: string }[] = [
   { id: "quarter", label: "🟩 Квартал" },
 ];
 
-type ViewMode = "list" | "key";
+type ViewMode = "list" | "key" | "gantt";
 
 
 
