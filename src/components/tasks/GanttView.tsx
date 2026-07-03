@@ -151,12 +151,19 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
     maxOffsetRef.current = maxOffset;
   }, [maxOffset]);
 
-  // Автопрокрутка к "сегодня" на первом рендере
+  // Автопрокрутка при первом рендере: левый край шкалы становится на «якорь»,
+  // который зависит от текущего дня месяца:
+  //   день 5–9   → якорь = сегодня − 5 − (день%5)  (= 1-е)
+  //   день 10–14 → якорь = 5-е
+  //   день 15–19 → якорь = 10-е и т.д.
   const didCenterRef = useRef(false);
   useEffect(() => {
     if (didCenterRef.current || rightW === 0) return;
-    const todayX = daysBetween(rangeStart, today) * PX_PER_DAY;
-    setOffset(clamp(todayX - rightW / 2 + PX_PER_DAY / 2));
+    const dayInMonth = today.getDate();
+    const offsetDays = (dayInMonth % 5) + 5;
+    const anchor = addDays(today, -offsetDays);
+    const anchorX = daysBetween(rangeStart, anchor) * PX_PER_DAY;
+    setClampedOffset(anchorX);
     didCenterRef.current = true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rightW]);
@@ -169,6 +176,44 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
     });
   }, [maxOffset]);
 
+  // Инерция прокрутки: после отпускания пальца/мыши лента плавно замедляется.
+  const rafRef = useRef<number | null>(null);
+  const cancelInertia = () => {
+    if (rafRef.current != null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+  };
+  const startInertia = (velocity: number) => {
+    // velocity — px/ms в системе координат пальца (положительная = палец двигался вправо).
+    cancelInertia();
+    if (Math.abs(velocity) < 0.05) return;
+    let v = velocity;
+    let last = performance.now();
+    const friction = 0.004; // экспоненциальное затухание в мс^-1
+    const step = (now: number) => {
+      const dt = Math.min(48, now - last);
+      last = now;
+      // offset уменьшается когда палец двигался вправо → next = offset - v*dt
+      const next = offsetRef.current - v * dt;
+      const clamped = Math.min(Math.max(0, next), maxOffsetRef.current);
+      offsetRef.current = clamped;
+      setOffset(clamped);
+      if (clamped === 0 || clamped === maxOffsetRef.current) {
+        rafRef.current = null;
+        return;
+      }
+      v *= Math.max(0, 1 - friction * dt);
+      if (Math.abs(v) < 0.02) {
+        rafRef.current = null;
+        return;
+      }
+      rafRef.current = requestAnimationFrame(step);
+    };
+    rafRef.current = requestAnimationFrame(step);
+  };
+  useEffect(() => () => cancelInertia(), []);
+
   // Свайп пальцем/мышью по правой панели
   useEffect(() => {
     const el = rightPaneRef.current;
@@ -177,21 +222,31 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
     let pointerStartX = 0;
     let pointerStartOffset = 0;
     let pointerId: number | null = null;
+    let pointerLastX = 0;
+    let pointerLastT = 0;
+    let pointerVelocity = 0;
 
     let touchDragging = false;
     let touchHorizontal = false;
     let touchStartX = 0;
     let touchStartY = 0;
     let touchStartOffset = 0;
+    let touchLastX = 0;
+    let touchLastT = 0;
+    let touchVelocity = 0;
 
     const onDown = (e: PointerEvent) => {
       if (e.pointerType === "touch") return;
       if (e.pointerType === "mouse" && e.button !== 0) return;
       e.stopPropagation();
+      cancelInertia();
       pointerDragging = true;
       pointerStartX = e.clientX;
       pointerStartOffset = offsetRef.current;
       pointerId = e.pointerId;
+      pointerLastX = e.clientX;
+      pointerLastT = performance.now();
+      pointerVelocity = 0;
     };
     const onMove = (e: PointerEvent) => {
       if (!pointerDragging) return;
@@ -201,9 +256,15 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
       if (Math.abs(dx) > 4 && pointerId != null) {
         try { el.setPointerCapture(pointerId); } catch { /* noop */ }
       }
+      const now = performance.now();
+      const dt = now - pointerLastT;
+      if (dt > 0) pointerVelocity = (e.clientX - pointerLastX) / dt;
+      pointerLastX = e.clientX;
+      pointerLastT = now;
       setClampedOffset(pointerStartOffset - dx);
     };
     const onUp = () => {
+      if (pointerDragging) startInertia(pointerVelocity);
       pointerDragging = false;
       pointerId = null;
     };
@@ -212,11 +273,15 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
       const touch = e.touches[0];
       if (!touch) return;
       e.stopPropagation();
+      cancelInertia();
       touchDragging = true;
       touchHorizontal = false;
       touchStartX = touch.clientX;
       touchStartY = touch.clientY;
       touchStartOffset = offsetRef.current;
+      touchLastX = touch.clientX;
+      touchLastT = performance.now();
+      touchVelocity = 0;
     };
     const onTouchMove = (e: TouchEvent) => {
       if (!touchDragging) return;
@@ -230,10 +295,16 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
       e.stopPropagation();
       if (!touchHorizontal) return;
       e.preventDefault();
+      const now = performance.now();
+      const dt = now - touchLastT;
+      if (dt > 0) touchVelocity = (touch.clientX - touchLastX) / dt;
+      touchLastX = touch.clientX;
+      touchLastT = now;
       setClampedOffset(touchStartOffset - dx);
     };
     const onTouchEnd = (e: TouchEvent) => {
       e.stopPropagation();
+      if (touchDragging && touchHorizontal) startInertia(touchVelocity);
       touchDragging = false;
       touchHorizontal = false;
     };
@@ -257,6 +328,7 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
       el.removeEventListener("touchcancel", onTouchEnd);
     };
   }, []);
+
 
   // Кастомный ползунок
   const trackRef = useRef<HTMLDivElement | null>(null);
