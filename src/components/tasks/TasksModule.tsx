@@ -264,8 +264,14 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       case "month":   list = list.filter((t) => t.deadline === "🟪 На месяц"); break;
       case "quarter": list = list.filter((t) => t.deadline === "🟩 Квартал"); break;
     }
-    // Выполненные задачи спускаются вниз (порядок среди невыполненных и выполненных сохраняется)
-    list.sort((a, b) => Number(a.done) - Number(b.done));
+    // Порядок: сначала ключевые по возрастанию уровня (1..5), затем обычные;
+    // внутри каждой группы выполненные задачи опускаются вниз.
+    const rank = (t: Task) => (t.isKeyTask ? getTaskLevel(tasks, t) : 999);
+    list.sort((a, b) => {
+      const r = rank(a) - rank(b);
+      if (r !== 0) return r;
+      return Number(a.done) - Number(b.done);
+    });
     return list;
   }, [tasks, filter, initialGoalId]);
 
