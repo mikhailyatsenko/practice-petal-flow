@@ -190,7 +190,7 @@ const LEVELS: Level[] = [
     },
   },
   {
-    id: "l4",
+    id: "l5",
     title: "Изучи формулу",
     subtitle: "Книга + ИИ-тест",
     emoji: "📖",
