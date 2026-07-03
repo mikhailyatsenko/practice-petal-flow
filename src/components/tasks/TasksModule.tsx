@@ -1490,13 +1490,16 @@ function KeyTreeSection({
         {roots.map((r) => renderNode(r, 1))}
       </div>
 
-      <button
-        onClick={onAdd}
-        className="tap inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold"
-        style={{ background: "#fff", color: "#FF6D00", border: "1px solid #FF6D00" }}
-      >
-        <Plus className="h-4 w-4" /> Добавить задачу
-      </button>
+      <div className="flex justify-center">
+        <button
+          onClick={onAdd}
+          className="tap inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold"
+          style={{ background: "rgba(255,109,0,0.12)", color: "#FF6D00", border: "1px solid #FF6D00" }}
+        >
+          <Plus className="h-4 w-4" /> Добавить задачу
+        </button>
+      </div>
+
 
 
       {/* Панель "Задачи из списка" — скрываем, если нет свободных задач */}
