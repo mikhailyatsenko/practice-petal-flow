@@ -64,23 +64,12 @@ function rangeFromTag(deadline: TaskDeadline, today: Date): { start: Date; end: 
   switch (deadline) {
     case "🟧 На день":
       return { start: today, end: today };
-    case "🟦 На неделю": {
-      const d = today.getDay();
-      const monOffset = d === 0 ? -6 : 1 - d;
-      const mon = addDays(today, monOffset);
-      return { start: mon, end: addDays(mon, 6) };
-    }
-    case "🟪 На месяц": {
-      const s = new Date(today.getFullYear(), today.getMonth(), 1);
-      const e = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-      return { start: s, end: e };
-    }
-    case "🟩 Квартал": {
-      const q = Math.floor(today.getMonth() / 3);
-      const s = new Date(today.getFullYear(), q * 3, 1);
-      const e = new Date(today.getFullYear(), q * 3 + 3, 0);
-      return { start: s, end: e };
-    }
+    case "🟦 На неделю":
+      return { start: today, end: addDays(today, 6) };
+    case "🟪 На месяц":
+      return { start: today, end: addDays(today, 29) };
+    case "🟩 Квартал":
+      return { start: today, end: addDays(today, 89) };
     default:
       return { start: today, end: today };
   }
@@ -143,7 +132,22 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
 
   const maxOffset = Math.max(0, totalW - rightW);
   const [offset, setOffset] = useState(0);
+  const offsetRef = useRef(0);
+  const maxOffsetRef = useRef(0);
   const clamp = (v: number) => Math.min(Math.max(0, v), maxOffset);
+  const setClampedOffset = (value: number) => {
+    const next = Math.min(Math.max(0, value), maxOffsetRef.current);
+    offsetRef.current = next;
+    setOffset(next);
+  };
+
+  useEffect(() => {
+    offsetRef.current = offset;
+  }, [offset]);
+
+  useEffect(() => {
+    maxOffsetRef.current = maxOffset;
+  }, [maxOffset]);
 
   // Автопрокрутка к "сегодня" на первом рендере
   const didCenterRef = useRef(false);
@@ -156,50 +160,101 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
   }, [rightW]);
 
   useEffect(() => {
-    setOffset((o) => Math.min(o, maxOffset));
+    setOffset((o) => {
+      const next = Math.min(o, maxOffset);
+      offsetRef.current = next;
+      return next;
+    });
   }, [maxOffset]);
 
   // Свайп пальцем/мышью по правой панели
   useEffect(() => {
     const el = rightPaneRef.current;
     if (!el) return;
-    let dragging = false;
-    let startX = 0;
-    let startOffset = 0;
+    let pointerDragging = false;
+    let pointerStartX = 0;
+    let pointerStartOffset = 0;
     let pointerId: number | null = null;
 
+    let touchDragging = false;
+    let touchHorizontal = false;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartOffset = 0;
+
     const onDown = (e: PointerEvent) => {
+      if (e.pointerType === "touch") return;
       if (e.pointerType === "mouse" && e.button !== 0) return;
-      dragging = true;
-      startX = e.clientX;
-      startOffset = offset;
+      e.stopPropagation();
+      pointerDragging = true;
+      pointerStartX = e.clientX;
+      pointerStartOffset = offsetRef.current;
       pointerId = e.pointerId;
     };
     const onMove = (e: PointerEvent) => {
-      if (!dragging) return;
-      const dx = e.clientX - startX;
+      if (!pointerDragging) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const dx = e.clientX - pointerStartX;
       if (Math.abs(dx) > 4 && pointerId != null) {
         try { el.setPointerCapture(pointerId); } catch { /* noop */ }
       }
-      setOffset(clamp(startOffset - dx));
+      setClampedOffset(pointerStartOffset - dx);
     };
     const onUp = () => {
-      dragging = false;
+      pointerDragging = false;
       pointerId = null;
     };
 
+    const onTouchStart = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      e.stopPropagation();
+      touchDragging = true;
+      touchHorizontal = false;
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      touchStartOffset = offsetRef.current;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      if (!touchDragging) return;
+      const touch = e.touches[0];
+      if (!touch) return;
+      const dx = touch.clientX - touchStartX;
+      const dy = touch.clientY - touchStartY;
+      if (!touchHorizontal && Math.abs(dx) > 5 && Math.abs(dx) > Math.abs(dy) * 1.05) {
+        touchHorizontal = true;
+      }
+      e.stopPropagation();
+      if (!touchHorizontal) return;
+      e.preventDefault();
+      setClampedOffset(touchStartOffset - dx);
+    };
+    const onTouchEnd = (e: TouchEvent) => {
+      e.stopPropagation();
+      touchDragging = false;
+      touchHorizontal = false;
+    };
+
     el.addEventListener("pointerdown", onDown);
-    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointermove", onMove, { passive: false });
     el.addEventListener("pointerup", onUp);
     el.addEventListener("pointercancel", onUp);
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    el.addEventListener("touchend", onTouchEnd);
+    el.addEventListener("touchcancel", onTouchEnd);
     return () => {
       el.removeEventListener("pointerdown", onDown);
       el.removeEventListener("pointermove", onMove);
       el.removeEventListener("pointerup", onUp);
       el.removeEventListener("pointercancel", onUp);
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
+      el.removeEventListener("touchcancel", onTouchEnd);
     };
-    // offset читаем в замыкании; переустанавливаем каждый раз чтобы иметь актуальное значение
-  }, [offset, maxOffset]);
+  }, []);
 
   // Кастомный ползунок
   const trackRef = useRef<HTMLDivElement | null>(null);
@@ -221,14 +276,9 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
     const onMove = (e: PointerEvent) => {
       if (!dragging || rightW <= thumbW) return;
       const dx = e.clientX - startX;
-      const newThumbX = Math.min(Math.max(0, thumbX + dx), rightW - thumbW);
-      const ratio = newThumbX / (rightW - thumbW);
-      setOffset(clamp(ratio * maxOffset));
-      // обновлять startX не нужно — считаем от исходной позиции
-      startX = e.clientX;
-      startOffset = ratio * maxOffset;
-      // Пересчитаем offset относительно нового старта
-      setOffset(startOffset);
+      const next = clamp(startOffset + (dx / (rightW - thumbW)) * maxOffset);
+      offsetRef.current = next;
+      setOffset(next);
     };
     const onUp = () => { dragging = false; };
     el.addEventListener("pointerdown", onDown);
@@ -478,6 +528,7 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
                 minHeight: HEADER_H + totalRowsH,
                 cursor: "grab",
                 touchAction: "pan-y",
+                overscrollBehavior: "contain",
               }}
             >
               {/* Шапка: месяцы + деления (сдвигается вместе со шкалой) */}

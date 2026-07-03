@@ -1012,6 +1012,11 @@ function WishesScreen() {
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    const target = e.target as HTMLElement | null;
+    if (target?.closest('[data-gantt-scroll="true"]')) {
+      touchRef.current = { x: 0, y: 0, active: false };
+      return;
+    }
     const t = e.touches[0];
     touchRef.current = { x: t.clientX, y: t.clientY, active: true };
   };

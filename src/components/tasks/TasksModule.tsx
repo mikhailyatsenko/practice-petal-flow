@@ -81,6 +81,37 @@ const FEELINGS: { value: number; emoji: string; label: string }[] = [
 
 const feelingOf = (v: number) => FEELINGS.find((f) => f.value === v) ?? FEELINGS[5];
 
+function startOfToday(): Date {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function addDaysLocal(d: Date, days: number): Date {
+  const next = new Date(d);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+function isoLocal(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function ganttDatesForDeadline(deadline: TaskDeadline): Pick<Task, "startDate" | "endDate"> {
+  const today = startOfToday();
+  const spanDays = deadline === "🟧 На день" ? 0
+    : deadline === "🟦 На неделю" ? 6
+    : deadline === "🟪 На месяц" ? 29
+    : deadline === "🟩 Квартал" ? 89
+    : null;
+
+  if (spanDays == null) return { startDate: undefined, endDate: undefined };
+  return { startDate: isoLocal(today), endDate: isoLocal(addDaysLocal(today, spanDays)) };
+}
+
 type FilterId = "all" | "open" | "day" | "week" | "month" | "quarter";
 
 const FILTERS: { id: FilterId; label: string }[] = [
@@ -254,7 +285,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
 
 
   const handleCreate = (data: Omit<Task, "id" | "done" | "timeSpent">) => {
-    const newTask: Task = { ...data, id: `t${Date.now()}`, done: false, timeSpent: 0 };
+    const newTask: Task = { ...data, ...ganttDatesForDeadline(data.deadline), id: `t${Date.now()}`, done: false, timeSpent: 0 };
     setTasks((prev) => [newTask, ...prev]);
     setCreating(false);
     setCreateForGoalId(null);
@@ -263,7 +294,10 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, isKeyTask: true, parentTaskId: parentId } : t)));
   };
   const handleSaveEdit = (updated: Task) => {
-    setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+    const normalized = editingTask && updated.deadline !== editingTask.deadline
+      ? { ...updated, ...ganttDatesForDeadline(updated.deadline) }
+      : updated;
+    setTasks((prev) => prev.map((t) => (t.id === normalized.id ? normalized : t)));
     setEditingTask(null);
   };
   const handleDelete = (id: string) => {
