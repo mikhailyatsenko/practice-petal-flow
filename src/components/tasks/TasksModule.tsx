@@ -869,20 +869,20 @@ function TaskRow({
                 style={task.done ? { textDecoration: "line-through", color: "#8a8a8a" } : undefined}
               >
                 {task.title}
-                {task.isRecurring && <span aria-label="Повторяющаяся"> 🔁</span>}
                 <span aria-label={f.label} className="ml-1">{f.emoji}</span>
               </div>
               <div className="mt-1 flex items-center gap-1.5 flex-wrap text-[11.5px]" style={{ color: "#6b6b6b" }}>
-                <span
-                  aria-hidden
-                  className="inline-block rounded-[3px]"
-                  style={{ width: 10, height: 10, background: c.bg }}
-                />
-                <span>{task.deadline.replace(/^\S+\s/, "")}</span>
+                <span>{task.deadline}</span>
                 {task.duration && task.duration !== "—" && (
                   <>
                     <span style={{ color: "#c5c5c5" }}>·</span>
                     <span>{task.duration}</span>
+                  </>
+                )}
+                {task.isRecurring && (
+                  <>
+                    <span style={{ color: "#c5c5c5" }}>·</span>
+                    <span aria-label="Повторяющаяся">🔁 повторяется</span>
                   </>
                 )}
               </div>
