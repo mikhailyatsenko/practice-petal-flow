@@ -151,17 +151,17 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
     maxOffsetRef.current = maxOffset;
   }, [maxOffset]);
 
-  // Автопрокрутка при первом рендере: левый край шкалы становится на «якорь»,
-  // который зависит от текущего дня месяца:
-  //   день 5–9   → якорь = сегодня − 5 − (день%5)  (= 1-е)
-  //   день 10–14 → якорь = 5-е
-  //   день 15–19 → якорь = 10-е и т.д.
+  // Автопрокрутка при первом рендере: левый край шкалы = ближайшая слева
+  // «пятидневная» дата текущего месяца:
+  //   день 1–5   → 1-е
+  //   день 5–10  → 5-е
+  //   день 10–15 → 10-е и т.д.
   const didCenterRef = useRef(false);
   useEffect(() => {
     if (didCenterRef.current || rightW === 0) return;
     const dayInMonth = today.getDate();
-    const offsetDays = (dayInMonth % 5) + 5;
-    const anchor = addDays(today, -offsetDays);
+    const anchorDay = Math.max(1, Math.floor(dayInMonth / 5) * 5);
+    const anchor = new Date(today.getFullYear(), today.getMonth(), anchorDay);
     const anchorX = daysBetween(rangeStart, anchor) * PX_PER_DAY;
     setClampedOffset(anchorX);
     didCenterRef.current = true;
