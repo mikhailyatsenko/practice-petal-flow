@@ -1487,7 +1487,8 @@ function KeyTreeSection({
         <Plus className="h-4 w-4" /> Добавить задачу
       </button>
 
-      {/* Панель "Задачи из списка" */}
+      {/* Панель "Задачи из списка" — скрываем, если нет свободных задач */}
+      {freeTasks.length > 0 && (
       <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid #ede8df", background: "#fff" }}>
         <button
           onClick={onToggleFree}
