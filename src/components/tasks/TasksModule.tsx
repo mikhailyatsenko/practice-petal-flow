@@ -357,6 +357,16 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
         goalTitle={g?.title ?? "—"}
         answers={goalAnswers}
         onBack={() => { setBrainstormGoalId(null); onClearBrainstormGoalId?.(); }}
+        onSwitchToPlan={() => {
+          const gid = brainstormGoalId;
+          setBrainstormGoalId(null);
+          onClearBrainstormGoalId?.();
+          setOpenGoalId(gid);
+          window.setTimeout(() => {
+            const el = document.querySelector(`[data-goal-plan="${gid}"]`);
+            if (el) (el as HTMLElement).scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 120);
+        }}
         onOpenQuestion={(idx) => setBrainstormQuestion(idx)}
       />
     );
