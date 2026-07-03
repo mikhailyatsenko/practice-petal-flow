@@ -1493,10 +1493,10 @@ function KeyTreeSection({
       <div className="flex justify-center">
         <button
           onClick={onAdd}
-          className="tap inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold"
-          style={{ background: "rgba(255,109,0,0.12)", color: "#FF6D00", border: "1px solid #FF6D00" }}
+          className="tap inline-flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-medium"
+          style={{ background: "transparent", color: "rgba(255,109,0,0.7)" }}
         >
-          <Plus className="h-4 w-4" /> Добавить задачу
+          <Plus className="h-3.5 w-3.5" /> Добавить ключевую задачу
         </button>
       </div>
 
