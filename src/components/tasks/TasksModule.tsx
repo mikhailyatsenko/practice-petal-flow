@@ -357,6 +357,16 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
         goalTitle={g?.title ?? "—"}
         answers={goalAnswers}
         onBack={() => { setBrainstormGoalId(null); onClearBrainstormGoalId?.(); }}
+        onSwitchToPlan={() => {
+          const gid = brainstormGoalId;
+          setBrainstormGoalId(null);
+          onClearBrainstormGoalId?.();
+          setOpenGoalId(gid);
+          window.setTimeout(() => {
+            const el = document.querySelector(`[data-goal-plan="${gid}"]`);
+            if (el) (el as HTMLElement).scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 120);
+        }}
         onOpenQuestion={(idx) => setBrainstormQuestion(idx)}
       />
     );
@@ -471,10 +481,17 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
 
       {/* Фильтры — только в режиме "Список" */}
       {viewMode === "list" && (
-        <div className="flex justify-center gap-1.5 flex-wrap">
-          {FILTERS.map((f) => (
-            <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
-          ))}
+        <div className="space-y-1.5">
+          <div className="flex justify-center gap-1.5 flex-wrap">
+            {FILTERS.slice(0, 3).map((f) => (
+              <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
+            ))}
+          </div>
+          <div className="flex justify-center gap-1.5 flex-wrap">
+            {FILTERS.slice(3).map((f) => (
+              <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
+            ))}
+          </div>
         </div>
       )}
 
@@ -513,7 +530,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
               <button
                 onClick={() => setOpenGoalId(isOpen ? null : row.gid)}
                 className="tap shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold rounded-full px-2.5 py-1"
-                style={{ background: "#fff", color: "#FF6D00", border: "1px solid #FF6D00" }}
+                style={{ background: "#fff", color: "#111111", border: "1px solid #FF6D00" }}
               >
                 {isOpen ? "Закрыть план" : "Открыть план"}
                 <ChevronDown
@@ -547,6 +564,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
             {/* План реализации */}
             {isOpen && goal && (
               <article
+                data-goal-plan={row.gid}
                 className="bg-card rounded-2xl overflow-hidden shadow-card animate-fade-up"
                 style={{ border: "1px solid #ede8df" }}
               >
@@ -848,6 +866,7 @@ function TaskRow({
               >
                 {task.title}
                 {task.isRecurring && <span aria-label="Повторяющаяся"> 🔁</span>}
+                <span aria-label={f.label} className="ml-1">{f.emoji}</span>
               </div>
               <div className="mt-1 flex items-center gap-1.5 flex-wrap text-[11.5px]" style={{ color: "#6b6b6b" }}>
                 <span
@@ -862,8 +881,6 @@ function TaskRow({
                     <span>{task.duration}</span>
                   </>
                 )}
-                <span style={{ color: "#c5c5c5" }}>·</span>
-                <span className="text-[13px] leading-none" aria-label={f.label}>{f.emoji}</span>
               </div>
             </div>
 
@@ -1419,11 +1436,11 @@ function KeyTreeSection({
                 style={{ color: "#111111", textDecoration: task.done ? "line-through" : undefined }}
               >
                 {task.title}
+                {task.isRecurring && <span aria-label="Повторяющаяся"> 🔁</span>}
+                <span aria-label={feelingOf(task.feeling).label} className="ml-1">{feelingOf(task.feeling).emoji}</span>
               </div>
               <div className="mt-0.5 text-[11px]" style={{ color: "#6b6b6b" }}>
                 {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}
-                {` · ${feelingOf(task.feeling).emoji}`}
-                {task.isRecurring ? " · 🔁" : ""}
               </div>
             </button>
 

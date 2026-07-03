@@ -40,19 +40,28 @@ export function BrainstormListScreen({
   goalTitle,
   answers,
   onBack,
+  onSwitchToPlan,
   onOpenQuestion,
 }: {
   goalTitle: string;
   answers: Record<number, string>;
   onBack: () => void;
+  onSwitchToPlan?: () => void;
   onOpenQuestion: (idx: number) => void;
 }) {
   return (
     <div className="px-4 pt-3 pb-6 space-y-3">
-      <div className="flex justify-center">
+      <div className="flex items-center justify-between gap-2">
+        <button
+          onClick={onBack}
+          className="tap inline-flex items-center gap-1.5 text-[14px] font-medium"
+          style={{ color: "#FF6D00" }}
+        >
+          <ArrowLeft className="h-4 w-4" /> Назад
+        </button>
         <div className="inline-flex rounded-full p-1" style={{ background: "#f3efe7", border: "1px solid #ede8df" }}>
           <button
-            onClick={onBack}
+            onClick={onSwitchToPlan ?? onBack}
             className="tap rounded-full px-3.5 py-1.5 text-[12.5px] font-medium"
             style={{ background: "transparent", color: "#8a8a8a" }}
           >
