@@ -116,12 +116,12 @@ function ganttDatesForDeadline(deadline: TaskDeadline): Pick<Task, "startDate" |
 type FilterId = "all" | "open" | "day" | "week" | "month" | "quarter";
 
 const FILTERS: { id: FilterId; label: string }[] = [
-  { id: "all",     label: "📋 Все задачи" },
-  { id: "open",    label: "⬜ Открытые" },
   { id: "day",     label: "🟧 День" },
   { id: "week",    label: "🟦 Неделя" },
   { id: "month",   label: "🟪 Месяц" },
   { id: "quarter", label: "🟥 Квартал" },
+  { id: "open",    label: "⬜ Открытые" },
+  { id: "all",     label: "📋 Все задачи" },
 ];
 
 type ViewMode = "list" | "key" | "gantt";
