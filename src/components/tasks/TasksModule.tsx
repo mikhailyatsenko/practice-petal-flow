@@ -325,12 +325,12 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     // Возвращаемся в ленту, чтобы пользователь увидел свою карточку
     setOpenTaskId(null);
     // Ждём, пока лента отрендерится и доскроллится к карточке
-    window.setTimeout(() => setShatteringId(id), 450);
-    // 450ms скролл + 250ms галочка + 400ms вылет + 400ms схлопывание
+    window.setTimeout(() => setShatteringId(id), 300);
+    // 300ms скролл + 250ms галочка + 550ms зачёркивание = ~1100ms → ставим done и карточка уезжает вниз
     window.setTimeout(() => {
       setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
       setShatteringId((c) => (c === id ? null : c));
-    }, 1600);
+    }, 1150);
   };
 
   // ===== Рендер экранов =====
