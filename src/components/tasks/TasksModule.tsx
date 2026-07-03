@@ -680,7 +680,11 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
             {viewMode === "list" ? (
               <div className="space-y-2">
                 {row.items.map((t) => (
-                  <motion.div key={t.id} layout="position" transition={{ type: "spring", stiffness: 380, damping: 34, mass: 0.9 }}>
+                  <motion.div
+                    key={t.id}
+                    layout
+                    transition={{ layout: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 } }}
+                  >
                     <TaskRow
                       task={t}
                       keyLevelColor={t.isKeyTask ? (KEY_LEVEL_META[getTaskLevel(tasks, t)] ?? KEY_LEVEL_META[5]).color : null}
