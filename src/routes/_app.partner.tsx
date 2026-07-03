@@ -93,6 +93,17 @@ function PartnerScreen() {
             Если ты привёл больше друзей, у тебя накапливается больше бонусных рублей. И значит, ты дольше можешь оплачивать клуб бонусами.
           </p>
         </div>
+        <div className="flex items-start gap-3" style={{ marginTop: 10 }}>
+          <div
+            className="shrink-0 flex items-center justify-center text-[18px]"
+            style={{ width: 36, height: 36, borderRadius: 10, background: "#FFF3E0" }}
+          >
+            ⚠️
+          </div>
+          <p className="text-[13px]" style={{ color: "#1a1a1a", lineHeight: 1.6 }}>
+            <span className="font-semibold">Нюанс:</span> Если друг выходит из клуба, то с 1-го числа следующего месяца бонусные рубли больше не начисляются.
+          </p>
+        </div>
       </div>
 
       <h2 className="mt-5 px-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
