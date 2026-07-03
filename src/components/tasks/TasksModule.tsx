@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Plus, Pencil, Trash2, Check, Play, Square, ChevronDown, X, Brain, Key, ChevronRight, ChevronLeft } from "lucide-react";
 import { BrainstormListScreen, BrainstormAnswerScreen } from "./Brainstorm";
+import { GanttView } from "./GanttView";
 
 
 /* =====================================================================
@@ -37,6 +38,9 @@ export interface Task {
   parentTaskId?: string | null;
   isKeyTask?: boolean;
   isRecurring?: boolean;
+  /** ISO YYYY-MM-DD — заданные вручную даты (для режима «Гант»). */
+  startDate?: string;
+  endDate?: string;
 }
 
 const DEADLINES: { value: TaskDeadline; label: string }[] = [
@@ -88,7 +92,7 @@ const FILTERS: { id: FilterId; label: string }[] = [
   { id: "quarter", label: "🟩 Квартал" },
 ];
 
-type ViewMode = "list" | "key";
+type ViewMode = "list" | "key" | "gantt";
 
 
 
@@ -404,20 +408,20 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       {/* Переключатель режима: Список / Ключевые */}
       <div className="flex justify-center">
         <div className="inline-flex rounded-full p-1" style={{ background: "#f3efe7", border: "1px solid #ede8df" }}>
-          {(["list", "key"] as ViewMode[]).map((m) => {
+          {(["list", "key", "gantt"] as ViewMode[]).map((m) => {
             const active = viewMode === m;
             return (
               <button
                 key={m}
                 onClick={() => setViewMode(m)}
-                className="tap rounded-full px-4 py-1.5 text-[12.5px] font-medium transition-colors"
+                className="tap rounded-full px-3.5 py-1.5 text-[12.5px] font-medium transition-colors"
                 style={
                   active
                     ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }
                     : { background: "transparent", color: "#8a8a8a" }
                 }
               >
-                {m === "list" ? "📋 Список" : "🔑 Ключевые"}
+                {m === "list" ? "📋 Список" : m === "key" ? "🔑 Ключевые" : "📊 Гант"}
               </button>
             );
           })}
@@ -433,14 +437,24 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
         </div>
       )}
 
+      {viewMode === "gantt" && (
+        <GanttView
+          goals={goals}
+          tasks={initialGoalId ? tasks.filter((t) => t.goalId === initialGoalId) : tasks}
+          onUpdateTaskDates={(id, s, e) =>
+            setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, startDate: s, endDate: e } : t)))
+          }
+          onOpenTask={(id) => setOpenTaskId(id)}
+        />
+      )}
 
-      {grouped.length === 0 && (
+      {viewMode !== "gantt" && grouped.length === 0 && (
         <div className="text-center text-[13px] text-[#FF6D00] py-10">
           Пока нет задач по выбранному фильтру. Добавь первую ✨
         </div>
       )}
 
-      {grouped.map((row) => {
+      {viewMode !== "gantt" && grouped.map((row) => {
         const isOpen = openGoalId === row.gid;
         const goal = row.goal;
         return (
