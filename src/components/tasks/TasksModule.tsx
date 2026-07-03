@@ -1548,36 +1548,27 @@ function KeyNodeCard({
   onComplete: () => void;
 }) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const [stage, setStage] = useState<"idle" | "tick" | "flyOut" | "collapse">("idle");
+  const [stage, setStage] = useState<"idle" | "tick" | "strike">("idle");
   useEffect(() => {
-    if (!isShattering) { setStage("idle"); return; }
+    if (!isShattering) { setStage(task.done ? "strike" : "idle"); return; }
     wrapperRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     setStage("tick");
-    const t1 = window.setTimeout(() => setStage("flyOut"), 250);
-    const t2 = window.setTimeout(() => setStage("collapse"), 650);
-    return () => { window.clearTimeout(t1); window.clearTimeout(t2); };
-  }, [isShattering]);
+    const t1 = window.setTimeout(() => setStage("strike"), 250);
+    return () => { window.clearTimeout(t1); };
+  }, [isShattering, task.done]);
   const checked = task.done || stage !== "idle";
-  const collapsing = stage === "collapse";
-  const flying = stage === "flyOut" || stage === "collapse";
+  const striking = stage === "strike" || task.done;
   const bg = `linear-gradient(160deg, #ffffff 0%, ${color}12 80%, ${color}35 100%)`;
 
   return (
     <div
       ref={wrapperRef}
       style={{
-        overflow: "hidden",
-        maxHeight: collapsing ? 0 : 400,
-        transition: "max-height 0.4s cubic-bezier(0.4,0,0.2,1)",
+        transition: "opacity 0.5s ease",
+        opacity: task.done ? 0.62 : 1,
       }}
     >
-      <div
-        style={{
-          transform: flying ? "translateX(120%)" : "translateX(0)",
-          opacity: flying ? 0 : 1,
-          transition: flying ? "transform 0.4s cubic-bezier(0.55,0,1,0.45), opacity 0.4s ease" : undefined,
-        }}
-      >
+      <div>
         <div
           onClick={() => { if (stage === "idle" && canExpand) onToggleTree(); }}
           role="button"
@@ -1618,7 +1609,14 @@ function KeyNodeCard({
             <div className="flex-1 min-w-0">
               <div
                 className="text-[14px] font-semibold leading-snug break-words"
-                style={{ color: "#111111", textDecoration: task.done ? "line-through" : undefined }}
+                style={{
+                  color: striking ? "#8a8a8a" : "#111111",
+                  backgroundImage: "linear-gradient(currentColor, currentColor)",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "left 58%",
+                  backgroundSize: striking ? "100% 1.5px" : "0% 1.5px",
+                  transition: "background-size 0.55s ease, color 0.55s ease",
+                }}
               >
                 {task.title}
                 <span aria-label={feelingOf(task.feeling).label} className="ml-1">{feelingOf(task.feeling).emoji}</span>
