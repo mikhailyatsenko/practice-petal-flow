@@ -158,7 +158,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
           <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
             Демо-уровни
           </div>
-          {([1, 2, 3, 4, 5] as PreviewLevel[]).map((n) => {
+          {([1, 2, 3, 4, 5, 6] as PreviewLevel[]).map((n) => {
             const active = previewLevel === n;
             return (
               <button
