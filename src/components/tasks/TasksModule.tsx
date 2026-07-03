@@ -471,10 +471,17 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
 
       {/* Фильтры — только в режиме "Список" */}
       {viewMode === "list" && (
-        <div className="flex justify-center gap-1.5 flex-wrap">
-          {FILTERS.map((f) => (
-            <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
-          ))}
+        <div className="space-y-1.5">
+          <div className="flex justify-center gap-1.5 flex-wrap">
+            {FILTERS.slice(0, 3).map((f) => (
+              <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
+            ))}
+          </div>
+          <div className="flex justify-center gap-1.5 flex-wrap">
+            {FILTERS.slice(3).map((f) => (
+              <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
+            ))}
+          </div>
         </div>
       )}
 
