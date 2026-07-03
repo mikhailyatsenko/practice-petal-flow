@@ -37,6 +37,9 @@ export interface Task {
   parentTaskId?: string | null;
   isKeyTask?: boolean;
   isRecurring?: boolean;
+  /** ISO YYYY-MM-DD — заданные вручную даты (для режима «Гант»). */
+  startDate?: string;
+  endDate?: string;
 }
 
 const DEADLINES: { value: TaskDeadline; label: string }[] = [
