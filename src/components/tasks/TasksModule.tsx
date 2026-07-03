@@ -802,11 +802,15 @@ function TaskRow({
           onClick={() => { if (stage === "idle") onOpen(); }}
           role="button"
           tabIndex={0}
-          className={`tap relative w-full text-left bg-card rounded-2xl px-3 py-2.5 shadow-card transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed] cursor-pointer animate-fade-up overflow-hidden`}
+          className={`tap relative w-full text-left rounded-2xl px-3 py-2.5 shadow-card transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed] cursor-pointer animate-fade-up overflow-hidden ${keyLevelColor ? "" : "bg-card"}`}
           style={{
             border: isTimerActive ? "2px solid #FF6D00" : "1px solid #ede8df",
             paddingLeft: task.deadline === "⬜ Не определён" ? undefined : 14,
+            background: keyLevelColor
+              ? `linear-gradient(160deg, #ffffff 0%, ${keyLevelColor}12 80%, ${keyLevelColor}35 100%)`
+              : undefined,
           }}
+
         >
           {task.deadline !== "⬜ Не определён" && (
             <span
