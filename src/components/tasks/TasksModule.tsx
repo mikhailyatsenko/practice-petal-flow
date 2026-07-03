@@ -1107,7 +1107,7 @@ export function CreateOrEditTaskScreen({
       </div>
 
       {/* Цель — скрываем при создании ключевой подзадачи, цель уже выбрана */}
-      {!forceKeyContext && (
+      {!forceKeyContext && !defaultGoalId && (
         <Section title="К какой цели?">
           <div className="space-y-2">
             {goals.map((g) => {
