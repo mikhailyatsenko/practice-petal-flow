@@ -171,6 +171,23 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   };
   const [filter, setFilter] = useState<FilterId>("all");
   const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [keyGanttUnlocked, setKeyGanttUnlocked] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("tasks-key-gantt-unlocked") === "1";
+  });
+  const [showUnlockPopup, setShowUnlockPopup] = useState(false);
+  const requestViewMode = (m: ViewMode) => {
+    if ((m === "key" || m === "gantt") && !keyGanttUnlocked) {
+      setShowUnlockPopup(true);
+      return;
+    }
+    setViewMode(m);
+  };
+  const unlockKeyGantt = () => {
+    setKeyGanttUnlocked(true);
+    try { localStorage.setItem("tasks-key-gantt-unlocked", "1"); } catch { /* ignore */ }
+    setShowUnlockPopup(false);
+  };
   
   const [pendingParentInsert, setPendingParentInsert] = useState<{ goalId: string; parentId: string | null; level: number } | null>(null);
   const [attachExistingTaskId, setAttachExistingTaskId] = useState<string | null>(null);
@@ -479,7 +496,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
             return (
               <button
                 key={m}
-                onClick={() => setViewMode(m)}
+                onClick={() => requestViewMode(m)}
                 className="tap flex-1 rounded-full px-3 py-2 text-[13px] font-semibold transition-colors"
                 style={
                   active
@@ -742,6 +759,13 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
               setAddKeyGoalId(null);
             }
           }}
+        />
+      )}
+
+      {showUnlockPopup && (
+        <UnlockKeyGanttPopup
+          onClose={() => setShowUnlockPopup(false)}
+          onUnlock={unlockKeyGantt}
         />
       )}
     </div>
@@ -1828,4 +1852,106 @@ function AddKeyLevelPopup({
     </div>
   );
 }
+
+/* ---------------- Поп-ап разблокировки Ключевых задач и Ганта ---------------- */
+
+function UnlockKeyGanttPopup({
+  onClose,
+  onUnlock,
+}: {
+  onClose: () => void;
+  onUnlock: () => void;
+}) {
+  const [code, setCode] = useState("");
+  const [error, setError] = useState(false);
+  const submit = () => {
+    if (code.trim().toLowerCase() === "ключ") {
+      onUnlock();
+    } else {
+      setError(true);
+    }
+  };
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)",
+        zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center",
+        padding: 16,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "100%", maxWidth: 420, background: "#fff",
+          borderRadius: 20, padding: 18, boxShadow: "0 10px 40px rgba(0,0,0,0.25)",
+          boxSizing: "border-box", overflow: "hidden",
+        }}
+      >
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <h3 className="text-[16px] font-semibold leading-snug text-foreground" style={{ flex: 1, minWidth: 0 }}>
+            🔒 Открыть Ключевые задачи и Гант
+          </h3>
+          <button onClick={onClose} className="tap shrink-0 rounded-full p-1" aria-label="Закрыть">
+            <X className="h-4 w-4 text-muted-foreground" />
+          </button>
+        </div>
+
+        <p className="text-[13px] leading-[1.5] mb-3" style={{ color: "#6b6b6b" }}>
+          Чтобы открыть Ключевые задачи и диаграмму Ганта, посмотри видео, услышь кодовое слово и введи его ниже.
+        </p>
+
+        <div
+          className="rounded-xl mb-3 overflow-hidden"
+          style={{
+            aspectRatio: "16 / 9",
+            background: "#000",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            color: "#fff", fontSize: 13,
+          }}
+        >
+          <span style={{ opacity: 0.6 }}>▶ Видео (скоро)</span>
+        </div>
+
+        <label className="block">
+          <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Кодовое слово</span>
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => { setCode(e.target.value); if (error) setError(false); }}
+            onKeyDown={(e) => { if (e.key === "Enter") submit(); }}
+            placeholder="Введи кодовое слово"
+            autoFocus
+            maxLength={40}
+            className="mt-1 w-full rounded-xl px-3 py-2.5 text-[14px] outline-none"
+            style={{ border: `1px solid ${error ? "#DC2626" : "#ede8df"}`, background: "#faf7f1", boxSizing: "border-box" }}
+          />
+        </label>
+        {error && (
+          <p className="mt-1.5 text-[12px]" style={{ color: "#DC2626" }}>
+            Неверное кодовое слово. Посмотри видео ещё раз.
+          </p>
+        )}
+
+        <div className="mt-4 flex items-center justify-end gap-2">
+          <button
+            onClick={onClose}
+            className="tap rounded-full px-3 py-2 text-[13px] font-medium"
+            style={{ background: "#fff", color: "#8a8a8a", border: "1px solid #ede8df" }}
+          >
+            Отмена
+          </button>
+          <button
+            onClick={submit}
+            className="tap rounded-full px-4 py-2 text-[13px] font-semibold text-white"
+            style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
+          >
+            Открыть
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
