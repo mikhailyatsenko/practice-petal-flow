@@ -1440,11 +1440,10 @@ function KeyTreeSection({
                 style={{ color: "#111111", textDecoration: task.done ? "line-through" : undefined }}
               >
                 {task.title}
-                {task.isRecurring && <span aria-label="Повторяющаяся"> 🔁</span>}
                 <span aria-label={feelingOf(task.feeling).label} className="ml-1">{feelingOf(task.feeling).emoji}</span>
               </div>
               <div className="mt-0.5 text-[11px]" style={{ color: "#6b6b6b" }}>
-                {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}
+                {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}{task.isRecurring ? ` · 🔁 повторяется` : ""}
               </div>
             </button>
 
