@@ -512,12 +512,8 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
               </button>
               <button
                 onClick={() => setOpenGoalId(isOpen ? null : row.gid)}
-                className="tap shrink-0 inline-flex items-center gap-1 text-[11px] font-medium rounded-full px-2 py-0.5"
-                style={
-                  isOpen
-                    ? { background: "rgba(255,109,0,0.10)", color: "#FF6D00", border: "1px solid rgba(255,109,0,0.35)" }
-                    : { background: "transparent", color: "#9a8f7e", border: "1px solid #ede8df" }
-                }
+                className="tap shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold rounded-full px-2.5 py-1"
+                style={{ background: "#fff", color: "#FF6D00", border: "1px solid #FF6D00" }}
               >
                 {isOpen ? "Закрыть план" : "Открыть план"}
                 <ChevronDown
@@ -527,25 +523,24 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
               </button>
             </div>
 
-            {/* Кнопка Мозговой штурм — маленькая, сверху */}
+            {/* Переключатель: План+Заметки / Мозговой штурм */}
             {isOpen && goal && (
               <div className="flex justify-center">
-                <button
-                  onClick={() => { setBrainstormGoalId(row.gid); setBrainstormQuestion(null); }}
-                  className="tap inline-flex items-center gap-1 animate-fade-up"
-                  style={{
-                    background: "linear-gradient(135deg,#FFB300,#FF6D00)",
-                    color: "#fff",
-                    borderRadius: 999,
-                    padding: "5px 12px",
-                    fontSize: 11.5,
-                    fontWeight: 600,
-                    lineHeight: 1.2,
-                    boxShadow: "0 2px 6px rgba(255,109,0,0.25)",
-                  }}
-                >
-                  🧠 Мозговой штурм <span style={{ marginLeft: 2 }}>→</span>
-                </button>
+                <div className="inline-flex rounded-full p-1" style={{ background: "#f3efe7", border: "1px solid #ede8df" }}>
+                  <button
+                    className="tap rounded-full px-3.5 py-1.5 text-[12.5px] font-medium"
+                    style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }}
+                  >
+                    📝 План + Заметки
+                  </button>
+                  <button
+                    onClick={() => { setBrainstormGoalId(row.gid); setBrainstormQuestion(null); }}
+                    className="tap rounded-full px-3.5 py-1.5 text-[12.5px] font-medium"
+                    style={{ background: "transparent", color: "#8a8a8a" }}
+                  >
+                    🧠 Мозговой штурм
+                  </button>
+                </div>
               </div>
             )}
 
