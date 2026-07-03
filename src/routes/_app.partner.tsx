@@ -98,7 +98,7 @@ function PartnerScreen() {
             className="shrink-0 flex items-center justify-center text-[18px]"
             style={{ width: 36, height: 36, borderRadius: 10, background: "#FFF3E0" }}
           >
-            ⚠️
+            💡
           </div>
           <p className="text-[13px]" style={{ color: "#1a1a1a", lineHeight: 1.6 }}>
             <span className="font-semibold">Нюанс:</span> Если друг выходит из клуба, то с 1-го числа следующего месяца бонусные рубли больше не начисляются.
