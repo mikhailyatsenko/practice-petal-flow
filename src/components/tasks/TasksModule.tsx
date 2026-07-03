@@ -284,11 +284,16 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   }, [visibleTasks, goals, viewMode]);
 
 
+  const scrollToTop = () => {
+    try { window.scrollTo({ top: 0, behavior: "auto" }); } catch { /* noop */ }
+  };
+
   const handleCreate = (data: Omit<Task, "id" | "done" | "timeSpent">) => {
     const newTask: Task = { ...data, ...ganttDatesForDeadline(data.deadline), id: `t${Date.now()}`, done: false, timeSpent: 0 };
     setTasks((prev) => [newTask, ...prev]);
     setCreating(false);
     setCreateForGoalId(null);
+    requestAnimationFrame(scrollToTop);
   };
   const attachToKey = (taskId: string, parentId: string | null) => {
     setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, isKeyTask: true, parentTaskId: parentId } : t)));
@@ -299,7 +304,9 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       : updated;
     setTasks((prev) => prev.map((t) => (t.id === normalized.id ? normalized : t)));
     setEditingTask(null);
+    requestAnimationFrame(scrollToTop);
   };
+
   const handleDelete = (id: string) => {
     setTasks((prev) => prev.filter((t) => t.id !== id));
     if (activeTimerIds.has(id)) {
