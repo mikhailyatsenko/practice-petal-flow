@@ -1404,7 +1404,7 @@ function KeyTreeSection({
 }) {
   const roots = getKeyChildren(tasks, goalId, null);
   const totalKey = tasks.filter((t) => t.goalId === goalId && t.isKeyTask).length;
-  const freeTasks = tasks.filter((t) => t.goalId === goalId && !t.isKeyTask);
+  const freeTasks = tasks.filter((t) => t.goalId === goalId && !t.isKeyTask && !t.done);
 
   // Собрать все id-потомков (включая сам корень, кроме первого)
   const collectDescendantIds = (rootId: string): string[] => {
