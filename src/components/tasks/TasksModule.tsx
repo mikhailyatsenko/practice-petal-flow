@@ -658,6 +658,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
                   <TaskRow
                     key={t.id}
                     task={t}
+                    keyLevelColor={t.isKeyTask ? (KEY_LEVEL_META[getTaskLevel(tasks, t)] ?? KEY_LEVEL_META[5]).color : null}
                     isTimerActive={activeTimerIds.has(t.id)}
                     liveSeconds={elapsedMap[t.id] ?? 0}
                     isShattering={shatteringId === t.id}
@@ -666,6 +667,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
                   />
                 ))}
               </div>
+
             ) : (
               <KeyTreeSection
                 goalId={row.gid}
