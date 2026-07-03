@@ -77,7 +77,9 @@ function rangeFromTag(deadline: TaskDeadline, today: Date): { start: Date; end: 
 
 function getTaskRange(t: Task, today: Date): { start: Date; end: Date } {
   if (t.startDate && t.endDate) return { start: fromIso(t.startDate), end: fromIso(t.endDate) };
-  return rangeFromTag(t.deadline, today);
+  const idTime = t.id.startsWith("t") ? Number(t.id.slice(1)) : NaN;
+  const createdAt = Number.isFinite(idTime) && idTime > 1_000_000_000_000 ? startOfDay(new Date(idTime)) : today;
+  return rangeFromTag(t.deadline, createdAt);
 }
 
 const MONTHS_RU = ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"];
