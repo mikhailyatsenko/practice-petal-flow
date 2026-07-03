@@ -25,7 +25,7 @@ function PartnerScreen() {
           <span className="mr-1.5">📍</span>Партнёрка
         </h1>
         <p
-          className="mt-1.5 text-[14px] font-medium leading-snug"
+          className="mt-1.5 text-[17px] font-semibold leading-snug"
           style={{ color: "#1a1a1a" }}
         >
           Пригласи друга — и клуб станет бесплатным.
