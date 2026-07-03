@@ -401,14 +401,16 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
     return list;
   }, [rangeStart, rangeEnd]);
 
-  // Кнопки навигации ◀/▶/Сегодня
+  // Кнопки навигации ◀/▶/Сегодня — прижимают к левому краю по 1-му числу месяца
   const shiftMonth = (delta: number) => {
-    // Сдвинуть offset на ~30*PX_PER_DAY
-    setOffset((o) => clamp(o + delta * 30 * PX_PER_DAY));
+    const leftDate = addDays(rangeStart, Math.round(offsetRef.current / PX_PER_DAY));
+    const target = new Date(leftDate.getFullYear(), leftDate.getMonth() + delta, 1);
+    const targetX = daysBetween(rangeStart, target) * PX_PER_DAY;
+    setOffset(clamp(targetX));
   };
   const goToday = () => {
     const todayX = daysBetween(rangeStart, today) * PX_PER_DAY;
-    setOffset(clamp(todayX - rightW / 2 + PX_PER_DAY / 2));
+    setOffset(clamp(todayX));
   };
 
   // Popup редактирования дат

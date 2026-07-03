@@ -49,6 +49,9 @@ export function BrainstormListScreen({
   onSwitchToPlan?: () => void;
   onOpenQuestion: (idx: number) => void;
 }) {
+  useEffect(() => {
+    try { window.scrollTo({ top: 0, behavior: "auto" }); } catch { /* noop */ }
+  }, []);
   return (
     <div className="px-4 pt-3 pb-6 space-y-3">
       <div className="flex items-center justify-between gap-2">

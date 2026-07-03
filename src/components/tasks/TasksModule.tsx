@@ -457,15 +457,15 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       )}
 
       {/* Переключатель режима: Список / Ключевые */}
-      <div className="flex justify-center">
-        <div className="inline-flex rounded-full p-1" style={{ background: "#f3efe7", border: "1px solid #ede8df" }}>
+      <div className="w-full">
+        <div className="flex w-full rounded-full p-1" style={{ background: "#f3efe7", border: "1px solid #ede8df" }}>
           {(["list", "key", "gantt"] as ViewMode[]).map((m) => {
             const active = viewMode === m;
             return (
               <button
                 key={m}
                 onClick={() => setViewMode(m)}
-                className="tap rounded-full px-3.5 py-1.5 text-[12.5px] font-medium transition-colors"
+                className="tap flex-1 rounded-full px-3 py-2 text-[13px] font-semibold transition-colors"
                 style={
                   active
                     ? { background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }
@@ -481,17 +481,10 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
 
       {/* Фильтры — только в режиме "Список" */}
       {viewMode === "list" && (
-        <div className="space-y-1.5">
-          <div className="flex justify-center gap-1.5 flex-wrap">
-            {FILTERS.slice(0, 3).map((f) => (
-              <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
-            ))}
-          </div>
-          <div className="flex justify-center gap-1.5 flex-wrap">
-            {FILTERS.slice(3).map((f) => (
-              <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
-            ))}
-          </div>
+        <div className="flex justify-center gap-1.5 flex-wrap pt-0.5">
+          {FILTERS.map((f) => (
+            <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
+          ))}
         </div>
       )}
 
@@ -530,7 +523,11 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
               <button
                 onClick={() => setOpenGoalId(isOpen ? null : row.gid)}
                 className="tap shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold rounded-full px-2.5 py-1"
-                style={{ background: "#fff", color: "#111111", border: "1px solid #FF6D00" }}
+                style={
+                  isOpen
+                    ? { background: "rgba(255,109,0,0.12)", color: "#6b6b6b", border: "1px solid rgba(255,109,0,0.35)" }
+                    : { background: "#fff", color: "#6b6b6b", border: "1px solid #d6d3cc" }
+                }
               >
                 {isOpen ? "Закрыть план" : "Открыть план"}
                 <ChevronDown
@@ -772,7 +769,7 @@ function TaskRow({
   onComplete: () => void;
 }) {
 
-  const c = DEADLINE_COLORS[task.deadline];
+  
   const f = feelingOf(task.feeling);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
@@ -865,20 +862,20 @@ function TaskRow({
                 style={task.done ? { textDecoration: "line-through", color: "#8a8a8a" } : undefined}
               >
                 {task.title}
-                {task.isRecurring && <span aria-label="Повторяющаяся"> 🔁</span>}
                 <span aria-label={f.label} className="ml-1">{f.emoji}</span>
               </div>
               <div className="mt-1 flex items-center gap-1.5 flex-wrap text-[11.5px]" style={{ color: "#6b6b6b" }}>
-                <span
-                  aria-hidden
-                  className="inline-block rounded-[3px]"
-                  style={{ width: 10, height: 10, background: c.bg }}
-                />
-                <span>{task.deadline.replace(/^\S+\s/, "")}</span>
+                <span>{task.deadline}</span>
                 {task.duration && task.duration !== "—" && (
                   <>
                     <span style={{ color: "#c5c5c5" }}>·</span>
                     <span>{task.duration}</span>
+                  </>
+                )}
+                {task.isRecurring && (
+                  <>
+                    <span style={{ color: "#c5c5c5" }}>·</span>
+                    <span aria-label="Повторяющаяся">🔁 повторяется</span>
                   </>
                 )}
               </div>
@@ -1436,11 +1433,10 @@ function KeyTreeSection({
                 style={{ color: "#111111", textDecoration: task.done ? "line-through" : undefined }}
               >
                 {task.title}
-                {task.isRecurring && <span aria-label="Повторяющаяся"> 🔁</span>}
                 <span aria-label={feelingOf(task.feeling).label} className="ml-1">{feelingOf(task.feeling).emoji}</span>
               </div>
               <div className="mt-0.5 text-[11px]" style={{ color: "#6b6b6b" }}>
-                {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}
+                {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}{task.isRecurring ? ` · 🔁 повторяется` : ""}
               </div>
             </button>
 
