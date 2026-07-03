@@ -805,40 +805,13 @@ function TaskRow({
           className={`tap relative w-full text-left rounded-2xl px-3 py-2.5 shadow-card transition-all duration-100 active:scale-[0.98] active:bg-[#fff7ed] cursor-pointer animate-fade-up overflow-hidden ${keyLevelColor ? "" : "bg-card"}`}
           style={{
             border: isTimerActive ? "2px solid #FF6D00" : "1px solid #ede8df",
-            paddingLeft: task.deadline === "⬜ Не определён" ? undefined : 14,
             background: keyLevelColor
               ? `linear-gradient(160deg, #ffffff 0%, ${keyLevelColor}12 80%, ${keyLevelColor}35 100%)`
               : undefined,
           }}
-
         >
-          {task.deadline !== "⬜ Не определён" && (
-            <span
-              aria-hidden
-              style={{
-                position: "absolute", left: 0, top: 0, bottom: 0,
-                width: 5, background: c.bg,
-              }}
-            />
-          )}
           <div className="flex items-center gap-2.5">
-            {task.isKeyTask && (
-              <span aria-label="Ключевая задача" className="shrink-0 text-[14px] leading-none">🔑</span>
-            )}
-            <span
-              className="flex-1 text-[14px] font-semibold leading-snug break-words"
-              style={task.done ? { textDecoration: "line-through", color: "#8a8a8a" } : undefined}
-            >
-              {task.title}
-              {task.isRecurring && <span aria-label="Повторяющаяся"> 🔁</span>}
-            </span>
-
-            <div className="shrink-0 flex flex-col items-end" style={{ gap: 2 }}>
-              <span className="text-[17px] leading-none" aria-label={f.label}>{f.emoji}</span>
-              {task.duration && task.duration !== "—" && (
-                <span className="text-[11px] leading-none" style={{ color: "#8a8a8a" }}>{task.duration}</span>
-              )}
-            </div>
+            {/* Кружок статуса — слева */}
             <button
               type="button"
               aria-label={checked ? "Задача выполнена" : "Отметить выполненной"}
@@ -871,6 +844,38 @@ function TaskRow({
                 />
               </svg>
             </button>
+
+            {/* Название + метаданные под ним */}
+            <div className="flex-1 min-w-0">
+              <div
+                className="text-[14px] font-semibold leading-snug break-words"
+                style={task.done ? { textDecoration: "line-through", color: "#8a8a8a" } : undefined}
+              >
+                {task.title}
+                {task.isRecurring && <span aria-label="Повторяющаяся"> 🔁</span>}
+              </div>
+              <div className="mt-1 flex items-center gap-1.5 flex-wrap text-[11.5px]" style={{ color: "#6b6b6b" }}>
+                <span
+                  aria-hidden
+                  className="inline-block rounded-[3px]"
+                  style={{ width: 10, height: 10, background: c.bg }}
+                />
+                <span>{task.deadline.replace(/^\S+\s/, "")}</span>
+                {task.duration && task.duration !== "—" && (
+                  <>
+                    <span style={{ color: "#c5c5c5" }}>·</span>
+                    <span>{task.duration}</span>
+                  </>
+                )}
+                <span style={{ color: "#c5c5c5" }}>·</span>
+                <span className="text-[13px] leading-none" aria-label={f.label}>{f.emoji}</span>
+              </div>
+            </div>
+
+            {/* Ключик — справа */}
+            {task.isKeyTask && (
+              <span aria-label="Ключевая задача" className="shrink-0 text-[16px] leading-none">🔑</span>
+            )}
           </div>
           {isTimerActive && (
             <div className="mt-2 flex justify-center">
