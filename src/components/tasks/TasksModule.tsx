@@ -713,6 +713,15 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
                     />
                   </motion.div>
                 ))}
+                <div className="flex justify-center pt-1">
+                  <button
+                    onClick={() => { setCreateForGoalId(row.gid); setCreating(true); }}
+                    className="tap inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
+                    style={{ background: "rgba(0,0,0,0.03)", color: "#8a8a8a", border: "1px dashed #d4d4d4" }}
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Добавить задачу
+                  </button>
+                </div>
               </div>
 
             ) : (
