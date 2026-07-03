@@ -146,7 +146,7 @@ const LEVELS: Level[] = [
     },
   },
   {
-    id: "l3",
+    id: "l4",
     title: "Создай Четвёрку",
     subtitle: "Объединись с другой парой",
     emoji: "👥",
