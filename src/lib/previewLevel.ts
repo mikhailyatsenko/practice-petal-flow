@@ -1,9 +1,9 @@
-// Глобальный режим визуального предпросмотра уровней (1..5) или null.
+// Глобальный режим визуального предпросмотра уровней (1..6) или null.
 // Это только демо-показ — реальные данные пользователя не меняются.
 
 import { useEffect, useState } from "react";
 
-export type PreviewLevel = 1 | 2 | 3 | 4 | 5;
+export type PreviewLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
 const KEY = "preview-level";
 const EVT = "preview-level-change";
@@ -14,7 +14,7 @@ export function getPreviewLevel(): PreviewLevel | null {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return null;
     const n = Number(raw);
-    if (n >= 1 && n <= 5) return n as PreviewLevel;
+    if (n >= 1 && n <= 6) return n as PreviewLevel;
     return null;
   } catch {
     return null;
@@ -58,9 +58,10 @@ export type Feature = "flywheel" | "buddy" | "foursome" | "library" | "sections"
 const UNLOCKS: Record<PreviewLevel, Feature[]> = {
   1: [],
   2: ["buddy"],
-  3: ["buddy", "flywheel", "foursome"],
-  4: ["buddy", "flywheel", "foursome", "library"],
-  5: ["buddy", "flywheel", "foursome", "library", "sections"],
+  3: ["buddy", "flywheel"],
+  4: ["buddy", "flywheel", "foursome"],
+  5: ["buddy", "flywheel", "foursome", "library"],
+  6: ["buddy", "flywheel", "foursome", "library", "sections"],
 };
 
 export function isFeatureUnlocked(feature: Feature, level: PreviewLevel | null): boolean {
@@ -70,9 +71,9 @@ export function isFeatureUnlocked(feature: Feature, level: PreviewLevel | null):
 
 // На каком уровне фича открывается — для подписи "Откроется на уровне N".
 export function unlockLevelOf(feature: Feature): PreviewLevel {
-  const order: PreviewLevel[] = [1, 2, 3, 4, 5];
+  const order: PreviewLevel[] = [1, 2, 3, 4, 5, 6];
   for (const lvl of order) {
     if (UNLOCKS[lvl].includes(feature)) return lvl;
   }
-  return 5;
+  return 6;
 }
