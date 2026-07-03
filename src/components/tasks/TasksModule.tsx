@@ -743,6 +743,7 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
 
 function TaskRow({
   task,
+  keyLevelColor,
   isTimerActive,
   liveSeconds,
   isShattering,
@@ -750,12 +751,14 @@ function TaskRow({
   onComplete,
 }: {
   task: Task;
+  keyLevelColor?: string | null;
   isTimerActive: boolean;
   liveSeconds: number;
   isShattering?: boolean;
   onOpen: () => void;
   onComplete: () => void;
 }) {
+
   const c = DEADLINE_COLORS[task.deadline];
   const f = feelingOf(task.feeling);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
