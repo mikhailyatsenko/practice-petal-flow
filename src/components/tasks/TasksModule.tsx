@@ -281,7 +281,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       return Number(a.done) - Number(b.done);
     });
     return list;
-  }, [tasks, filter, initialGoalId]);
+  }, [tasks, filter, initialGoalId, viewMode]);
 
   // Группировка по целям (с сохранением порядка целей)
   const grouped = useMemo(() => {
