@@ -530,7 +530,11 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
               <button
                 onClick={() => setOpenGoalId(isOpen ? null : row.gid)}
                 className="tap shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold rounded-full px-2.5 py-1"
-                style={{ background: "#fff", color: "#111111", border: "1px solid #FF6D00" }}
+                style={
+                  isOpen
+                    ? { background: "rgba(255,109,0,0.12)", color: "#6b6b6b", border: "1px solid rgba(255,109,0,0.35)" }
+                    : { background: "#fff", color: "#6b6b6b", border: "1px solid #d6d3cc" }
+                }
               >
                 {isOpen ? "Закрыть план" : "Открыть план"}
                 <ChevronDown
