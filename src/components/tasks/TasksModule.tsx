@@ -265,16 +265,23 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       case "month":   list = list.filter((t) => t.deadline === "🟪 На месяц"); break;
       case "quarter": list = list.filter((t) => t.deadline === "🟥 Квартал"); break;
     }
-    // Порядок: сначала ключевые по возрастанию уровня (1..5), затем обычные;
-    // внутри каждой группы выполненные задачи опускаются вниз.
+    // Порядок:
+    // • в режиме списка выполненные задачи опускаются в самый низ группы (без учёта уровня);
+    // • в режиме ключевых сначала идут ключевые по уровню (1..5), затем обычные;
+    //   внутри уровня выполненные — вниз.
     const rank = (t: Task) => (t.isKeyTask ? getTaskLevel(tasks, t) : 999);
     list.sort((a, b) => {
+      if (viewMode === "list") {
+        const d = Number(a.done) - Number(b.done);
+        if (d !== 0) return d;
+        return rank(a) - rank(b);
+      }
       const r = rank(a) - rank(b);
       if (r !== 0) return r;
       return Number(a.done) - Number(b.done);
     });
     return list;
-  }, [tasks, filter, initialGoalId]);
+  }, [tasks, filter, initialGoalId, viewMode]);
 
   // Группировка по целям (с сохранением порядка целей)
   const grouped = useMemo(() => {
@@ -673,7 +680,11 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
             {viewMode === "list" ? (
               <div className="space-y-2">
                 {row.items.map((t) => (
-                  <motion.div key={t.id} layout="position" transition={{ type: "spring", stiffness: 380, damping: 34, mass: 0.9 }}>
+                  <motion.div
+                    key={t.id}
+                    layout
+                    transition={{ layout: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 } }}
+                  >
                     <TaskRow
                       task={t}
                       keyLevelColor={t.isKeyTask ? (KEY_LEVEL_META[getTaskLevel(tasks, t)] ?? KEY_LEVEL_META[5]).color : null}
