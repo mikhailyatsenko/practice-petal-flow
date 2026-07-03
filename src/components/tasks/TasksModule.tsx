@@ -1533,7 +1533,150 @@ function KeyTreeSection({
   );
 }
 
+
+/* ---------------- Карточка ключевой задачи (с чек-анимацией и таймером) ---------------- */
+
+function KeyNodeCard({
+  task, color, canExpand, isOpen, isShattering, isTimerActive, liveSeconds,
+  onToggleTree, onOpenTask, onComplete,
+}: {
+  task: Task;
+  color: string;
+  canExpand: boolean;
+  isOpen: boolean;
+  isShattering: boolean;
+  isTimerActive: boolean;
+  liveSeconds: number;
+  onToggleTree: () => void;
+  onOpenTask: () => void;
+  onComplete: () => void;
+}) {
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const [stage, setStage] = useState<"idle" | "tick" | "flyOut" | "collapse">("idle");
+  useEffect(() => {
+    if (!isShattering) { setStage("idle"); return; }
+    wrapperRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    setStage("tick");
+    const t1 = window.setTimeout(() => setStage("flyOut"), 250);
+    const t2 = window.setTimeout(() => setStage("collapse"), 650);
+    return () => { window.clearTimeout(t1); window.clearTimeout(t2); };
+  }, [isShattering]);
+  const checked = task.done || stage !== "idle";
+  const collapsing = stage === "collapse";
+  const flying = stage === "flyOut" || stage === "collapse";
+  const bg = `linear-gradient(160deg, #ffffff 0%, ${color}12 80%, ${color}35 100%)`;
+
+  return (
+    <div
+      ref={wrapperRef}
+      style={{
+        overflow: "hidden",
+        maxHeight: collapsing ? 0 : 400,
+        transition: "max-height 0.4s cubic-bezier(0.4,0,0.2,1)",
+      }}
+    >
+      <div
+        style={{
+          transform: flying ? "translateX(120%)" : "translateX(0)",
+          opacity: flying ? 0 : 1,
+          transition: flying ? "transform 0.4s cubic-bezier(0.55,0,1,0.45), opacity 0.4s ease" : undefined,
+        }}
+      >
+        <div
+          onClick={() => { if (stage === "idle" && canExpand) onToggleTree(); }}
+          role="button"
+          className="tap relative w-full rounded-2xl px-3 py-2.5 shadow-card overflow-hidden animate-fade-up"
+          style={{
+            background: bg,
+            border: isTimerActive ? `2px solid ${color}` : "1px solid #ede8df",
+            cursor: canExpand ? "pointer" : "default",
+          }}
+        >
+          <div className="flex items-center gap-2.5">
+            {/* Кружок статуса — кликабельный */}
+            <button
+              type="button"
+              aria-label={checked ? "Задача выполнена" : "Отметить выполненной"}
+              onClick={(e) => { e.stopPropagation(); if (!checked) onComplete(); }}
+              className="shrink-0 inline-flex items-center justify-center rounded-full"
+              style={{
+                width: 22, height: 22,
+                background: checked ? color : "transparent",
+                border: `2px solid ${checked ? color : "#d1d5db"}`,
+                transition: "background 0.2s ease, border-color 0.2s ease",
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M5 12.5l4.5 4.5L19 7.5"
+                  stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                  style={{
+                    strokeDasharray: 20,
+                    strokeDashoffset: checked ? 0 : 20,
+                    transition: "stroke-dashoffset 0.25s ease",
+                  }}
+                />
+              </svg>
+            </button>
+
+            <div className="flex-1 min-w-0">
+              <div
+                className="text-[14px] font-semibold leading-snug break-words"
+                style={{ color: "#111111", textDecoration: task.done ? "line-through" : undefined }}
+              >
+                {task.title}
+                <span aria-label={feelingOf(task.feeling).label} className="ml-1">{feelingOf(task.feeling).emoji}</span>
+              </div>
+              <div className="mt-0.5 text-[11px]" style={{ color: "#6b6b6b" }}>
+                {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}{task.isRecurring ? ` · 🔁 повторяется` : ""}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              aria-label="Открыть задачу"
+              onClick={(e) => { e.stopPropagation(); onOpenTask(); }}
+              className="tap shrink-0 inline-flex items-center justify-center rounded-full"
+              style={{ width: 28, height: 28, background: `${color}26` }}
+            >
+              <Pencil className="h-3.5 w-3.5" style={{ color }} />
+            </button>
+
+            {canExpand && (
+              <span
+                className="shrink-0 inline-flex items-center justify-center"
+                style={{
+                  width: 20, height: 28,
+                  transition: "transform 0.2s ease",
+                  transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M4 2 L8 6 L4 10" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            )}
+          </div>
+
+          {isTimerActive && (
+            <div className="mt-2 flex justify-center">
+              <div
+                className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium"
+                style={{ background: `${color}1f`, color }}
+              >
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-current task-pulse" />
+                ▶ {fmtTime(task.timeSpent + liveSeconds)}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ---------------- Поп-ап выбора уровня для новой ключевой задачи ---------------- */
+
 
 function AddKeyLevelPopup({
   goalId, tasks, onClose, onPick,
