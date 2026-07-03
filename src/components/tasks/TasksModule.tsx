@@ -1615,19 +1615,20 @@ function KeyNodeCard({
             </button>
 
             <div className="flex-1 min-w-0">
-              <div
-                className="text-[14px] font-semibold leading-snug break-words"
-                style={{
-                  color: striking ? "#8a8a8a" : "#111111",
-                  backgroundImage: "linear-gradient(currentColor, currentColor)",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "left 58%",
-                  backgroundSize: striking ? "100% 1.5px" : "0% 1.5px",
-                  transition: "background-size 0.55s ease, color 0.55s ease",
-                }}
-              >
-                {task.title}
-                <span aria-label={feelingOf(task.feeling).label} className="ml-1">{feelingOf(task.feeling).emoji}</span>
+              <div className="text-[14px] font-semibold leading-snug break-words" style={{ color: striking ? "#8a8a8a" : "#111111" }}>
+                <span
+                  style={{
+                    backgroundImage: "linear-gradient(currentColor, currentColor)",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "left 52%",
+                    backgroundSize: striking ? "100% 1.5px" : "0% 1.5px",
+                    transition: "background-size 0.55s ease, color 0.55s ease",
+                    boxDecorationBreak: "clone",
+                    WebkitBoxDecorationBreak: "clone",
+                  }}
+                >
+                  {task.title}<span aria-label={feelingOf(task.feeling).label} className="ml-1">{feelingOf(task.feeling).emoji}</span>
+                </span>
               </div>
               <div className="mt-0.5 text-[11px]" style={{ color: "#6b6b6b" }}>
                 {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}{task.isRecurring ? ` · 🔁 повторяется` : ""}
