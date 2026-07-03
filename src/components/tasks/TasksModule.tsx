@@ -1527,7 +1527,7 @@ function KeyTreeSection({
         <button
           onClick={onAdd}
           className="tap inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
-          style={{ background: "rgba(0,0,0,0.03)", color: "#8a8a8a", border: "1px dashed #d4d4d4" }}
+          style={{ background: "rgba(255,109,0,0.06)", color: "#FF6D00", border: "1px dashed rgba(255,109,0,0.4)" }}
         >
           <Plus className="h-3.5 w-3.5" /> Добавить ключевую задачу
         </button>
