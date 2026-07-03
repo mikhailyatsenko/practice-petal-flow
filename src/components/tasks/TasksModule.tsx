@@ -496,7 +496,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
             return (
               <button
                 key={m}
-                onClick={() => setViewMode(m)}
+                onClick={() => requestViewMode(m)}
                 className="tap flex-1 rounded-full px-3 py-2 text-[13px] font-semibold transition-colors"
                 style={
                   active
