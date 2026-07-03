@@ -467,12 +467,17 @@ export function GanttView({ goals, tasks, onUpdateTaskDates, onOpenTask }: Gantt
             {/* Правая панель — шкала */}
             <div
               ref={rightPaneRef}
+              data-gantt-scroll="true"
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchMove={(e) => e.stopPropagation()}
+              onTouchEnd={(e) => e.stopPropagation()}
               style={{
                 flex: 1,
                 overflow: "hidden",
                 position: "relative",
                 minHeight: HEADER_H + totalRowsH,
                 cursor: "grab",
+                touchAction: "pan-y",
               }}
             >
               {/* Шапка: месяцы + деления (сдвигается вместе со шкалой) */}
