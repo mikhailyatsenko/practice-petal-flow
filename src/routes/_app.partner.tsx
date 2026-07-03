@@ -46,7 +46,7 @@ function PartnerScreen() {
 
       {/* Short bonus description */}
       <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
-        <p className="text-[15px] font-semibold" style={{ color: "#1a1a1a" }}>
+        <p className="text-[13px] font-semibold" style={{ color: "#1a1a1a" }}>
           Как работает партнёрская система?
         </p>
         <div className="flex items-start gap-3" style={{ marginTop: 12 }}>
