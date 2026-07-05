@@ -925,6 +925,46 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
           onUnlock={unlockKeyGantt}
         />
       )}
+
+      {listDrag && listDrag.indicator && (
+        <div
+          style={{
+            position: "fixed",
+            top: listDrag.indicator.top,
+            left: listDrag.indicator.left,
+            width: listDrag.indicator.width,
+            height: 3,
+            borderRadius: 2,
+            background: listDrag.valid ? "#FF6D00" : "#d14343",
+            boxShadow: `0 0 0 3px ${listDrag.valid ? "rgba(255,109,0,0.18)" : "rgba(209,67,67,0.18)"}`,
+            pointerEvents: "none",
+            zIndex: 60,
+          }}
+        />
+      )}
+      {listDrag && (
+        <div
+          style={{
+            position: "fixed",
+            top: listDrag.y - 44,
+            left: Math.min(Math.max(listDrag.x - 90, 8), (typeof window !== "undefined" ? window.innerWidth : 400) - 188),
+            width: 180,
+            pointerEvents: "none",
+            zIndex: 61,
+          }}
+        >
+          <div
+            className="rounded-full px-3 py-1.5 text-[12px] font-semibold text-center"
+            style={{
+              background: listDrag.valid ? "linear-gradient(135deg,#FFB300,#FF6D00)" : "#4b4b4b",
+              color: "#fff",
+              boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
+            }}
+          >
+            {listDrag.hint}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
