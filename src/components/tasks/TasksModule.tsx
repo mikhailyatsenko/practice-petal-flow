@@ -724,6 +724,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
               <KeyTreeSection
                 goalId={row.gid}
                 tasks={tasks}
+                setTasks={setTasks}
                 expanded={keyExpanded}
                 onSetExpanded={setKeyExpanded}
                 onOpenTask={(id) => setOpenTaskId(id)}
