@@ -724,6 +724,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
               <KeyTreeSection
                 goalId={row.gid}
                 tasks={tasks}
+                setTasks={setTasks}
                 expanded={keyExpanded}
                 onSetExpanded={setKeyExpanded}
                 onOpenTask={(id) => setOpenTaskId(id)}
@@ -1425,11 +1426,12 @@ function getTaskLevel(tasks: Task[], task: Task): number {
 }
 
 function KeyTreeSection({
-  goalId, tasks, expanded, onSetExpanded, onOpenTask, onComplete, shatteringId, activeTimerIds, elapsedMap, onAdd,
+  goalId, tasks, setTasks, expanded, onSetExpanded, onOpenTask, onComplete, shatteringId, activeTimerIds, elapsedMap, onAdd,
   freeOpen, onToggleFree, onAttachExisting,
 }: {
   goalId: string;
   tasks: Task[];
+  setTasks: (updater: (prev: Task[]) => Task[]) => void;
   expanded: Set<string>;
   onSetExpanded: React.Dispatch<React.SetStateAction<Set<string>>>;
   onOpenTask: (id: string) => void;
@@ -1476,31 +1478,223 @@ function KeyTreeSection({
     });
   };
 
-  const renderNode = (task: Task, level: number): React.ReactNode => {
+  /* ---------- Drag & drop (long-press, pointer events) ---------- */
+  const [drag, setDrag] = useState<null | {
+    taskId: string;
+    draggedLevel: number;
+    x: number;
+    y: number;
+    targetParentId: string | null;
+    targetIndex: number;
+    targetLevel: number;
+    indicator: { top: number; left: number; width: number } | null;
+    hint: string;
+    valid: boolean;
+  }>(null);
+  const dragRef = useRef(drag);
+  dragRef.current = drag;
+  const longPressRef = useRef<number | null>(null);
+  const startPosRef = useRef<{ x: number; y: number } | null>(null);
+  const activeRef = useRef(false);
+  const suppressClickRef = useRef(false);
+
+  const forbiddenIds = (taskId: string): Set<string> => {
+    const s = new Set<string>([taskId]);
+    for (const id of collectDescendantIds(taskId)) s.add(id);
+    return s;
+  };
+
+  const updateDropTarget = (x: number, y: number) => {
+    const d = dragRef.current;
+    if (!d) return;
+    const el = document.elementFromPoint(x, y) as HTMLElement | null;
+    const nodeEl = el?.closest('[data-dnd-node="1"]') as HTMLElement | null;
+    if (!nodeEl) {
+      setDrag((prev) => prev ? { ...prev, x, y, indicator: null, valid: false, hint: "Отпусти внутри дерева" } : prev);
+      return;
+    }
+    const targetTaskId = nodeEl.getAttribute("data-task-id")!;
+    const targetLevel = Number(nodeEl.getAttribute("data-level")!);
+    const targetParentId = nodeEl.getAttribute("data-parent-id") || null;
+    const rect = nodeEl.getBoundingClientRect();
+    const isTop = y < rect.top + rect.height / 2;
+
+    const siblings = tasks.filter((t) => t.goalId === goalId && t.isKeyTask && (t.parentTaskId ?? null) === targetParentId);
+    const siblingIndex = siblings.findIndex((t) => t.id === targetTaskId);
+    const insertIndex = isTop ? siblingIndex : siblingIndex + 1;
+
+    const forbidden = forbiddenIds(d.taskId);
+    let valid = true;
+    let hint = "";
+    const draggedTask = tasks.find((t) => t.id === d.taskId);
+    const currentParent = draggedTask?.parentTaskId ?? null;
+
+    if (forbidden.has(targetTaskId) || (targetParentId && forbidden.has(targetParentId))) {
+      valid = false; hint = "Нельзя вложить в саму себя";
+    } else if (targetLevel === 1) {
+      const currentRoots = tasks.filter((t) => t.goalId === goalId && t.isKeyTask && !t.parentTaskId);
+      const isCurrentlyRoot = !currentParent;
+      if (!isCurrentlyRoot && currentRoots.length >= 5) {
+        valid = false; hint = "Уровень 1 заполнен (макс 5)";
+      }
+    }
+
+    if (valid) {
+      if (targetLevel === d.draggedLevel && targetParentId === currentParent) {
+        const pos = Math.max(1, Math.min(insertIndex + (isTop ? 1 : 0), siblings.length));
+        hint = `Останется на уровне ${d.draggedLevel}, позиция ${isTop ? insertIndex + 1 : insertIndex}`;
+      } else if (targetLevel === d.draggedLevel) {
+        hint = `Уровень ${targetLevel} · другой родитель`;
+      } else {
+        hint = `Перейдёт на уровень ${targetLevel}`;
+      }
+    }
+
+    const indicator = {
+      top: isTop ? rect.top - 2 : rect.bottom - 2,
+      left: rect.left,
+      width: rect.width,
+    };
+    setDrag((prev) => prev ? { ...prev, x, y, targetParentId, targetIndex: insertIndex, targetLevel, indicator, hint, valid } : prev);
+  };
+
+  const commitDrop = () => {
+    const d = dragRef.current;
+    if (!d || !d.valid) return;
+    setTasks((prev) => {
+      const list = prev.slice();
+      const from = list.findIndex((t) => t.id === d.taskId);
+      if (from < 0) return prev;
+      const [item] = list.splice(from, 1);
+      const updated: Task = { ...item, parentTaskId: d.targetParentId, isKeyTask: true };
+      const siblingIds = list
+        .filter((t) => t.goalId === goalId && t.isKeyTask && (t.parentTaskId ?? null) === d.targetParentId)
+        .map((t) => t.id);
+      const targetSiblingId = siblingIds[d.targetIndex];
+      let insertAt: number;
+      if (targetSiblingId) {
+        insertAt = list.findIndex((t) => t.id === targetSiblingId);
+      } else if (siblingIds.length > 0) {
+        const lastId = siblingIds[siblingIds.length - 1];
+        insertAt = list.findIndex((t) => t.id === lastId) + 1;
+      } else if (d.targetParentId) {
+        insertAt = list.findIndex((t) => t.id === d.targetParentId) + 1;
+      } else {
+        insertAt = list.length;
+      }
+      list.splice(insertAt, 0, updated);
+      return list;
+    });
+  };
+
+  const cancelDrag = () => {
+    if (longPressRef.current) { window.clearTimeout(longPressRef.current); longPressRef.current = null; }
+    activeRef.current = false;
+    startPosRef.current = null;
+    setDrag(null);
+  };
+
+  const handlePointerDown = (e: React.PointerEvent, task: Task, level: number) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    startPosRef.current = { x: e.clientX, y: e.clientY };
+    const el = e.currentTarget as HTMLElement;
+    const pid = e.pointerId;
+    longPressRef.current = window.setTimeout(() => {
+      activeRef.current = true;
+      suppressClickRef.current = true;
+      try { el.setPointerCapture(pid); } catch { /* noop */ }
+      if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+        try { (navigator as Navigator).vibrate?.(15); } catch { /* noop */ }
+      }
+      setDrag({
+        taskId: task.id,
+        draggedLevel: level,
+        x: startPosRef.current!.x,
+        y: startPosRef.current!.y,
+        targetParentId: null,
+        targetIndex: -1,
+        targetLevel: level,
+        indicator: null,
+        hint: "Тяни к нужному месту",
+        valid: false,
+      });
+    }, 350);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!activeRef.current) {
+      if (startPosRef.current && longPressRef.current) {
+        const dx = e.clientX - startPosRef.current.x;
+        const dy = e.clientY - startPosRef.current.y;
+        if (dx * dx + dy * dy > 64) {
+          window.clearTimeout(longPressRef.current);
+          longPressRef.current = null;
+        }
+      }
+      return;
+    }
+    e.preventDefault();
+    updateDropTarget(e.clientX, e.clientY);
+  };
+
+  const handlePointerUp = () => {
+    if (activeRef.current) {
+      commitDrop();
+      window.setTimeout(() => { suppressClickRef.current = false; }, 250);
+    }
+    cancelDrag();
+  };
+
+  const handleClickCapture = (e: React.MouseEvent) => {
+    if (suppressClickRef.current) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  };
+
+  const renderNode = (task: Task, level: number, parentId: string | null): React.ReactNode => {
     const meta = KEY_LEVEL_META[level] ?? KEY_LEVEL_META[5];
     const color = meta.color;
     const children = getKeyChildren(tasks, goalId, task.id);
     const canExpand = children.length > 0;
     const isOpen = expanded.has(task.id);
+    const isDragging = drag?.taskId === task.id;
 
     return (
       <div key={task.id} style={{ marginLeft: (level - 1) * 14 }}>
-        <KeyNodeCard
-          task={task}
-          color={color}
-          canExpand={canExpand}
-          isOpen={isOpen}
-          isShattering={shatteringId === task.id}
-          isTimerActive={activeTimerIds.has(task.id)}
-          liveSeconds={elapsedMap[task.id] ?? 0}
-          onToggleTree={() => toggleSubtree(task)}
-          onOpenTask={() => onOpenTask(task.id)}
-          onComplete={() => onComplete(task.id)}
-        />
+        <div
+          data-dnd-node="1"
+          data-task-id={task.id}
+          data-level={level}
+          data-parent-id={parentId ?? ""}
+          onPointerDown={(e) => handlePointerDown(e, task, level)}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+          onClickCapture={handleClickCapture}
+          style={{
+            touchAction: activeRef.current ? "none" : "auto",
+            opacity: isDragging ? 0.35 : 1,
+            transition: "opacity 0.15s ease",
+          }}
+        >
+          <KeyNodeCard
+            task={task}
+            color={color}
+            canExpand={canExpand}
+            isOpen={isOpen}
+            isShattering={shatteringId === task.id}
+            isTimerActive={activeTimerIds.has(task.id)}
+            liveSeconds={elapsedMap[task.id] ?? 0}
+            onToggleTree={() => toggleSubtree(task)}
+            onOpenTask={() => onOpenTask(task.id)}
+            onComplete={() => onComplete(task.id)}
+          />
+        </div>
 
         {isOpen && canExpand && (
           <div className="mt-2 space-y-2">
-            {children.map((c) => renderNode(c, level + 1))}
+            {children.map((c) => renderNode(c, level + 1, task.id))}
           </div>
         )}
       </div>
@@ -1508,7 +1702,7 @@ function KeyTreeSection({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" style={{ touchAction: drag ? "none" : undefined }}>
       {roots.length === 0 && (
         <div className="text-center text-[12px] text-[#8a8a8a] py-4">
           Пока нет ключевых задач. Добавь первую ниже.
@@ -1516,8 +1710,50 @@ function KeyTreeSection({
       )}
 
       <div className="space-y-2">
-        {roots.map((r) => renderNode(r, 1))}
+        {roots.map((r) => renderNode(r, 1, null))}
       </div>
+
+      {/* Плавающая подсказка + линия-индикатор при drag */}
+      {drag && drag.indicator && (
+        <div
+          style={{
+            position: "fixed",
+            top: drag.indicator.top,
+            left: drag.indicator.left,
+            width: drag.indicator.width,
+            height: 3,
+            borderRadius: 2,
+            background: drag.valid ? "#FF6D00" : "#d14343",
+            boxShadow: `0 0 0 3px ${drag.valid ? "rgba(255,109,0,0.18)" : "rgba(209,67,67,0.18)"}`,
+            pointerEvents: "none",
+            zIndex: 60,
+          }}
+        />
+      )}
+      {drag && (
+        <div
+          style={{
+            position: "fixed",
+            top: drag.y - 44,
+            left: Math.min(Math.max(drag.x - 90, 8), (typeof window !== "undefined" ? window.innerWidth : 400) - 188),
+            width: 180,
+            pointerEvents: "none",
+            zIndex: 61,
+          }}
+        >
+          <div
+            className="rounded-full px-3 py-1.5 text-[12px] font-semibold text-center"
+            style={{
+              background: drag.valid ? "linear-gradient(135deg,#FFB300,#FF6D00)" : "#4b4b4b",
+              color: "#fff",
+              boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
+            }}
+          >
+            {drag.hint || "Тяни к нужному месту"}
+          </div>
+        </div>
+      )}
+
 
       <div className="flex justify-center">
         <button
