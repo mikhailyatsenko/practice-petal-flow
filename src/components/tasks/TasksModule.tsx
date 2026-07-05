@@ -199,6 +199,139 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   const [planDraft, setPlanDraft] = useState("");
   const [shatteringId, setShatteringId] = useState<string | null>(null);
 
+  /* ---------- List-view drag & drop (reorder внутри своей цели) ---------- */
+  const [listDrag, setListDrag] = useState<null | {
+    taskId: string;
+    goalId: string;
+    x: number;
+    y: number;
+    targetIndex: number; // индекс среди задач той же цели
+    indicator: { top: number; left: number; width: number } | null;
+    hint: string;
+    valid: boolean;
+  }>(null);
+  const listDragRef = useRef(listDrag);
+  listDragRef.current = listDrag;
+  const listLongPressRef = useRef<number | null>(null);
+  const listStartPosRef = useRef<{ x: number; y: number } | null>(null);
+  const listActiveRef = useRef(false);
+  const listSuppressClickRef = useRef(false);
+
+  const updateListDropTarget = (x: number, y: number) => {
+    const d = listDragRef.current;
+    if (!d) return;
+    const el = document.elementFromPoint(x, y) as HTMLElement | null;
+    const nodeEl = el?.closest('[data-list-dnd="1"]') as HTMLElement | null;
+    if (!nodeEl) {
+      setListDrag((p) => p ? { ...p, x, y, indicator: null, valid: false, hint: "Отпусти в списке своей цели" } : p);
+      return;
+    }
+    const nodeGoalId = nodeEl.getAttribute("data-goal-id") || "";
+    const nodeTaskId = nodeEl.getAttribute("data-task-id") || "";
+    if (nodeGoalId !== d.goalId) {
+      setListDrag((p) => p ? { ...p, x, y, indicator: null, valid: false, hint: "Только в рамках своей цели" } : p);
+      return;
+    }
+    const rect = nodeEl.getBoundingClientRect();
+    const isTop = y < rect.top + rect.height / 2;
+
+    const siblings = tasks.filter((t) => t.goalId === d.goalId);
+    const siblingIndex = siblings.findIndex((t) => t.id === nodeTaskId);
+    const insertIndex = isTop ? siblingIndex : siblingIndex + 1;
+
+    const indicator = {
+      top: isTop ? rect.top - 2 : rect.bottom - 2,
+      left: rect.left,
+      width: rect.width,
+    };
+    const pos = Math.max(1, Math.min(isTop ? siblingIndex + 1 : siblingIndex + 1, siblings.length));
+    setListDrag((p) => p ? { ...p, x, y, targetIndex: insertIndex, indicator, valid: true, hint: `Позиция ${pos}` } : p);
+  };
+
+  const commitListDrop = () => {
+    const d = listDragRef.current;
+    if (!d || !d.valid) return;
+    setTasks((prev) => {
+      const list = prev.slice();
+      const from = list.findIndex((t) => t.id === d.taskId);
+      if (from < 0) return prev;
+      const [item] = list.splice(from, 1);
+      const siblingIds = list.filter((t) => t.goalId === d.goalId).map((t) => t.id);
+      const targetId = siblingIds[d.targetIndex];
+      let insertAt: number;
+      if (targetId) {
+        insertAt = list.findIndex((t) => t.id === targetId);
+      } else if (siblingIds.length > 0) {
+        insertAt = list.findIndex((t) => t.id === siblingIds[siblingIds.length - 1]) + 1;
+      } else {
+        insertAt = list.length;
+      }
+      list.splice(insertAt, 0, item);
+      return list;
+    });
+  };
+
+  const cancelListDrag = () => {
+    if (listLongPressRef.current) { window.clearTimeout(listLongPressRef.current); listLongPressRef.current = null; }
+    listActiveRef.current = false;
+    listStartPosRef.current = null;
+    setListDrag(null);
+  };
+
+  const handleListPointerDown = (e: React.PointerEvent, task: Task) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    listStartPosRef.current = { x: e.clientX, y: e.clientY };
+    const el = e.currentTarget as HTMLElement;
+    const pid = e.pointerId;
+    listLongPressRef.current = window.setTimeout(() => {
+      listActiveRef.current = true;
+      listSuppressClickRef.current = true;
+      try { el.setPointerCapture(pid); } catch { /* noop */ }
+      if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+        try { (navigator as Navigator).vibrate?.(15); } catch { /* noop */ }
+      }
+      setListDrag({
+        taskId: task.id,
+        goalId: task.goalId,
+        x: listStartPosRef.current!.x,
+        y: listStartPosRef.current!.y,
+        targetIndex: -1,
+        indicator: null,
+        hint: "Тяни вверх/вниз",
+        valid: false,
+      });
+    }, 350);
+  };
+
+  const handleListPointerMove = (e: React.PointerEvent) => {
+    if (!listActiveRef.current) {
+      if (listStartPosRef.current && listLongPressRef.current) {
+        const dx = e.clientX - listStartPosRef.current.x;
+        const dy = e.clientY - listStartPosRef.current.y;
+        if (dx * dx + dy * dy > 64) {
+          window.clearTimeout(listLongPressRef.current);
+          listLongPressRef.current = null;
+        }
+      }
+      return;
+    }
+    e.preventDefault();
+    updateListDropTarget(e.clientX, e.clientY);
+  };
+
+  const handleListPointerUp = () => {
+    if (listActiveRef.current) {
+      commitListDrop();
+      window.setTimeout(() => { listSuppressClickRef.current = false; }, 250);
+    }
+    cancelListDrag();
+  };
+
+  const handleListClickCapture = (e: React.MouseEvent) => {
+    if (listSuppressClickRef.current) { e.stopPropagation(); e.preventDefault(); }
+  };
+
+
   // Заметки по целям и ответы мозгового штурма (локальное хранилище модуля)
   const [notesByGoal, setNotesByGoal] = useState<Record<string, string>>({});
   const [editingNotesGoalId, setEditingNotesGoalId] = useState<string | null>(null);
