@@ -824,24 +824,42 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
 
             {/* Задачи */}
             {viewMode === "list" ? (
-              <div className="space-y-2">
-                {row.items.map((t) => (
-                  <motion.div
-                    key={t.id}
-                    layout
-                    transition={{ layout: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 } }}
-                  >
-                    <TaskRow
-                      task={t}
-                      keyLevelColor={t.isKeyTask ? (KEY_LEVEL_META[getTaskLevel(tasks, t)] ?? KEY_LEVEL_META[5]).color : null}
-                      isTimerActive={activeTimerIds.has(t.id)}
-                      liveSeconds={elapsedMap[t.id] ?? 0}
-                      isShattering={shatteringId === t.id}
-                      onOpen={() => setOpenTaskId(t.id)}
-                      onComplete={() => handleMarkDone(t.id)}
-                    />
-                  </motion.div>
-                ))}
+              <div className="space-y-2" style={{ touchAction: listDrag ? "none" : undefined }}>
+                {row.items.map((t) => {
+                  const isDragging = listDrag?.taskId === t.id;
+                  return (
+                    <motion.div
+                      key={t.id}
+                      layout
+                      transition={{ layout: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 } }}
+                    >
+                      <div
+                        data-list-dnd="1"
+                        data-task-id={t.id}
+                        data-goal-id={t.goalId}
+                        onPointerDown={(e) => handleListPointerDown(e, t)}
+                        onPointerMove={handleListPointerMove}
+                        onPointerUp={handleListPointerUp}
+                        onPointerCancel={handleListPointerUp}
+                        onClickCapture={handleListClickCapture}
+                        style={{
+                          opacity: isDragging ? 0.35 : 1,
+                          transition: "opacity 0.15s ease",
+                        }}
+                      >
+                        <TaskRow
+                          task={t}
+                          keyLevelColor={t.isKeyTask ? (KEY_LEVEL_META[getTaskLevel(tasks, t)] ?? KEY_LEVEL_META[5]).color : null}
+                          isTimerActive={activeTimerIds.has(t.id)}
+                          liveSeconds={elapsedMap[t.id] ?? 0}
+                          isShattering={shatteringId === t.id}
+                          onOpen={() => setOpenTaskId(t.id)}
+                          onComplete={() => handleMarkDone(t.id)}
+                        />
+                      </div>
+                    </motion.div>
+                  );
+                })}
                 <div className="flex justify-center pt-1">
                   <button
                     onClick={() => { setCreateForGoalId(row.gid); setCreating(true); }}
