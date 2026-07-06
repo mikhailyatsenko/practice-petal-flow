@@ -1159,6 +1159,12 @@ function TaskRow({
                     <span aria-label="Повторяющаяся">🔁 повторяется</span>
                   </>
                 )}
+                {task.timeSpent > 0 && !isTimerActive && !task.done && (
+                  <>
+                    <span style={{ color: "#c5c5c5" }}>·</span>
+                    <span style={{ color: "#FF6D00" }}>⏱ {fmtTimeBig(task.timeSpent)}</span>
+                  </>
+                )}
               </div>
             </div>
 
@@ -1265,16 +1271,6 @@ function TaskDetailScreen({
         )}
       </article>
 
-      <button
-        onClick={onMarkDone}
-        className="tap w-full rounded-full py-3 text-[14px] font-semibold text-white"
-        style={{
-          background: "linear-gradient(135deg, #8BC34A, #4CAF50)",
-          boxShadow: "0 6px 20px rgba(76,175,80,0.35)",
-        }}
-      >
-        ✅ Задача сделана!
-      </button>
 
       <div className="flex gap-2">
         <button
@@ -2144,7 +2140,7 @@ function KeyNodeCard({
                 </span>
               </div>
               <div className="mt-0.5 text-[11px]" style={{ color: "#6b6b6b" }}>
-                {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}{task.isRecurring ? ` · 🔁 повторяется` : ""}
+                {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}{task.isRecurring ? ` · 🔁 повторяется` : ""}{task.timeSpent > 0 && !isTimerActive && !task.done ? ` · ` : ""}{task.timeSpent > 0 && !isTimerActive && !task.done ? <span style={{ color: "#FF6D00" }}>⏱ {fmtTimeBig(task.timeSpent)}</span> : null}
               </div>
             </div>
 
