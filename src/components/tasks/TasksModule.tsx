@@ -114,22 +114,27 @@ function ganttDatesForDeadline(deadline: TaskDeadline): Pick<Task, "startDate" |
     : deadline === "🟦 На неделю" ? 6
     : deadline === "🟪 На месяц" ? 29
     : deadline === "🟥 Квартал" ? 89
+    : deadline === "🟩 На полгода" ? 181
+    : deadline === "🟫 На год" ? 364
     : null;
 
   if (spanDays == null) return { startDate: undefined, endDate: undefined };
   return { startDate: isoLocal(today), endDate: isoLocal(addDaysLocal(today, spanDays)) };
 }
 
-type FilterId = "all" | "open" | "day" | "week" | "month" | "quarter";
+type FilterId = "all" | "open" | "day" | "week" | "month" | "quarter" | "halfyear" | "year";
 
 const FILTERS: { id: FilterId; label: string }[] = [
-  { id: "day",     label: "🟧 День" },
-  { id: "week",    label: "🟦 Неделя" },
-  { id: "month",   label: "🟪 Месяц" },
-  { id: "quarter", label: "🟥 Квартал" },
-  { id: "open",    label: "⬜ Открытые" },
-  { id: "all",     label: "📋 Все задачи" },
+  { id: "day",      label: "🟧 День" },
+  { id: "week",     label: "🟦 Неделя" },
+  { id: "month",    label: "🟪 Месяц" },
+  { id: "quarter",  label: "🟥 Квартал" },
+  { id: "halfyear", label: "🟩 Полгода" },
+  { id: "year",     label: "🟫 Год" },
+  { id: "open",     label: "⬜ Открытые" },
+  { id: "all",      label: "📋 Все задачи" },
 ];
+
 
 type ViewMode = "list" | "key" | "gantt";
 
