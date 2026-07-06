@@ -22,11 +22,11 @@ export interface TaskGoalRef {
 
 export type TaskDeadline =
   | "⬜ Не определён"
-  | "🟧 На день"
+  | "🟩 На день"
   | "🟦 На неделю"
   | "🟪 На месяц"
-  | "🟥 Квартал"
-  | "🟩 На полгода"
+  | "🟧 Квартал"
+  | "🟥 На полгода"
   | "🟫 На год";
 
 export interface Task {
@@ -48,21 +48,21 @@ export interface Task {
 
 const DEADLINES: { value: TaskDeadline; label: string }[] = [
   { value: "⬜ Не определён", label: "⬜ Не определён" },
-  { value: "🟧 На день",      label: "🟧 На день" },
+  { value: "🟩 На день",      label: "🟩 На день" },
   { value: "🟦 На неделю",    label: "🟦 На неделю" },
   { value: "🟪 На месяц",     label: "🟪 На месяц" },
-  { value: "🟥 Квартал",      label: "🟥 Квартал" },
-  { value: "🟩 На полгода",   label: "🟩 На полгода" },
+  { value: "🟧 Квартал",      label: "🟧 Квартал" },
+  { value: "🟥 На полгода",   label: "🟥 На полгода" },
   { value: "🟫 На год",       label: "🟫 На год" },
 ];
 
 const DEADLINE_COLORS: Record<TaskDeadline, { bg: string; border?: string }> = {
   "⬜ Не определён": { bg: "#D3D1C7", border: "#b8b8b8" },
-  "🟧 На день":      { bg: "#E88200" },
+  "🟩 На день":      { bg: "#22A06B" },
   "🟦 На неделю":    { bg: "#378ADD" },
   "🟪 На месяц":     { bg: "#7F77DD" },
-  "🟥 Квартал":      { bg: "#D14343" },
-  "🟩 На полгода":   { bg: "#22A06B" },
+  "🟧 Квартал":      { bg: "#E88200" },
+  "🟥 На полгода":   { bg: "#D14343" },
   "🟫 На год":       { bg: "#8B5A2B" },
 };
 
@@ -110,11 +110,11 @@ function isoLocal(d: Date): string {
 
 function ganttDatesForDeadline(deadline: TaskDeadline): Pick<Task, "startDate" | "endDate"> {
   const today = startOfToday();
-  const spanDays = deadline === "🟧 На день" ? 0
+  const spanDays = deadline === "🟩 На день" ? 0
     : deadline === "🟦 На неделю" ? 6
     : deadline === "🟪 На месяц" ? 29
-    : deadline === "🟥 Квартал" ? 89
-    : deadline === "🟩 На полгода" ? 181
+    : deadline === "🟧 Квартал" ? 89
+    : deadline === "🟥 На полгода" ? 181
     : deadline === "🟫 На год" ? 364
     : null;
 
@@ -128,7 +128,7 @@ const FILTERS: { id: FilterId; label: string }[] = [
   { id: "day",      label: "🟧 День" },
   { id: "week",     label: "🟦 Неделя" },
   { id: "month",    label: "🟪 Месяц" },
-  { id: "quarter",  label: "🟥 Квартал" },
+  { id: "quarter",  label: "🟧 Квартал" },
   { id: "halfyear", label: "🟩 Полгода" },
   { id: "year",     label: "🟫 Год" },
   { id: "open",     label: "⬜ Открытые" },
@@ -146,13 +146,13 @@ const SAMPLE_TASKS = (goals: TaskGoalRef[]): Task[] => {
   const g1 = goals[1]?.id ?? g0;
   const g2 = goals[2]?.id ?? g0;
   return [
-    { id: "t1", goalId: g0, title: "Купить кроссовки для длинных дистанций", deadline: "🟧 На день", duration: "1 час", feeling: 8, done: false, timeSpent: 0 },
-    { id: "t2", goalId: g0, title: "Составить план тренировок на месяц", deadline: "🟥 Квартал", duration: "2 часа", feeling: 7, done: false, timeSpent: 0 },
+    { id: "t1", goalId: g0, title: "Купить кроссовки для длинных дистанций", deadline: "🟩 На день", duration: "1 час", feeling: 8, done: false, timeSpent: 0 },
+    { id: "t2", goalId: g0, title: "Составить план тренировок на месяц", deadline: "🟧 Квартал", duration: "2 часа", feeling: 7, done: false, timeSpent: 0 },
     { id: "t3", goalId: g0, title: "Зарегистрироваться на ближайший полумарафон", deadline: "🟪 На месяц", duration: "30 мин", feeling: 9, done: false, timeSpent: 0 },
     { id: "t4", goalId: g1, title: "Найти преподавателя испанского", deadline: "🟦 На неделю", duration: "1 час", feeling: 6, done: false, timeSpent: 0 },
-    { id: "t5", goalId: g1, title: "Пройти базовый курс грамматики", deadline: "🟥 Квартал", duration: "Более 10 часов", feeling: 5, done: false, timeSpent: 0 },
+    { id: "t5", goalId: g1, title: "Пройти базовый курс грамматики", deadline: "🟧 Квартал", duration: "Более 10 часов", feeling: 5, done: false, timeSpent: 0 },
 
-    { id: "t6", goalId: g2, title: "Открыть накопительный счёт", deadline: "🟧 На день", duration: "30 мин", feeling: 7, done: false, timeSpent: 0 },
+    { id: "t6", goalId: g2, title: "Открыть накопительный счёт", deadline: "🟩 На день", duration: "30 мин", feeling: 7, done: false, timeSpent: 0 },
     { id: "t7", goalId: g2, title: "Настроить автоперевод 20% от дохода", deadline: "⬜ Не определён", duration: "15 мин", feeling: 8, done: false, timeSpent: 0 },
   ];
 };
@@ -419,11 +419,11 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     if (initialGoalId) list = list.filter((t) => t.goalId === initialGoalId);
     switch (filter) {
       case "open":    list = list.filter((t) => t.deadline === "⬜ Не определён"); break;
-      case "day":     list = list.filter((t) => t.deadline === "🟧 На день"); break;
+      case "day":     list = list.filter((t) => t.deadline === "🟩 На день"); break;
       case "week":    list = list.filter((t) => t.deadline === "🟦 На неделю"); break;
       case "month":   list = list.filter((t) => t.deadline === "🟪 На месяц"); break;
-      case "quarter": list = list.filter((t) => t.deadline === "🟥 Квартал"); break;
-      case "halfyear":list = list.filter((t) => t.deadline === "🟩 На полгода"); break;
+      case "quarter": list = list.filter((t) => t.deadline === "🟧 Квартал"); break;
+      case "halfyear":list = list.filter((t) => t.deadline === "🟥 На полгода"); break;
       case "year":    list = list.filter((t) => t.deadline === "🟫 На год"); break;
     }
 

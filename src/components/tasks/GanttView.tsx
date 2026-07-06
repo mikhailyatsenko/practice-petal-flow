@@ -62,13 +62,13 @@ function fromIso(s: string): Date {
 
 function rangeFromTag(deadline: TaskDeadline, today: Date): { start: Date; end: Date } {
   switch (deadline) {
-    case "🟧 На день":
+    case "🟩 На день":
       return { start: today, end: today };
     case "🟦 На неделю":
       return { start: today, end: addDays(today, 6) };
     case "🟪 На месяц":
       return { start: today, end: addDays(today, 29) };
-    case "🟥 Квартал":
+    case "🟧 Квартал":
       return { start: today, end: addDays(today, 89) };
     default:
       return { start: today, end: today };
