@@ -197,7 +197,8 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
   const [editingPlanGoalId, setEditingPlanGoalId] = useState<string | null>(null);
   const [planDraft, setPlanDraft] = useState("");
-  const [shatteringId, setShatteringId] = useState<string | null>(null);
+  const [shatteringIds, setShatteringIds] = useState<Set<string>>(new Set());
+  
 
   /* ---------- List-view drag & drop (reorder внутри своей цели) ---------- */
   const [listDrag, setListDrag] = useState<null | {
@@ -478,32 +479,33 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   };
   const handleMarkDone = (id: string) => {
     // Игнорируем повторное нажатие
-    if (shatteringId === id) return;
-    if (activeTimerIds.has(id)) {
-      setActiveTimerIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
-    }
-    // Возвращаемся в ленту, чтобы пользователь увидел свою карточку
-    setOpenTaskId(null);
-    // Ждём, пока лента отрендерится и доскроллится к карточке
-    window.setTimeout(() => setShatteringId(id), 300);
-    // 300ms скролл + 250ms галочка + 550ms зачёркивание = ~1100ms → ставим done и карточка уезжает вниз.
-    // Если у задачи есть подзадачи — они тоже закрываются вместе с ней (и все вместе уезжают вниз).
-    window.setTimeout(() => {
-      setTasks((prev) => {
-        const descendants = new Set<string>([id]);
-        let changed = true;
-        while (changed) {
-          changed = false;
-          for (const t of prev) {
-            if (t.parentTaskId && descendants.has(t.parentTaskId) && !descendants.has(t.id)) {
-              descendants.add(t.id);
-              changed = true;
-            }
-          }
+    if (shatteringIds.has(id)) return;
+    // Считаем всё поддерево заранее — анимация должна идти параллельно на всех уровнях
+    const subtree = new Set<string>([id]);
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (const t of tasks) {
+        if (t.parentTaskId && subtree.has(t.parentTaskId) && !subtree.has(t.id)) {
+          subtree.add(t.id);
+          changed = true;
         }
-        return prev.map((t) => (descendants.has(t.id) ? { ...t, done: true } : t));
+      }
+    }
+    for (const sid of subtree) {
+      if (activeTimerIds.has(sid)) {
+        setActiveTimerIds((prev) => { const n = new Set(prev); n.delete(sid); return n; });
+      }
+    }
+    setOpenTaskId(null);
+    window.setTimeout(() => setShatteringIds(new Set(subtree)), 300);
+    window.setTimeout(() => {
+      setTasks((prev) => prev.map((t) => (subtree.has(t.id) ? { ...t, done: true } : t)));
+      setShatteringIds((prev) => {
+        const n = new Set(prev);
+        for (const sid of subtree) n.delete(sid);
+        return n;
       });
-      setShatteringId((c) => (c === id ? null : c));
     }, 1150);
   };
 
@@ -866,7 +868,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
                           keyLevelColor={t.isKeyTask ? (KEY_LEVEL_META[getTaskLevel(tasks, t)] ?? KEY_LEVEL_META[5]).color : null}
                           isTimerActive={activeTimerIds.has(t.id)}
                           liveSeconds={elapsedMap[t.id] ?? 0}
-                          isShattering={shatteringId === t.id}
+                          isShattering={shatteringIds.has(t.id)}
                           onOpen={() => setOpenTaskId(t.id)}
                           onComplete={() => handleMarkDone(t.id)}
                         />
@@ -894,7 +896,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
                 onSetExpanded={setKeyExpanded}
                 onOpenTask={(id) => setOpenTaskId(id)}
                 onComplete={(id) => handleMarkDone(id)}
-                shatteringId={shatteringId}
+                shatteringIds={shatteringIds}
                 activeTimerIds={activeTimerIds}
                 elapsedMap={elapsedMap}
                 onAdd={() => {
@@ -1628,7 +1630,7 @@ function getTaskLevel(tasks: Task[], task: Task): number {
 }
 
 function KeyTreeSection({
-  goalId, tasks, setTasks, expanded, onSetExpanded, onOpenTask, onComplete, shatteringId, activeTimerIds, elapsedMap, onAdd,
+  goalId, tasks, setTasks, expanded, onSetExpanded, onOpenTask, onComplete, shatteringIds, activeTimerIds, elapsedMap, onAdd,
   freeOpen, onToggleFree, onAttachExisting,
 }: {
   goalId: string;
@@ -1638,7 +1640,7 @@ function KeyTreeSection({
   onSetExpanded: React.Dispatch<React.SetStateAction<Set<string>>>;
   onOpenTask: (id: string) => void;
   onComplete: (id: string) => void;
-  shatteringId: string | null;
+  shatteringIds: Set<string>;
   activeTimerIds: Set<string>;
   elapsedMap: Record<string, number>;
   onAdd: () => void;
@@ -1863,7 +1865,7 @@ function KeyTreeSection({
     const isDragging = drag?.taskId === task.id;
 
     return (
-      <div key={task.id} style={{ marginLeft: (level - 1) * 14 }}>
+      <motion.div layout="position" transition={{ type: "spring", stiffness: 380, damping: 32, mass: 0.6 }} key={task.id} style={{ marginLeft: (level - 1) * 14 }}>
         <div
           data-dnd-node="1"
           data-task-id={task.id}
@@ -1885,7 +1887,7 @@ function KeyTreeSection({
             color={color}
             canExpand={canExpand}
             isOpen={isOpen}
-            isShattering={shatteringId === task.id}
+            isShattering={shatteringIds.has(task.id)}
             isTimerActive={activeTimerIds.has(task.id)}
             liveSeconds={elapsedMap[task.id] ?? 0}
             onToggleTree={() => toggleSubtree(task)}
@@ -1900,7 +1902,7 @@ function KeyTreeSection({
             {children.filter((c) => c.done).map((c) => renderNode(c, level + 1, task.id))}
           </div>
         )}
-      </div>
+      </motion.div>
     );
   };
 
