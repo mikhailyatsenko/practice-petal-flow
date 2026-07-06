@@ -1899,7 +1899,8 @@ function KeyTreeSection({
 
         {isOpen && canExpand && (
           <div className="mt-2 space-y-2">
-            {children.map((c) => renderNode(c, level + 1, task.id))}
+            {children.filter((c) => !c.done).map((c) => renderNode(c, level + 1, task.id))}
+            {children.filter((c) => c.done).map((c) => renderNode(c, level + 1, task.id))}
           </div>
         )}
       </div>
