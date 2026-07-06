@@ -198,7 +198,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   const [editingPlanGoalId, setEditingPlanGoalId] = useState<string | null>(null);
   const [planDraft, setPlanDraft] = useState("");
   const [shatteringIds, setShatteringIds] = useState<Set<string>>(new Set());
-  const shatteringId = shatteringIds.size > 0 ? Array.from(shatteringIds)[0] : null;
+  
 
   /* ---------- List-view drag & drop (reorder внутри своей цели) ---------- */
   const [listDrag, setListDrag] = useState<null | {
