@@ -423,7 +423,10 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       case "week":    list = list.filter((t) => t.deadline === "🟦 На неделю"); break;
       case "month":   list = list.filter((t) => t.deadline === "🟪 На месяц"); break;
       case "quarter": list = list.filter((t) => t.deadline === "🟥 Квартал"); break;
+      case "halfyear":list = list.filter((t) => t.deadline === "🟩 На полгода"); break;
+      case "year":    list = list.filter((t) => t.deadline === "🟫 На год"); break;
     }
+
     // Порядок:
     // • в режиме списка выполненные задачи опускаются в самый низ группы (без учёта уровня);
     // • в режиме ключевых сначала идут ключевые по уровню (1..5), затем обычные;
