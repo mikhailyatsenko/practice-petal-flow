@@ -1887,7 +1887,7 @@ function KeyTreeSection({
             color={color}
             canExpand={canExpand}
             isOpen={isOpen}
-            isShattering={shatteringId === task.id}
+            isShattering={shatteringIds.has(task.id)}
             isTimerActive={activeTimerIds.has(task.id)}
             liveSeconds={elapsedMap[task.id] ?? 0}
             onToggleTree={() => toggleSubtree(task)}
