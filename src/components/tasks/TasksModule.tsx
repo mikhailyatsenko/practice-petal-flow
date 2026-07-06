@@ -896,7 +896,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
                 onSetExpanded={setKeyExpanded}
                 onOpenTask={(id) => setOpenTaskId(id)}
                 onComplete={(id) => handleMarkDone(id)}
-                shatteringId={shatteringId}
+                shatteringIds={shatteringIds}
                 activeTimerIds={activeTimerIds}
                 elapsedMap={elapsedMap}
                 onAdd={() => {
