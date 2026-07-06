@@ -1865,7 +1865,7 @@ function KeyTreeSection({
     const isDragging = drag?.taskId === task.id;
 
     return (
-      <div key={task.id} style={{ marginLeft: (level - 1) * 14 }}>
+      <motion.div layout="position" transition={{ type: "spring", stiffness: 380, damping: 32, mass: 0.6 }} key={task.id} style={{ marginLeft: (level - 1) * 14 }}>
         <div
           data-dnd-node="1"
           data-task-id={task.id}
