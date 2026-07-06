@@ -1159,6 +1159,12 @@ function TaskRow({
                     <span aria-label="Повторяющаяся">🔁 повторяется</span>
                   </>
                 )}
+                {task.timeSpent > 0 && !isTimerActive && !task.done && (
+                  <>
+                    <span style={{ color: "#c5c5c5" }}>·</span>
+                    <span style={{ color: "#FF6D00" }}>⏱ {fmtTimeBig(task.timeSpent)}</span>
+                  </>
+                )}
               </div>
             </div>
 
