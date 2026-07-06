@@ -1668,6 +1668,8 @@ function KeyTreeSection({
   onAttachExisting: (taskId: string) => void;
 }) {
   const roots = getKeyChildren(tasks, goalId, null);
+  const activeRoots = roots.filter((r) => !r.done);
+  const doneRoots = roots.filter((r) => r.done);
   const totalKey = tasks.filter((t) => t.goalId === goalId && t.isKeyTask).length;
   const freeTasks = tasks.filter((t) => t.goalId === goalId && !t.isKeyTask && !t.done);
 
@@ -1934,8 +1936,7 @@ function KeyTreeSection({
       )}
 
       <div className="space-y-2">
-        {roots.filter((r) => !r.done).map((r) => renderNode(r, 1, null))}
-        {roots.filter((r) => r.done).map((r) => renderNode(r, 1, null))}
+        {activeRoots.map((r) => renderNode(r, 1, null))}
       </div>
 
       {/* Плавающая подсказка + линия-индикатор при drag */}
@@ -2041,6 +2042,12 @@ function KeyTreeSection({
           </div>
         )}
       </div>
+      )}
+
+      {doneRoots.length > 0 && (
+        <div className="space-y-2">
+          {doneRoots.map((r) => renderNode(r, 1, null))}
+        </div>
       )}
     </div>
   );
