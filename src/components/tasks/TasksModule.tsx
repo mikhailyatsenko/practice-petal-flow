@@ -2179,9 +2179,10 @@ function AddKeyLevelPopup({
   const [pickingLevel, setPickingLevel] = useState<number | null>(null);
 
   // Для каждого уровня 1..5: сколько уже задач и список примеров.
+  // Выполненные задачи исключаем — под них нельзя добавить подзадачу.
   const levelStats: { level: number; tasks: Task[] }[] = [1, 2, 3, 4, 5].map((lvl) => ({
     level: lvl,
-    tasks: tasks.filter((t) => t.goalId === goalId && t.isKeyTask && getTaskLevel(tasks, t) === lvl),
+    tasks: tasks.filter((t) => t.goalId === goalId && t.isKeyTask && !t.done && getTaskLevel(tasks, t) === lvl),
   }));
 
   // Отображаем: все уровни, где уже есть задачи, + один следующий пустой.
@@ -2195,11 +2196,11 @@ function AddKeyLevelPopup({
   const rootCount = levelStats[0].tasks.length;
   const filteredLevels = availableLevels.filter((lvl) => !(lvl === 1 && rootCount >= 5));
 
-  // Если пользователь тапнул уровень → определяем список кандидатов-родителей.
+  // Если пользователь тапнул уровень → определяем список кандидатов-родителей (только невыполненные).
   const parentCandidates = (level: number): Task[] => {
     if (level === 1) return [];
-    return tasks.filter((t) => t.goalId === goalId && t.isKeyTask && getTaskLevel(tasks, t) === level - 1
-      && getKeyChildren(tasks, goalId, t.id).length < 5);
+    return tasks.filter((t) => t.goalId === goalId && t.isKeyTask && !t.done && getTaskLevel(tasks, t) === level - 1
+      && getKeyChildren(tasks, goalId, t.id).filter((c) => !c.done).length < 5);
   };
 
   const handleLevelClick = (level: number) => {
