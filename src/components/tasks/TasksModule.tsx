@@ -1902,7 +1902,7 @@ function KeyTreeSection({
             {children.filter((c) => c.done).map((c) => renderNode(c, level + 1, task.id))}
           </div>
         )}
-      </div>
+      </motion.div>
     );
   };
 
