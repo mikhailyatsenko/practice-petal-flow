@@ -1630,7 +1630,7 @@ function getTaskLevel(tasks: Task[], task: Task): number {
 }
 
 function KeyTreeSection({
-  goalId, tasks, setTasks, expanded, onSetExpanded, onOpenTask, onComplete, shatteringId, activeTimerIds, elapsedMap, onAdd,
+  goalId, tasks, setTasks, expanded, onSetExpanded, onOpenTask, onComplete, shatteringIds, activeTimerIds, elapsedMap, onAdd,
   freeOpen, onToggleFree, onAttachExisting,
 }: {
   goalId: string;
@@ -1640,7 +1640,7 @@ function KeyTreeSection({
   onSetExpanded: React.Dispatch<React.SetStateAction<Set<string>>>;
   onOpenTask: (id: string) => void;
   onComplete: (id: string) => void;
-  shatteringId: string | null;
+  shatteringIds: Set<string>;
   activeTimerIds: Set<string>;
   elapsedMap: Record<string, number>;
   onAdd: () => void;
