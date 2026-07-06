@@ -58,11 +58,11 @@ const DEADLINES: { value: TaskDeadline; label: string }[] = [
 
 const DEADLINE_COLORS: Record<TaskDeadline, { bg: string; border?: string }> = {
   "⬜ Не определён": { bg: "#D3D1C7", border: "#b8b8b8" },
-  "🟩 На день":      { bg: "#E88200" },
+  "🟩 На день":      { bg: "#22A06B" },
   "🟦 На неделю":    { bg: "#378ADD" },
   "🟪 На месяц":     { bg: "#7F77DD" },
-  "🟧 Квартал":      { bg: "#D14343" },
-  "🟥 На полгода":   { bg: "#22A06B" },
+  "🟧 Квартал":      { bg: "#E88200" },
+  "🟥 На полгода":   { bg: "#D14343" },
   "🟫 На год":       { bg: "#8B5A2B" },
 };
 
