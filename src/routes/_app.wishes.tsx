@@ -497,7 +497,7 @@ const HOW_IT_WORKS: Record<HowKey, { videos: [HowVideo, HowVideo]; blocks: HowBl
         kind: "list",
         title: "🎯 Фильтры по задачам:",
         items: [
-          { label: "🟧 На день", text: "Задачи, назначенные на сегодня." },
+          { label: "🟩 На день", text: "Задачи, назначенные на сегодня." },
           { label: "🟦 На неделю", text: "Задачи на эту неделю." },
           { label: "🟪 На месяц", text: "Задачи на этот месяц." },
           { label: "⬜ Открытые", text: "Все незавершённые задачи." },
@@ -786,12 +786,12 @@ function WishesScreen() {
 
   // Центральное хранилище задач (используется и в TasksModule, и в карточке цели)
   const [moduleTasks, setModuleTasks] = useState<ModuleTask[]>([
-    { id: "t1", goalId: "g1", title: "Купить кроссовки для длинных дистанций", deadline: "🟧 На день", duration: "1 час", feeling: 8, done: false, timeSpent: 0 },
-    { id: "t2", goalId: "g1", title: "Составить план тренировок на месяц", deadline: "🟥 Квартал", duration: "2 часа", feeling: 7, done: false, timeSpent: 0 },
+    { id: "t1", goalId: "g1", title: "Купить кроссовки для длинных дистанций", deadline: "🟩 На день", duration: "1 час", feeling: 8, done: false, timeSpent: 0 },
+    { id: "t2", goalId: "g1", title: "Составить план тренировок на месяц", deadline: "🟧 Квартал", duration: "2 часа", feeling: 7, done: false, timeSpent: 0 },
     { id: "t3", goalId: "g1", title: "Зарегистрироваться на полумарафон", deadline: "🟪 На месяц", duration: "30 мин", feeling: 9, done: false, timeSpent: 0 },
     { id: "t4", goalId: "g2", title: "Найти преподавателя испанского", deadline: "🟦 На неделю", duration: "1 час", feeling: 6, done: false, timeSpent: 0 },
-    { id: "t5", goalId: "g2", title: "Пройти базовый курс грамматики", deadline: "🟥 Квартал", duration: "Более 10 часов", feeling: 5, done: false, timeSpent: 0 },
-    { id: "t6", goalId: "g4", title: "Составить список из 24 книг на год", deadline: "🟧 На день", duration: "30 мин", feeling: 7, done: false, timeSpent: 0 },
+    { id: "t5", goalId: "g2", title: "Пройти базовый курс грамматики", deadline: "🟧 Квартал", duration: "Более 10 часов", feeling: 5, done: false, timeSpent: 0 },
+    { id: "t6", goalId: "g4", title: "Составить список из 24 книг на год", deadline: "🟩 На день", duration: "30 мин", feeling: 7, done: false, timeSpent: 0 },
     { id: "t7", goalId: "g4", title: "Завести читательский дневник", deadline: "⬜ Не определён", duration: "15 мин", feeling: 8, done: false, timeSpent: 0 },
   ]);
 
