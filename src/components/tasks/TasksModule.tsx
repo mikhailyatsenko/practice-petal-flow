@@ -2150,7 +2150,7 @@ function KeyNodeCard({
                 </span>
               </div>
               <div className="mt-0.5 text-[11px]" style={{ color: "#6b6b6b" }}>
-                {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}{task.isRecurring ? ` · 🔁 повторяется` : ""}
+                {task.deadline}{task.duration && task.duration !== "—" ? ` · ${task.duration}` : ""}{task.isRecurring ? ` · 🔁 повторяется` : ""}{task.timeSpent > 0 && !isTimerActive && !task.done ? ` · ` : ""}{task.timeSpent > 0 && !isTimerActive && !task.done ? <span style={{ color: "#FF6D00" }}>⏱ {fmtTimeBig(task.timeSpent)}</span> : null}
               </div>
             </div>
 
