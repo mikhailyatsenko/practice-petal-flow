@@ -1137,10 +1137,7 @@ function TaskRow({
               </div>
             </div>
 
-            {/* Ключик — справа */}
-            {task.isKeyTask && (
-              <span aria-label="Ключевая задача" className="shrink-0 text-[16px] leading-none">🔑</span>
-            )}
+            {/* Ключик убран — ключевые задачи и так отличаются градиентом карточки */}
           </div>
           {isTimerActive && (
             <div className="mt-2 flex justify-center">
