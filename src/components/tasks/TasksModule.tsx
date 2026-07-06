@@ -479,32 +479,33 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   };
   const handleMarkDone = (id: string) => {
     // Игнорируем повторное нажатие
-    if (shatteringId === id) return;
-    if (activeTimerIds.has(id)) {
-      setActiveTimerIds((prev) => { const n = new Set(prev); n.delete(id); return n; });
-    }
-    // Возвращаемся в ленту, чтобы пользователь увидел свою карточку
-    setOpenTaskId(null);
-    // Ждём, пока лента отрендерится и доскроллится к карточке
-    window.setTimeout(() => setShatteringId(id), 300);
-    // 300ms скролл + 250ms галочка + 550ms зачёркивание = ~1100ms → ставим done и карточка уезжает вниз.
-    // Если у задачи есть подзадачи — они тоже закрываются вместе с ней (и все вместе уезжают вниз).
-    window.setTimeout(() => {
-      setTasks((prev) => {
-        const descendants = new Set<string>([id]);
-        let changed = true;
-        while (changed) {
-          changed = false;
-          for (const t of prev) {
-            if (t.parentTaskId && descendants.has(t.parentTaskId) && !descendants.has(t.id)) {
-              descendants.add(t.id);
-              changed = true;
-            }
-          }
+    if (shatteringIds.has(id)) return;
+    // Считаем всё поддерево заранее — анимация должна идти параллельно на всех уровнях
+    const subtree = new Set<string>([id]);
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (const t of tasks) {
+        if (t.parentTaskId && subtree.has(t.parentTaskId) && !subtree.has(t.id)) {
+          subtree.add(t.id);
+          changed = true;
         }
-        return prev.map((t) => (descendants.has(t.id) ? { ...t, done: true } : t));
+      }
+    }
+    for (const sid of subtree) {
+      if (activeTimerIds.has(sid)) {
+        setActiveTimerIds((prev) => { const n = new Set(prev); n.delete(sid); return n; });
+      }
+    }
+    setOpenTaskId(null);
+    window.setTimeout(() => setShatteringIds(new Set(subtree)), 300);
+    window.setTimeout(() => {
+      setTasks((prev) => prev.map((t) => (subtree.has(t.id) ? { ...t, done: true } : t)));
+      setShatteringIds((prev) => {
+        const n = new Set(prev);
+        for (const sid of subtree) n.delete(sid);
+        return n;
       });
-      setShatteringId((c) => (c === id ? null : c));
     }, 1150);
   };
 
