@@ -25,7 +25,9 @@ export type TaskDeadline =
   | "🟧 На день"
   | "🟦 На неделю"
   | "🟪 На месяц"
-  | "🟥 Квартал";
+  | "🟥 Квартал"
+  | "🟩 На полгода"
+  | "🟫 На год";
 
 export interface Task {
   id: string;
@@ -50,6 +52,8 @@ const DEADLINES: { value: TaskDeadline; label: string }[] = [
   { value: "🟦 На неделю",    label: "🟦 На неделю" },
   { value: "🟪 На месяц",     label: "🟪 На месяц" },
   { value: "🟥 Квартал",      label: "🟥 Квартал" },
+  { value: "🟩 На полгода",   label: "🟩 На полгода" },
+  { value: "🟫 На год",       label: "🟫 На год" },
 ];
 
 const DEADLINE_COLORS: Record<TaskDeadline, { bg: string; border?: string }> = {
@@ -58,7 +62,10 @@ const DEADLINE_COLORS: Record<TaskDeadline, { bg: string; border?: string }> = {
   "🟦 На неделю":    { bg: "#378ADD" },
   "🟪 На месяц":     { bg: "#7F77DD" },
   "🟥 Квартал":      { bg: "#D14343" },
+  "🟩 На полгода":   { bg: "#22A06B" },
+  "🟫 На год":       { bg: "#8B5A2B" },
 };
+
 
 
 const DURATIONS = [
@@ -107,22 +114,27 @@ function ganttDatesForDeadline(deadline: TaskDeadline): Pick<Task, "startDate" |
     : deadline === "🟦 На неделю" ? 6
     : deadline === "🟪 На месяц" ? 29
     : deadline === "🟥 Квартал" ? 89
+    : deadline === "🟩 На полгода" ? 181
+    : deadline === "🟫 На год" ? 364
     : null;
 
   if (spanDays == null) return { startDate: undefined, endDate: undefined };
   return { startDate: isoLocal(today), endDate: isoLocal(addDaysLocal(today, spanDays)) };
 }
 
-type FilterId = "all" | "open" | "day" | "week" | "month" | "quarter";
+type FilterId = "all" | "open" | "day" | "week" | "month" | "quarter" | "halfyear" | "year";
 
 const FILTERS: { id: FilterId; label: string }[] = [
-  { id: "day",     label: "🟧 День" },
-  { id: "week",    label: "🟦 Неделя" },
-  { id: "month",   label: "🟪 Месяц" },
-  { id: "quarter", label: "🟥 Квартал" },
-  { id: "open",    label: "⬜ Открытые" },
-  { id: "all",     label: "📋 Все задачи" },
+  { id: "day",      label: "🟧 День" },
+  { id: "week",     label: "🟦 Неделя" },
+  { id: "month",    label: "🟪 Месяц" },
+  { id: "quarter",  label: "🟥 Квартал" },
+  { id: "halfyear", label: "🟩 Полгода" },
+  { id: "year",     label: "🟫 Год" },
+  { id: "open",     label: "⬜ Открытые" },
+  { id: "all",      label: "📋 Все задачи" },
 ];
+
 
 type ViewMode = "list" | "key" | "gantt";
 
@@ -411,7 +423,10 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       case "week":    list = list.filter((t) => t.deadline === "🟦 На неделю"); break;
       case "month":   list = list.filter((t) => t.deadline === "🟪 На месяц"); break;
       case "quarter": list = list.filter((t) => t.deadline === "🟥 Квартал"); break;
+      case "halfyear":list = list.filter((t) => t.deadline === "🟩 На полгода"); break;
+      case "year":    list = list.filter((t) => t.deadline === "🟫 На год"); break;
     }
+
     // Порядок:
     // • в режиме списка выполненные задачи опускаются в самый низ группы (без учёта уровня);
     // • в режиме ключевых сначала идут ключевые по уровню (1..5), затем обычные;
@@ -658,12 +673,20 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
 
       {/* Фильтры — только в режиме "Список" */}
       {viewMode === "list" && (
-        <div className="flex justify-center gap-1.5 flex-wrap pt-0.5">
-          {FILTERS.map((f) => (
-            <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
-          ))}
+        <div className="flex flex-col gap-1.5 pt-0.5">
+          <div className="flex justify-center gap-1.5 flex-wrap">
+            {FILTERS.slice(0, 4).map((f) => (
+              <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
+            ))}
+          </div>
+          <div className="flex justify-center gap-1.5 flex-wrap">
+            {FILTERS.slice(4).map((f) => (
+              <FilterChip key={f.id} active={filter === f.id} label={f.label} onClick={() => setFilter(f.id)} />
+            ))}
+          </div>
         </div>
       )}
+
 
       {viewMode === "gantt" && (
         <GanttView
