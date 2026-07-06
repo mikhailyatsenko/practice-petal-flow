@@ -25,7 +25,9 @@ export type TaskDeadline =
   | "🟧 На день"
   | "🟦 На неделю"
   | "🟪 На месяц"
-  | "🟥 Квартал";
+  | "🟥 Квартал"
+  | "🟩 На полгода"
+  | "🟫 На год";
 
 export interface Task {
   id: string;
@@ -50,6 +52,8 @@ const DEADLINES: { value: TaskDeadline; label: string }[] = [
   { value: "🟦 На неделю",    label: "🟦 На неделю" },
   { value: "🟪 На месяц",     label: "🟪 На месяц" },
   { value: "🟥 Квартал",      label: "🟥 Квартал" },
+  { value: "🟩 На полгода",   label: "🟩 На полгода" },
+  { value: "🟫 На год",       label: "🟫 На год" },
 ];
 
 const DEADLINE_COLORS: Record<TaskDeadline, { bg: string; border?: string }> = {
@@ -58,7 +62,10 @@ const DEADLINE_COLORS: Record<TaskDeadline, { bg: string; border?: string }> = {
   "🟦 На неделю":    { bg: "#378ADD" },
   "🟪 На месяц":     { bg: "#7F77DD" },
   "🟥 Квартал":      { bg: "#D14343" },
+  "🟩 На полгода":   { bg: "#22A06B" },
+  "🟫 На год":       { bg: "#8B5A2B" },
 };
+
 
 
 const DURATIONS = [
