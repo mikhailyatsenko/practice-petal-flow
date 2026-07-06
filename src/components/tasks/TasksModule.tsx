@@ -1253,7 +1253,7 @@ function TaskDetailScreen({
             className="tap mt-4 inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-semibold text-white"
             style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
           >
-            <Play className="h-4 w-4" /> Начать работу
+            <Play className="h-4 w-4" /> {task.timeSpent > 0 ? "Продолжить работу" : "Начать работу"}
           </button>
         ) : (
           <button
