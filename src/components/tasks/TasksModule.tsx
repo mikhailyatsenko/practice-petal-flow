@@ -486,9 +486,23 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     setOpenTaskId(null);
     // Ждём, пока лента отрендерится и доскроллится к карточке
     window.setTimeout(() => setShatteringId(id), 300);
-    // 300ms скролл + 250ms галочка + 550ms зачёркивание = ~1100ms → ставим done и карточка уезжает вниз
+    // 300ms скролл + 250ms галочка + 550ms зачёркивание = ~1100ms → ставим done и карточка уезжает вниз.
+    // Если у задачи есть подзадачи — они тоже закрываются вместе с ней (и все вместе уезжают вниз).
     window.setTimeout(() => {
-      setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
+      setTasks((prev) => {
+        const descendants = new Set<string>([id]);
+        let changed = true;
+        while (changed) {
+          changed = false;
+          for (const t of prev) {
+            if (t.parentTaskId && descendants.has(t.parentTaskId) && !descendants.has(t.id)) {
+              descendants.add(t.id);
+              changed = true;
+            }
+          }
+        }
+        return prev.map((t) => (descendants.has(t.id) ? { ...t, done: true } : t));
+      });
       setShatteringId((c) => (c === id ? null : c));
     }, 1150);
   };
