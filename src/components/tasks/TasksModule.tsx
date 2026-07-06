@@ -868,7 +868,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
                           keyLevelColor={t.isKeyTask ? (KEY_LEVEL_META[getTaskLevel(tasks, t)] ?? KEY_LEVEL_META[5]).color : null}
                           isTimerActive={activeTimerIds.has(t.id)}
                           liveSeconds={elapsedMap[t.id] ?? 0}
-                          isShattering={shatteringId === t.id}
+                          isShattering={shatteringIds.has(t.id)}
                           onOpen={() => setOpenTaskId(t.id)}
                           onComplete={() => handleMarkDone(t.id)}
                         />
