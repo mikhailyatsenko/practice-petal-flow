@@ -125,11 +125,11 @@ function ganttDatesForDeadline(deadline: TaskDeadline): Pick<Task, "startDate" |
 type FilterId = "all" | "open" | "day" | "week" | "month" | "quarter" | "halfyear" | "year";
 
 const FILTERS: { id: FilterId; label: string }[] = [
-  { id: "day",      label: "🟧 День" },
+  { id: "day",      label: "🟩 День" },
   { id: "week",     label: "🟦 Неделя" },
   { id: "month",    label: "🟪 Месяц" },
   { id: "quarter",  label: "🟧 Квартал" },
-  { id: "halfyear", label: "🟩 Полгода" },
+  { id: "halfyear", label: "🟥 Полгода" },
   { id: "year",     label: "🟫 Год" },
   { id: "open",     label: "⬜ Открытые" },
   { id: "all",      label: "📋 Все задачи" },
