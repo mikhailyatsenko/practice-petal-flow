@@ -2617,7 +2617,7 @@ function GoalCard({
         </p>
         <div
           className="mt-1.5 rounded-xl px-3 py-2.5 text-[13px] leading-snug text-foreground/85"
-          style={{ background: "#FAF6EF", border: "1px solid #E8E0D3" }}
+          style={{ background: "#FAF6EF" }}
         >
           {goal.criteria}
         </div>
