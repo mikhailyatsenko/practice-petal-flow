@@ -1294,15 +1294,18 @@ function TaskDetailScreen({
             border: `2px solid ${task.isKeyTask ? "#FF6D00" : "#d1d5db"}`,
           }}
         >
-          {task.isKeyTask && <Key className="h-4 w-4" style={{ color: "#fff" }} />}
+          <Key className="h-4 w-4" style={{ color: task.isKeyTask ? "#fff" : "#FF6D00" }} />
         </span>
-        <span className="flex-1 text-[14px] font-medium">
-          {task.isKeyTask ? "🔑 Ключевая задача" : "Перенести в ключевые задачи"}
+        <span className="flex-1">
+          <span className="block text-[14px] font-medium">
+            {task.isKeyTask ? "Убрать из ключевых задач" : "Перенести в ключевые задачи"}
+          </span>
+          {task.isKeyTask && (
+            <span className="block text-[11px] text-[#8a8a8a]">Сейчас это ключевая задача</span>
+          )}
         </span>
         {task.isKeyTask ? (
-          <span className="text-[11px] px-2 py-0.5 rounded-full" style={{ background: "#f3efe7", color: "#6b6b6b" }}>
-            Убрать
-          </span>
+          <X className="h-4 w-4" style={{ color: "#8a8a8a" }} />
         ) : (
           <ChevronRight className="h-4 w-4" style={{ color: "#8a8a8a" }} />
         )}
