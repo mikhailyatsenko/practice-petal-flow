@@ -3230,6 +3230,7 @@ function EditGoalScreen({
   const [reasons, setReasons] = useState<string[]>(goal.reasons.length ? goal.reasons : [""]);
   const [criteria, setCriteria] = useState(goal.criteria);
   const [plan, setPlan] = useState(goal.plan);
+  const [progress, setProgress] = useState<number>(goal.progress ?? 0);
   const [vision, setVision] = useState(goal.vision ?? "");
   const [image, setImage] = useState(goal.image);
   const [aspect, setAspect] = useState<ImageAspect>(goal.aspect ?? "portrait");
