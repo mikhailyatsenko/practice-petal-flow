@@ -3579,7 +3579,7 @@ function EditGoalScreen({
 
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                Под-цели {childGoals.length > 0 && `(${childGoals.length})`}
+                Под-цель
               </p>
               {childGoals.length > 0 && (
                 <div className="space-y-1.5 mb-2">
@@ -3604,17 +3604,19 @@ function EditGoalScreen({
                   ))}
                 </div>
               )}
-              <button
-                type="button"
-                onClick={() => setPickerMode("child")}
-                disabled={childCandidates.length === 0}
-                className="tap w-full rounded-xl py-2.5 text-[13px] font-medium text-muted-foreground disabled:opacity-50"
-                style={{ border: "1px dashed rgba(0,0,0,0.18)" }}
-              >
-                + Добавить под-цель
-              </button>
+              {childGoals.length === 0 && (
+                <button
+                  type="button"
+                  onClick={() => setPickerMode("child")}
+                  disabled={childCandidates.length === 0}
+                  className="tap w-full rounded-xl py-2.5 text-[13px] font-medium text-muted-foreground disabled:opacity-50"
+                  style={{ border: "1px dashed rgba(0,0,0,0.18)" }}
+                >
+                  + Выбрать под-цель
+                </button>
+              )}
               <p className="mt-1.5 text-[11px] text-muted-foreground">
-                Цели, которые служат этой — являются шагами к её достижению.
+                Цель, которая служит этой — является шагом к её достижению.
               </p>
             </div>
           </div>
