@@ -610,29 +610,54 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     if (t) {
       const g = goals.find((x) => x.id === t.goalId);
       return (
-        <TaskDetailScreen
-          task={t}
-          goal={g}
-          isTimerActive={activeTimerIds.has(t.id)}
-          liveSeconds={elapsedMap[t.id] ?? 0}
-          onBack={() => setOpenTaskId(null)}
-          onEdit={() => { setOpenTaskId(null); setEditingTask(t); }}
-          onDelete={() => handleDelete(t.id)}
-          onStartTimer={() => startTimer(t.id)}
-          onStopTimer={() => stopTimer(t.id)}
-          onMarkDone={() => handleMarkDone(t.id)}
-          onMoveToKey={() => {
-            setAttachExistingTaskId(t.id);
-            if (!keyGanttUnlocked) {
-              setShowUnlockPopup(true);
-            } else {
-              setAddKeyGoalId(t.goalId);
-            }
-          }}
-          onRemoveFromKey={() => {
-            setTasks((prev) => prev.map((x) => (x.id === t.id ? { ...x, isKeyTask: false, parentTaskId: null } : x)));
-          }}
-        />
+        <>
+          <TaskDetailScreen
+            task={t}
+            goal={g}
+            isTimerActive={activeTimerIds.has(t.id)}
+            liveSeconds={elapsedMap[t.id] ?? 0}
+            onBack={() => setOpenTaskId(null)}
+            onEdit={() => { setOpenTaskId(null); setEditingTask(t); }}
+            onDelete={() => handleDelete(t.id)}
+            onStartTimer={() => startTimer(t.id)}
+            onStopTimer={() => stopTimer(t.id)}
+            onMarkDone={() => handleMarkDone(t.id)}
+            onMoveToKey={() => {
+              setAttachExistingTaskId(t.id);
+              if (!keyGanttUnlocked) {
+                setShowUnlockPopup(true);
+              } else {
+                setAddKeyGoalId(t.goalId);
+              }
+            }}
+            onRemoveFromKey={() => {
+              setTasks((prev) => prev.map((x) => (x.id === t.id ? { ...x, isKeyTask: false, parentTaskId: null } : x)));
+            }}
+          />
+          {addKeyGoalId && (
+            <AddKeyLevelPopup
+              goalId={addKeyGoalId}
+              tasks={tasks}
+              onClose={() => { setAddKeyGoalId(null); setAttachExistingTaskId(null); }}
+              onPick={(parentId, level) => {
+                if (attachExistingTaskId) {
+                  attachToKey(attachExistingTaskId, parentId);
+                  setAttachExistingTaskId(null);
+                  setAddKeyGoalId(null);
+                } else {
+                  setPendingParentInsert({ goalId: addKeyGoalId, parentId, level });
+                  setAddKeyGoalId(null);
+                }
+              }}
+            />
+          )}
+          {showUnlockPopup && (
+            <UnlockKeyGanttPopup
+              onClose={() => { setShowUnlockPopup(false); setAttachExistingTaskId(null); }}
+              onUnlock={unlockKeyGantt}
+            />
+          )}
+        </>
       );
     }
   }
