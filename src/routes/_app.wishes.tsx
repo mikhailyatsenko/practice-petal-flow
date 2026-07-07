@@ -2494,9 +2494,8 @@ function GoalCard({
   tasksDoneCount = 0,
   onAddTask,
   readOnly = false,
-  onProgressChange,
-  parentGoal = null,
-  childCount = 0,
+  ancestors = [],
+  children = [],
   onOpenGoal,
 }: {
   goal: Goal;
@@ -2512,15 +2511,14 @@ function GoalCard({
   tasksDoneCount?: number;
   onAddTask?: () => void;
   readOnly?: boolean;
-  onProgressChange?: (value: number) => void;
-  parentGoal?: Goal | null;
-  childCount?: number;
+  ancestors?: Goal[];
+  children?: Goal[];
   onOpenGoal?: (id: string) => void;
 }) {
   void isDone;
-  const openTasks = tasksAll.filter((t) => !t.done);
-  const totalTasks = tasksAll.length;
-  const hasLinks = !!parentGoal || childCount > 0;
+  void tasksAll;
+  void tasksDoneCount;
+  void onAddTask;
 
   return (
     <article className="bg-card hairline rounded-[20px] overflow-hidden shadow-card animate-fade-up">
@@ -2545,36 +2543,6 @@ function GoalCard({
             />
           )}
         </div>
-        {hasLinks && (
-          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-            {parentGoal && (
-              <button
-                type="button"
-                onClick={() => onOpenGoal?.(parentGoal.id)}
-                className="tap inline-flex max-w-full items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium"
-                style={{ background: "rgba(255,109,0,0.10)", color: "#FF6D00" }}
-                title="Открыть над-цель"
-              >
-                <span aria-hidden>↑</span>
-                <span className="truncate">Над-цель: {parentGoal.title}</span>
-              </button>
-            )}
-            {childCount > 0 && (
-              <button
-                type="button"
-                onClick={onEdit}
-                className="tap inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium"
-                style={{ background: "rgba(255,109,0,0.10)", color: "#FF6D00" }}
-                title="Показать под-цели"
-              >
-                <span aria-hidden>↓</span>
-                <span>
-                  {childCount} {childCount === 1 ? "под-цель" : childCount < 5 ? "под-цели" : "под-целей"}
-                </span>
-              </button>
-            )}
-          </div>
-        )}
         <p className="mt-1 text-[12px] text-muted-foreground">📅 до {goal.deadline}</p>
 
         <div className="mt-3">
@@ -2582,42 +2550,15 @@ function GoalCard({
             <span className="text-muted-foreground">Прогресс</span>
             <span className="font-semibold" style={{ color: "#FF6D00" }}>{goal.progress}%</span>
           </div>
-          {!readOnly && onProgressChange ? (
-            <div className="relative h-5 flex items-center">
-              <div
-                className="absolute inset-x-0 h-1.5 rounded-full overflow-hidden"
-                style={{ background: "#ede8df" }}
-              >
-                <div
-                  className="h-full rounded-full transition-all"
-                  style={{
-                    width: `${goal.progress}%`,
-                    background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-                  }}
-                />
-              </div>
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={goal.progress}
-                onChange={(e) => onProgressChange(Number(e.target.value))}
-                aria-label="Прогресс цели"
-                className="relative w-full h-5 bg-transparent appearance-none cursor-pointer goal-progress-range"
-                style={{ accentColor: "#FF6D00" }}
-              />
-            </div>
-          ) : (
-            <div className="h-1.5 w-full rounded-full overflow-hidden" style={{ background: "#ede8df" }}>
-              <div
-                className="h-full rounded-full transition-all"
-                style={{
-                  width: `${goal.progress}%`,
-                  background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-                }}
-              />
-            </div>
-          )}
+          <div className="h-1.5 w-full rounded-full overflow-hidden" style={{ background: "#ede8df" }}>
+            <div
+              className="h-full rounded-full transition-all"
+              style={{
+                width: `${goal.progress}%`,
+                background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+              }}
+            />
+          </div>
         </div>
 
         {goal.vision && goal.vision.trim() && (
@@ -2667,35 +2608,59 @@ function GoalCard({
           {goal.plan}
         </p>
 
-        <div className="my-3 h-px bg-border/60" />
-
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-            Задачи
-          </p>
-        </div>
-        {totalTasks === 0 ? (
-          <p className="mt-1.5 text-[12.5px] text-muted-foreground">Задач пока нет</p>
-        ) : openTasks.length === 0 ? (
-          <p className="mt-1.5 text-[13px] text-foreground/85">✅ Все задачи выполнены!</p>
-        ) : (
-          <ul className="mt-1.5 space-y-1.5">
-            {openTasks.map((t) => (
-              <li key={t.id} className="flex items-start gap-2 text-[13px] leading-snug text-foreground/85">
-                <span
-                  className="mt-[7px] inline-block h-1.5 w-1.5 rounded-full shrink-0"
-                  style={{ background: "#c8c0b0" }}
-                  aria-hidden
-                />
-                <span className="flex-1">{t.title}</span>
-              </li>
-            ))}
-          </ul>
+        {ancestors.length > 0 && (
+          <>
+            <div className="my-3 h-px bg-border/60" />
+            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+              {ancestors.length === 1 ? "Над-цель" : "Над-цели"}
+            </p>
+            <div className="mt-1.5 space-y-1.5">
+              {ancestors.map((a) => (
+                <button
+                  key={a.id}
+                  type="button"
+                  onClick={() => onOpenGoal?.(a.id)}
+                  className="tap flex w-full items-center gap-2 rounded-full px-3 py-2 text-left"
+                  style={{
+                    background: "rgba(124, 92, 255, 0.10)",
+                    color: "#5b3fd6",
+                    border: "1px solid rgba(124, 92, 255, 0.25)",
+                  }}
+                >
+                  <span aria-hidden className="text-[13px]">↰</span>
+                  <span className="flex-1 truncate text-[13px] font-medium">{a.title}</span>
+                </button>
+              ))}
+            </div>
+          </>
         )}
-        <div className="mt-2 flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
-          <span>Сделано задач:</span>
-          <span className="font-semibold tabular-nums" style={{ color: "#16a34a" }}>{tasksDoneCount}</span>
-        </div>
+
+        {children.length > 0 && (
+          <>
+            <div className="my-3 h-px bg-border/60" />
+            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+              Под-цели
+            </p>
+            <div className="mt-1.5 space-y-1.5">
+              {children.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => onOpenGoal?.(c.id)}
+                  className="tap flex w-full items-center gap-2 rounded-full px-3 py-2 text-left"
+                  style={{
+                    background: "rgba(34, 160, 90, 0.10)",
+                    color: "#1f7a48",
+                    border: "1px solid rgba(34, 160, 90, 0.28)",
+                  }}
+                >
+                  <span aria-hidden className="text-[13px]">↳</span>
+                  <span className="flex-1 truncate text-[13px] font-medium">{c.title}</span>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
 
         <div className="mt-4 flex items-center justify-between gap-3">
           <DesireCharge level={count} onTap={onInspire} mode={readOnly ? "proud" : "inspire"} id={readOnly ? undefined : goal.id} />
