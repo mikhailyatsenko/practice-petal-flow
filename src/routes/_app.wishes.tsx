@@ -3281,6 +3281,7 @@ function EditGoalScreen({
     { id: "deadline", label: "📅 Срок"      },
     { id: "criteria", label: "✅ Критерий" },
     { id: "plan",     label: "🗺 План"      },
+    { id: "progress", label: "📈 Прогресс"  },
     { id: "links",    label: "🔗 Связи"    },
   ];
 
