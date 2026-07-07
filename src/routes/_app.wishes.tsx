@@ -3236,14 +3236,18 @@ function parseDeadline(s: string): { d: number; m: number; y: number } {
 
 function EditGoalScreen({
   goal,
+  allGoals,
   onClose,
   onSave,
   onDelete,
+  onUpdateGoal,
 }: {
   goal: Goal;
+  allGoals: Goal[];
   onClose: () => void;
   onSave: (g: Goal) => void;
   onDelete: () => void;
+  onUpdateGoal: (id: string, patch: Partial<Goal>) => void;
 }) {
   void onDelete;
   const [tab, setTab] = useState<GoalEditTab>("title");
@@ -3254,6 +3258,7 @@ function EditGoalScreen({
   const [vision, setVision] = useState(goal.vision ?? "");
   const [image, setImage] = useState(goal.image);
   const [aspect, setAspect] = useState<ImageAspect>(goal.aspect ?? "portrait");
+  const [pickerMode, setPickerMode] = useState<"parent" | "child" | null>(null);
 
   const handlePickImage = async (f: File) => {
     const url = URL.createObjectURL(f);
@@ -3280,7 +3285,17 @@ function EditGoalScreen({
     });
   };
 
-  // Порядок: Название → Причины → Образ → Картинка → Срок → Критерий → План
+  const parentGoal = goal.parentGoalId ? allGoals.find((g) => g.id === goal.parentGoalId) ?? null : null;
+  const childGoals = getChildGoals(allGoals, goal.id);
+
+  const parentCandidates = allGoals.filter(
+    (g) => g.id !== goal.id && !getDescendantIds(allGoals, goal.id).has(g.id) && g.id !== goal.parentGoalId,
+  );
+  const childCandidates = allGoals.filter(
+    (g) => g.id !== goal.id && !getAncestorIds(allGoals, goal.id).has(g.id) && g.parentGoalId !== goal.id,
+  );
+
+  // Порядок: Название → Причины → Образ → Картинка → Срок → Критерий → План → Связи
   const tabs: { id: GoalEditTab; label: string }[] = [
     { id: "title",    label: "✏️ Название"  },
     { id: "reasons",  label: "💡 Причины"  },
@@ -3289,6 +3304,7 @@ function EditGoalScreen({
     { id: "deadline", label: "📅 Срок"      },
     { id: "criteria", label: "✅ Критерий" },
     { id: "plan",     label: "🗺 План"      },
+    { id: "links",    label: "🔗 Связи"    },
   ];
 
   return (
