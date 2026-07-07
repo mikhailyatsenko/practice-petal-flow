@@ -1221,8 +1221,12 @@ function WishesScreen() {
                 ancestors={ancestors}
                 children={children}
                 onOpenGoal={(id) => {
-                  const target = goals.find((x) => x.id === id);
-                  if (target) setEditingGoal(target);
+                  const el = document.getElementById(`goal-card-${id}`);
+                  if (el) {
+                    el.scrollIntoView({ behavior: "smooth", block: "start" });
+                    el.classList.add("ring-2", "ring-primary/40");
+                    setTimeout(() => el.classList.remove("ring-2", "ring-primary/40"), 1200);
+                  }
                 }}
                 onOpenTasks={() => {
                   // По правке: при переходе из «Цели» фильтр НЕ ставим — показываем все задачи всех целей.
@@ -2540,7 +2544,7 @@ function GoalCard({
   void onAddTask;
 
   return (
-    <article className="bg-card hairline rounded-[20px] overflow-hidden shadow-card animate-fade-up">
+    <article id={`goal-card-${goal.id}`} data-goal-id={goal.id} className="bg-card hairline rounded-[20px] overflow-hidden shadow-card animate-fade-up scroll-mt-20">
       <div className={`relative w-full ${aspectClass(goal.aspect)}`}>
         <img src={goal.image} alt={goal.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
@@ -2613,7 +2617,7 @@ function GoalCard({
         </p>
         <div
           className="mt-1.5 rounded-xl px-3 py-2.5 text-[13px] leading-snug text-foreground/85"
-          style={{ background: "#FAF6EF" }}
+          style={{ background: "#F1F1F0", border: "1px solid #E5E4E1" }}
         >
           {goal.criteria}
         </div>
