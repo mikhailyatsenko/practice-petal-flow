@@ -218,6 +218,25 @@ function getAncestorChain(all: Goal[], id: string): Goal[] {
   }
   return out;
 }
+// BFS: ближайшие потомки первыми, глубже — дальше
+function getDescendantChain(all: Goal[], id: string): Goal[] {
+  const out: Goal[] = [];
+  const seen = new Set<string>([id]);
+  let frontier = all.filter((g) => g.parentGoalId === id);
+  while (frontier.length > 0) {
+    const next: Goal[] = [];
+    for (const g of frontier) {
+      if (seen.has(g.id)) continue;
+      seen.add(g.id);
+      out.push(g);
+      for (const c of all) {
+        if (c.parentGoalId === g.id && !seen.has(c.id)) next.push(c);
+      }
+    }
+    frontier = next;
+  }
+  return out;
+}
 
 const MONTHS_RU = [
   "января", "февраля", "марта", "апреля", "мая", "июня",
