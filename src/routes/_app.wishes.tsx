@@ -2617,7 +2617,7 @@ function GoalCard({
         </p>
         <div
           className="mt-1.5 rounded-xl px-3 py-2.5 text-[13px] leading-snug text-foreground/85"
-          style={{ background: "#F1F1F0", border: "1px solid #E5E4E1" }}
+          style={{ background: "#FAF6EF", border: "1px solid #E8E0D3" }}
         >
           {goal.criteria}
         </div>
@@ -2637,21 +2637,18 @@ function GoalCard({
             <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
               {ancestors.length === 1 ? "Над-цель" : "Над-цели"}
             </p>
-            <div className="mt-1.5 space-y-1.5">
+            <div className="mt-1.5 space-y-1">
               {[...ancestors].reverse().map((a) => (
                 <button
                   key={a.id}
                   type="button"
                   onClick={() => onOpenGoal?.(a.id)}
-                  className="tap flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left"
-                  style={{
-                    background: "#FAF6EF",
-                    color: "#6B5E4E",
-                    border: "1px solid #E8E0D3",
-                  }}
+                  className="tap block w-full text-left"
                 >
-                  <span aria-hidden className="text-[13px]">↰</span>
-                  <span className="flex-1 truncate text-[13px] font-medium">{a.title}</span>
+                  <span className="text-[13px]" style={{ color: "#1f7a48" }}>
+                    <span aria-hidden className="mr-1.5">↰</span>
+                    {a.title}
+                  </span>
                 </button>
               ))}
             </div>
@@ -2664,21 +2661,18 @@ function GoalCard({
             <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
               Под-цели
             </p>
-            <div className="mt-1.5 space-y-1.5">
+            <div className="mt-1.5 space-y-1">
               {children.map((c) => (
                 <button
                   key={c.id}
                   type="button"
                   onClick={() => onOpenGoal?.(c.id)}
-                  className="tap flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left"
-                  style={{
-                    background: "#FAF6EF",
-                    color: "#6B5E4E",
-                    border: "1px solid #E8E0D3",
-                  }}
+                  className="tap block w-full text-left"
                 >
-                  <span aria-hidden className="text-[13px]">↳</span>
-                  <span className="flex-1 truncate text-[13px] font-medium">{c.title}</span>
+                  <span className="text-[13px]" style={{ color: "#cc5700" }}>
+                    <span aria-hidden className="mr-1.5">↳</span>
+                    {c.title}
+                  </span>
                 </button>
               ))}
             </div>
