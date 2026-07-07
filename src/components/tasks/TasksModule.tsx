@@ -622,17 +622,8 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
             onStartTimer={() => startTimer(t.id)}
             onStopTimer={() => stopTimer(t.id)}
             onMarkDone={() => handleMarkDone(t.id)}
-            onMoveToKey={() => {
-              setAttachExistingTaskId(t.id);
-              if (!keyGanttUnlocked) {
-                setShowUnlockPopup(true);
-              } else {
-                setAddKeyGoalId(t.goalId);
-              }
-            }}
-            onRemoveFromKey={() => {
-              setTasks((prev) => prev.map((x) => (x.id === t.id ? { ...x, isKeyTask: false, parentTaskId: null } : x)));
-            }}
+            onMoveToKey={() => setConfirmKeyToggle("toKey")}
+            onRemoveFromKey={() => setConfirmKeyToggle("fromKey")}
           />
           {addKeyGoalId && (
             <AddKeyLevelPopup
