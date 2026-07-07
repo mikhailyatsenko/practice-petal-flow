@@ -218,6 +218,25 @@ function getAncestorChain(all: Goal[], id: string): Goal[] {
   }
   return out;
 }
+// BFS: ближайшие потомки первыми, глубже — дальше
+function getDescendantChain(all: Goal[], id: string): Goal[] {
+  const out: Goal[] = [];
+  const seen = new Set<string>([id]);
+  let frontier = all.filter((g) => g.parentGoalId === id);
+  while (frontier.length > 0) {
+    const next: Goal[] = [];
+    for (const g of frontier) {
+      if (seen.has(g.id)) continue;
+      seen.add(g.id);
+      out.push(g);
+      for (const c of all) {
+        if (c.parentGoalId === g.id && !seen.has(c.id)) next.push(c);
+      }
+    }
+    frontier = next;
+  }
+  return out;
+}
 
 const MONTHS_RU = [
   "января", "февраля", "марта", "апреля", "мая", "июня",
@@ -1185,7 +1204,7 @@ function WishesScreen() {
             const goalTasks = moduleTasks.filter((t) => t.goalId === g.id);
             const goalDone = goalTasks.filter((t) => t.done).length;
             const ancestors = getAncestorChain(goals, g.id);
-            const children = getChildGoals(goals, g.id);
+            const children = getDescendantChain(goals, g.id);
             return (
               <GoalCard
                 key={g.id}
@@ -2615,7 +2634,7 @@ function GoalCard({
               {ancestors.length === 1 ? "Над-цель" : "Над-цели"}
             </p>
             <div className="mt-1.5 space-y-1.5">
-              {ancestors.map((a) => (
+              {[...ancestors].reverse().map((a) => (
                 <button
                   key={a.id}
                   type="button"
@@ -3496,25 +3515,8 @@ function EditGoalScreen({
                 style={{ accentColor: "#FF6D00" }}
               />
             </div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {[0, 25, 50, 75, 100].map((v) => (
-                <button
-                  key={v}
-                  type="button"
-                  onClick={() => setProgress(v)}
-                  className="tap rounded-full px-3 py-1.5 text-[12px] font-medium"
-                  style={{
-                    border: "1px solid rgba(255,109,0,0.35)",
-                    color: progress === v ? "#fff" : "#FF6D00",
-                    background: progress === v ? "linear-gradient(135deg, #FFB300, #FF6D00)" : "transparent",
-                  }}
-                >
-                  {v}%
-                </button>
-              ))}
-            </div>
             <p className="mt-3 text-[12px] text-muted-foreground">
-              Двигай ползунок или выбери значение. Изменения применятся после «Сохранить».
+              Передвинь ползунок влево или вправо, чтобы отметить прогресс. Изменения применятся после «Сохранить».
             </p>
           </div>
         )}
