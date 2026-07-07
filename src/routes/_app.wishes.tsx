@@ -3515,25 +3515,8 @@ function EditGoalScreen({
                 style={{ accentColor: "#FF6D00" }}
               />
             </div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {[0, 25, 50, 75, 100].map((v) => (
-                <button
-                  key={v}
-                  type="button"
-                  onClick={() => setProgress(v)}
-                  className="tap rounded-full px-3 py-1.5 text-[12px] font-medium"
-                  style={{
-                    border: "1px solid rgba(255,109,0,0.35)",
-                    color: progress === v ? "#fff" : "#FF6D00",
-                    background: progress === v ? "linear-gradient(135deg, #FFB300, #FF6D00)" : "transparent",
-                  }}
-                >
-                  {v}%
-                </button>
-              ))}
-            </div>
             <p className="mt-3 text-[12px] text-muted-foreground">
-              Двигай ползунок или выбери значение. Изменения применятся после «Сохранить».
+              Передвинь ползунок влево или вправо, чтобы отметить прогресс. Изменения применятся после «Сохранить».
             </p>
           </div>
         )}
