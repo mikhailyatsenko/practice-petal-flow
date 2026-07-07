@@ -648,6 +648,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
               onClose={() => { setShowUnlockPopup(false); setAttachExistingTaskId(null); }}
               onUnlock={unlockKeyGantt}
             />
+          )}
           {confirmKeyToggle && (
             <ConfirmKeyTogglePopup
               mode={confirmKeyToggle}
