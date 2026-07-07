@@ -210,6 +210,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   const [createForGoalId, setCreateForGoalId] = useState<string | null>(null);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
+  const [confirmKeyToggle, setConfirmKeyToggle] = useState<"toKey" | "fromKey" | null>(null);
   const [editingPlanGoalId, setEditingPlanGoalId] = useState<string | null>(null);
   const [planDraft, setPlanDraft] = useState("");
   const [shatteringIds, setShatteringIds] = useState<Set<string>>(new Set());
