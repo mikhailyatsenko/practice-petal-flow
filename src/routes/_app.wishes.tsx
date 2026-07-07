@@ -1204,7 +1204,7 @@ function WishesScreen() {
             const goalTasks = moduleTasks.filter((t) => t.goalId === g.id);
             const goalDone = goalTasks.filter((t) => t.done).length;
             const ancestors = getAncestorChain(goals, g.id);
-            const children = getChildGoals(goals, g.id);
+            const children = getDescendantChain(goals, g.id);
             return (
               <GoalCard
                 key={g.id}
