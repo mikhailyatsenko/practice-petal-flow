@@ -2452,3 +2452,55 @@ function UnlockKeyGanttPopup({
 }
 
 
+
+/* ---------------- Подтверждение переноса ключевой ---------------- */
+
+function ConfirmKeyTogglePopup({
+  mode, onCancel, onConfirm,
+}: {
+  mode: "toKey" | "fromKey";
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  const isToKey = mode === "toKey";
+  return (
+    <div className="fixed inset-0 z-[70] flex items-center justify-center px-5" style={{ background: "rgba(0,0,0,0.45)" }} onClick={onCancel}>
+      <div className="w-full max-w-sm rounded-2xl bg-card p-5 shadow-card" style={{ border: "1px solid #ede8df" }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-center">
+          <span className="relative inline-flex items-center justify-center text-[32px] leading-none" style={{ width: 44, height: 44 }}>
+            <span aria-hidden>🔑</span>
+            {!isToKey && (
+              <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                <span className="block h-[3px] w-[46px] rotate-45 rounded-full" style={{ background: "#e11d48" }} />
+              </span>
+            )}
+          </span>
+        </div>
+        <h3 className="mt-3 text-center text-[16px] font-semibold text-foreground">
+          {isToKey ? "Перенести в ключевые задачи?" : "Убрать из ключевых задач?"}
+        </h3>
+        <p className="mt-1.5 text-center text-[13px] text-muted-foreground">
+          {isToKey
+            ? "Задача попадёт в дерево ключевых задач."
+            : "Задача снова станет обычной задачей."}
+        </p>
+        <div className="mt-4 flex items-center justify-end gap-2">
+          <button
+            onClick={onCancel}
+            className="tap rounded-full px-3 py-2 text-[13px] font-medium"
+            style={{ background: "#fff", color: "#8a8a8a", border: "1px solid #ede8df" }}
+          >
+            Отмена
+          </button>
+          <button
+            onClick={onConfirm}
+            className="tap rounded-full px-4 py-2 text-[13px] font-semibold text-white"
+            style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
+          >
+            {isToKey ? "Перенести" : "Убрать"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
