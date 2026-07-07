@@ -23,10 +23,13 @@ export const Route = createFileRoute("/_app/")({
       { name: "description", content: "5 ежедневных практик, статусы, серии и путь к воплощению целей." },
       { property: "og:title", content: "Клуб «Моя жизнь»" },
       { property: "og:description", content: "Превращай намерения в реальность через ежедневные практики." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d688fa21-bb4d-4830-b13f-6c3c060d916d/id-preview-cb01a325--b3ed6122-13ef-4959-8afe-7cfa4ea31691.lovable.app-1776523090606.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d688fa21-bb4d-4830-b13f-6c3c060d916d/id-preview-cb01a325--b3ed6122-13ef-4959-8afe-7cfa4ea31691.lovable.app-1776523090606.png" },
     ],
   }),
   component: HomeScreen,
 });
+
 
 const STATUSES = [
   { min: 0,    label: "Новичок"  },
