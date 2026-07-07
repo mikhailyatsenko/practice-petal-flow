@@ -2467,7 +2467,14 @@ function ConfirmKeyTogglePopup({
     <div className="fixed inset-0 z-[70] flex items-center justify-center px-5" style={{ background: "rgba(0,0,0,0.45)" }} onClick={onCancel}>
       <div className="w-full max-w-sm rounded-2xl bg-card p-5 shadow-card" style={{ border: "1px solid #ede8df" }} onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-center">
-          <span className="relative inline-flex items-center justify-center text-[32px] leading-none" style={{ width: 44, height: 44 }}>
+          <span
+            className="relative inline-flex items-center justify-center leading-none"
+            style={{
+              width: isToKey ? 34 : 44,
+              height: isToKey ? 34 : 44,
+              fontSize: isToKey ? 24 : 32,
+            }}
+          >
             <span aria-hidden>🔑</span>
             {!isToKey && (
               <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -2484,7 +2491,7 @@ function ConfirmKeyTogglePopup({
             ? "Задача попадёт в дерево ключевых задач."
             : "Задача снова станет обычной задачей."}
         </p>
-        <div className="mt-4 flex items-center justify-end gap-2">
+        <div className="mt-4 flex items-center justify-center gap-2">
           <button
             onClick={onCancel}
             className="tap rounded-full px-3 py-2 text-[13px] font-medium"
