@@ -2634,7 +2634,7 @@ function GoalCard({
               {ancestors.length === 1 ? "Над-цель" : "Над-цели"}
             </p>
             <div className="mt-1.5 space-y-1.5">
-              {ancestors.map((a) => (
+              {[...ancestors].reverse().map((a) => (
                 <button
                   key={a.id}
                   type="button"
