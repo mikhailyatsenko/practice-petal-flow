@@ -195,6 +195,10 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   const unlockKeyGantt = () => {
     setKeyGanttUnlocked(true);
     setShowUnlockPopup(false);
+    if (attachExistingTaskId) {
+      const goalId = tasks.find((x) => x.id === attachExistingTaskId)?.goalId;
+      if (goalId) setAddKeyGoalId(goalId);
+    }
   };
   
   const [pendingParentInsert, setPendingParentInsert] = useState<{ goalId: string; parentId: string | null; level: number } | null>(null);
