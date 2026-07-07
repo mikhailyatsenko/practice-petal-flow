@@ -622,11 +622,11 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
           onStopTimer={() => stopTimer(t.id)}
           onMarkDone={() => handleMarkDone(t.id)}
           onMoveToKey={() => {
+            setAttachExistingTaskId(t.id);
             if (!keyGanttUnlocked) {
               setShowUnlockPopup(true);
             } else {
               setAddKeyGoalId(t.goalId);
-              setAttachExistingTaskId(t.id);
             }
           }}
           onRemoveFromKey={() => {
