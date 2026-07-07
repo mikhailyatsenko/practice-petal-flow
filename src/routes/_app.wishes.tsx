@@ -2485,6 +2485,9 @@ function GoalCard({
   onAddTask,
   readOnly = false,
   onProgressChange,
+  parentGoal = null,
+  childCount = 0,
+  onOpenGoal,
 }: {
   goal: Goal;
   count: number;
@@ -2500,10 +2503,14 @@ function GoalCard({
   onAddTask?: () => void;
   readOnly?: boolean;
   onProgressChange?: (value: number) => void;
+  parentGoal?: Goal | null;
+  childCount?: number;
+  onOpenGoal?: (id: string) => void;
 }) {
   void isDone;
   const openTasks = tasksAll.filter((t) => !t.done);
   const totalTasks = tasksAll.length;
+  const hasLinks = !!parentGoal || childCount > 0;
 
   return (
     <article className="bg-card hairline rounded-[20px] overflow-hidden shadow-card animate-fade-up">
@@ -2528,6 +2535,36 @@ function GoalCard({
             />
           )}
         </div>
+        {hasLinks && (
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+            {parentGoal && (
+              <button
+                type="button"
+                onClick={() => onOpenGoal?.(parentGoal.id)}
+                className="tap inline-flex max-w-full items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium"
+                style={{ background: "rgba(255,109,0,0.10)", color: "#FF6D00" }}
+                title="Открыть над-цель"
+              >
+                <span aria-hidden>↑</span>
+                <span className="truncate">Над-цель: {parentGoal.title}</span>
+              </button>
+            )}
+            {childCount > 0 && (
+              <button
+                type="button"
+                onClick={onEdit}
+                className="tap inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium"
+                style={{ background: "rgba(255,109,0,0.10)", color: "#FF6D00" }}
+                title="Показать под-цели"
+              >
+                <span aria-hidden>↓</span>
+                <span>
+                  {childCount} {childCount === 1 ? "под-цель" : childCount < 5 ? "под-цели" : "под-целей"}
+                </span>
+              </button>
+            )}
+          </div>
+        )}
         <p className="mt-1 text-[12px] text-muted-foreground">📅 до {goal.deadline}</p>
 
         <div className="mt-3">
