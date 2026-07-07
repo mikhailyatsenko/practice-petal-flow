@@ -177,6 +177,33 @@ interface Goal {
   plan: string;
   tasks: GoalTask[];
   aspect?: ImageAspect;
+  parentGoalId?: string | null;
+}
+
+function getChildGoals(all: Goal[], id: string): Goal[] {
+  return all.filter((g) => g.parentGoalId === id);
+}
+function getDescendantIds(all: Goal[], id: string): Set<string> {
+  const out = new Set<string>();
+  const walk = (pid: string) => {
+    for (const g of all) {
+      if (g.parentGoalId === pid && !out.has(g.id)) {
+        out.add(g.id);
+        walk(g.id);
+      }
+    }
+  };
+  walk(id);
+  return out;
+}
+function getAncestorIds(all: Goal[], id: string): Set<string> {
+  const out = new Set<string>();
+  let cur = all.find((g) => g.id === id)?.parentGoalId ?? null;
+  while (cur && !out.has(cur)) {
+    out.add(cur);
+    cur = all.find((g) => g.id === cur)?.parentGoalId ?? null;
+  }
+  return out;
 }
 
 const MONTHS_RU = [
@@ -934,8 +961,17 @@ function WishesScreen() {
     setEditingGoal(null);
   };
   const handleDeleteGoal = (id: string) => {
-    setGoals((prev) => prev.filter((g) => g.id !== id));
+    setGoals((prev) =>
+      prev
+        .filter((g) => g.id !== id)
+        // сирот вверх по дереву не двигаем — просто отвязываем от удалённой
+        .map((g) => (g.parentGoalId === id ? { ...g, parentGoalId: null } : g)),
+    );
     setEditingGoal(null);
+  };
+  const updateGoalPatch = (id: string, patch: Partial<Goal>) => {
+    setGoals((prev) => prev.map((g) => (g.id === id ? { ...g, ...patch } : g)));
+    setEditingGoal((prev) => (prev && prev.id === id ? { ...prev, ...patch } : prev));
   };
 
   if (creatingGoal) {
@@ -965,12 +1001,15 @@ function WishesScreen() {
   }
 
   if (editingGoal) {
+    const current = goals.find((g) => g.id === editingGoal.id) ?? editingGoal;
     return (
       <EditGoalScreen
-        goal={editingGoal}
+        goal={current}
+        allGoals={goals}
         onClose={() => setEditingGoal(null)}
         onSave={handleSaveGoal}
-        onDelete={() => handleDeleteGoal(editingGoal.id)}
+        onDelete={() => handleDeleteGoal(current.id)}
+        onUpdateGoal={updateGoalPatch}
       />
     );
   }
@@ -1132,6 +1171,8 @@ function WishesScreen() {
           {goals.filter((g) => !doneGoals.has(g.id)).map((g) => {
             const goalTasks = moduleTasks.filter((t) => t.goalId === g.id);
             const goalDone = goalTasks.filter((t) => t.done).length;
+            const parentGoal = g.parentGoalId ? goals.find((x) => x.id === g.parentGoalId) ?? null : null;
+            const childCount = goals.filter((x) => x.parentGoalId === g.id).length;
             return (
               <GoalCard
                 key={g.id}
@@ -1145,6 +1186,12 @@ function WishesScreen() {
                 tasksAll={goalTasks}
                 tasksDoneCount={goalDone}
                 onAddTask={() => setQuickTaskGoalId(g.id)}
+                parentGoal={parentGoal}
+                childCount={childCount}
+                onOpenGoal={(id) => {
+                  const target = goals.find((x) => x.id === id);
+                  if (target) setEditingGoal(target);
+                }}
                 onProgressChange={(value) =>
                   setGoals((prev) => prev.map((x) => (x.id === g.id ? { ...x, progress: value } : x)))
                 }
@@ -2438,6 +2485,9 @@ function GoalCard({
   onAddTask,
   readOnly = false,
   onProgressChange,
+  parentGoal = null,
+  childCount = 0,
+  onOpenGoal,
 }: {
   goal: Goal;
   count: number;
@@ -2453,10 +2503,14 @@ function GoalCard({
   onAddTask?: () => void;
   readOnly?: boolean;
   onProgressChange?: (value: number) => void;
+  parentGoal?: Goal | null;
+  childCount?: number;
+  onOpenGoal?: (id: string) => void;
 }) {
   void isDone;
   const openTasks = tasksAll.filter((t) => !t.done);
   const totalTasks = tasksAll.length;
+  const hasLinks = !!parentGoal || childCount > 0;
 
   return (
     <article className="bg-card hairline rounded-[20px] overflow-hidden shadow-card animate-fade-up">
@@ -2481,6 +2535,36 @@ function GoalCard({
             />
           )}
         </div>
+        {hasLinks && (
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+            {parentGoal && (
+              <button
+                type="button"
+                onClick={() => onOpenGoal?.(parentGoal.id)}
+                className="tap inline-flex max-w-full items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium"
+                style={{ background: "rgba(255,109,0,0.10)", color: "#FF6D00" }}
+                title="Открыть над-цель"
+              >
+                <span aria-hidden>↑</span>
+                <span className="truncate">Над-цель: {parentGoal.title}</span>
+              </button>
+            )}
+            {childCount > 0 && (
+              <button
+                type="button"
+                onClick={onEdit}
+                className="tap inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium"
+                style={{ background: "rgba(255,109,0,0.10)", color: "#FF6D00" }}
+                title="Показать под-цели"
+              >
+                <span aria-hidden>↓</span>
+                <span>
+                  {childCount} {childCount === 1 ? "под-цель" : childCount < 5 ? "под-цели" : "под-целей"}
+                </span>
+              </button>
+            )}
+          </div>
+        )}
         <p className="mt-1 text-[12px] text-muted-foreground">📅 до {goal.deadline}</p>
 
         <div className="mt-3">
@@ -3135,7 +3219,7 @@ function CreateGoalWizard({
 /* ============================================================
    =================  РЕДАКТИРОВАНИЕ ЦЕЛИ  ==================== */
 
-type GoalEditTab = "title" | "deadline" | "reasons" | "vision" | "image" | "criteria" | "plan";
+type GoalEditTab = "title" | "deadline" | "reasons" | "vision" | "image" | "criteria" | "plan" | "links";
 
 function parseDeadline(s: string): { d: number; m: number; y: number } {
   // Ожидаем формат "31 декабря 2026"
@@ -3152,14 +3236,18 @@ function parseDeadline(s: string): { d: number; m: number; y: number } {
 
 function EditGoalScreen({
   goal,
+  allGoals,
   onClose,
   onSave,
   onDelete,
+  onUpdateGoal,
 }: {
   goal: Goal;
+  allGoals: Goal[];
   onClose: () => void;
   onSave: (g: Goal) => void;
   onDelete: () => void;
+  onUpdateGoal: (id: string, patch: Partial<Goal>) => void;
 }) {
   void onDelete;
   const [tab, setTab] = useState<GoalEditTab>("title");
@@ -3170,6 +3258,7 @@ function EditGoalScreen({
   const [vision, setVision] = useState(goal.vision ?? "");
   const [image, setImage] = useState(goal.image);
   const [aspect, setAspect] = useState<ImageAspect>(goal.aspect ?? "portrait");
+  const [pickerMode, setPickerMode] = useState<"parent" | "child" | null>(null);
 
   const handlePickImage = async (f: File) => {
     const url = URL.createObjectURL(f);
@@ -3196,7 +3285,17 @@ function EditGoalScreen({
     });
   };
 
-  // Порядок: Название → Причины → Образ → Картинка → Срок → Критерий → План
+  const parentGoal = goal.parentGoalId ? allGoals.find((g) => g.id === goal.parentGoalId) ?? null : null;
+  const childGoals = getChildGoals(allGoals, goal.id);
+
+  const parentCandidates = allGoals.filter(
+    (g) => g.id !== goal.id && !getDescendantIds(allGoals, goal.id).has(g.id) && g.id !== goal.parentGoalId,
+  );
+  const childCandidates = allGoals.filter(
+    (g) => g.id !== goal.id && !getAncestorIds(allGoals, goal.id).has(g.id) && g.parentGoalId !== goal.id,
+  );
+
+  // Порядок: Название → Причины → Образ → Картинка → Срок → Критерий → План → Связи
   const tabs: { id: GoalEditTab; label: string }[] = [
     { id: "title",    label: "✏️ Название"  },
     { id: "reasons",  label: "💡 Причины"  },
@@ -3205,6 +3304,7 @@ function EditGoalScreen({
     { id: "deadline", label: "📅 Срок"      },
     { id: "criteria", label: "✅ Критерий" },
     { id: "plan",     label: "🗺 План"      },
+    { id: "links",    label: "🔗 Связи"    },
   ];
 
   return (
@@ -3408,7 +3508,105 @@ function EditGoalScreen({
             <div className="mt-1.5 text-right text-[11px] text-muted-foreground">{vision.length}/800</div>
           </div>
         )}
+
+        {tab === "links" && (
+          <div className="animate-fade-up space-y-5">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                Над-цель
+              </p>
+              {parentGoal ? (
+                <div
+                  className="flex items-center gap-2 rounded-xl bg-card px-3.5 py-2.5"
+                  style={{ border: "1px solid rgba(255,109,0,0.35)" }}
+                >
+                  <span aria-hidden className="text-[14px]">↑</span>
+                  <span className="flex-1 truncate text-[14px] font-medium">{parentGoal.title}</span>
+                  <button
+                    type="button"
+                    onClick={() => onUpdateGoal(goal.id, { parentGoalId: null })}
+                    aria-label="Убрать над-цель"
+                    className="tap h-7 w-7 shrink-0 rounded-full inline-flex items-center justify-center text-muted-foreground"
+                    style={{ background: "var(--secondary)" }}
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setPickerMode("parent")}
+                  disabled={parentCandidates.length === 0}
+                  className="tap w-full rounded-xl py-2.5 text-[13px] font-medium text-muted-foreground disabled:opacity-50"
+                  style={{ border: "1px dashed rgba(0,0,0,0.18)" }}
+                >
+                  + Выбрать над-цель
+                </button>
+              )}
+              <p className="mt-1.5 text-[11px] text-muted-foreground">
+                Цель, которой служит эта — то есть эта цель является шагом к ней.
+              </p>
+            </div>
+
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                Под-цели {childGoals.length > 0 && `(${childGoals.length})`}
+              </p>
+              {childGoals.length > 0 && (
+                <div className="space-y-1.5 mb-2">
+                  {childGoals.map((c) => (
+                    <div
+                      key={c.id}
+                      className="flex items-center gap-2 rounded-xl bg-card px-3.5 py-2.5"
+                      style={{ border: "1px solid rgba(0,0,0,0.08)" }}
+                    >
+                      <span aria-hidden className="text-[14px]" style={{ color: "#FF6D00" }}>↓</span>
+                      <span className="flex-1 truncate text-[14px]">{c.title}</span>
+                      <button
+                        type="button"
+                        onClick={() => onUpdateGoal(c.id, { parentGoalId: null })}
+                        aria-label="Отвязать под-цель"
+                        className="tap h-7 w-7 shrink-0 rounded-full inline-flex items-center justify-center text-muted-foreground"
+                        style={{ background: "var(--secondary)" }}
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => setPickerMode("child")}
+                disabled={childCandidates.length === 0}
+                className="tap w-full rounded-xl py-2.5 text-[13px] font-medium text-muted-foreground disabled:opacity-50"
+                style={{ border: "1px dashed rgba(0,0,0,0.18)" }}
+              >
+                + Добавить под-цель
+              </button>
+              <p className="mt-1.5 text-[11px] text-muted-foreground">
+                Цели, которые служат этой — являются шагами к её достижению.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
+
+      {pickerMode && (
+        <GoalPickerSheet
+          title={pickerMode === "parent" ? "Выбрать над-цель" : "Добавить под-цель"}
+          candidates={pickerMode === "parent" ? parentCandidates : childCandidates}
+          onCancel={() => setPickerMode(null)}
+          onPick={(pickedId) => {
+            if (pickerMode === "parent") {
+              onUpdateGoal(goal.id, { parentGoalId: pickedId });
+            } else {
+              onUpdateGoal(pickedId, { parentGoalId: goal.id });
+            }
+            setPickerMode(null);
+          }}
+        />
+      )}
 
       {/* Bottom save */}
       <div className="fixed bottom-0 inset-x-0 bg-background/95 backdrop-blur-md border-t border-border/50 px-4 py-3 safe-bottom">
@@ -3417,6 +3615,100 @@ function EditGoalScreen({
         </button>
       </div>
     </div>
+  );
+}
+
+function GoalPickerSheet({
+  title,
+  candidates,
+  onCancel,
+  onPick,
+}: {
+  title: string;
+  candidates: Goal[];
+  onCancel: () => void;
+  onPick: (id: string) => void;
+}) {
+  const [q, setQ] = useState("");
+  useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onCancel();
+    };
+    document.addEventListener("keydown", onEsc);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onEsc);
+      document.body.style.overflow = prev;
+    };
+  }, [onCancel]);
+
+  if (typeof document === "undefined") return null;
+
+  const filtered = candidates.filter((g) =>
+    g.title.toLowerCase().includes(q.trim().toLowerCase()),
+  );
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[80] flex items-end justify-center"
+      style={{ background: "rgba(0,0,0,0.4)" }}
+      onClick={onCancel}
+    >
+      <div
+        className="w-full max-w-[480px] rounded-t-3xl bg-background pt-3 pb-6 safe-bottom animate-fade-up"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-border" />
+        <div className="flex items-center justify-between px-4 mb-3">
+          <h3 className="text-[15px] font-semibold">{title}</h3>
+          <button
+            type="button"
+            onClick={onCancel}
+            aria-label="Закрыть"
+            className="tap h-8 w-8 rounded-full inline-flex items-center justify-center"
+            style={{ background: "var(--secondary)" }}
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="px-4 mb-3">
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Поиск по названию..."
+            className="w-full rounded-xl bg-card px-3.5 py-2.5 text-[14px] outline-none"
+            style={{ border: "1px solid rgba(0,0,0,0.08)" }}
+          />
+        </div>
+        <div className="max-h-[60vh] overflow-y-auto px-4 space-y-1.5">
+          {filtered.length === 0 ? (
+            <p className="py-6 text-center text-[13px] text-muted-foreground">
+              {candidates.length === 0 ? "Нет доступных целей для связи" : "Ничего не найдено"}
+            </p>
+          ) : (
+            filtered.map((g) => (
+              <button
+                key={g.id}
+                type="button"
+                onClick={() => onPick(g.id)}
+                className="tap flex w-full items-center gap-3 rounded-xl bg-card px-3 py-2.5 text-left"
+                style={{ border: "1px solid rgba(0,0,0,0.06)" }}
+              >
+                <img
+                  src={g.image}
+                  alt=""
+                  className="h-10 w-10 rounded-lg object-cover shrink-0"
+                  loading="lazy"
+                />
+                <span className="flex-1 truncate text-[14px] font-medium">{g.title}</span>
+              </button>
+            ))
+          )}
+        </div>
+      </div>
+    </div>,
+    document.body,
   );
 }
 
