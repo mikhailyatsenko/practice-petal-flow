@@ -205,6 +205,19 @@ function getAncestorIds(all: Goal[], id: string): Set<string> {
   }
   return out;
 }
+function getAncestorChain(all: Goal[], id: string): Goal[] {
+  const out: Goal[] = [];
+  const seen = new Set<string>();
+  let cur = all.find((g) => g.id === id)?.parentGoalId ?? null;
+  while (cur && !seen.has(cur)) {
+    seen.add(cur);
+    const g = all.find((x) => x.id === cur);
+    if (!g) break;
+    out.push(g);
+    cur = g.parentGoalId ?? null;
+  }
+  return out;
+}
 
 const MONTHS_RU = [
   "января", "февраля", "марта", "апреля", "мая", "июня",
