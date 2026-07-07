@@ -648,6 +648,24 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
               onClose={() => { setShowUnlockPopup(false); setAttachExistingTaskId(null); }}
               onUnlock={unlockKeyGantt}
             />
+          {confirmKeyToggle && (
+            <ConfirmKeyTogglePopup
+              mode={confirmKeyToggle}
+              onCancel={() => setConfirmKeyToggle(null)}
+              onConfirm={() => {
+                if (confirmKeyToggle === "toKey") {
+                  setAttachExistingTaskId(t.id);
+                  if (!keyGanttUnlocked) {
+                    setShowUnlockPopup(true);
+                  } else {
+                    setAddKeyGoalId(t.goalId);
+                  }
+                } else {
+                  setTasks((prev) => prev.map((x) => (x.id === t.id ? { ...x, isKeyTask: false, parentTaskId: null } : x)));
+                }
+                setConfirmKeyToggle(null);
+              }}
+            />
           )}
         </>
       );
