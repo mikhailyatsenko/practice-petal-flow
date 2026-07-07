@@ -30,18 +30,16 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" },
-      { title: "Lovable App" },
-      { name: "description", content: "Daily Growth Engine is a mobile-first web application for personal development and gamified habit tracking." },
+      { title: "Клуб «Моя жизнь»" },
+      { name: "description", content: "Мобильное приложение для личного роста, ежедневных практик и достижения целей." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Daily Growth Engine is a mobile-first web application for personal development and gamified habit tracking." },
+      { property: "og:title", content: "Клуб «Моя жизнь»" },
+      { property: "og:description", content: "Мобильное приложение для личного роста, ежедневных практик и достижения целей." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Lovable App" },
-      { name: "twitter:description", content: "Daily Growth Engine is a mobile-first web application for personal development and gamified habit tracking." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d688fa21-bb4d-4830-b13f-6c3c060d916d/id-preview-cb01a325--b3ed6122-13ef-4959-8afe-7cfa4ea31691.lovable.app-1776523090606.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d688fa21-bb4d-4830-b13f-6c3c060d916d/id-preview-cb01a325--b3ed6122-13ef-4959-8afe-7cfa4ea31691.lovable.app-1776523090606.png" },
+      { name: "twitter:title", content: "Клуб «Моя жизнь»" },
+      { name: "twitter:description", content: "Мобильное приложение для личного роста, ежедневных практик и достижения целей." },
     ],
     links: [
       {
@@ -50,6 +48,7 @@ export const Route = createRootRoute({
       },
     ],
   }),
+
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
