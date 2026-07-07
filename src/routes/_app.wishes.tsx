@@ -1221,8 +1221,12 @@ function WishesScreen() {
                 ancestors={ancestors}
                 children={children}
                 onOpenGoal={(id) => {
-                  const target = goals.find((x) => x.id === id);
-                  if (target) setEditingGoal(target);
+                  const el = document.getElementById(`goal-card-${id}`);
+                  if (el) {
+                    el.scrollIntoView({ behavior: "smooth", block: "start" });
+                    el.classList.add("ring-2", "ring-primary/40");
+                    setTimeout(() => el.classList.remove("ring-2", "ring-primary/40"), 1200);
+                  }
                 }}
                 onOpenTasks={() => {
                   // По правке: при переходе из «Цели» фильтр НЕ ставим — показываем все задачи всех целей.
