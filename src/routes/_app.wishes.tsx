@@ -177,6 +177,33 @@ interface Goal {
   plan: string;
   tasks: GoalTask[];
   aspect?: ImageAspect;
+  parentGoalId?: string | null;
+}
+
+function getChildGoals(all: Goal[], id: string): Goal[] {
+  return all.filter((g) => g.parentGoalId === id);
+}
+function getDescendantIds(all: Goal[], id: string): Set<string> {
+  const out = new Set<string>();
+  const walk = (pid: string) => {
+    for (const g of all) {
+      if (g.parentGoalId === pid && !out.has(g.id)) {
+        out.add(g.id);
+        walk(g.id);
+      }
+    }
+  };
+  walk(id);
+  return out;
+}
+function getAncestorIds(all: Goal[], id: string): Set<string> {
+  const out = new Set<string>();
+  let cur = all.find((g) => g.id === id)?.parentGoalId ?? null;
+  while (cur && !out.has(cur)) {
+    out.add(cur);
+    cur = all.find((g) => g.id === cur)?.parentGoalId ?? null;
+  }
+  return out;
 }
 
 const MONTHS_RU = [
