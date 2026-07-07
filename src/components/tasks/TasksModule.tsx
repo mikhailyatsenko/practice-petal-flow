@@ -210,6 +210,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   const [createForGoalId, setCreateForGoalId] = useState<string | null>(null);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
+  const [confirmKeyToggle, setConfirmKeyToggle] = useState<"toKey" | "fromKey" | null>(null);
   const [editingPlanGoalId, setEditingPlanGoalId] = useState<string | null>(null);
   const [planDraft, setPlanDraft] = useState("");
   const [shatteringIds, setShatteringIds] = useState<Set<string>>(new Set());
@@ -622,17 +623,8 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
             onStartTimer={() => startTimer(t.id)}
             onStopTimer={() => stopTimer(t.id)}
             onMarkDone={() => handleMarkDone(t.id)}
-            onMoveToKey={() => {
-              setAttachExistingTaskId(t.id);
-              if (!keyGanttUnlocked) {
-                setShowUnlockPopup(true);
-              } else {
-                setAddKeyGoalId(t.goalId);
-              }
-            }}
-            onRemoveFromKey={() => {
-              setTasks((prev) => prev.map((x) => (x.id === t.id ? { ...x, isKeyTask: false, parentTaskId: null } : x)));
-            }}
+            onMoveToKey={() => setConfirmKeyToggle("toKey")}
+            onRemoveFromKey={() => setConfirmKeyToggle("fromKey")}
           />
           {addKeyGoalId && (
             <AddKeyLevelPopup
@@ -655,6 +647,25 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
             <UnlockKeyGanttPopup
               onClose={() => { setShowUnlockPopup(false); setAttachExistingTaskId(null); }}
               onUnlock={unlockKeyGantt}
+            />
+          )}
+          {confirmKeyToggle && (
+            <ConfirmKeyTogglePopup
+              mode={confirmKeyToggle}
+              onCancel={() => setConfirmKeyToggle(null)}
+              onConfirm={() => {
+                if (confirmKeyToggle === "toKey") {
+                  setAttachExistingTaskId(t.id);
+                  if (!keyGanttUnlocked) {
+                    setShowUnlockPopup(true);
+                  } else {
+                    setAddKeyGoalId(t.goalId);
+                  }
+                } else {
+                  setTasks((prev) => prev.map((x) => (x.id === t.id ? { ...x, isKeyTask: false, parentTaskId: null } : x)));
+                }
+                setConfirmKeyToggle(null);
+              }}
             />
           )}
         </>
@@ -1286,15 +1297,13 @@ function TaskDetailScreen({
         className="tap w-full flex items-center gap-3 rounded-xl px-3.5 py-3 text-left bg-card"
         style={{ border: "1px solid #ede8df" }}
       >
-        <span
-          className="shrink-0 inline-flex items-center justify-center rounded-md"
-          style={{
-            width: 24, height: 24,
-            background: task.isKeyTask ? "#FF6D00" : "#fff",
-            border: `2px solid ${task.isKeyTask ? "#FF6D00" : "#d1d5db"}`,
-          }}
-        >
-          <Key className="h-4 w-4" style={{ color: task.isKeyTask ? "#fff" : "#FF6D00" }} />
+        <span className="relative shrink-0 inline-flex items-center justify-center text-[20px] leading-none" style={{ width: 24, height: 24 }}>
+          <span aria-hidden>🔑</span>
+          {task.isKeyTask && (
+            <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <span className="block h-[2.5px] w-[26px] rotate-45 rounded-full" style={{ background: "#e11d48" }} />
+            </span>
+          )}
         </span>
         <span className="flex-1">
           <span className="block text-[14px] font-medium">
@@ -2443,3 +2452,55 @@ function UnlockKeyGanttPopup({
 }
 
 
+
+/* ---------------- Подтверждение переноса ключевой ---------------- */
+
+function ConfirmKeyTogglePopup({
+  mode, onCancel, onConfirm,
+}: {
+  mode: "toKey" | "fromKey";
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  const isToKey = mode === "toKey";
+  return (
+    <div className="fixed inset-0 z-[70] flex items-center justify-center px-5" style={{ background: "rgba(0,0,0,0.45)" }} onClick={onCancel}>
+      <div className="w-full max-w-sm rounded-2xl bg-card p-5 shadow-card" style={{ border: "1px solid #ede8df" }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-center">
+          <span className="relative inline-flex items-center justify-center text-[32px] leading-none" style={{ width: 44, height: 44 }}>
+            <span aria-hidden>🔑</span>
+            {!isToKey && (
+              <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                <span className="block h-[3px] w-[46px] rotate-45 rounded-full" style={{ background: "#e11d48" }} />
+              </span>
+            )}
+          </span>
+        </div>
+        <h3 className="mt-3 text-center text-[16px] font-semibold text-foreground">
+          {isToKey ? "Перенести в ключевые задачи?" : "Убрать из ключевых задач?"}
+        </h3>
+        <p className="mt-1.5 text-center text-[13px] text-muted-foreground">
+          {isToKey
+            ? "Задача попадёт в дерево ключевых задач."
+            : "Задача снова станет обычной задачей."}
+        </p>
+        <div className="mt-4 flex items-center justify-end gap-2">
+          <button
+            onClick={onCancel}
+            className="tap rounded-full px-3 py-2 text-[13px] font-medium"
+            style={{ background: "#fff", color: "#8a8a8a", border: "1px solid #ede8df" }}
+          >
+            Отмена
+          </button>
+          <button
+            onClick={onConfirm}
+            className="tap rounded-full px-4 py-2 text-[13px] font-semibold text-white"
+            style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)" }}
+          >
+            {isToKey ? "Перенести" : "Убрать"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
