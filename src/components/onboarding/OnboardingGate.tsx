@@ -1,26 +1,28 @@
 import { useEffect, useState } from "react";
-import { Onboarding } from "./Onboarding";
+import { useNavigate } from "@tanstack/react-router";
 
 const KEY = "onboardingCompleted";
+const COUNTRY_KEY = "selectedCountry";
 
 export function OnboardingGate() {
-  const [show, setShow] = useState(false);
+  const [done, setDone] = useState(false);
   const [ready, setReady] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const done = typeof window !== "undefined" && localStorage.getItem(KEY) === "1";
-    setShow(!done);
+    const completed =
+      typeof window !== "undefined" && localStorage.getItem(KEY) === "1";
+    setDone(completed);
     setReady(true);
   }, []);
 
-  if (!ready || !show) return null;
+  useEffect(() => {
+    if (!ready || done) return;
+    const country =
+      typeof window !== "undefined" && localStorage.getItem(COUNTRY_KEY);
+    navigate({ to: country ? "/onboarding" : "/welcome" });
+  }, [ready, done, navigate]);
 
-  return (
-    <Onboarding
-      onComplete={() => {
-        localStorage.setItem(KEY, "1");
-        setShow(false);
-      }}
-    />
-  );
+  return null;
 }
+
