@@ -2635,7 +2635,7 @@ function GoalCard({
           <>
             <div className="my-3 h-px bg-border/60" />
             <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-              {ancestors.length === 1 ? "Над-цель" : "Над-цели"}
+              Над-цель
             </p>
             <div className="mt-1.5 space-y-1">
               {[...ancestors].reverse().map((a) => (
@@ -2659,7 +2659,7 @@ function GoalCard({
           <>
             <div className="my-3 h-px bg-border/60" />
             <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-              Под-цели
+              Под-цель
             </p>
             <div className="mt-1.5 space-y-1">
               {children.map((c) => (
@@ -3579,7 +3579,7 @@ function EditGoalScreen({
 
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                Под-цели {childGoals.length > 0 && `(${childGoals.length})`}
+                Под-цель
               </p>
               {childGoals.length > 0 && (
                 <div className="space-y-1.5 mb-2">
@@ -3604,17 +3604,19 @@ function EditGoalScreen({
                   ))}
                 </div>
               )}
-              <button
-                type="button"
-                onClick={() => setPickerMode("child")}
-                disabled={childCandidates.length === 0}
-                className="tap w-full rounded-xl py-2.5 text-[13px] font-medium text-muted-foreground disabled:opacity-50"
-                style={{ border: "1px dashed rgba(0,0,0,0.18)" }}
-              >
-                + Добавить под-цель
-              </button>
+              {childGoals.length === 0 && (
+                <button
+                  type="button"
+                  onClick={() => setPickerMode("child")}
+                  disabled={childCandidates.length === 0}
+                  className="tap w-full rounded-xl py-2.5 text-[13px] font-medium text-muted-foreground disabled:opacity-50"
+                  style={{ border: "1px dashed rgba(0,0,0,0.18)" }}
+                >
+                  + Выбрать под-цель
+                </button>
+              )}
               <p className="mt-1.5 text-[11px] text-muted-foreground">
-                Цели, которые служат этой — являются шагами к её достижению.
+                Цель, которая служит этой — является шагом к её достижению.
               </p>
             </div>
           </div>
@@ -3630,6 +3632,8 @@ function EditGoalScreen({
             if (pickerMode === "parent") {
               onUpdateGoal(goal.id, { parentGoalId: pickedId });
             } else {
+              // У каждой цели может быть только одна под-цель — отвязываем текущую, если есть.
+              childGoals.forEach((c) => onUpdateGoal(c.id, { parentGoalId: null }));
               onUpdateGoal(pickedId, { parentGoalId: goal.id });
             }
             setPickerMode(null);
