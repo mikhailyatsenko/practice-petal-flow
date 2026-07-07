@@ -201,7 +201,6 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   const [attachExistingTaskId, setAttachExistingTaskId] = useState<string | null>(null);
   const [keyExpanded, setKeyExpanded] = useState<Set<string>>(new Set());
   const [addKeyGoalId, setAddKeyGoalId] = useState<string | null>(null);
-  const [freeTasksExpanded, setFreeTasksExpanded] = useState<Set<string>>(new Set());
   const [openGoalId, setOpenGoalId] = useState<string | null>(initialGoalId ?? null);
   const [creating, setCreating] = useState(false);
   const [createForGoalId, setCreateForGoalId] = useState<string | null>(null);
@@ -618,6 +617,17 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
           onStartTimer={() => startTimer(t.id)}
           onStopTimer={() => stopTimer(t.id)}
           onMarkDone={() => handleMarkDone(t.id)}
+          onMoveToKey={() => {
+            if (!keyGanttUnlocked) {
+              setShowUnlockPopup(true);
+            } else {
+              setAddKeyGoalId(t.goalId);
+              setAttachExistingTaskId(t.id);
+            }
+          }}
+          onRemoveFromKey={() => {
+            setTasks((prev) => prev.map((x) => (x.id === t.id ? { ...x, isKeyTask: false, parentTaskId: null } : x)));
+          }}
         />
       );
     }
@@ -930,9 +940,6 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
                     setAddKeyGoalId(row.gid);
                   }
                 }}
-                freeOpen={freeTasksExpanded.has(row.gid)}
-                onToggleFree={() => setFreeTasksExpanded((prev) => { const n = new Set(prev); n.has(row.gid) ? n.delete(row.gid) : n.add(row.gid); return n; })}
-                onAttachExisting={(taskId) => { setAttachExistingTaskId(taskId); setAddKeyGoalId(row.gid); }}
               />
             )}
 
@@ -1209,6 +1216,7 @@ function fmtTimeBig(total: number) {
 function TaskDetailScreen({
   task, goal, isTimerActive, liveSeconds,
   onBack, onEdit, onDelete, onStartTimer, onStopTimer, onMarkDone,
+  onMoveToKey, onRemoveFromKey,
 }: {
   task: Task;
   goal?: TaskGoalRef;
@@ -1220,6 +1228,8 @@ function TaskDetailScreen({
   onStartTimer: () => void;
   onStopTimer: () => void;
   onMarkDone: () => void;
+  onMoveToKey: () => void;
+  onRemoveFromKey: () => void;
 }) {
   const f = feelingOf(task.feeling);
   const total = task.timeSpent + (isTimerActive ? liveSeconds : 0);
@@ -1240,6 +1250,34 @@ function TaskDetailScreen({
         )}
         <h1 className="text-[22px] font-bold leading-tight text-foreground">{task.title}</h1>
       </div>
+
+      {/* Ключевая / обычная задача */}
+      <button
+        onClick={task.isKeyTask ? onRemoveFromKey : onMoveToKey}
+        className="tap w-full flex items-center gap-3 rounded-xl px-3.5 py-3 text-left bg-card"
+        style={{ border: "1px solid #ede8df" }}
+      >
+        <span
+          className="shrink-0 inline-flex items-center justify-center rounded-md"
+          style={{
+            width: 24, height: 24,
+            background: task.isKeyTask ? "#FF6D00" : "#fff",
+            border: `2px solid ${task.isKeyTask ? "#FF6D00" : "#d1d5db"}`,
+          }}
+        >
+          {task.isKeyTask && <Key className="h-4 w-4" style={{ color: "#fff" }} />}
+        </span>
+        <span className="flex-1 text-[14px] font-medium">
+          {task.isKeyTask ? "🔑 Ключевая задача" : "Перенести в ключевые задачи"}
+        </span>
+        {task.isKeyTask ? (
+          <span className="text-[11px] px-2 py-0.5 rounded-full" style={{ background: "#f3efe7", color: "#6b6b6b" }}>
+            Убрать
+          </span>
+        ) : (
+          <ChevronRight className="h-4 w-4" style={{ color: "#8a8a8a" }} />
+        )}
+      </button>
 
       {/* Таймер */}
       <article className="bg-card rounded-2xl shadow-card p-5 text-center" style={{ border: "1px solid #ede8df" }}>
@@ -1650,7 +1688,6 @@ function getTaskLevel(tasks: Task[], task: Task): number {
 
 function KeyTreeSection({
   goalId, tasks, setTasks, expanded, onSetExpanded, onOpenTask, onComplete, shatteringIds, activeTimerIds, elapsedMap, onAdd,
-  freeOpen, onToggleFree, onAttachExisting,
 }: {
   goalId: string;
   tasks: Task[];
@@ -1663,15 +1700,11 @@ function KeyTreeSection({
   activeTimerIds: Set<string>;
   elapsedMap: Record<string, number>;
   onAdd: () => void;
-  freeOpen: boolean;
-  onToggleFree: () => void;
-  onAttachExisting: (taskId: string) => void;
 }) {
   const roots = getKeyChildren(tasks, goalId, null);
   const activeRoots = roots.filter((r) => !r.done);
   const doneRoots = roots.filter((r) => r.done);
   const totalKey = tasks.filter((t) => t.goalId === goalId && t.isKeyTask).length;
-  const freeTasks = tasks.filter((t) => t.goalId === goalId && !t.isKeyTask && !t.done);
 
   // Собрать все id-потомков (включая сам корень, кроме первого)
   const collectDescendantIds = (rootId: string): string[] => {
@@ -1990,59 +2023,6 @@ function KeyTreeSection({
           <Plus className="h-3.5 w-3.5" /> Добавить ключевую задачу
         </button>
       </div>
-
-
-
-      {/* Панель "Задачи из списка" — скрываем, если нет свободных задач */}
-      {freeTasks.length > 0 && (
-      <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid #ede8df", background: "#fff" }}>
-        <button
-          onClick={onToggleFree}
-          className="tap w-full flex items-center gap-2 px-3 py-2.5 text-left"
-        >
-          <span className="text-[14px]">📥</span>
-          <span className="flex-1 text-[13px] font-medium">Задачи из списка</span>
-          <span
-            className="text-[11px] px-2 py-0.5 rounded-full"
-            style={{ background: "#f3efe7", color: "#6b6b6b" }}
-          >
-            {freeTasks.length} свободных
-          </span>
-          <ChevronDown
-            className="h-4 w-4 transition-transform"
-            style={{ transform: freeOpen ? "rotate(180deg)" : "none", color: "#8a8a8a" }}
-          />
-        </button>
-        {freeOpen && (
-          <div className="px-3 pb-3 space-y-2">
-            {freeTasks.length === 0 && (
-              <div className="text-center text-[12px] text-[#8a8a8a] py-2">
-                Все задачи этой цели уже в дереве.
-              </div>
-            )}
-            {freeTasks.map((t) => (
-              <div
-                key={t.id}
-                className="flex items-center gap-2 rounded-xl px-3 py-2"
-                style={{ border: "1px solid #ede8df", background: "#fff" }}
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="text-[13px] font-medium truncate">{t.title}</div>
-                  <div className="text-[11px]" style={{ color: "#8a8a8a" }}>{t.deadline}</div>
-                </div>
-                <button
-                  onClick={() => onAttachExisting(t.id)}
-                  className="tap shrink-0 rounded-full px-3 py-1 text-[11.5px] font-semibold"
-                  style={{ background: "linear-gradient(135deg,#FFB300,#FF6D00)", color: "#fff" }}
-                >
-                  + в ключевые
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      )}
 
       {doneRoots.length > 0 && (
         <div className="space-y-2">
