@@ -3258,6 +3258,7 @@ function EditGoalScreen({
       vision: vision.trim(),
       image,
       aspect,
+      progress: Math.max(0, Math.min(100, Math.round(progress))),
     });
   };
 
