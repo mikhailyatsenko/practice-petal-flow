@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
@@ -41,6 +42,11 @@ import { Route as AppPracticeSkillRouteImport } from './routes/_app.practice.ski
 import { Route as AppPracticeSelfProgRouteImport } from './routes/_app.practice.self-prog'
 import { Route as AppPracticeEssayRouteImport } from './routes/_app.practice.essay'
 
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -199,6 +205,7 @@ const AppPracticeEssayRoute = AppPracticeEssayRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/onboarding': typeof OnboardingRoute
+  '/welcome': typeof WelcomeRoute
   '/buddy': typeof AppBuddyRoute
   '/community': typeof AppCommunityRoute
   '/decisions': typeof AppDecisionsRoute
@@ -230,6 +237,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
+  '/welcome': typeof WelcomeRoute
   '/buddy': typeof AppBuddyRoute
   '/community': typeof AppCommunityRoute
   '/decisions': typeof AppDecisionsRoute
@@ -264,6 +272,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/welcome': typeof WelcomeRoute
   '/_app/buddy': typeof AppBuddyRoute
   '/_app/community': typeof AppCommunityRoute
   '/_app/decisions': typeof AppDecisionsRoute
@@ -299,6 +308,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/onboarding'
+    | '/welcome'
     | '/buddy'
     | '/community'
     | '/decisions'
@@ -330,6 +340,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/onboarding'
+    | '/welcome'
     | '/buddy'
     | '/community'
     | '/decisions'
@@ -363,6 +374,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_app'
     | '/onboarding'
+    | '/welcome'
     | '/_app/buddy'
     | '/_app/community'
     | '/_app/decisions'
@@ -397,10 +409,18 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   OnboardingRoute: typeof OnboardingRoute
+  WelcomeRoute: typeof WelcomeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding': {
       id: '/onboarding'
       path: '/onboarding'
@@ -690,6 +710,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   OnboardingRoute: OnboardingRoute,
+  WelcomeRoute: WelcomeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
