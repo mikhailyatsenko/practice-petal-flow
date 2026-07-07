@@ -961,8 +961,17 @@ function WishesScreen() {
     setEditingGoal(null);
   };
   const handleDeleteGoal = (id: string) => {
-    setGoals((prev) => prev.filter((g) => g.id !== id));
+    setGoals((prev) =>
+      prev
+        .filter((g) => g.id !== id)
+        // сирот вверх по дереву не двигаем — просто отвязываем от удалённой
+        .map((g) => (g.parentGoalId === id ? { ...g, parentGoalId: null } : g)),
+    );
     setEditingGoal(null);
+  };
+  const updateGoalPatch = (id: string, patch: Partial<Goal>) => {
+    setGoals((prev) => prev.map((g) => (g.id === id ? { ...g, ...patch } : g)));
+    setEditingGoal((prev) => (prev && prev.id === id ? { ...prev, ...patch } : prev));
   };
 
   if (creatingGoal) {
