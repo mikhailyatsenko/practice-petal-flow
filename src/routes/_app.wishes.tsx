@@ -1001,12 +1001,15 @@ function WishesScreen() {
   }
 
   if (editingGoal) {
+    const current = goals.find((g) => g.id === editingGoal.id) ?? editingGoal;
     return (
       <EditGoalScreen
-        goal={editingGoal}
+        goal={current}
+        allGoals={goals}
         onClose={() => setEditingGoal(null)}
         onSave={handleSaveGoal}
-        onDelete={() => handleDeleteGoal(editingGoal.id)}
+        onDelete={() => handleDeleteGoal(current.id)}
+        onUpdateGoal={updateGoalPatch}
       />
     );
   }
