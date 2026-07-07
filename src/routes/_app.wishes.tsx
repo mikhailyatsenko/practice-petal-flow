@@ -2639,11 +2639,11 @@ function GoalCard({
                   key={a.id}
                   type="button"
                   onClick={() => onOpenGoal?.(a.id)}
-                  className="tap flex w-full items-center gap-2 rounded-full px-3 py-2 text-left"
+                  className="tap flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left"
                   style={{
-                    background: "rgba(34, 160, 90, 0.10)",
-                    color: "#1f7a48",
-                    border: "1px solid rgba(34, 160, 90, 0.28)",
+                    background: "#FAF6EF",
+                    color: "#6B5E4E",
+                    border: "1px solid #E8E0D3",
                   }}
                 >
                   <span aria-hidden className="text-[13px]">↰</span>
@@ -2666,11 +2666,11 @@ function GoalCard({
                   key={c.id}
                   type="button"
                   onClick={() => onOpenGoal?.(c.id)}
-                  className="tap flex w-full items-center gap-2 rounded-full px-3 py-2 text-left"
+                  className="tap flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left"
                   style={{
-                    background: "rgba(255, 109, 0, 0.10)",
-                    color: "#cc5700",
-                    border: "1px solid rgba(255, 109, 0, 0.30)",
+                    background: "#FAF6EF",
+                    color: "#6B5E4E",
+                    border: "1px solid #E8E0D3",
                   }}
                 >
                   <span aria-hidden className="text-[13px]">↳</span>
