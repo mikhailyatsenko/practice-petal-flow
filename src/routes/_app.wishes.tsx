@@ -2540,7 +2540,7 @@ function GoalCard({
   void onAddTask;
 
   return (
-    <article className="bg-card hairline rounded-[20px] overflow-hidden shadow-card animate-fade-up">
+    <article id={`goal-card-${goal.id}`} data-goal-id={goal.id} className="bg-card hairline rounded-[20px] overflow-hidden shadow-card animate-fade-up scroll-mt-20">
       <div className={`relative w-full ${aspectClass(goal.aspect)}`}>
         <img src={goal.image} alt={goal.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
