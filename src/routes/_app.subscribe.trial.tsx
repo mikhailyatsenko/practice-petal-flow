@@ -51,7 +51,7 @@ function TrialScreen() {
             Первый месяц<br />всего за 1 ₽
           </h1>
           <p className="relative mt-3 text-[14px] leading-snug opacity-95">
-            Попробуйте все возможности клуба за 1 ₽. Через 30 дней — 2 000 ₽ за следующий месяц. Отписаться можно в любой момент.
+            Попробуйте все возможности клуба за 1 ₽. Через 30 дней — 1 000 ₽/месяц. Отписаться можно в любой момент.
           </p>
         </div>
       </div>
@@ -78,7 +78,7 @@ function TrialScreen() {
           ))}
         </div>
         <p className="mt-3 text-center text-[12px] text-muted-foreground">
-          После истечения стоимость станет 2 000 ₽/месяц
+          После истечения стоимость станет 1 000 ₽/месяц
         </p>
       </div>
 
@@ -88,7 +88,7 @@ function TrialScreen() {
           <span className="rounded-full px-3 py-1 text-[12px] font-bold" style={{ background: "rgba(255,109,0,0.14)", color: "#FF6D00" }}>
             🔥 АКЦИЯ
           </span>
-          <span className="text-[13px] text-muted-foreground">· вы экономите <span className="font-bold" style={{ color: "#3E6B1F" }}>1 999 ₽</span></span>
+          <span className="text-[13px] text-muted-foreground">· вы экономите <span className="font-bold" style={{ color: "#3E6B1F" }}>999 ₽</span></span>
         </div>
 
         <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
@@ -99,12 +99,12 @@ function TrialScreen() {
           <div className="text-muted-foreground">→</div>
           <div className="flex flex-col items-center rounded-2xl bg-muted py-4">
             <div className="text-[11px] text-muted-foreground">вместо</div>
-            <div className="mt-2 text-[24px] font-bold leading-none text-muted-foreground line-through">2 000 ₽</div>
+            <div className="mt-2 text-[24px] font-bold leading-none text-muted-foreground line-through">1 000 ₽</div>
           </div>
         </div>
 
         <div className="mt-4 border-t hairline pt-3 text-center">
-          <div className="text-[14px] font-semibold">Далее — 2 000 ₽/месяц</div>
+          <div className="text-[14px] font-semibold">Далее — 1 000 ₽/месяц</div>
           <div className="text-[12px] text-muted-foreground">Отписка в любой момент</div>
         </div>
       </div>
@@ -117,7 +117,7 @@ function TrialScreen() {
           className="tap flex w-full items-center justify-center gap-2 py-5 text-[17px] font-semibold text-white"
           style={{ background: GREEN_GRADIENT, borderRadius: 999, boxShadow: GREEN_SHADOW }}
         >
-          ✅ Даю согласие
+          Вступить за один рубль
         </Link>
       </div>
     </div>
