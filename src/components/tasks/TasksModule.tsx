@@ -1297,15 +1297,13 @@ function TaskDetailScreen({
         className="tap w-full flex items-center gap-3 rounded-xl px-3.5 py-3 text-left bg-card"
         style={{ border: "1px solid #ede8df" }}
       >
-        <span
-          className="shrink-0 inline-flex items-center justify-center rounded-md"
-          style={{
-            width: 24, height: 24,
-            background: task.isKeyTask ? "#FF6D00" : "#fff",
-            border: `2px solid ${task.isKeyTask ? "#FF6D00" : "#d1d5db"}`,
-          }}
-        >
-          <Key className="h-4 w-4" style={{ color: task.isKeyTask ? "#fff" : "#FF6D00" }} />
+        <span className="relative shrink-0 inline-flex items-center justify-center text-[20px] leading-none" style={{ width: 24, height: 24 }}>
+          <span aria-hidden>🔑</span>
+          {task.isKeyTask && (
+            <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <span className="block h-[2.5px] w-[26px] rotate-45 rounded-full" style={{ background: "#e11d48" }} />
+            </span>
+          )}
         </span>
         <span className="flex-1">
           <span className="block text-[14px] font-medium">
