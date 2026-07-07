@@ -3469,6 +3469,57 @@ function EditGoalScreen({
           </div>
         )}
 
+        {tab === "progress" && (
+          <div className="animate-fade-up">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[13px] text-muted-foreground">Прогресс к цели</span>
+              <span className="text-[15px] font-bold" style={{ color: "#FF6D00" }}>{progress}%</span>
+            </div>
+            <div className="relative h-6 flex items-center">
+              <div className="absolute inset-x-0 h-2 rounded-full overflow-hidden" style={{ background: "#ede8df" }}>
+                <div
+                  className="h-full rounded-full transition-all"
+                  style={{
+                    width: `${progress}%`,
+                    background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                  }}
+                />
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={progress}
+                onChange={(e) => setProgress(Number(e.target.value))}
+                aria-label="Прогресс цели"
+                className="relative w-full h-6 bg-transparent appearance-none cursor-pointer goal-progress-range"
+                style={{ accentColor: "#FF6D00" }}
+              />
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {[0, 25, 50, 75, 100].map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => setProgress(v)}
+                  className="tap rounded-full px-3 py-1.5 text-[12px] font-medium"
+                  style={{
+                    border: "1px solid rgba(255,109,0,0.35)",
+                    color: progress === v ? "#fff" : "#FF6D00",
+                    background: progress === v ? "linear-gradient(135deg, #FFB300, #FF6D00)" : "transparent",
+                  }}
+                >
+                  {v}%
+                </button>
+              ))}
+            </div>
+            <p className="mt-3 text-[12px] text-muted-foreground">
+              Двигай ползунок или выбери значение. Изменения применятся после «Сохранить».
+            </p>
+          </div>
+        )}
+
+
         {tab === "vision" && (
           <div className="animate-fade-up">
             <p className="text-[13px] text-[#FF6D00] mb-2">
