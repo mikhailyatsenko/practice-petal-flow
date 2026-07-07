@@ -3632,6 +3632,8 @@ function EditGoalScreen({
             if (pickerMode === "parent") {
               onUpdateGoal(goal.id, { parentGoalId: pickedId });
             } else {
+              // У каждой цели может быть только одна под-цель — отвязываем текущую, если есть.
+              childGoals.forEach((c) => onUpdateGoal(c.id, { parentGoalId: null }));
               onUpdateGoal(pickedId, { parentGoalId: goal.id });
             }
             setPickerMode(null);
