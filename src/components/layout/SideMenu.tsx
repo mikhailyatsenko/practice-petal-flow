@@ -45,6 +45,15 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
 
         <nav className="px-2 py-3">
           <Link
+            to="/welcome"
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <Globe className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>Выбор страны</span>
+          </Link>
+
+          <Link
             to="/onboarding"
             onClick={() => onOpenChange(false)}
             className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
@@ -52,6 +61,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             <PlayCircle className="h-[18px] w-[18px]" strokeWidth={2} />
             <span>Вводная страница</span>
           </Link>
+
 
           <Link
             to="/subscribe/trial"
