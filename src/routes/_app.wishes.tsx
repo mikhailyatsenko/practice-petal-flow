@@ -3194,7 +3194,7 @@ function CreateGoalWizard({
 /* ============================================================
    =================  РЕДАКТИРОВАНИЕ ЦЕЛИ  ==================== */
 
-type GoalEditTab = "title" | "deadline" | "reasons" | "vision" | "image" | "criteria" | "plan" | "links";
+type GoalEditTab = "title" | "deadline" | "reasons" | "vision" | "image" | "criteria" | "plan" | "progress" | "links";
 
 function parseDeadline(s: string): { d: number; m: number; y: number } {
   // Ожидаем формат "31 декабря 2026"
