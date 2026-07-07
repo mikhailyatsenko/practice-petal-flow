@@ -53,7 +53,10 @@ function WelcomePage() {
               boxShadow: "0 8px 24px rgba(255, 109, 0, 0.35)",
             }}
           >
-            🇷🇺 Россия
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/25 text-[12px] font-semibold">
+              RU
+            </span>
+            Россия
           </button>
           <button
             onClick={() => selectCountry("kz")}
@@ -63,9 +66,13 @@ function WelcomePage() {
               boxShadow: "0 8px 24px rgba(34, 197, 94, 0.35)",
             }}
           >
-            🇰🇿 Казахстан
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/25 text-[12px] font-semibold">
+              KZ
+            </span>
+            Казахстан
           </button>
         </div>
+
 
         <p className="mt-6 text-center text-[12px] leading-snug text-muted-foreground">
           Важно: приём платежей работает только с банковскими картами России и
