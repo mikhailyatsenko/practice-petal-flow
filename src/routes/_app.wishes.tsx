@@ -1184,8 +1184,8 @@ function WishesScreen() {
           {goals.filter((g) => !doneGoals.has(g.id)).map((g) => {
             const goalTasks = moduleTasks.filter((t) => t.goalId === g.id);
             const goalDone = goalTasks.filter((t) => t.done).length;
-            const parentGoal = g.parentGoalId ? goals.find((x) => x.id === g.parentGoalId) ?? null : null;
-            const childCount = goals.filter((x) => x.parentGoalId === g.id).length;
+            const ancestors = getAncestorChain(goals, g.id);
+            const children = getChildGoals(goals, g.id);
             return (
               <GoalCard
                 key={g.id}
@@ -1199,15 +1199,12 @@ function WishesScreen() {
                 tasksAll={goalTasks}
                 tasksDoneCount={goalDone}
                 onAddTask={() => setQuickTaskGoalId(g.id)}
-                parentGoal={parentGoal}
-                childCount={childCount}
+                ancestors={ancestors}
+                children={children}
                 onOpenGoal={(id) => {
                   const target = goals.find((x) => x.id === id);
                   if (target) setEditingGoal(target);
                 }}
-                onProgressChange={(value) =>
-                  setGoals((prev) => prev.map((x) => (x.id === g.id ? { ...x, progress: value } : x)))
-                }
                 onOpenTasks={() => {
                   // По правке: при переходе из «Цели» фильтр НЕ ставим — показываем все задачи всех целей.
                   setTasksFromGoalId(null);
