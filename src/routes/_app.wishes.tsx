@@ -2635,7 +2635,7 @@ function GoalCard({
           <>
             <div className="my-3 h-px bg-border/60" />
             <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-              {ancestors.length === 1 ? "Над-цель" : "Над-цели"}
+              Над-цель
             </p>
             <div className="mt-1.5 space-y-1">
               {[...ancestors].reverse().map((a) => (
@@ -2659,7 +2659,7 @@ function GoalCard({
           <>
             <div className="my-3 h-px bg-border/60" />
             <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-              Под-цели
+              Под-цель
             </p>
             <div className="mt-1.5 space-y-1">
               {children.map((c) => (
