@@ -58,7 +58,7 @@ function PartnerScreen() {
             🎁
           </div>
           <p className="text-[13px]" style={{ color: "#1a1a1a", lineHeight: 1.6 }}>
-            Если ты привёл друга в клуб, его первый месяц — пробный, он оплачивает участие всего за 1 рубль.
+            Нажми «Скопировать партнёрскую ссылку» выше и отправь её другу — <span className="font-semibold">его первый месяц в клубе будет пробным, всего за 1 рубль.</span>
           </p>
         </div>
         <div className="flex items-start gap-3" style={{ marginTop: 10 }}>
