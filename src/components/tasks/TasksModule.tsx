@@ -1260,14 +1260,15 @@ function fmtTimeBig(total: number) {
 /* ---------------- Экран задачи ---------------- */
 
 function TaskDetailScreen({
-  task, goal, isTimerActive, liveSeconds,
+  task, goal, isTimerActive, liveSeconds, canAddSubtask,
   onBack, onEdit, onDelete, onStartTimer, onStopTimer, onMarkDone,
-  onMoveToKey, onRemoveFromKey,
+  onMoveToKey, onRemoveFromKey, onAddSubtask,
 }: {
   task: Task;
   goal?: TaskGoalRef;
   isTimerActive: boolean;
   liveSeconds: number;
+  canAddSubtask?: boolean;
   onBack: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -1276,6 +1277,7 @@ function TaskDetailScreen({
   onMarkDone: () => void;
   onMoveToKey: () => void;
   onRemoveFromKey: () => void;
+  onAddSubtask: () => void;
 }) {
   const f = feelingOf(task.feeling);
   const total = task.timeSpent + (isTimerActive ? liveSeconds : 0);
