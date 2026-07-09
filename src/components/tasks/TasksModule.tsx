@@ -1328,6 +1328,19 @@ function TaskDetailScreen({
         )}
       </button>
 
+      {task.isKeyTask && canAddSubtask && (
+        <div className="flex justify-center -mt-1">
+          <button
+            onClick={onAddSubtask}
+            className="tap inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
+            style={{ background: "rgba(255,109,0,0.06)", color: "#FF6D00", border: "1px dashed rgba(255,109,0,0.4)" }}
+          >
+            <Plus className="h-3.5 w-3.5" /> Добавить под-задачу
+          </button>
+        </div>
+      )}
+
+
       {/* Таймер */}
       <article className="bg-card rounded-2xl shadow-card p-5 text-center" style={{ border: "1px solid #ede8df" }}>
         <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Таймер работы</p>
