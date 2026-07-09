@@ -80,6 +80,9 @@ function ManageScreen() {
                 <p className="mt-2 text-[14px] leading-snug text-[#7f1d1d]">
                   Вы потеряете все свои желания, цели, привычки, задачи и весь прогресс. Это действие необратимо.
                 </p>
+                <p className="mt-3 text-[14px] leading-snug text-[#7f1d1d]">
+                  <b>Вернуться в клуб будет нельзя.</b> После выхода повторное вступление невозможно.
+                </p>
               </div>
             </div>
           </div>
