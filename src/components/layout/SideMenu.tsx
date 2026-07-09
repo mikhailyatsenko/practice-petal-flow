@@ -40,6 +40,13 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
               <span className="text-muted-foreground">Подписка активна до</span>
             </div>
             <p className="mt-0.5 text-[13.5px] font-medium">01.05.2026 · 13 дней</p>
+            <Link
+              to="/subscribe/manage"
+              onClick={() => onOpenChange(false)}
+              className="tap mt-2 inline-flex items-center gap-1 text-[12px] font-medium text-primary"
+            >
+              Управление подпиской →
+            </Link>
           </div>
         </div>
 
