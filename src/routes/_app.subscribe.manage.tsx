@@ -14,10 +14,17 @@ const AMOUNT = "1 000 ₽";
 
 type Step = "overview" | "warning" | "reason" | "done";
 
+const BONUS_BALANCE = "1 000 ₽";
+const BONUS_ACCRUAL_DATE = "01.05.2026";
+const BONUS_ACCRUAL_AMOUNT = "1 000 ₽";
+
+type Mode = "paid" | "free";
+
 function ManageScreen() {
   const router = useRouter();
   const [step, setStep] = useState<Step>("overview");
   const [reason, setReason] = useState("");
+  const [mode, setMode] = useState<Mode>("paid");
 
   return (
     <div className="min-h-screen bg-background px-5 pt-3 pb-10">
@@ -30,24 +37,69 @@ function ManageScreen() {
             <div className="text-[20px] font-bold">Клуб «Моя жизнь»</div>
           </div>
 
-          <div className="mt-5 rounded-2xl bg-card hairline p-5">
-            <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
-              <CheckCircle2 className="h-4 w-4 text-success" />
-              Подписка активна
-            </div>
-            <div className="mt-3 text-[14px]">
-              Следующее списание — <b>{NEXT_DATE}</b>
-            </div>
-            <div className="mt-1 text-[14px]">
-              Сумма — <b>{AMOUNT}</b>
-            </div>
-            <p className="mt-4 text-[12px] text-muted-foreground leading-snug">
-              Списание происходит автоматически каждые 30 дней с привязанной банковской карты.
-            </p>
-            <p className="mt-3 text-[12px] leading-snug text-foreground">
-              Вы можете сделать клуб бесплатным и не платить за подписку. Для этого нажмите кнопку «Сделать клуб бесплатным» ниже.
-            </p>
+          {/* Mode toggle */}
+          <div className="mt-4 grid grid-cols-2 rounded-2xl bg-card hairline p-1">
+            <button
+              onClick={() => setMode("paid")}
+              className={`tap rounded-xl py-2 text-[13px] font-medium transition-colors ${
+                mode === "paid" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+              }`}
+            >
+              Оплата картой
+            </button>
+            <button
+              onClick={() => setMode("free")}
+              className={`tap rounded-xl py-2 text-[13px] font-medium transition-colors ${
+                mode === "free" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+              }`}
+            >
+              Бесплатный клуб
+            </button>
           </div>
+
+          {mode === "paid" ? (
+            <div className="mt-5 rounded-2xl bg-card hairline p-5">
+              <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
+                <CheckCircle2 className="h-4 w-4 text-success" />
+                Подписка активна
+              </div>
+              <div className="mt-3 text-[14px]">
+                Следующее списание — <b>{NEXT_DATE}</b>
+              </div>
+              <div className="mt-1 text-[14px]">
+                Сумма — <b>{AMOUNT}</b>
+              </div>
+              <p className="mt-4 text-[12px] text-muted-foreground leading-snug">
+                Списание происходит автоматически каждые 30 дней с привязанной банковской карты.
+              </p>
+              <p className="mt-3 text-[12px] leading-snug text-foreground">
+                Вы можете сделать клуб бесплатным и не платить за подписку. Для этого нажмите кнопку «Сделать клуб бесплатным» ниже.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-5 rounded-2xl bg-card hairline p-5">
+              <div className="flex items-center gap-2 text-[13px] text-success font-medium">
+                <CheckCircle2 className="h-4 w-4 text-success" />
+                У вас бесплатный клуб 🎉
+              </div>
+              <div className="mt-4 rounded-xl p-3" style={{ background: "linear-gradient(135deg, #FFF7E6, #FFE9C7)" }}>
+                <div className="text-[12px] text-muted-foreground">Баланс бонусов</div>
+                <div className="text-[22px] font-bold" style={{ color: "#B45309" }}>{BONUS_BALANCE}</div>
+              </div>
+              <div className="mt-4 text-[14px]">
+                <b>{BONUS_ACCRUAL_DATE}</b> — начисление <b>{BONUS_ACCRUAL_AMOUNT}</b> бонусов за приведённого друга
+              </div>
+              <div className="mt-2 text-[14px]">
+                <b>{NEXT_DATE}</b> — списание <b>{AMOUNT}</b> бонусов за подписку
+              </div>
+              <p className="mt-4 text-[12px] text-muted-foreground leading-snug">
+                1-го числа каждого месяца вам начисляется 1 000 бонусов за каждого приведённого друга. Списание за подписку происходит бонусами — пока их хватает, клуб остаётся бесплатным.
+              </p>
+              <p className="mt-3 text-[12px] leading-snug text-foreground">
+                Приведите ещё друга, чтобы увеличить бонусный баланс и продлить бесплатный период.
+              </p>
+            </div>
+          )}
 
           <div className="mt-6 grid grid-cols-2 gap-3">
             <button
@@ -55,13 +107,13 @@ function ManageScreen() {
               className="tap flex items-center justify-center rounded-2xl py-3 text-[13px] font-semibold text-white shadow-card text-center leading-tight"
               style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
             >
-              Сделать клуб бесплатным
+              {mode === "paid" ? "Сделать клуб бесплатным" : "Привести ещё друга"}
             </button>
             <button
               onClick={() => setStep("warning")}
               className="tap flex items-center justify-center rounded-2xl border border-destructive/40 py-3 text-[13px] font-semibold text-destructive"
             >
-              Отписаться
+              {mode === "paid" ? "Отписаться" : "Выйти из клуба"}
             </button>
           </div>
         </div>
