@@ -46,12 +46,21 @@ function ManageScreen() {
             </p>
           </div>
 
-          <button
-            onClick={() => setStep("warning")}
-            className="tap mt-6 flex w-full items-center justify-center rounded-2xl border border-destructive/40 py-4 text-[15px] font-semibold text-destructive"
-          >
-            Отписаться
-          </button>
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <button
+              onClick={() => router.navigate({ to: "/partner" })}
+              className="tap flex items-center justify-center rounded-2xl py-3 text-[13px] font-semibold text-white shadow-card text-center leading-tight"
+              style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+            >
+              Сделать клуб бесплатным
+            </button>
+            <button
+              onClick={() => setStep("warning")}
+              className="tap flex items-center justify-center rounded-2xl border border-destructive/40 py-3 text-[13px] font-semibold text-destructive"
+            >
+              Отписаться
+            </button>
+          </div>
         </div>
       )}
 
@@ -70,6 +79,9 @@ function ManageScreen() {
                 </p>
                 <p className="mt-2 text-[14px] leading-snug text-[#7f1d1d]">
                   Вы потеряете все свои желания, цели, привычки, задачи и весь прогресс. Это действие необратимо.
+                </p>
+                <p className="mt-3 text-[14px] leading-snug text-[#7f1d1d]">
+                  <b>Вернуться в клуб будет нельзя.</b> После выхода повторное вступление невозможно.
                 </p>
               </div>
             </div>
