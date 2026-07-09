@@ -5,7 +5,7 @@ const PRACTICE_TITLES: Record<PracticeId, string> = {
   "self-prog": "Самопрограммирование",
   charge: "Вдохновение желаниями",
   essay: "Моя жизнь мечты",
-  skill: "Воплощение намерения",
+  skill: "Воплощение намерений",
   wishes: "Шаг к желанию",
 };
 
