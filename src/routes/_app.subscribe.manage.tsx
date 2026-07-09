@@ -44,6 +44,9 @@ function ManageScreen() {
             <p className="mt-4 text-[12px] text-muted-foreground leading-snug">
               Списание происходит автоматически каждые 30 дней с привязанной банковской карты.
             </p>
+            <p className="mt-3 text-[12px] leading-snug text-foreground">
+              Вы можете сделать клуб бесплатным и не платить за подписку. Для этого нажмите кнопку «Сделать клуб бесплатным» ниже.
+            </p>
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-3">
