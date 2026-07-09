@@ -7,7 +7,7 @@ import { HowVideoCards } from "@/components/section/HowVideoCards";
 export const Route = createFileRoute("/_app/practice/essay")({
   head: () => ({
     meta: [
-      { title: "Моя жизнь мечты — Клуб «Моя жизнь»" },
+      { title: "Сочинение жизни мечты — Клуб «Моя жизнь»" },
       {
         name: "description",
         content:
@@ -151,7 +151,7 @@ function EssayScreen() {
           <ChevronLeft className="h-5 w-5" /> Главная
         </button>
         <h1 className="text-[15px] font-semibold absolute left-1/2 -translate-x-1/2 whitespace-nowrap">
-          Моя жизнь мечты
+          Сочинение жизни мечты
         </h1>
         <div className="ml-auto" style={{ width: 80 }} />
       </div>
@@ -405,7 +405,7 @@ function EssayScreen() {
             {howTab === "text" && (
               <div className="space-y-3">
                 <HowCard
-                  title="✍️ Моя жизнь мечты"
+                  title="✍️ Сочинение жизни мечты"
                   text={`Каждый день ты пишешь продолжение сочинения своей идеальной жизни. Не план, не цели — а живую картину: как выглядит твой день, что ты чувствуешь, кто рядом, где ты находишься. Образ мечты постоянно в сознании — не как далёкая фантазия, а как знакомое место куда ты возвращаешься каждый день.`}
                 />
                 <HowCard
@@ -437,7 +437,7 @@ function EssayScreen() {
             {howTab === "video" && (
               <HowVideoCards
                 first={{
-                  title: "🎬 Как писать сочинение «Моя жизнь мечты»",
+                  title: "🎬 Как писать сочинение «Сочинение жизни мечты»",
                   duration: "7:00",
                   caption:
                     "Подробный разбор: что такое сочинение, почему важно настоящее время и как этот инструмент меняет мышление.",

@@ -4,7 +4,7 @@ import { toast } from "sonner";
 const PRACTICE_TITLES: Record<PracticeId, string> = {
   "self-prog": "Самопрограммирование",
   charge: "Вдохновение желаниями",
-  essay: "Моя жизнь мечты",
+  essay: "Сочинение жизни мечты",
   skill: "Воплощение намерений",
   wishes: "Шаг к желанию",
 };
