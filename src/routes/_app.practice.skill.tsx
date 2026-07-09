@@ -7,11 +7,11 @@ import { HowVideoCards } from "@/components/section/HowVideoCards";
 export const Route = createFileRoute("/_app/practice/skill")({
   head: () => ({
     meta: [
-      { title: "Навык успеха — Клуб «Моя жизнь»" },
+      { title: "Воплощение намерения — Клуб «Моя жизнь»" },
       {
         name: "description",
         content:
-          "Записывай каждый день намерения, которые довёл до конца, и тренируй главный навык успеха.",
+          "Записывай каждый день намерения, которые довёл до конца, и тренируй воплощение намерения.",
       },
     ],
   }),
@@ -166,7 +166,7 @@ function SkillScreen() {
           <ChevronLeft className="h-5 w-5" /> Главная
         </button>
         <h1 className="text-[15px] font-semibold absolute left-1/2 -translate-x-1/2 whitespace-nowrap">
-          Навык успеха
+          Воплощение намерения
         </h1>
         <div className="ml-auto" style={{ width: 80 }} />
       </div>
@@ -414,7 +414,7 @@ function SkillScreen() {
                 : "0 4px 16px rgba(255,109,0,0.3)",
           }}
         >
-          {doneToday ? "✅ Навык успеха засчитан" : "Засчитать навык успеха"}
+          {doneToday ? "✅ Воплощение намерения засчитано" : "Засчитать воплощение намерения"}
         </button>
       </section>
 
@@ -517,7 +517,7 @@ function SkillScreen() {
             {howTab === "text" && (
               <div className="space-y-3">
                 <HowCard
-                  title="🏆 Навык успеха"
+                  title="🏆 Воплощение намерения"
                   text={`Главный навык успешного человека — привычка доводить намерения до воплощения. Не мечтать, не планировать, а доводить до конца. Каждый раз когда ты захотел что-то сделать — и сделал это — ты тренируешь эту мышцу. Со временем она становится твоей естественной нормой.`}
                 />
                 <HowCard
@@ -548,7 +548,7 @@ function SkillScreen() {
             {howTab === "video" && (
               <HowVideoCards
                 first={{
-                  title: "🎬 Что такое навык успеха",
+                  title: "🎬 Что такое воплощение намерения",
                   duration: "6:30",
                   caption:
                     "Почему этот навык — главный навык успешных людей и как он влияет на все сферы жизни.",
