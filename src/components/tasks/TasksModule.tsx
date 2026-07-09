@@ -432,22 +432,59 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     }
 
     // Порядок:
-    // • в режиме списка выполненные задачи опускаются в самый низ группы (без учёта уровня);
+    // • в режиме списка внутри каждой цели: сначала ключевые задачи в порядке дерева
+    //   (родитель → его подзадачи по уровням DFS), затем обычные задачи;
+    //   внутри каждой группы выполненные — вниз.
     // • в режиме ключевых сначала идут ключевые по уровню (1..5), затем обычные;
     //   внутри уровня выполненные — вниз.
+    if (viewMode === "list") {
+      const byGoal = new Map<string, Task[]>();
+      for (const t of list) {
+        if (!byGoal.has(t.goalId)) byGoal.set(t.goalId, []);
+        byGoal.get(t.goalId)!.push(t);
+      }
+      const goalOrder: string[] = [];
+      const seen = new Set<string>();
+      for (const g of goals) { goalOrder.push(g.id); seen.add(g.id); }
+      for (const gid of byGoal.keys()) if (!seen.has(gid)) goalOrder.push(gid);
+      const result: Task[] = [];
+      for (const gid of goalOrder) {
+        const items = byGoal.get(gid);
+        if (!items || items.length === 0) continue;
+        const keys = items.filter((t) => t.isKeyTask);
+        const nonKeys = items.filter((t) => !t.isKeyTask);
+        const keyIds = new Set(keys.map((k) => k.id));
+        const childrenMap = new Map<string | null, Task[]>();
+        for (const t of keys) {
+          const p = t.parentTaskId ?? null;
+          const key = p && keyIds.has(p) ? p : null;
+          if (!childrenMap.has(key)) childrenMap.set(key, []);
+          childrenMap.get(key)!.push(t);
+        }
+        for (const arr of childrenMap.values()) {
+          arr.sort((a, b) => Number(a.done) - Number(b.done));
+        }
+        const dfs = (parentId: string | null) => {
+          const arr = childrenMap.get(parentId) ?? [];
+          for (const t of arr) {
+            result.push(t);
+            dfs(t.id);
+          }
+        };
+        dfs(null);
+        nonKeys.sort((a, b) => Number(a.done) - Number(b.done));
+        result.push(...nonKeys);
+      }
+      return result;
+    }
     const rank = (t: Task) => (t.isKeyTask ? getTaskLevel(tasks, t) : 999);
     list.sort((a, b) => {
-      if (viewMode === "list") {
-        const d = Number(a.done) - Number(b.done);
-        if (d !== 0) return d;
-        return rank(a) - rank(b);
-      }
       const r = rank(a) - rank(b);
       if (r !== 0) return r;
       return Number(a.done) - Number(b.done);
     });
     return list;
-  }, [tasks, filter, initialGoalId, viewMode]);
+  }, [tasks, filter, initialGoalId, viewMode, goals]);
 
   // Группировка по целям (с сохранением порядка целей)
   const grouped = useMemo(() => {
