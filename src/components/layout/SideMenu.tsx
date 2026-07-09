@@ -43,9 +43,9 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             <Link
               to="/subscribe/manage"
               onClick={() => onOpenChange(false)}
-              className="tap mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-card hairline px-3 py-2.5 text-[13px] font-medium text-foreground"
+              className="tap mt-2 inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-card hairline px-3 py-2 text-[12px] font-medium text-foreground"
             >
-              <Settings className="h-4 w-4 text-muted-foreground" />
+              <Settings className="h-3.5 w-3.5 text-muted-foreground" />
               Управление подпиской
             </Link>
           </div>
