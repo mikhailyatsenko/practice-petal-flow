@@ -617,6 +617,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
             goal={g}
             isTimerActive={activeTimerIds.has(t.id)}
             liveSeconds={elapsedMap[t.id] ?? 0}
+            canAddSubtask={t.isKeyTask && getTaskLevel(tasks, t) < 5}
             onBack={() => setOpenTaskId(null)}
             onEdit={() => { setOpenTaskId(null); setEditingTask(t); }}
             onDelete={() => handleDelete(t.id)}
@@ -625,6 +626,11 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
             onMarkDone={() => handleMarkDone(t.id)}
             onMoveToKey={() => setConfirmKeyToggle("toKey")}
             onRemoveFromKey={() => setConfirmKeyToggle("fromKey")}
+            onAddSubtask={() => {
+              const lvl = getTaskLevel(tasks, t) + 1;
+              setOpenTaskId(null);
+              setPendingParentInsert({ goalId: t.goalId, parentId: t.id, level: lvl });
+            }}
           />
           {addKeyGoalId && (
             <AddKeyLevelPopup
@@ -1254,14 +1260,15 @@ function fmtTimeBig(total: number) {
 /* ---------------- Экран задачи ---------------- */
 
 function TaskDetailScreen({
-  task, goal, isTimerActive, liveSeconds,
+  task, goal, isTimerActive, liveSeconds, canAddSubtask,
   onBack, onEdit, onDelete, onStartTimer, onStopTimer, onMarkDone,
-  onMoveToKey, onRemoveFromKey,
+  onMoveToKey, onRemoveFromKey, onAddSubtask,
 }: {
   task: Task;
   goal?: TaskGoalRef;
   isTimerActive: boolean;
   liveSeconds: number;
+  canAddSubtask?: boolean;
   onBack: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -1270,6 +1277,7 @@ function TaskDetailScreen({
   onMarkDone: () => void;
   onMoveToKey: () => void;
   onRemoveFromKey: () => void;
+  onAddSubtask: () => void;
 }) {
   const f = feelingOf(task.feeling);
   const total = task.timeSpent + (isTimerActive ? liveSeconds : 0);
@@ -1319,6 +1327,19 @@ function TaskDetailScreen({
           <ChevronRight className="h-4 w-4" style={{ color: "#8a8a8a" }} />
         )}
       </button>
+
+      {task.isKeyTask && canAddSubtask && (
+        <div className="flex justify-center -mt-1">
+          <button
+            onClick={onAddSubtask}
+            className="tap inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
+            style={{ background: "rgba(255,109,0,0.06)", color: "#FF6D00", border: "1px dashed rgba(255,109,0,0.4)" }}
+          >
+            <Plus className="h-3.5 w-3.5" /> Добавить под-задачу
+          </button>
+        </div>
+      )}
+
 
       {/* Таймер */}
       <article className="bg-card rounded-2xl shadow-card p-5 text-center" style={{ border: "1px solid #ede8df" }}>
