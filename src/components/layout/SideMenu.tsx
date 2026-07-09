@@ -43,9 +43,10 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             <Link
               to="/subscribe/manage"
               onClick={() => onOpenChange(false)}
-              className="tap mt-2 inline-flex items-center gap-1 text-[12px] font-medium text-primary"
+              className="tap mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-card hairline px-3 py-2.5 text-[13px] font-medium text-foreground"
             >
-              Управление подпиской →
+              <Settings className="h-4 w-4 text-muted-foreground" />
+              Управление подпиской
             </Link>
           </div>
         </div>
