@@ -3,7 +3,7 @@ import { toast } from "sonner";
 
 const PRACTICE_TITLES: Record<PracticeId, string> = {
   "self-prog": "Самопрограммирование",
-  charge: "Зарядка желаний",
+  charge: "Вдохновение желаниями",
   essay: "Сочинение",
   skill: "Развитие навыка",
   wishes: "Шаг к желанию",
@@ -24,7 +24,7 @@ type PracticeId = "self-prog" | "charge" | "essay" | "skill" | "wishes";
 
 type DoneMap = Record<PracticeId, boolean>;
 
-// Состояние зарядки желаний/целей: id → количество тапов лайка.
+// Состояние вдохновения желаний/целей: id → количество тапов лайка.
 // 5 тапов = 100% (см. DesireCharge: inRound = ((total-1) % 5) + 1).
 type ChargesMap = Record<string, number>;
 
@@ -40,7 +40,7 @@ interface StoreState {
   // Инкрементируется только на первом тапе нового дня. Бейджик с цифрой 1/2/3
   // показывает именно это значение, когда у элемента есть хотя бы 1 тап сегодня.
   daysCount: ChargesMap;
-  // Сколько всего объектов (желаний + целей), которые надо «зарядить» (=поставить лайк).
+  // Сколько всего объектов (желаний + целей), которые надо «вдохновить» (=поставить лайк).
   totalItems: number;
   progressOffset: ProgressOffsetMap;
 }
@@ -104,7 +104,7 @@ export function usePracticeDone(id: PracticeId): boolean {
   );
 }
 
-// ----- charges (зарядка желаний / целей) -----
+// ----- charges (вдохновение желаний / целей) -----
 
 export function bumpCharge(id: string) {
   const current = state.charges[id] ?? 0;
@@ -144,7 +144,7 @@ export function setChargeTotal(total: number) {
   emit();
 }
 
-// Если выполнены оба условия зарядки желаний — автоматически засчитываем
+// Если выполнены оба условия вдохновения желаниями — автоматически засчитываем
 // практику «charge», даже если пользователь сейчас не на её странице.
 function maybeAutoCompleteCharge() {
   if (state.done.charge) return;
