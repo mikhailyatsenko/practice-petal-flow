@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { BackButton } from "@/components/layout/BackButton";
-import { AlertTriangle, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, CheckCircle2, CreditCard } from "lucide-react";
 
 export const Route = createFileRoute("/_app/subscribe/manage")({
   head: () => ({ meta: [{ title: "Управление подпиской" }] }),
@@ -28,33 +28,35 @@ function ManageScreen() {
 
   return (
     <div className="min-h-screen bg-background px-5 pt-3 pb-10">
-      <BackButton onClick={() => (step === "overview" ? router.history.back() : setStep("overview"))} />
+      <div className="flex items-center justify-between">
+        <BackButton onClick={() => (step === "overview" ? router.history.back() : setStep("overview"))} />
+        <div className="flex items-center rounded-full bg-card hairline p-1">
+          <button
+            onClick={() => setMode("paid")}
+            className={`tap flex h-8 w-8 items-center justify-center rounded-full text-[16px] transition-colors ${
+              mode === "paid" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+            }`}
+            title="Оплата картой"
+          >
+            <CreditCard className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => setMode("free")}
+            className={`tap flex h-8 w-8 items-center justify-center rounded-full text-[16px] transition-colors ${
+              mode === "free" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+            }`}
+            title="Бесплатный клуб"
+          >
+            🎁
+          </button>
+        </div>
+      </div>
 
       {step === "overview" && (
         <div className="mt-3 animate-fade-up">
           <div className="text-center">
             <div className="text-[13px] text-muted-foreground">Ваша подписка</div>
             <div className="text-[20px] font-bold">Клуб «Моя жизнь»</div>
-          </div>
-
-          {/* Mode toggle */}
-          <div className="mt-4 grid grid-cols-2 rounded-2xl bg-card hairline p-1">
-            <button
-              onClick={() => setMode("paid")}
-              className={`tap rounded-xl py-2 text-[13px] font-medium transition-colors ${
-                mode === "paid" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
-              }`}
-            >
-              Оплата картой
-            </button>
-            <button
-              onClick={() => setMode("free")}
-              className={`tap rounded-xl py-2 text-[13px] font-medium transition-colors ${
-                mode === "free" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
-              }`}
-            >
-              Бесплатный клуб
-            </button>
           </div>
 
           {mode === "paid" ? (
@@ -113,7 +115,7 @@ function ManageScreen() {
               onClick={() => setStep("warning")}
               className="tap flex items-center justify-center rounded-2xl border border-destructive/40 py-3 text-[13px] font-semibold text-destructive"
             >
-              {mode === "paid" ? "Отписаться" : "Выйти из клуба"}
+              Отписаться
             </button>
           </div>
         </div>
@@ -209,3 +211,4 @@ function ManageScreen() {
     </div>
   );
 }
+
