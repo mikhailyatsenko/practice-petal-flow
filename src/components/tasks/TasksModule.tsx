@@ -617,6 +617,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
             goal={g}
             isTimerActive={activeTimerIds.has(t.id)}
             liveSeconds={elapsedMap[t.id] ?? 0}
+            canAddSubtask={t.isKeyTask && getTaskLevel(tasks, t) < 5}
             onBack={() => setOpenTaskId(null)}
             onEdit={() => { setOpenTaskId(null); setEditingTask(t); }}
             onDelete={() => handleDelete(t.id)}
@@ -625,6 +626,11 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
             onMarkDone={() => handleMarkDone(t.id)}
             onMoveToKey={() => setConfirmKeyToggle("toKey")}
             onRemoveFromKey={() => setConfirmKeyToggle("fromKey")}
+            onAddSubtask={() => {
+              const lvl = getTaskLevel(tasks, t) + 1;
+              setOpenTaskId(null);
+              setPendingParentInsert({ goalId: t.goalId, parentId: t.id, level: lvl });
+            }}
           />
           {addKeyGoalId && (
             <AddKeyLevelPopup
