@@ -46,8 +46,9 @@ function PartnerScreen() {
 
       {/* Short bonus description */}
       <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
-        <p className="text-[14px] font-semibold" style={{ color: "#1a1a1a" }}>
-          Как работает партнёрская система?
+        <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Партнёрская система</p>
+        <p className="mt-1 text-[15px] font-semibold" style={{ color: "#1a1a1a" }}>
+          Как сделать клуб бесплатным?
         </p>
         <div className="flex items-start gap-3" style={{ marginTop: 12 }}>
           <div
