@@ -809,7 +809,7 @@ function WishesScreen() {
 
   // Цели
   const [goals, setGoals] = useState<Goal[]>(INITIAL_GOALS);
-  const goalInspires = inspires; // единый источник для зарядки желаний и целей
+  const goalInspires = inspires; // единый источник для вдохновения желаний и целей
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [creatingGoal, setCreatingGoal] = useState<null | { fromWish?: Wish; returnTo?: TabId }>(null);
 
@@ -875,7 +875,7 @@ function WishesScreen() {
     setPracticeDone("wishes", true);
   }, [moduleTasks]);
 
-  // Сообщаем «Зарядке желаний» сколько всего активных объектов нужно зарядить
+  // Сообщаем практике «Вдохновение желаниями» сколько всего активных объектов нужно отметить
   // (активные желания + активные цели — без воплощённых).
   useEffect(() => {
     const activeWishes = wishes.filter((w) => !doneWishes.has(w.id)).length;
@@ -1674,7 +1674,7 @@ function EmptyTab({ tab }: { tab: string }) {
   );
 }
 
-/* ---------------- Заряд желания ---------------- */
+/* ---------------- Вдохновение желания ---------------- */
 
 const CHARGE_COLORS = ["#9c8f7a", "#FFB300", "#FF9100", "#FF7A00", "#FF5722", "#E64A19"];
 const DOT_FILLED_COLORS = ["#FFD180", "#FFB300", "#FF9100", "#FF6D00", "#E64A19"];
@@ -1683,11 +1683,11 @@ const DOT_EMPTY = "#e0d8cc";
 function DesireCharge({ level, onTap, mode = "inspire", id }: { level: number; onTap: () => void; mode?: "inspire" | "proud"; id?: string }) {
   const total = Math.max(0, level);
   const inRound = total === 0 ? 0 : ((total - 1) % 5) + 1;
-  // Бейдж = количество дней, в которые пользователь заряжал именно это желание/цель.
+  // Бейдж = количество дней, в которые пользователь вдохновлял именно это желание/цель.
   // Появляется с первого тапа дня; в новый день обнуляется до первого тапа.
   const daysCount = useDaysCount(id ?? "__none__");
   const justHit100 = total > 0 && inRound === 5;
-  // Бейдж появляется только когда заряд достигает 100% (5/5 в текущем круге).
+  // Бейдж появляется только когда уровень вдохновения достигает 100% (5/5 в текущем круге).
   const badgeCount = id ? (justHit100 ? daysCount : 0) : (total === 0 ? 0 : Math.floor((total - 1) / 5) + 1);
   const label =
     mode === "proud"
@@ -1738,7 +1738,7 @@ function DesireCharge({ level, onTap, mode = "inspire", id }: { level: number; o
   return (
     <button
       onClick={onTap}
-      aria-label="Заряд желания"
+      aria-label="Вдохновение желания"
       className="tap flex items-center gap-2.5 min-w-0 select-none -mx-1 px-1 py-1 rounded-lg relative"
     >
       <span
