@@ -33,6 +33,7 @@ import { Route as AppDecisionsRouteImport } from './routes/_app.decisions'
 import { Route as AppCommunityRouteImport } from './routes/_app.community'
 import { Route as AppBuddyRouteImport } from './routes/_app.buddy'
 import { Route as AppSubscribeTrialRouteImport } from './routes/_app.subscribe.trial'
+import { Route as AppSubscribeManageRouteImport } from './routes/_app.subscribe.manage'
 import { Route as AppSubscribeFullRouteImport } from './routes/_app.subscribe.full'
 import { Route as AppSubscribeConfirmRouteImport } from './routes/_app.subscribe.confirm'
 import { Route as AppPracticeWishesChargeRouteImport } from './routes/_app.practice.wishes-charge'
@@ -161,6 +162,11 @@ const AppSubscribeTrialRoute = AppSubscribeTrialRouteImport.update({
   path: '/subscribe/trial',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSubscribeManageRoute = AppSubscribeManageRouteImport.update({
+  id: '/subscribe/manage',
+  path: '/subscribe/manage',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSubscribeFullRoute = AppSubscribeFullRouteImport.update({
   id: '/subscribe/full',
   path: '/subscribe/full',
@@ -233,6 +239,7 @@ export interface FileRoutesByFullPath {
   '/practice/wishes-charge': typeof AppPracticeWishesChargeRoute
   '/subscribe/confirm': typeof AppSubscribeConfirmRoute
   '/subscribe/full': typeof AppSubscribeFullRoute
+  '/subscribe/manage': typeof AppSubscribeManageRoute
   '/subscribe/trial': typeof AppSubscribeTrialRoute
 }
 export interface FileRoutesByTo {
@@ -266,6 +273,7 @@ export interface FileRoutesByTo {
   '/practice/wishes-charge': typeof AppPracticeWishesChargeRoute
   '/subscribe/confirm': typeof AppSubscribeConfirmRoute
   '/subscribe/full': typeof AppSubscribeFullRoute
+  '/subscribe/manage': typeof AppSubscribeManageRoute
   '/subscribe/trial': typeof AppSubscribeTrialRoute
 }
 export interface FileRoutesById {
@@ -301,6 +309,7 @@ export interface FileRoutesById {
   '/_app/practice/wishes-charge': typeof AppPracticeWishesChargeRoute
   '/_app/subscribe/confirm': typeof AppSubscribeConfirmRoute
   '/_app/subscribe/full': typeof AppSubscribeFullRoute
+  '/_app/subscribe/manage': typeof AppSubscribeManageRoute
   '/_app/subscribe/trial': typeof AppSubscribeTrialRoute
 }
 export interface FileRouteTypes {
@@ -336,6 +345,7 @@ export interface FileRouteTypes {
     | '/practice/wishes-charge'
     | '/subscribe/confirm'
     | '/subscribe/full'
+    | '/subscribe/manage'
     | '/subscribe/trial'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -369,6 +379,7 @@ export interface FileRouteTypes {
     | '/practice/wishes-charge'
     | '/subscribe/confirm'
     | '/subscribe/full'
+    | '/subscribe/manage'
     | '/subscribe/trial'
   id:
     | '__root__'
@@ -403,6 +414,7 @@ export interface FileRouteTypes {
     | '/_app/practice/wishes-charge'
     | '/_app/subscribe/confirm'
     | '/_app/subscribe/full'
+    | '/_app/subscribe/manage'
     | '/_app/subscribe/trial'
   fileRoutesById: FileRoutesById
 }
@@ -582,6 +594,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSubscribeTrialRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/subscribe/manage': {
+      id: '/_app/subscribe/manage'
+      path: '/subscribe/manage'
+      fullPath: '/subscribe/manage'
+      preLoaderRoute: typeof AppSubscribeManageRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/subscribe/full': {
       id: '/_app/subscribe/full'
       path: '/subscribe/full'
@@ -670,6 +689,7 @@ interface AppRouteChildren {
   AppPracticeWishesChargeRoute: typeof AppPracticeWishesChargeRoute
   AppSubscribeConfirmRoute: typeof AppSubscribeConfirmRoute
   AppSubscribeFullRoute: typeof AppSubscribeFullRoute
+  AppSubscribeManageRoute: typeof AppSubscribeManageRoute
   AppSubscribeTrialRoute: typeof AppSubscribeTrialRoute
 }
 
@@ -702,6 +722,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppPracticeWishesChargeRoute: AppPracticeWishesChargeRoute,
   AppSubscribeConfirmRoute: AppSubscribeConfirmRoute,
   AppSubscribeFullRoute: AppSubscribeFullRoute,
+  AppSubscribeManageRoute: AppSubscribeManageRoute,
   AppSubscribeTrialRoute: AppSubscribeTrialRoute,
 }
 
@@ -715,12 +736,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
