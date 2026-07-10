@@ -1827,10 +1827,18 @@ function KeyTreeSection({
   elapsedMap: Record<string, number>;
   onAdd: () => void;
 }) {
-  const roots = getKeyChildren(tasks, goalId, null);
-  const activeRoots = roots.filter((r) => !r.done);
-  const doneRoots = roots.filter((r) => r.done);
-  const totalKey = tasks.filter((t) => t.goalId === goalId && t.isKeyTask).length;
+  const goalKeyTasks = tasks.filter((t) => t.goalId === goalId && t.isKeyTask);
+  const activeKeyIds = new Set(goalKeyTasks.filter((t) => !t.done).map((t) => t.id));
+  const normalizeActiveParent = (task: Task) => {
+    const parentId = task.parentTaskId ?? null;
+    return parentId && activeKeyIds.has(parentId) ? parentId : null;
+  };
+  const activeRoots = goalKeyTasks.filter((t) => !t.done && normalizeActiveParent(t) === null);
+  const doneTasks = goalKeyTasks.filter((t) => t.done);
+  const totalKey = goalKeyTasks.length;
+
+  const getActiveChildren = (parentId: string): Task[] =>
+    goalKeyTasks.filter((t) => !t.done && normalizeActiveParent(t) === parentId);
 
   // Собрать все id-потомков (включая сам корень, кроме первого)
   const collectDescendantIds = (rootId: string): string[] => {
@@ -2042,7 +2050,7 @@ function KeyTreeSection({
   const renderNode = (task: Task, level: number, parentId: string | null): React.ReactNode => {
     const meta = KEY_LEVEL_META[level] ?? KEY_LEVEL_META[5];
     const color = meta.color;
-    const children = getKeyChildren(tasks, goalId, task.id);
+    const children = getActiveChildren(task.id);
     const canExpand = children.length > 0;
     const isOpen = expanded.has(task.id);
     const isDragging = drag?.taskId === task.id;
@@ -2081,17 +2089,56 @@ function KeyTreeSection({
 
         {isOpen && canExpand && (
           <div className="mt-2 space-y-2">
-            {children.filter((c) => !c.done).map((c) => renderNode(c, level + 1, task.id))}
-            {children.filter((c) => c.done).map((c) => renderNode(c, level + 1, task.id))}
+            {children.map((c) => renderNode(c, level + 1, task.id))}
           </div>
         )}
       </motion.div>
     );
   };
 
+  const renderDoneNode = (task: Task): React.ReactNode => {
+    const level = getTaskLevel(tasks, task);
+    const meta = KEY_LEVEL_META[level] ?? KEY_LEVEL_META[5];
+    const isDragging = drag?.taskId === task.id;
+
+    return (
+      <motion.div layout transition={{ layout: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 } }} key={task.id} style={{ marginLeft: (level - 1) * 14 }}>
+        <div
+          data-dnd-node="1"
+          data-task-id={task.id}
+          data-level={level}
+          data-parent-id={task.parentTaskId ?? ""}
+          onPointerDown={(e) => handlePointerDown(e, task, level)}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+          onClickCapture={handleClickCapture}
+          style={{
+            touchAction: activeRef.current ? "none" : "auto",
+            opacity: isDragging ? 0.35 : 1,
+            transition: "opacity 0.15s ease",
+          }}
+        >
+          <KeyNodeCard
+            task={task}
+            color={meta.color}
+            canExpand={false}
+            isOpen={false}
+            isShattering={shatteringIds.has(task.id)}
+            isTimerActive={activeTimerIds.has(task.id)}
+            liveSeconds={elapsedMap[task.id] ?? 0}
+            onToggleTree={() => {}}
+            onOpenTask={() => onOpenTask(task.id)}
+            onComplete={() => onComplete(task.id)}
+          />
+        </div>
+      </motion.div>
+    );
+  };
+
   return (
     <div className="space-y-3" style={{ touchAction: drag ? "none" : undefined }}>
-      {roots.length === 0 && (
+      {totalKey === 0 && (
         <div className="text-center text-[12px] text-[#8a8a8a] py-4">
           Пока нет ключевых задач. Добавь первую ниже.
         </div>
@@ -2153,9 +2200,9 @@ function KeyTreeSection({
         </button>
       </div>
 
-      {doneRoots.length > 0 && (
+      {doneTasks.length > 0 && (
         <div className="space-y-2">
-          {doneRoots.map((r) => renderNode(r, 1, null))}
+          {doneTasks.map((t) => renderDoneNode(t))}
         </div>
       )}
     </div>
