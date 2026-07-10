@@ -2041,7 +2041,9 @@ function KeyTreeSection({
         targetParentId: null,
         targetIndex: -1,
         targetLevel: level,
+        mode: "after",
         indicator: null,
+        insideBox: null,
         hint: "Тяни к нужному месту",
         valid: false,
       });
