@@ -326,7 +326,9 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     listLongPressRef.current = window.setTimeout(() => {
       listActiveRef.current = true;
       listSuppressClickRef.current = true;
+      startBlockingTouchScroll();
       try { el.setPointerCapture(pid); } catch { /* noop */ }
+
       if (typeof navigator !== "undefined" && "vibrate" in navigator) {
         try { (navigator as Navigator).vibrate?.(15); } catch { /* noop */ }
       }
