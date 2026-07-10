@@ -2174,6 +2174,7 @@ function KeyTreeSection({
 
       <div className="space-y-2">
         {activeRoots.map((r) => renderNode(r, 1, null))}
+        {doneTasks.map((t) => renderDoneNode(t))}
       </div>
 
       {/* Плавающая подсказка + линия-индикатор при drag */}
