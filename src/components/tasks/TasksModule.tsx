@@ -419,7 +419,10 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
         x: listStartPosRef.current!.x,
         y: listStartPosRef.current!.y,
         targetIndex: -1,
+        mode: "after",
+        hoverTaskId: null,
         indicator: null,
+        insideBox: null,
         hint: "Тяни вверх/вниз",
         valid: false,
       });
