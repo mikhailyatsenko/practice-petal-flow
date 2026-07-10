@@ -292,8 +292,10 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     if (listLongPressRef.current) { window.clearTimeout(listLongPressRef.current); listLongPressRef.current = null; }
     listActiveRef.current = false;
     listStartPosRef.current = null;
+    stopBlockingTouchScroll();
     setListDrag(null);
   };
+
 
   const handleListPointerDown = (e: React.PointerEvent, task: Task) => {
     if (e.pointerType === "mouse" && e.button !== 0) return;
