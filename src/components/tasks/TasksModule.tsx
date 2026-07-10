@@ -1973,6 +1973,7 @@ function KeyTreeSection({
     if (longPressRef.current) { window.clearTimeout(longPressRef.current); longPressRef.current = null; }
     activeRef.current = false;
     startPosRef.current = null;
+    stopBlockingTouchScroll();
     setDrag(null);
   };
 
@@ -1984,7 +1985,9 @@ function KeyTreeSection({
     longPressRef.current = window.setTimeout(() => {
       activeRef.current = true;
       suppressClickRef.current = true;
+      startBlockingTouchScroll();
       try { el.setPointerCapture(pid); } catch { /* noop */ }
+
       if (typeof navigator !== "undefined" && "vibrate" in navigator) {
         try { (navigator as Navigator).vibrate?.(15); } catch { /* noop */ }
       }
