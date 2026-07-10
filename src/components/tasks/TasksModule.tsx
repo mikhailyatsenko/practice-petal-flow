@@ -1879,7 +1879,9 @@ function KeyTreeSection({
     targetParentId: string | null;
     targetIndex: number;
     targetLevel: number;
+    mode: "before" | "after" | "inside";
     indicator: { top: number; left: number; width: number } | null;
+    insideBox: { top: number; left: number; width: number; height: number } | null;
     hint: string;
     valid: boolean;
   }>(null);
