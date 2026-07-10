@@ -2199,6 +2199,22 @@ function KeyTreeSection({
           }}
         />
       )}
+      {drag && drag.insideBox && (
+        <div
+          style={{
+            position: "fixed",
+            top: drag.insideBox.top,
+            left: drag.insideBox.left,
+            width: drag.insideBox.width,
+            height: drag.insideBox.height,
+            borderRadius: 14,
+            border: `2px dashed ${drag.valid ? "#FF6D00" : "#d14343"}`,
+            background: drag.valid ? "rgba(255,109,0,0.12)" : "rgba(209,67,67,0.10)",
+            pointerEvents: "none",
+            zIndex: 60,
+          }}
+        />
+      )}
       {drag && (
         <div
           style={{
