@@ -243,8 +243,11 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     goalId: string;
     x: number;
     y: number;
-    targetIndex: number; // индекс среди задач той же цели
+    targetIndex: number; // индекс среди задач той же цели (для before/after)
+    mode: "before" | "after" | "inside";
+    hoverTaskId: string | null; // для inside
     indicator: { top: number; left: number; width: number } | null;
+    insideBox: { top: number; left: number; width: number; height: number } | null;
     hint: string;
     valid: boolean;
   }>(null);
@@ -255,40 +258,88 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   const listActiveRef = useRef(false);
   const listSuppressClickRef = useRef(false);
 
+  const collectDescendantsList = (rootId: string): Set<string> => {
+    const set = new Set<string>();
+    const walk = (pid: string) => {
+      for (const t of tasks) {
+        if (t.parentTaskId === pid && !set.has(t.id)) {
+          set.add(t.id);
+          walk(t.id);
+        }
+      }
+    };
+    walk(rootId);
+    return set;
+  };
+
   const updateListDropTarget = (x: number, y: number) => {
     const d = listDragRef.current;
     if (!d) return;
     const el = document.elementFromPoint(x, y) as HTMLElement | null;
     const nodeEl = el?.closest('[data-list-dnd="1"]') as HTMLElement | null;
-    if (!nodeEl) {
-      setListDrag((p) => p ? { ...p, x, y, indicator: null, valid: false, hint: "Отпусти в списке своей цели" } : p);
-      return;
-    }
+    const setInvalid = (hint: string) => setListDrag((p) => p ? { ...p, x, y, indicator: null, insideBox: null, valid: false, mode: "after", hoverTaskId: null, hint } : p);
+    if (!nodeEl) { setInvalid("Отпусти в списке своей цели"); return; }
     const nodeGoalId = nodeEl.getAttribute("data-goal-id") || "";
     const nodeTaskId = nodeEl.getAttribute("data-task-id") || "";
-    if (nodeGoalId !== d.goalId) {
-      setListDrag((p) => p ? { ...p, x, y, indicator: null, valid: false, hint: "Только в рамках своей цели" } : p);
-      return;
-    }
-    const rect = nodeEl.getBoundingClientRect();
-    const isTop = y < rect.top + rect.height / 2;
+    if (nodeGoalId !== d.goalId) { setInvalid("Только в рамках своей цели"); return; }
+    if (nodeTaskId === d.taskId) { setInvalid("Тяни на другую задачу"); return; }
 
-    // siblings БЕЗ перетаскиваемой задачи — так индексы вставки корректны
+    const hovered = tasks.find((t) => t.id === nodeTaskId);
+    const dragged = tasks.find((t) => t.id === d.taskId);
+    if (!hovered || !dragged) { setInvalid("Отпусти в списке своей цели"); return; }
+
+    const rect = nodeEl.getBoundingClientRect();
+    const rel = (y - rect.top) / Math.max(rect.height, 1);
+    let zone: "before" | "after" | "inside";
+    if (rel < 0.3) zone = "before";
+    else if (rel > 0.7) zone = "after";
+    else zone = "inside";
+
+    // inside: превращаем в под-ключевую задачу hovered
+    if (zone === "inside") {
+      if (!hovered.isKeyTask) {
+        // не ключевая — inside делаем невозможным, трактуем как after
+        zone = rel > 0.5 ? "after" : "before";
+      } else {
+        const hoveredLevel = getTaskLevel(tasks, hovered);
+        if (hoveredLevel >= 5) { setInvalid("Достигнут максимум уровня вложенности"); return; }
+        const descendants = collectDescendantsList(d.taskId);
+        if (descendants.has(hovered.id)) { setInvalid("Нельзя вложить в свою подзадачу"); return; }
+        const insideBox = { top: rect.top - 2, left: rect.left - 2, width: rect.width + 4, height: rect.height + 4 };
+        setListDrag((p) => p ? {
+          ...p, x, y,
+          mode: "inside", hoverTaskId: hovered.id,
+          targetIndex: -1, indicator: null, insideBox,
+          valid: true, hint: "Станет подзадачей",
+        } : p);
+        return;
+      }
+    }
+
+    // before / after
     const siblings = tasks.filter((t) => t.goalId === d.goalId && t.id !== d.taskId);
     const siblingIndex = siblings.findIndex((t) => t.id === nodeTaskId);
-    if (siblingIndex < 0) {
-      setListDrag((p) => p ? { ...p, x, y, indicator: null, valid: false, hint: "Отпусти в списке своей цели" } : p);
-      return;
-    }
-    const insertIndex = isTop ? siblingIndex : siblingIndex + 1;
-
+    if (siblingIndex < 0) { setInvalid("Отпусти в списке своей цели"); return; }
+    const insertIndex = zone === "before" ? siblingIndex : siblingIndex + 1;
     const indicator = {
-      top: isTop ? rect.top - 2 : rect.bottom - 2,
+      top: zone === "before" ? rect.top - 2 : rect.bottom - 2,
       left: rect.left,
       width: rect.width,
     };
-    const pos = Math.max(1, Math.min(insertIndex + 1, siblings.length + 1));
-    setListDrag((p) => p ? { ...p, x, y, targetIndex: insertIndex, indicator, valid: true, hint: `Позиция ${pos}` } : p);
+    const prev = siblings[insertIndex - 1];
+    const next = siblings[insertIndex];
+    const willBeKey =
+      (prev && prev.isKeyTask && (!next || next.isKeyTask)) ||
+      (!prev && next && next.isKeyTask);
+    const hint = willBeKey
+      ? (dragged.isKeyTask ? "Переставить в ключевые" : "Станет ключевой")
+      : (dragged.isKeyTask ? "Станет не ключевой" : "Обычная задача");
+    setListDrag((p) => p ? {
+      ...p, x, y,
+      mode: zone, hoverTaskId: null,
+      targetIndex: insertIndex, indicator, insideBox: null,
+      valid: true, hint,
+    } : p);
   };
 
   const commitListDrop = () => {
@@ -299,6 +350,17 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       const from = list.findIndex((t) => t.id === d.taskId);
       if (from < 0) return prev;
       const [item] = list.splice(from, 1);
+
+      // Режим "inside" — становимся подзадачей hovered (ключевой)
+      if (d.mode === "inside" && d.hoverTaskId) {
+        const updated: Task = { ...item, isKeyTask: true, parentTaskId: d.hoverTaskId };
+        const hoverIdx = list.findIndex((t) => t.id === d.hoverTaskId);
+        const insertAt = hoverIdx < 0 ? list.length : hoverIdx + 1;
+        list.splice(insertAt, 0, updated);
+        return list;
+      }
+
+      // before / after
       const siblingIds = list.filter((t) => t.goalId === d.goalId).map((t) => t.id);
       const targetId = siblingIds[d.targetIndex];
       let insertAt: number;
@@ -309,7 +371,21 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       } else {
         insertAt = list.length;
       }
-      list.splice(insertAt, 0, item);
+
+      // Определяем классификацию по соседям
+      const prevTask = d.targetIndex > 0 ? list.find((t) => t.id === siblingIds[d.targetIndex - 1]) : undefined;
+      const nextTask = list.find((t) => t.id === siblingIds[d.targetIndex]);
+      let updated: Task = item;
+      const becomesKey =
+        (prevTask && prevTask.isKeyTask && (!nextTask || nextTask.isKeyTask)) ||
+        (!prevTask && nextTask && nextTask.isKeyTask);
+      if (becomesKey) {
+        const parentId = prevTask?.isKeyTask ? (prevTask.parentTaskId ?? null) : (nextTask?.parentTaskId ?? null);
+        updated = { ...item, isKeyTask: true, parentTaskId: parentId };
+      } else {
+        updated = { ...item, isKeyTask: false, parentTaskId: null };
+      }
+      list.splice(insertAt, 0, updated);
       return list;
     });
   };
