@@ -1904,52 +1904,82 @@ function KeyTreeSection({
     const el = document.elementFromPoint(x, y) as HTMLElement | null;
     const nodeEl = el?.closest('[data-dnd-node="1"]') as HTMLElement | null;
     if (!nodeEl) {
-      setDrag((prev) => prev ? { ...prev, x, y, indicator: null, valid: false, hint: "Отпусти внутри дерева" } : prev);
+      setDrag((prev) => prev ? { ...prev, x, y, indicator: null, insideBox: null, valid: false, hint: "Отпусти внутри дерева" } : prev);
       return;
     }
     const targetTaskId = nodeEl.getAttribute("data-task-id")!;
     const targetLevel = Number(nodeEl.getAttribute("data-level")!);
     const targetParentId = nodeEl.getAttribute("data-parent-id") || null;
     const rect = nodeEl.getBoundingClientRect();
-    const isTop = y < rect.top + rect.height / 2;
-
-    const siblings = tasks.filter((t) => t.goalId === goalId && t.isKeyTask && (t.parentTaskId ?? null) === targetParentId);
-    const siblingIndex = siblings.findIndex((t) => t.id === targetTaskId);
-    const insertIndex = isTop ? siblingIndex : siblingIndex + 1;
+    const relY = (y - rect.top) / rect.height;
+    let mode: "before" | "after" | "inside" = "inside";
+    if (relY < 0.3) mode = "before";
+    else if (relY > 0.7) mode = "after";
 
     const forbidden = forbiddenIds(d.taskId);
-    let valid = true;
-    let hint = "";
     const draggedTask = tasks.find((t) => t.id === d.taskId);
     const currentParent = draggedTask?.parentTaskId ?? null;
 
-    if (forbidden.has(targetTaskId) || (targetParentId && forbidden.has(targetParentId))) {
-      valid = false; hint = "Нельзя вложить в саму себя";
-    } else if (targetLevel === 1) {
-      const currentRoots = tasks.filter((t) => t.goalId === goalId && t.isKeyTask && !t.parentTaskId);
-      const isCurrentlyRoot = !currentParent;
-      if (!isCurrentlyRoot && currentRoots.length >= 5) {
-        valid = false; hint = "Уровень 1 заполнен (макс 5)";
-      }
+    // Нельзя дропнуть на самого себя или потомка
+    if (forbidden.has(targetTaskId)) {
+      setDrag((prev) => prev ? { ...prev, x, y, indicator: null, insideBox: null, valid: false, hint: "Нельзя вложить в саму себя" } : prev);
+      return;
     }
 
-    if (valid) {
-      if (targetLevel === d.draggedLevel && targetParentId === currentParent) {
-        const pos = Math.max(1, Math.min(insertIndex + (isTop ? 1 : 0), siblings.length));
-        hint = `Останется на уровне ${d.draggedLevel}, позиция ${isTop ? insertIndex + 1 : insertIndex}`;
-      } else if (targetLevel === d.draggedLevel) {
-        hint = `Уровень ${targetLevel} · другой родитель`;
+    let valid = true;
+    let hint = "";
+    let effectiveParentId: string | null;
+    let effectiveLevel: number;
+    let insertIndex: number;
+    let indicator: { top: number; left: number; width: number } | null = null;
+    let insideBox: { top: number; left: number; width: number; height: number } | null = null;
+
+    if (mode === "inside") {
+      effectiveParentId = targetTaskId;
+      effectiveLevel = targetLevel + 1;
+      if (effectiveLevel > 5) {
+        valid = false; hint = "Максимум 5 уровней";
       } else {
-        hint = `Перейдёт на уровень ${targetLevel}`;
+        hint = `Станет подзадачей · уровень ${effectiveLevel}`;
       }
+      const childSiblings = tasks.filter((t) => t.goalId === goalId && t.isKeyTask && (t.parentTaskId ?? null) === targetTaskId);
+      insertIndex = childSiblings.length;
+      insideBox = { top: rect.top - 2, left: rect.left - 2, width: rect.width + 4, height: rect.height + 4 };
+    } else {
+      const isTop = mode === "before";
+      const siblings = tasks.filter((t) => t.goalId === goalId && t.isKeyTask && (t.parentTaskId ?? null) === targetParentId);
+      const siblingIndex = siblings.findIndex((t) => t.id === targetTaskId);
+      insertIndex = isTop ? siblingIndex : siblingIndex + 1;
+      effectiveParentId = targetParentId;
+      effectiveLevel = targetLevel;
+
+      if (targetParentId && forbidden.has(targetParentId)) {
+        valid = false; hint = "Нельзя вложить в саму себя";
+      } else if (targetLevel === 1) {
+        const currentRoots = tasks.filter((t) => t.goalId === goalId && t.isKeyTask && !t.parentTaskId);
+        const isCurrentlyRoot = !currentParent;
+        if (!isCurrentlyRoot && currentRoots.length >= 5) {
+          valid = false; hint = "Уровень 1 заполнен (макс 5)";
+        }
+      }
+
+      if (valid) {
+        if (targetLevel === d.draggedLevel && targetParentId === currentParent) {
+          hint = isTop ? "Переместить выше" : "Переместить ниже";
+        } else if (targetLevel === d.draggedLevel) {
+          hint = `Уровень ${targetLevel} · другой родитель`;
+        } else {
+          hint = `Перейдёт на уровень ${targetLevel}`;
+        }
+      }
+      indicator = {
+        top: isTop ? rect.top - 2 : rect.bottom - 2,
+        left: rect.left,
+        width: rect.width,
+      };
     }
 
-    const indicator = {
-      top: isTop ? rect.top - 2 : rect.bottom - 2,
-      left: rect.left,
-      width: rect.width,
-    };
-    setDrag((prev) => prev ? { ...prev, x, y, targetParentId, targetIndex: insertIndex, targetLevel, indicator, hint, valid } : prev);
+    setDrag((prev) => prev ? { ...prev, x, y, targetParentId: effectiveParentId, targetIndex: insertIndex, targetLevel: effectiveLevel, mode, indicator, insideBox, hint, valid } : prev);
   };
 
   const commitDrop = () => {
