@@ -4,6 +4,27 @@ import { ArrowLeft, Plus, Pencil, Trash2, Check, Play, Square, ChevronDown, X, B
 import { BrainstormListScreen, BrainstormAnswerScreen } from "./Brainstorm";
 import { GanttView } from "./GanttView";
 
+/* Блокировщик прокрутки страницы во время drag-and-drop на тач-устройствах.
+   Обычный touch-action / e.preventDefault на pointermove не работает на iOS,
+   поэтому вешаем нативный non-passive touchmove listener на document. */
+const preventTouchMove = (e: TouchEvent) => { e.preventDefault(); };
+let touchBlockCount = 0;
+function startBlockingTouchScroll() {
+  if (typeof document === "undefined") return;
+  if (touchBlockCount === 0) {
+    document.addEventListener("touchmove", preventTouchMove, { passive: false });
+  }
+  touchBlockCount++;
+}
+function stopBlockingTouchScroll() {
+  if (typeof document === "undefined") return;
+  if (touchBlockCount === 0) return;
+  touchBlockCount--;
+  if (touchBlockCount === 0) {
+    document.removeEventListener("touchmove", preventTouchMove);
+  }
+}
+
 
 /* =====================================================================
    Раздел «Задачи». Самодостаточный модуль — НЕ трогает существующий код.
