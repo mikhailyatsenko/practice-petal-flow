@@ -746,19 +746,6 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
   // ===== Лента =====
   return (
     <div className="px-4 pt-3 pb-2 space-y-3">
-      <button
-        onClick={() => {
-          if (viewMode === "key") {
-            const gid = initialGoalId ?? goals[0]?.id ?? null;
-            if (gid) setPendingParentInsert({ goalId: gid, parentId: null, level: 1 });
-          } else {
-            setCreating(true);
-          }
-        }}
-        className="tap btn-pill-orange w-full inline-flex items-center justify-center gap-1.5"
-      >
-        <Plus className="h-4 w-4" /> {viewMode === "key" ? "Добавить ключевую задачу" : "Добавить задачу"}
-      </button>
 
       {/* Активный фильтр по цели (когда пришли из «Цели») */}
       {initialGoalId && (
@@ -2247,6 +2234,12 @@ function KeyTreeSection({
       )}
 
 
+      {doneTasks.length > 0 && (
+        <div className="space-y-2">
+          {doneTasks.map((t) => renderDoneNode(t))}
+        </div>
+      )}
+
       <div className="flex justify-center">
         <button
           onClick={onAdd}
@@ -2257,11 +2250,6 @@ function KeyTreeSection({
         </button>
       </div>
 
-      {doneTasks.length > 0 && (
-        <div className="space-y-2">
-          {doneTasks.map((t) => renderDoneNode(t))}
-        </div>
-      )}
     </div>
   );
 }
