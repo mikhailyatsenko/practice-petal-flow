@@ -2235,11 +2235,6 @@ function KeyTreeSection({
       )}
 
 
-      {doneTasks.length > 0 && (
-        <div className="space-y-2">
-          {doneTasks.map((t) => renderDoneNode(t))}
-        </div>
-      )}
 
       <div className="flex justify-center">
         <button
