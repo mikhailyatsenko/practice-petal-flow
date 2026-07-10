@@ -4,6 +4,27 @@ import { ArrowLeft, Plus, Pencil, Trash2, Check, Play, Square, ChevronDown, X, B
 import { BrainstormListScreen, BrainstormAnswerScreen } from "./Brainstorm";
 import { GanttView } from "./GanttView";
 
+/* Блокировщик прокрутки страницы во время drag-and-drop на тач-устройствах.
+   Обычный touch-action / e.preventDefault на pointermove не работает на iOS,
+   поэтому вешаем нативный non-passive touchmove listener на document. */
+const preventTouchMove = (e: TouchEvent) => { e.preventDefault(); };
+let touchBlockCount = 0;
+function startBlockingTouchScroll() {
+  if (typeof document === "undefined") return;
+  if (touchBlockCount === 0) {
+    document.addEventListener("touchmove", preventTouchMove, { passive: false });
+  }
+  touchBlockCount++;
+}
+function stopBlockingTouchScroll() {
+  if (typeof document === "undefined") return;
+  if (touchBlockCount === 0) return;
+  touchBlockCount--;
+  if (touchBlockCount === 0) {
+    document.removeEventListener("touchmove", preventTouchMove);
+  }
+}
+
 
 /* =====================================================================
    Раздел «Задачи». Самодостаточный модуль — НЕ трогает существующий код.
@@ -292,8 +313,10 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     if (listLongPressRef.current) { window.clearTimeout(listLongPressRef.current); listLongPressRef.current = null; }
     listActiveRef.current = false;
     listStartPosRef.current = null;
+    stopBlockingTouchScroll();
     setListDrag(null);
   };
+
 
   const handleListPointerDown = (e: React.PointerEvent, task: Task) => {
     if (e.pointerType === "mouse" && e.button !== 0) return;
@@ -303,7 +326,9 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     listLongPressRef.current = window.setTimeout(() => {
       listActiveRef.current = true;
       listSuppressClickRef.current = true;
+      startBlockingTouchScroll();
       try { el.setPointerCapture(pid); } catch { /* noop */ }
+
       if (typeof navigator !== "undefined" && "vibrate" in navigator) {
         try { (navigator as Navigator).vibrate?.(15); } catch { /* noop */ }
       }
@@ -1948,6 +1973,7 @@ function KeyTreeSection({
     if (longPressRef.current) { window.clearTimeout(longPressRef.current); longPressRef.current = null; }
     activeRef.current = false;
     startPosRef.current = null;
+    stopBlockingTouchScroll();
     setDrag(null);
   };
 
@@ -1959,7 +1985,9 @@ function KeyTreeSection({
     longPressRef.current = window.setTimeout(() => {
       activeRef.current = true;
       suppressClickRef.current = true;
+      startBlockingTouchScroll();
       try { el.setPointerCapture(pid); } catch { /* noop */ }
+
       if (typeof navigator !== "undefined" && "vibrate" in navigator) {
         try { (navigator as Navigator).vibrate?.(15); } catch { /* noop */ }
       }
