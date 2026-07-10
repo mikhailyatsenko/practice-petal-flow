@@ -476,8 +476,9 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       for (const gid of goalOrder) {
         const items = byGoal.get(gid);
         if (!items || items.length === 0) continue;
-        const keys = items.filter((t) => t.isKeyTask);
-        const nonKeys = items.filter((t) => !t.isKeyTask);
+        const keys = items.filter((t) => t.isKeyTask && !t.done);
+        const nonKeys = items.filter((t) => !t.isKeyTask && !t.done);
+        const doneItems = items.filter((t) => t.done);
         const keyIds = new Set(keys.map((k) => k.id));
         const childrenMap = new Map<string | null, Task[]>();
         for (const t of keys) {
@@ -486,21 +487,22 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
           if (!childrenMap.has(key)) childrenMap.set(key, []);
           childrenMap.get(key)!.push(t);
         }
-        for (const arr of childrenMap.values()) {
-          arr.sort((a, b) => Number(a.done) - Number(b.done));
-        }
+        const goalGroup: Task[] = [];
         const dfs = (parentId: string | null) => {
           const arr = childrenMap.get(parentId) ?? [];
           for (const t of arr) {
-            result.push(t);
+            goalGroup.push(t);
             dfs(t.id);
           }
         };
         dfs(null);
-        nonKeys.sort((a, b) => Number(a.done) - Number(b.done));
-        result.push(...nonKeys);
+        goalGroup.push(...nonKeys);
+        // Единое правило: любая выполненная задача уходит в самый низ своей цели.
+        goalGroup.push(...doneItems);
+        result.push(...goalGroup);
       }
       return result;
+
     }
     const rank = (t: Task) => (t.isKeyTask ? getTaskLevel(tasks, t) : 999);
     list.sort((a, b) => {
