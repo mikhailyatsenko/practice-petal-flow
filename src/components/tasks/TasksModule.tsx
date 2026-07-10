@@ -1192,6 +1192,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
           }}
         />
       )}
+      {listDrag && (
         <div
           style={{
             position: "fixed",
