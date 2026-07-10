@@ -273,8 +273,13 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
     const rect = nodeEl.getBoundingClientRect();
     const isTop = y < rect.top + rect.height / 2;
 
-    const siblings = tasks.filter((t) => t.goalId === d.goalId);
+    // siblings БЕЗ перетаскиваемой задачи — так индексы вставки корректны
+    const siblings = tasks.filter((t) => t.goalId === d.goalId && t.id !== d.taskId);
     const siblingIndex = siblings.findIndex((t) => t.id === nodeTaskId);
+    if (siblingIndex < 0) {
+      setListDrag((p) => p ? { ...p, x, y, indicator: null, valid: false, hint: "Отпусти в списке своей цели" } : p);
+      return;
+    }
     const insertIndex = isTop ? siblingIndex : siblingIndex + 1;
 
     const indicator = {
@@ -282,7 +287,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
       left: rect.left,
       width: rect.width,
     };
-    const pos = Math.max(1, Math.min(isTop ? siblingIndex + 1 : siblingIndex + 1, siblings.length));
+    const pos = Math.max(1, Math.min(insertIndex + 1, siblings.length + 1));
     setListDrag((p) => p ? { ...p, x, y, targetIndex: insertIndex, indicator, valid: true, hint: `Позиция ${pos}` } : p);
   };
 
