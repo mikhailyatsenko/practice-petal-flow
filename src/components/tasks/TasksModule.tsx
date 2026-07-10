@@ -1176,7 +1176,22 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
           }}
         />
       )}
-      {listDrag && (
+      {listDrag && listDrag.insideBox && (
+        <div
+          style={{
+            position: "fixed",
+            top: listDrag.insideBox.top,
+            left: listDrag.insideBox.left,
+            width: listDrag.insideBox.width,
+            height: listDrag.insideBox.height,
+            border: `2px dashed ${listDrag.valid ? "#FF6D00" : "#d14343"}`,
+            borderRadius: 14,
+            background: listDrag.valid ? "rgba(255,109,0,0.06)" : "rgba(209,67,67,0.06)",
+            pointerEvents: "none",
+            zIndex: 60,
+          }}
+        />
+      )}
         <div
           style={{
             position: "fixed",
