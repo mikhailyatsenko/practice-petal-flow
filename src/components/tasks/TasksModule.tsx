@@ -2174,6 +2174,7 @@ function KeyTreeSection({
 
       <div className="space-y-2">
         {activeRoots.map((r) => renderNode(r, 1, null))}
+        {doneTasks.map((t) => renderDoneNode(t))}
       </div>
 
       {/* Плавающая подсказка + линия-индикатор при drag */}
@@ -2234,11 +2235,6 @@ function KeyTreeSection({
       )}
 
 
-      {doneTasks.length > 0 && (
-        <div className="space-y-2">
-          {doneTasks.map((t) => renderDoneNode(t))}
-        </div>
-      )}
 
       <div className="flex justify-center">
         <button
