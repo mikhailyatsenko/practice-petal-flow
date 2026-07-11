@@ -1062,50 +1062,85 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
             {/* Задачи */}
             {viewMode === "list" ? (
               <div className="space-y-2" style={{ touchAction: listDrag ? "none" : undefined }}>
-                {row.items.map((t) => {
-                  const isDragging = listDrag?.taskId === t.id;
-                  return (
-                    <motion.div
-                      key={t.id}
-                      layout
-                      transition={{ layout: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 } }}
-                    >
-                      <div
-                        data-list-dnd="1"
-                        data-task-id={t.id}
-                        data-goal-id={t.goalId}
-                        onPointerDown={(e) => handleListPointerDown(e, t)}
-                        onPointerMove={handleListPointerMove}
-                        onPointerUp={handleListPointerUp}
-                        onPointerCancel={handleListPointerUp}
-                        onClickCapture={handleListClickCapture}
-                        style={{
-                          opacity: isDragging ? 0.35 : 1,
-                          transition: "opacity 0.15s ease",
-                        }}
+                {(() => {
+                  const activeKeys = row.items.filter((t) => t.isKeyTask && !t.done);
+                  const nonKeyActive = row.items.filter((t) => !t.isKeyTask && !t.done);
+                  const doneTasks = row.items.filter((t) => t.done);
+
+                  const renderTask = (t: Task, level: number, inKeyTree: boolean) => {
+                    const isDragging = listDrag?.taskId === t.id;
+                    return (
+                      <motion.div
+                        key={t.id}
+                        layout
+                        transition={{ layout: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 } }}
                       >
-                        <TaskRow
-                          task={t}
-                          keyLevelColor={t.isKeyTask ? (KEY_LEVEL_META[getTaskLevel(tasks, t)] ?? KEY_LEVEL_META[5]).color : null}
-                          isTimerActive={activeTimerIds.has(t.id)}
-                          liveSeconds={elapsedMap[t.id] ?? 0}
-                          isShattering={shatteringIds.has(t.id)}
-                          onOpen={() => setOpenTaskId(t.id)}
-                          onComplete={() => handleMarkDone(t.id)}
-                        />
+                        <div
+                          data-list-dnd="1"
+                          data-task-id={t.id}
+                          data-goal-id={t.goalId}
+                          onPointerDown={(e) => handleListPointerDown(e, t)}
+                          onPointerMove={handleListPointerMove}
+                          onPointerUp={handleListPointerUp}
+                          onPointerCancel={handleListPointerUp}
+                          onClickCapture={handleListClickCapture}
+                          style={{
+                            marginLeft: inKeyTree ? (level === 1 ? 0 : 8) : 0,
+                            opacity: isDragging ? 0.35 : 1,
+                            transition: "opacity 0.15s ease",
+                          }}
+                        >
+                          <TaskRow
+                            task={t}
+                            keyLevelColor={inKeyTree ? (KEY_LEVEL_META[getTaskLevel(tasks, t)] ?? KEY_LEVEL_META[5]).color : null}
+                            isTimerActive={activeTimerIds.has(t.id)}
+                            liveSeconds={elapsedMap[t.id] ?? 0}
+                            isShattering={shatteringIds.has(t.id)}
+                            onOpen={() => setOpenTaskId(t.id)}
+                            onComplete={() => handleMarkDone(t.id)}
+                          />
+                        </div>
+                      </motion.div>
+                    );
+                  };
+
+                  const keyChildrenMap = new Map<string | null, Task[]>();
+                  for (const t of activeKeys) {
+                    const p = t.parentTaskId && activeKeys.some((x) => x.id === t.parentTaskId) ? t.parentTaskId : null;
+                    if (!keyChildrenMap.has(p)) keyChildrenMap.set(p, []);
+                    keyChildrenMap.get(p)!.push(t);
+                  }
+                  const renderKeyTree = (parentId: string | null, level: number): React.ReactNode[] => {
+                    const arr = keyChildrenMap.get(parentId) ?? [];
+                    return arr.flatMap((t) => (
+                      <React.Fragment key={t.id}>
+                        {renderTask(t, level, true)}
+                        {renderKeyTree(t.id, level + 1)}
+                      </React.Fragment>
+                    ) as unknown as React.ReactNode[]);
+                  };
+
+                  return (
+                    <>
+                      {renderKeyTree(null, 1)}
+                      {nonKeyActive.map((t) => renderTask(t, 1, false))}
+                      {doneTasks.map((t) => {
+                        const inKeyTree = !!t.isKeyTask;
+                        const level = inKeyTree ? getTaskLevel(tasks, t) : 1;
+                        return renderTask(t, level, inKeyTree);
+                      })}
+                      <div className="flex justify-center pt-1">
+                        <button
+                          onClick={() => { setCreateForGoalId(row.gid); setCreating(true); }}
+                          className="tap inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
+                          style={{ background: "rgba(0,0,0,0.03)", color: "#8a8a8a", border: "1px dashed #d4d4d4" }}
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Добавить задачу
+                        </button>
                       </div>
-                    </motion.div>
+                    </>
                   );
-                })}
-                <div className="flex justify-center pt-1">
-                  <button
-                    onClick={() => { setCreateForGoalId(row.gid); setCreating(true); }}
-                    className="tap inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
-                    style={{ background: "rgba(0,0,0,0.03)", color: "#8a8a8a", border: "1px dashed #d4d4d4" }}
-                  >
-                    <Plus className="h-3.5 w-3.5" /> Добавить задачу
-                  </button>
-                </div>
+                })()}
               </div>
 
             ) : (
@@ -1922,17 +1957,36 @@ function KeyTreeSection({
   onAdd: () => void;
 }) {
   const goalKeyTasks = tasks.filter((t) => t.goalId === goalId && t.isKeyTask);
-  const activeKeyIds = new Set(goalKeyTasks.filter((t) => !t.done).map((t) => t.id));
+
+  const hasDoneAncestor = (task: Task): boolean => {
+    const seen = new Set<string>();
+    let current: Task | null = task;
+    while (current) {
+      const pid: string | null | undefined = current.parentTaskId;
+      if (!pid || seen.has(current.id)) break;
+      seen.add(current.id);
+      const parent: Task | undefined = goalKeyTasks.find((t) => t.id === pid);
+      if (!parent) break;
+      if (parent.done) return true;
+      current = parent;
+    }
+    return false;
+  };
+
+  const activeKeyIds = new Set(goalKeyTasks.filter((t) => !t.done && !hasDoneAncestor(t)).map((t) => t.id));
   const normalizeActiveParent = (task: Task) => {
     const parentId = task.parentTaskId ?? null;
     return parentId && activeKeyIds.has(parentId) ? parentId : null;
   };
-  const activeRoots = goalKeyTasks.filter((t) => !t.done && normalizeActiveParent(t) === null);
-  const doneTasks = goalKeyTasks.filter((t) => t.done);
+  const activeRoots = goalKeyTasks.filter((t) => !t.done && !hasDoneAncestor(t) && normalizeActiveParent(t) === null);
+  const doneTasks = goalKeyTasks.filter((t) => t.done || hasDoneAncestor(t));
+  const doneRoots = doneTasks.filter((t) => !t.parentTaskId || !doneTasks.some((p) => p.id === t.parentTaskId));
   const totalKey = goalKeyTasks.length;
 
   const getActiveChildren = (parentId: string): Task[] =>
-    goalKeyTasks.filter((t) => !t.done && normalizeActiveParent(t) === parentId);
+    goalKeyTasks.filter((t) => !t.done && !hasDoneAncestor(t) && normalizeActiveParent(t) === parentId);
+  const getDoneChildren = (parentId: string): Task[] =>
+    doneTasks.filter((t) => t.parentTaskId === parentId).sort((a, b) => Number(a.done) - Number(b.done));
 
   // Собрать все id-потомков (включая сам корень, кроме первого)
   const collectDescendantIds = (rootId: string): string[] => {
@@ -2224,10 +2278,12 @@ function KeyTreeSection({
     );
   };
 
-  const renderDoneNode = (task: Task): React.ReactNode => {
-    const level = getTaskLevel(tasks, task);
+  const renderDoneNode = (task: Task, level: number, parentId: string | null): React.ReactNode => {
     const meta = KEY_LEVEL_META[level] ?? KEY_LEVEL_META[5];
     const isDragging = drag?.taskId === task.id;
+    const children = getDoneChildren(task.id);
+    const canExpand = children.length > 0;
+    const isOpen = expanded.has(task.id);
 
     return (
       <motion.div layout transition={{ layout: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 } }} key={task.id} style={{ marginLeft: level === 1 ? 0 : 8 }}>
@@ -2235,7 +2291,7 @@ function KeyTreeSection({
           data-dnd-node="1"
           data-task-id={task.id}
           data-level={level}
-          data-parent-id={task.parentTaskId ?? ""}
+          data-parent-id={parentId ?? ""}
           onPointerDown={(e) => handlePointerDown(e, task, level)}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
@@ -2250,16 +2306,22 @@ function KeyTreeSection({
           <KeyNodeCard
             task={task}
             color={meta.color}
-            canExpand={false}
-            isOpen={false}
+            canExpand={canExpand}
+            isOpen={isOpen}
             isShattering={shatteringIds.has(task.id)}
             isTimerActive={activeTimerIds.has(task.id)}
             liveSeconds={elapsedMap[task.id] ?? 0}
-            onToggleTree={() => {}}
+            onToggleTree={() => toggleSubtree(task)}
             onOpenTask={() => onOpenTask(task.id)}
             onComplete={() => onComplete(task.id)}
           />
         </div>
+
+        {isOpen && canExpand && (
+          <div className="mt-1 space-y-1">
+            {children.map((c) => renderDoneNode(c, level + 1, task.id))}
+          </div>
+        )}
       </motion.div>
     );
   };
@@ -2274,7 +2336,7 @@ function KeyTreeSection({
 
       <div className="space-y-2">
         {activeRoots.map((r) => renderNode(r, 1, null))}
-        {doneTasks.map((t) => renderDoneNode(t))}
+        {doneRoots.map((t) => renderDoneNode(t, 1, null))}
       </div>
 
       {/* Плавающая подсказка + линия-индикатор при drag */}
