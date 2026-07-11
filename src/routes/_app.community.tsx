@@ -185,7 +185,6 @@ function MessengerLink({ href, kind }: { href: string; kind: "telegram" | "max" 
 function PromoteBanner({ variant }: { variant: "max" | "telegram" }) {
   const isMax = variant === "max";
   const href = isMax ? "https://max.ru/mylife_club" : "https://t.me/mylife_club";
-  const [tab, setTab] = useState<"text" | "video">("text");
   return (
     <div
       className="mt-2 mb-1 rounded-2xl p-3 animate-fade-up hairline"
@@ -207,69 +206,18 @@ function PromoteBanner({ variant }: { variant: "max" | "telegram" }) {
         </div>
       </div>
 
-      <div
-        className="mt-3 flex rounded-xl"
-        style={{ background: "rgba(0,0,0,0.05)", padding: 3 }}
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="tap mt-3 flex items-center justify-center rounded-xl w-full py-2 text-white font-semibold text-[13px] shadow-[0_4px_12px_rgba(255,109,0,0.30)]"
+        style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
       >
-        {([
-          { k: "text" as const, label: "📖 Текст" },
-          { k: "video" as const, label: "▶️ Видео" },
-        ]).map((t) => {
-          const active = tab === t.k;
-          return (
-            <button
-              key={t.k}
-              onClick={() => setTab(t.k)}
-              className="tap flex-1 rounded-lg py-1.5 text-[12px] font-medium transition-colors"
-              style={{
-                background: active ? "linear-gradient(135deg, #FFB300, #FF6D00)" : "transparent",
-                color: active ? "#fff" : "#6b6356",
-              }}
-            >
-              {t.label}
-            </button>
-          );
-        })}
-      </div>
+        {isMax ? "Открыть в MAX →" : "Открыть в Telegram →"}
+      </a>
 
-      {tab === "text" ? (
-        <div className="mt-2.5 rounded-xl bg-card/70 p-3 text-[12.5px] leading-snug text-foreground/85 whitespace-pre-line">
-          {isMax
-            ? "1. Нажми кнопку ниже — откроется MAX.\n2. Подпишись на канал клуба.\n3. Разреши уведомления, чтобы не пропускать сообщения от бадди и четвёрки."
-            : "1. Нажми кнопку ниже — откроется Telegram.\n2. Подпишись на канал клуба.\n3. Разреши уведомления, чтобы не пропускать сообщения от бадди и четвёрки."}
-        </div>
-      ) : (
-        <div
-          className="mt-2.5 relative aspect-video w-full rounded-xl flex items-center justify-center overflow-hidden"
-          style={{ background: "linear-gradient(135deg, #2a1a05 0%, #4a2c0a 50%, #1a0e00 100%)" }}
-        >
-          <button
-            aria-label="Воспроизвести"
-            className="tap h-14 w-14 rounded-full flex items-center justify-center text-white shadow-lg"
-            style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="white" className="ml-0.5">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          </button>
-          <span className="absolute bottom-2 right-2.5 rounded-md bg-black/60 px-2 py-0.5 text-[11px] font-medium text-white">
-            0:45
-          </span>
-        </div>
-      )}
-
-      <div className="mt-3 flex justify-center">
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="tap inline-flex items-center justify-center rounded-xl px-10 py-2.5 text-white font-semibold text-[13.5px] shadow-[0_4px_12px_rgba(255,109,0,0.30)]"
-          style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
-        >
-          {isMax ? "Открыть в MAX →" : "Открыть в Telegram →"}
-        </a>
-      </div>
     </div>
   );
 }
+
 
