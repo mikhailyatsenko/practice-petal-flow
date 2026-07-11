@@ -179,7 +179,31 @@ function ChannelRow({
   );
 }
 
+
+function ChannelRowKz({ item }: { item: ChannelItem }) {
+  return (
+    <a
+      href={item.telegram}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="tap w-full bg-card hairline rounded-xl shadow-card px-3.5 py-3 flex items-center gap-3 text-left"
+    >
+      <div className="h-10 w-10 shrink-0 rounded-xl bg-secondary flex items-center justify-center text-xl">
+        {item.emoji}
+      </div>
+      <div className="min-w-0 flex-1">
+        <h3 className="text-[14px] font-medium leading-tight truncate">{item.title}</h3>
+        <p className="mt-0.5 text-[11.5px] text-muted-foreground leading-snug line-clamp-2">
+          {item.subtitle}
+        </p>
+      </div>
+      <TelegramIcon size={20} />
+    </a>
+  );
+}
+
 function MessengerLink({ href, kind }: { href: string; kind: "telegram" | "max" }) {
+
   return (
     <a
       href={href}
