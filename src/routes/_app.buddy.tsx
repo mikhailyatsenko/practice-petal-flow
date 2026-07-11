@@ -4,6 +4,7 @@ import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, MessageCircl
 import { BackButton } from "@/components/layout/BackButton";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
+import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 export const Route = createFileRoute("/_app/buddy")({
   validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "create-tg-no-username" | "create-max" } => {
