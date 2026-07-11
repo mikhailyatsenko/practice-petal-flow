@@ -641,7 +641,7 @@ function CreateRequest({
         <div>
           <h3 className="text-[14px] font-semibold">Дополнительные комментарии</h3>
           <p className="text-[12px] text-muted-foreground mt-0.5 mb-2">
-            Напиши, в какие ещё дни и часы тебе удобно созваниваться, в каком мессенджере, и любые другие важные моменты
+            Напиши, в какие ещё дни и часы тебе удобно созваниваться, и любые другие важные моменты
           </p>
           <div className="relative">
             <textarea
