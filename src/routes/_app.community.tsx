@@ -8,9 +8,13 @@ import { isFeatureUnlocked, unlockLevelOf, usePreviewLevel } from "@/lib/preview
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 export const Route = createFileRoute("/_app/community")({
-  validateSearch: (search: Record<string, unknown>): { promote?: "max" | "telegram" } => {
+  validateSearch: (search: Record<string, unknown>): { promote?: "max" | "telegram"; country?: "kz" } => {
     const p = search.promote;
-    return p === "max" || p === "telegram" ? { promote: p } : {};
+    const c = search.country;
+    const out: { promote?: "max" | "telegram"; country?: "kz" } = {};
+    if (p === "max" || p === "telegram") out.promote = p;
+    if (c === "kz") out.country = "kz";
+    return out;
   },
   head: () => ({
     meta: [
@@ -20,6 +24,7 @@ export const Route = createFileRoute("/_app/community")({
   }),
   component: CommunityScreen,
 });
+
 
 type ChannelKey = "channel" | "chat" | "help";
 
