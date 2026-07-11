@@ -2184,7 +2184,7 @@ function KeyTreeSection({
     const isDragging = drag?.taskId === task.id;
 
     return (
-      <motion.div layout transition={{ layout: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 } }} key={task.id} style={{ marginLeft: (level - 1) * 14 }}>
+      <motion.div layout transition={{ layout: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 } }} key={task.id} style={{ marginLeft: (level - 1) * 8 }}>
         <div
           data-dnd-node="1"
           data-task-id={task.id}
@@ -2216,7 +2216,7 @@ function KeyTreeSection({
         </div>
 
         {isOpen && canExpand && (
-          <div className="mt-2 space-y-2">
+          <div className="mt-1 space-y-1">
             {children.map((c) => renderNode(c, level + 1, task.id))}
           </div>
         )}
@@ -2230,7 +2230,7 @@ function KeyTreeSection({
     const isDragging = drag?.taskId === task.id;
 
     return (
-      <motion.div layout transition={{ layout: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 } }} key={task.id} style={{ marginLeft: (level - 1) * 14 }}>
+      <motion.div layout transition={{ layout: { type: "spring", stiffness: 260, damping: 30, mass: 0.9 } }} key={task.id} style={{ marginLeft: (level - 1) * 8 }}>
         <div
           data-dnd-node="1"
           data-task-id={task.id}
