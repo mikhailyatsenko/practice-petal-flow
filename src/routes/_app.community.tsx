@@ -69,28 +69,34 @@ function CommunityScreen() {
   const previewLevel = usePreviewLevel();
   const buddyOpen = isFeatureUnlocked("buddy", previewLevel);
   const foursomeOpen = isFeatureUnlocked("foursome", previewLevel);
-  const { promote } = Route.useSearch();
+  const { promote, country } = Route.useSearch();
+  const isKz = country === "kz";
 
   const [openKey, setOpenKey] = useState<ChannelKey | null>(null);
 
   return (
     <div className="px-4">
-      {promote === "max" && <PromoteBanner variant="max" />}
-      {promote === "telegram" && <PromoteBanner variant="telegram" />}
+      {!isKz && promote === "max" && <PromoteBanner variant="max" />}
+      {!isKz && promote === "telegram" && <PromoteBanner variant="telegram" />}
 
       <SectionHeader emoji="👥" title="Комьюнити" subtitle="Поддержка, общение и партнёры по росту" />
 
-      {/* Каналы с раскрытием мессенджеров */}
+      {/* Каналы */}
       <div className="space-y-2">
-        {CHANNELS.map((c) => (
-          <ChannelRow
-            key={c.key}
-            item={c}
-            open={openKey === c.key}
-            onToggle={() => setOpenKey(openKey === c.key ? null : c.key)}
-          />
-        ))}
+        {CHANNELS.map((c) =>
+          isKz ? (
+            <ChannelRowKz key={c.key} item={c} />
+          ) : (
+            <ChannelRow
+              key={c.key}
+              item={c}
+              open={openKey === c.key}
+              onToggle={() => setOpenKey(openKey === c.key ? null : c.key)}
+            />
+          )
+        )}
       </div>
+
 
       {/* Затем: Бадди и Четвёрка — открытые или с замком */}
       <div className="mt-3 space-y-2">
