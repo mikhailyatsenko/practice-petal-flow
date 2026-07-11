@@ -1323,57 +1323,77 @@ function ContactStepTelegram({ onBack, onDone }: { onBack: () => void; onDone: (
         </p>
       </div>
 
-      {/* Видеоинструкция */}
-      <div
-        className="rounded-2xl mb-4 overflow-hidden hairline"
-        style={{ background: "linear-gradient(135deg, #eaf3ff, #dbe9ff)" }}
-      >
-        <div className="aspect-video flex items-center justify-center relative">
-          <div
-            className="h-14 w-14 rounded-full flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.9)", boxShadow: "0 4px 14px rgba(0,0,0,0.15)" }}
-          >
-            <Play className="h-6 w-6" style={{ color: "#229ED9" }} fill="#229ED9" />
-          </div>
-        </div>
-        <div className="px-4 py-3 bg-card">
-          <p className="text-[13px] font-semibold">🎬 Видео: как задать username в Telegram</p>
-          <p className="text-[12px] text-muted-foreground mt-0.5">1:20 · пошагово, со скриншотами</p>
-        </div>
-      </div>
-
-      {/* Пошаговая инструкция */}
-      <h3 className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground mb-2 px-1">
-        Пошагово
-      </h3>
-      <div className="space-y-3 mb-4">
-        {TG_STEPS.map((s, i) => (
-          <div key={i} className="bg-card hairline shadow-card rounded-2xl p-3.5">
-            <div className="flex items-start gap-3">
-              <div
-                className="h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-[13px] font-bold text-white"
-                style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
-              >
-                {i + 1}
-              </div>
-              <div className="min-w-0 flex-1">
-                <h4 className="text-[14px] font-semibold leading-tight">{s.title}</h4>
-                <p className="text-[13px] text-muted-foreground mt-1 leading-snug">{s.text}</p>
-              </div>
-            </div>
-            {/* Плейсхолдер скриншота */}
-            <div
-              className="mt-3 rounded-xl flex items-center justify-center text-[11px] text-muted-foreground"
+      {/* Переключатель Текст / Видео */}
+      <div className="flex rounded-xl mb-3" style={{ background: "#f0ebe2", padding: 4 }}>
+        {([
+          { k: "text" as const, label: "📖 Текст" },
+          { k: "video" as const, label: "▶️ Видео" },
+        ]).map((t) => {
+          const active = tab === t.k;
+          return (
+            <button
+              key={t.k}
+              onClick={() => setTab(t.k)}
+              className="tap flex-1 rounded-lg py-2 text-[13px] font-medium transition-colors"
               style={{
-                background: "repeating-linear-gradient(45deg, #f5efe4, #f5efe4 8px, #ede4d0 8px, #ede4d0 16px)",
-                height: 140,
+                background: active ? "linear-gradient(135deg, #FFB300, #FF6D00)" : "transparent",
+                color: active ? "#fff" : "#6b6356",
               }}
             >
-              скриншот шага {i + 1}
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {tab === "video" ? (
+        <div
+          className="rounded-2xl mb-4 overflow-hidden hairline animate-fade-up"
+          style={{ background: "linear-gradient(135deg, #eaf3ff, #dbe9ff)" }}
+        >
+          <div className="aspect-video flex items-center justify-center relative">
+            <div
+              className="h-14 w-14 rounded-full flex items-center justify-center"
+              style={{ background: "rgba(255,255,255,0.9)", boxShadow: "0 4px 14px rgba(0,0,0,0.15)" }}
+            >
+              <Play className="h-6 w-6" style={{ color: "#229ED9" }} fill="#229ED9" />
             </div>
           </div>
-        ))}
-      </div>
+          <div className="px-4 py-3 bg-card">
+            <p className="text-[13px] font-semibold">🎬 Видео: как задать username в Telegram</p>
+            <p className="text-[12px] text-muted-foreground mt-0.5">1:20 · пошагово, со скриншотами</p>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-3 mb-4 animate-fade-up">
+          {TG_STEPS.map((s, i) => (
+            <div key={i} className="bg-card hairline shadow-card rounded-2xl p-3.5">
+              <div className="flex items-start gap-3">
+                <div
+                  className="h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-[13px] font-bold text-white"
+                  style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+                >
+                  {i + 1}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h4 className="text-[14px] font-semibold leading-tight">{s.title}</h4>
+                  <p className="text-[13px] text-muted-foreground mt-1 leading-snug">{s.text}</p>
+                </div>
+              </div>
+              <div
+                className="mt-3 rounded-xl flex items-center justify-center text-[11px] text-muted-foreground"
+                style={{
+                  background: "repeating-linear-gradient(45deg, #f5efe4, #f5efe4 8px, #ede4d0 8px, #ede4d0 16px)",
+                  height: 140,
+                }}
+              >
+                скриншот шага {i + 1}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
 
       {status === "not_found" && (
         <div
