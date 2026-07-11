@@ -203,6 +203,9 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
           >
             <TelegramIcon size={18} />
             <span>Комьюнити — Казахстан</span>
+          </Link>
+
+
 
           <Link
             to="/buddy"
