@@ -641,6 +641,12 @@ function CreateRequest({
           </div>
         </div>
 
+        {contactVariant !== "none" && (
+          <ContactField variant={contactVariant} value={contact} onChange={setContact} />
+        )}
+
+
+
         <button
           disabled={!valid}
           onClick={() => valid && onSubmit()}
