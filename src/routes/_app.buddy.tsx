@@ -135,9 +135,22 @@ function BuddyScreen() {
     case "create_request":
       return (
         <CreateRequest
-          contactVariant={contactVariant}
           onBack={() => setScreen({ name: "no_buddy" })}
-          onSubmit={() => setScreen({ name: "waiting", to: DEMO_REQUESTS[0] })}
+          onSubmit={() => {
+            if (contactVariant !== "none") {
+              setScreen({ name: "contact_step" });
+            } else {
+              setScreen({ name: "waiting", to: DEMO_REQUESTS[0] });
+            }
+          }}
+        />
+      );
+    case "contact_step":
+      return (
+        <ContactStep
+          variant={contactVariant === "none" ? "tg-no-username" : contactVariant}
+          onBack={() => setScreen({ name: "create_request" })}
+          onDone={() => setScreen({ name: "waiting", to: DEMO_REQUESTS[0] })}
         />
       );
     case "browse_requests":
@@ -153,6 +166,7 @@ function BuddyScreen() {
       return <HasBuddy onBack={() => setScreen({ name: "no_buddy" })} buddy={DEMO_BUDDY} />;
   }
 }
+
 
 type ContactVariant = "none" | "tg-no-username" | "max";
 
