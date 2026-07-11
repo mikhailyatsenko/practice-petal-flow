@@ -1085,7 +1085,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
                           onPointerCancel={handleListPointerUp}
                           onClickCapture={handleListClickCapture}
                           style={{
-                            marginLeft: inKeyTree ? (level === 1 ? 0 : 8) : 0,
+                            marginLeft: inKeyTree ? (level - 1) * 8 : 0,
                             opacity: isDragging ? 0.35 : 1,
                             transition: "opacity 0.15s ease",
                           }}
