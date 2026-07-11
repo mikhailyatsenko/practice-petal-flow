@@ -174,6 +174,46 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
           </button>
 
           <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
+            Демо · мессенджеры
+          </div>
+          <Link
+            to="/community"
+            search={{ promote: "max" }}
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <MaxIcon size={18} />
+            <span>Открыть клуб в MAX</span>
+          </Link>
+          <Link
+            to="/community"
+            search={{ promote: "telegram" }}
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <TelegramIcon size={18} />
+            <span>Открыть клуб в Telegram</span>
+          </Link>
+          <Link
+            to="/buddy"
+            search={{ demo: "create-tg-no-username" }}
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <TelegramIcon size={18} />
+            <span>Заявка — Telegram без юзернейма</span>
+          </Link>
+          <Link
+            to="/buddy"
+            search={{ demo: "create-max" }}
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <MaxIcon size={18} />
+            <span>Заявка — MAX</span>
+          </Link>
+
+          <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
             Демо-уровни
           </div>
           {([1, 2, 3, 4, 5, 6] as PreviewLevel[]).map((n) => {
