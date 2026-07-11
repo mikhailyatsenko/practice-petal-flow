@@ -1725,16 +1725,13 @@ function StartBotStep({
           </span>
         </div>
         <p className="text-[13px] leading-snug text-foreground/80">{authorMsg}</p>
-        <p className="text-[12px] leading-snug text-muted-foreground mt-2">
-          Это техническое требование мессенджера: бот не может написать первым, пока ты сам не откроешь с ним чат и не нажмёшь «Старт».
-        </p>
       </div>
 
       <div className="bg-card hairline shadow-card rounded-2xl p-4 mb-4">
         <h3 className="text-[14px] font-semibold mb-2">Что нужно сделать</h3>
         <ol className="space-y-2 text-[13px] text-foreground/85 list-decimal pl-5">
-          <li>Нажми кнопку ниже — откроется чат с ботом клуба в {targetName} ({botName}).</li>
-          <li>В открывшемся чате нажми кнопку «Старт» (или отправь /start).</li>
+          <li>Нажми «Перейти в {targetName} и нажать «Старт»» — откроется бот клуба.</li>
+          <li>Нажми «Старт» в чате с ботом (или отправь /start).</li>
           <li>Вернись сюда и нажми «Я запустил бота, проверить».</li>
         </ol>
       </div>
