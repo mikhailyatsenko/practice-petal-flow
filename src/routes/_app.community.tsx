@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { SectionHeader, SubItemList } from "@/components/section/SubItemList";
 import { BuddyLockedPreview } from "@/components/section/BuddyLockedPreview";
 import { FoursomeLockedPreview } from "@/components/section/FoursomeLockedPreview";
@@ -67,18 +67,11 @@ function CommunityScreen() {
   const { promote } = Route.useSearch();
 
   const [openKey, setOpenKey] = useState<ChannelKey | null>(null);
-  const [bannerClosed, setBannerClosed] = useState(false);
-
-  const showBanner = !!promote && !bannerClosed;
 
   return (
     <div className="px-4">
-      {showBanner && promote === "max" && (
-        <PromoteBanner variant="max" onClose={() => setBannerClosed(true)} />
-      )}
-      {showBanner && promote === "telegram" && (
-        <PromoteBanner variant="telegram" onClose={() => setBannerClosed(true)} />
-      )}
+      {promote === "max" && <PromoteBanner variant="max" />}
+      {promote === "telegram" && <PromoteBanner variant="telegram" />}
 
       <SectionHeader emoji="👥" title="Комьюнити" subtitle="Поддержка, общение и партнёры по росту" />
 
@@ -189,39 +182,40 @@ function MessengerLink({ href, kind }: { href: string; kind: "telegram" | "max" 
   );
 }
 
-function PromoteBanner({
-  variant,
-  onClose,
-}: {
-  variant: "max" | "telegram";
-  onClose: () => void;
-}) {
+function PromoteBanner({ variant }: { variant: "max" | "telegram" }) {
   const isMax = variant === "max";
+  const href = isMax ? "https://max.ru/mylife_club" : "https://t.me/mylife_club";
   return (
     <div
-      className="mt-2 mb-1 rounded-2xl p-3 flex items-start gap-3 animate-fade-up hairline"
+      className="mt-2 mb-1 rounded-2xl p-3 animate-fade-up hairline"
       style={{ background: isMax ? "#f4f0ff" : "#eaf6fd" }}
     >
-      <div className="shrink-0">
-        {isMax ? <MaxIcon size={40} /> : <TelegramIcon size={40} />}
+      <div className="flex items-start gap-3">
+        <div className="shrink-0">
+          {isMax ? <MaxIcon size={40} /> : <TelegramIcon size={40} />}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[13.5px] font-semibold leading-tight">
+            {isMax ? "Открой клуб и в MAX" : "Открой клуб и в Telegram"}
+          </p>
+          <p className="mt-1 text-[12px] text-muted-foreground leading-snug">
+            {isMax
+              ? "Чтобы не терять сообщения от бадди и четвёрки, если они пишут в MAX."
+              : "Чтобы не терять сообщения от бадди и четвёрки, если они пишут в Telegram."}
+          </p>
+        </div>
       </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-[13.5px] font-semibold leading-tight">
-          {isMax ? "Открой клуб и в MAX" : "Открой клуб и в Telegram"}
-        </p>
-        <p className="mt-1 text-[12px] text-muted-foreground leading-snug">
-          {isMax
-            ? "Чтобы не терять сообщения от бадди и четвёрки, если они пишут в MAX."
-            : "Чтобы не терять сообщения от бадди и четвёрки, если они пишут в Telegram."}
-        </p>
-      </div>
-      <button
-        onClick={onClose}
-        aria-label="Закрыть"
-        className="tap shrink-0 -mr-1 -mt-1 p-1 text-muted-foreground"
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="tap mt-3 flex items-center justify-center gap-2 rounded-2xl py-3 text-white font-semibold text-[14px] shadow-[0_10px_30px_rgba(255,109,0,0.35)]"
+        style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
       >
-        <X className="h-4 w-4" />
-      </button>
+        {isMax ? <MaxIcon size={20} /> : <TelegramIcon size={20} />}
+        <span>{isMax ? "Открыть в MAX" : "Открыть в Telegram"} →</span>
+      </a>
     </div>
   );
 }
+
