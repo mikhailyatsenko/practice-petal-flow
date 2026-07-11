@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { SectionHeader, SubItemList } from "@/components/section/SubItemList";
 import { BuddyLockedPreview } from "@/components/section/BuddyLockedPreview";
 import { FoursomeLockedPreview } from "@/components/section/FoursomeLockedPreview";
