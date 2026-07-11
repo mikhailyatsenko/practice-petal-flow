@@ -1441,6 +1441,8 @@ const MAX_STEPS = [
 function ContactStepMax({ onBack, onDone }: { onBack: () => void; onDone: () => void }) {
   const [pasted, setPasted] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [tab, setTab] = useState<"text" | "video">("text");
+
 
   const valid = pasted.trim().length > 5;
 
