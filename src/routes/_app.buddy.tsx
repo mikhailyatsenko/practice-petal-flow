@@ -1248,3 +1248,40 @@ function AnswerBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
+
+function ContactField({
+  variant,
+  value,
+  onChange,
+}: {
+  variant: Exclude<ContactVariant, "none">;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const isMax = variant === "max";
+  const title = isMax ? "Ссылка на профиль в MAX" : "Ссылка на профиль в Telegram";
+  const hint = isMax
+    ? "У тебя нет username, поэтому вставь прямую ссылку на свой профиль в MAX — по ней с тобой смогут связаться."
+    : "У тебя не задан username в Telegram. Вставь прямую ссылку на свой профиль (t.me/+…) — по ней с тобой смогут связаться.";
+  const placeholder = isMax ? "https://max.ru/…" : "https://t.me/+…";
+
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-1">
+        {isMax ? <MaxIcon size={18} /> : <TelegramIcon size={18} />}
+        <h3 className="text-[14px] font-semibold">{title}</h3>
+      </div>
+      <p className="text-[12px] text-muted-foreground mb-2">{hint}</p>
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        inputMode="url"
+        autoCapitalize="off"
+        autoCorrect="off"
+        className="w-full bg-card rounded-xl px-3.5 py-3 text-[14px] outline-none transition-colors"
+        style={{ border: `1px solid ${value ? "#FF6D00" : "#ede8df"}` }}
+      />
+    </div>
+  );
+}
