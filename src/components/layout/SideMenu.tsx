@@ -226,6 +226,25 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             <span>Заявка — MAX</span>
           </Link>
 
+          <Link
+            to="/buddy"
+            search={{ demo: "start-max-bot" }}
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <MaxIcon size={18} />
+            <span>Отклик — запусти MAX-бота</span>
+          </Link>
+          <Link
+            to="/buddy"
+            search={{ demo: "start-tg-bot" }}
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <TelegramIcon size={18} />
+            <span>Отклик — запусти Telegram-бота</span>
+          </Link>
+
           <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
             Демо-уровни
           </div>

@@ -7,9 +7,16 @@ import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 export const Route = createFileRoute("/_app/buddy")({
-  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "create-tg-no-username" | "create-max" } => {
+  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "create-tg-no-username" | "create-max" | "start-max-bot" | "start-tg-bot" } => {
     const d = search.demo;
-    if (d === "has" || d === "waiting" || d === "create-tg-no-username" || d === "create-max") {
+    if (
+      d === "has" ||
+      d === "waiting" ||
+      d === "create-tg-no-username" ||
+      d === "create-max" ||
+      d === "start-max-bot" ||
+      d === "start-tg-bot"
+    ) {
       return { demo: d };
     }
     return {};
@@ -41,7 +48,8 @@ type Screen =
   | { name: "no_buddy" }
   | { name: "instructions" }
   | { name: "create_request" }
-  | { name: "contact_step" }
+  | { name: "contact_step"; variant?: "max" | "tg-no-username" }
+  | { name: "start_bot"; variant: "max" | "tg" }
   | { name: "browse_requests" }
   | { name: "waiting"; to: BuddyRequest }
   | { name: "has_buddy" };
@@ -120,7 +128,11 @@ function BuddyScreen() {
         ? { name: "waiting", to: DEMO_REQUESTS[0] }
         : demo === "create-tg-no-username" || demo === "create-max"
           ? { name: "contact_step" }
-          : { name: "no_buddy" };
+          : demo === "start-max-bot"
+            ? { name: "start_bot", variant: "max" }
+            : demo === "start-tg-bot"
+              ? { name: "start_bot", variant: "tg" }
+              : { name: "no_buddy" };
 
   const [screen, setScreen] = useState<Screen>(initial);
   const lastDemo = useRef(demo);
@@ -152,11 +164,28 @@ function BuddyScreen() {
           }}
         />
       );
-    case "contact_step":
+    case "contact_step": {
+      const v =
+        screen.variant ?? (contactVariant === "none" ? "tg-no-username" : contactVariant);
       return (
         <ContactStep
-          variant={contactVariant === "none" ? "tg-no-username" : contactVariant}
-          onBack={() => setScreen({ name: "create_request" })}
+          variant={v}
+          onBack={() => setScreen({ name: "no_buddy" })}
+          onDone={() => setScreen({ name: "waiting", to: DEMO_REQUESTS[0] })}
+        />
+      );
+    }
+    case "start_bot":
+      return (
+        <StartBotStep
+          variant={screen.variant}
+          onBack={() => setScreen({ name: "no_buddy" })}
+          onNeedProfile={() =>
+            setScreen({
+              name: "contact_step",
+              variant: screen.variant === "max" ? "max" : "tg-no-username",
+            })
+          }
           onDone={() => setScreen({ name: "waiting", to: DEMO_REQUESTS[0] })}
         />
       );
@@ -1639,3 +1668,139 @@ function ContactStepMax({ onBack, onDone }: { onBack: () => void; onDone: () => 
   );
 }
 
+// ───────────────────────── Start bot step ─────────────────────────
+
+function StartBotStep({
+  variant,
+  onBack,
+  onNeedProfile,
+  onDone,
+}: {
+  variant: "max" | "tg";
+  onBack: () => void;
+  onNeedProfile: () => void;
+  onDone: () => void;
+}) {
+  const isMax = variant === "max";
+  const Icon = isMax ? MaxIcon : TelegramIcon;
+  const botName = isMax ? "@moya_zhizn_bot" : "@moya_zhizn_bot";
+  const botUrl = isMax ? "https://max.ru/moya_zhizn_bot" : "https://t.me/moya_zhizn_bot";
+  const accent = isMax ? "#FF6D00" : "#229ED9";
+  const accentGrad = isMax
+    ? "linear-gradient(135deg, #FFB300, #FF6D00)"
+    : "linear-gradient(135deg, #2AABEE, #229ED9)";
+  const bgSoft = isMax
+    ? "linear-gradient(135deg, #fff1e0, #ffe3c2)"
+    : "linear-gradient(135deg, #eaf3ff, #dbe9ff)";
+
+  const currentMsg = isMax ? "Ты сейчас в Telegram" : "Ты сейчас в MAX";
+  const targetName = isMax ? "MAX" : "Telegram";
+  const authorMsg = isMax
+    ? "Автор заявки, на которую ты хочешь откликнуться, оставил канал связи — MAX. Чтобы бадди мог тебе написать в MAX, сначала запусти бота клуба в MAX."
+    : "Автор заявки, на которую ты хочешь откликнуться, оставил канал связи — Telegram. Чтобы бадди мог тебе написать в Telegram, сначала запусти бота клуба в Telegram.";
+
+  const [checking, setChecking] = useState(false);
+  const [notReady, setNotReady] = useState(false);
+
+  const handleCheck = () => {
+    setChecking(true);
+    setTimeout(() => {
+      setChecking(false);
+      setNotReady(true);
+    }, 700);
+  };
+
+  return (
+    <div className="px-4 pb-8">
+      <PageHeader title={`Запусти бота в ${targetName}`} onBack={onBack} />
+
+      <div
+        className="rounded-2xl mb-4 p-4 hairline"
+        style={{ background: bgSoft }}
+      >
+        <div className="flex items-center gap-2 mb-2">
+          <Icon size={26} />
+          <span className="text-[13px] font-semibold" style={{ color: accent }}>
+            {currentMsg} · нужен {targetName}
+          </span>
+        </div>
+        <p className="text-[13px] leading-snug text-foreground/80">{authorMsg}</p>
+        <p className="text-[12px] leading-snug text-muted-foreground mt-2">
+          Это техническое требование мессенджера: бот не может написать первым, пока ты сам не откроешь с ним чат и не нажмёшь «Старт».
+        </p>
+      </div>
+
+      <div className="bg-card hairline shadow-card rounded-2xl p-4 mb-4">
+        <h3 className="text-[14px] font-semibold mb-2">Что нужно сделать</h3>
+        <ol className="space-y-2 text-[13px] text-foreground/85 list-decimal pl-5">
+          <li>Нажми кнопку ниже — откроется чат с ботом клуба в {targetName} ({botName}).</li>
+          <li>В открывшемся чате нажми кнопку «Старт» (или отправь /start).</li>
+          <li>Вернись сюда и нажми «Я запустил бота, проверить».</li>
+        </ol>
+      </div>
+
+      <a
+        href={botUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="tap w-full rounded-2xl py-3.5 text-[14px] font-bold text-white flex items-center justify-center gap-2 mb-3"
+        style={{ background: accentGrad, boxShadow: `0 6px 20px ${isMax ? "rgba(255,109,0,0.35)" : "rgba(34,158,217,0.35)"}` }}
+      >
+        <Icon size={18} />
+        Перейти в {targetName} и нажать «Старт»
+      </a>
+
+      <button
+        onClick={handleCheck}
+        disabled={checking}
+        className="w-full rounded-2xl py-3.5 text-[14px] font-bold transition-all bg-card hairline"
+        style={{ color: accent, opacity: checking ? 0.6 : 1 }}
+      >
+        {checking ? "Проверяем…" : "Я запустил бота, проверить"}
+      </button>
+
+      {notReady && (
+        <div
+          className="mt-4 rounded-2xl p-4 animate-fade-up"
+          style={{ background: "#fff8ea", border: "1px solid #ffd88a" }}
+        >
+          {isMax ? (
+            <>
+              <p className="text-[13px] font-semibold mb-1">Бот запущен ✅</p>
+              <p className="text-[12.5px] text-foreground/80 leading-snug mb-3">
+                Теперь пришли ссылку на свой профиль в MAX — бадди сможет тебе написать.
+              </p>
+              <button
+                onClick={onNeedProfile}
+                className="w-full rounded-xl py-3 text-[13px] font-bold text-white"
+                style={{ background: accentGrad }}
+              >
+                Прислать ссылку на профиль MAX
+              </button>
+            </>
+          ) : (
+            <>
+              <p className="text-[13px] font-semibold mb-1">Бот запущен, но…</p>
+              <p className="text-[12.5px] text-foreground/80 leading-snug mb-3">
+                У тебя не задан username в Telegram — бадди не сможет тебе написать. Задай короткое имя пользователя, это займёт минуту.
+              </p>
+              <button
+                onClick={onNeedProfile}
+                className="w-full rounded-xl py-3 text-[13px] font-bold text-white mb-2"
+                style={{ background: accentGrad }}
+              >
+                Задать username в Telegram
+              </button>
+              <button
+                onClick={onDone}
+                className="w-full rounded-xl py-2.5 text-[12.5px] font-medium text-muted-foreground"
+              >
+                Демо: username уже есть — продолжить
+              </button>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
