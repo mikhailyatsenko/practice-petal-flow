@@ -1253,39 +1253,282 @@ function AnswerBlock({ title, text }: { title: string; text: string }) {
 }
 
 
-function ContactField({
+// ───────────────────────── Screen: Contact step (после заявки) ─────────────────────────
+
+function ContactStep({
   variant,
-  value,
-  onChange,
+  onBack,
+  onDone,
 }: {
   variant: Exclude<ContactVariant, "none">;
-  value: string;
-  onChange: (v: string) => void;
+  onBack: () => void;
+  onDone: () => void;
 }) {
   const isMax = variant === "max";
-  const title = isMax ? "Ссылка на профиль в MAX" : "Ссылка на профиль в Telegram";
-  const hint = isMax
-    ? "У тебя нет username, поэтому вставь прямую ссылку на свой профиль в MAX — по ней с тобой смогут связаться."
-    : "У тебя не задан username в Telegram. Вставь прямую ссылку на свой профиль (t.me/+…) — по ней с тобой смогут связаться.";
-  const placeholder = isMax ? "https://max.ru/…" : "https://t.me/+…";
+  return isMax ? (
+    <ContactStepMax onBack={onBack} onDone={onDone} />
+  ) : (
+    <ContactStepTelegram onBack={onBack} onDone={onDone} />
+  );
+}
+
+const TG_STEPS = [
+  {
+    title: "Открой настройки Telegram",
+    text: "Внизу справа — иконка «Настройки» (шестерёнка). На iPhone — вкладка «Settings».",
+  },
+  {
+    title: "Нажми «Изменить» рядом с именем",
+    text: "В самом верху экрана настроек, справа от твоего имени и фото.",
+  },
+  {
+    title: "Задай Username",
+    text: "Пункт «Имя пользователя» / «Username». Придумай короткое латинское имя (a–z, 0–9, _). Оно должно быть свободным.",
+  },
+  {
+    title: "Сохрани и вернись сюда",
+    text: "После сохранения нажми «Проверить» внизу — мы обновим твой контакт автоматически.",
+  },
+];
+
+function ContactStepTelegram({ onBack, onDone }: { onBack: () => void; onDone: () => void }) {
+  const [checks, setChecks] = useState(0);
+  const [status, setStatus] = useState<"idle" | "not_found" | "checking">("idle");
+
+  const handleCheck = () => {
+    setStatus("checking");
+    setTimeout(() => {
+      const next = checks + 1;
+      setChecks(next);
+      // В демо: первая проверка — не найдено, вторая — успех
+      if (next >= 2) {
+        onDone();
+      } else {
+        setStatus("not_found");
+      }
+    }, 700);
+  };
 
   return (
-    <div>
-      <div className="flex items-center gap-2 mb-1">
-        {isMax ? <MaxIcon size={18} /> : <TelegramIcon size={18} />}
-        <h3 className="text-[14px] font-semibold">{title}</h3>
+    <div className="px-4 pb-8">
+      <PageHeader title="Настрой Telegram" onBack={onBack} />
+
+      <div className="flex items-center gap-2 mb-3 px-1">
+        <TelegramIcon size={22} />
+        <p className="text-[13px] text-muted-foreground leading-snug">
+          Чтобы бадди мог тебе написать, задай username в Telegram — это займёт минуту.
+        </p>
       </div>
-      <p className="text-[12px] text-muted-foreground mb-2">{hint}</p>
-      <input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        inputMode="url"
-        autoCapitalize="off"
-        autoCorrect="off"
-        className="w-full bg-card rounded-xl px-3.5 py-3 text-[14px] outline-none transition-colors"
-        style={{ border: `1px solid ${value ? "#FF6D00" : "#ede8df"}` }}
-      />
+
+      {/* Видеоинструкция */}
+      <div
+        className="rounded-2xl mb-4 overflow-hidden hairline"
+        style={{ background: "linear-gradient(135deg, #eaf3ff, #dbe9ff)" }}
+      >
+        <div className="aspect-video flex items-center justify-center relative">
+          <div
+            className="h-14 w-14 rounded-full flex items-center justify-center"
+            style={{ background: "rgba(255,255,255,0.9)", boxShadow: "0 4px 14px rgba(0,0,0,0.15)" }}
+          >
+            <Play className="h-6 w-6" style={{ color: "#229ED9" }} fill="#229ED9" />
+          </div>
+        </div>
+        <div className="px-4 py-3 bg-card">
+          <p className="text-[13px] font-semibold">🎬 Видео: как задать username в Telegram</p>
+          <p className="text-[12px] text-muted-foreground mt-0.5">1:20 · пошагово, со скриншотами</p>
+        </div>
+      </div>
+
+      {/* Пошаговая инструкция */}
+      <h3 className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground mb-2 px-1">
+        Пошагово
+      </h3>
+      <div className="space-y-3 mb-4">
+        {TG_STEPS.map((s, i) => (
+          <div key={i} className="bg-card hairline shadow-card rounded-2xl p-3.5">
+            <div className="flex items-start gap-3">
+              <div
+                className="h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-[13px] font-bold text-white"
+                style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+              >
+                {i + 1}
+              </div>
+              <div className="min-w-0 flex-1">
+                <h4 className="text-[14px] font-semibold leading-tight">{s.title}</h4>
+                <p className="text-[13px] text-muted-foreground mt-1 leading-snug">{s.text}</p>
+              </div>
+            </div>
+            {/* Плейсхолдер скриншота */}
+            <div
+              className="mt-3 rounded-xl flex items-center justify-center text-[11px] text-muted-foreground"
+              style={{
+                background: "repeating-linear-gradient(45deg, #f5efe4, #f5efe4 8px, #ede4d0 8px, #ede4d0 16px)",
+                height: 140,
+              }}
+            >
+              скриншот шага {i + 1}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {status === "not_found" && (
+        <div
+          className="rounded-xl p-3 mb-3 text-[13px] flex items-start gap-2"
+          style={{ background: "#fff4f4", border: "1px solid #ffcccc", color: "#c62828" }}
+        >
+          <X className="h-4 w-4 mt-0.5 shrink-0" />
+          <span>
+            Username пока не найден. Убедись, что сохранил его в Telegram, и нажми «Проверить» ещё раз.
+          </span>
+        </div>
+      )}
+
+      <button
+        disabled={status === "checking"}
+        onClick={handleCheck}
+        className="w-full rounded-2xl py-3.5 text-[14px] font-bold text-white transition-all"
+        style={{
+          background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+          opacity: status === "checking" ? 0.6 : 1,
+          boxShadow: "0 6px 20px rgba(255,109,0,0.40)",
+        }}
+      >
+        {status === "checking" ? "Проверяем…" : "Проверить"}
+      </button>
     </div>
   );
 }
+
+const MAX_STEPS = [
+  {
+    title: "Открой свой профиль в MAX",
+    text: "Нижняя панель — вкладка «Профиль» (иконка человека справа).",
+  },
+  {
+    title: "Нажми «Поделиться профилем»",
+    text: "Кнопка «Поделиться» / значок стрелки. Выбери «Скопировать ссылку».",
+  },
+  {
+    title: "Вернись сюда и вставь скопированное",
+    text: "MAX копирует ссылку вместе с текстом — вставляй всё как есть, мы сами достанем ссылку.",
+  },
+];
+
+function ContactStepMax({ onBack, onDone }: { onBack: () => void; onDone: () => void }) {
+  const [pasted, setPasted] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const valid = pasted.trim().length > 5;
+
+  const handleCheck = () => {
+    if (!valid) {
+      setError("Вставь то, что скопировал в MAX — вместе с текстом.");
+      return;
+    }
+    setError(null);
+    onDone();
+  };
+
+  return (
+    <div className="px-4 pb-8">
+      <PageHeader title="Получи ссылку в MAX" onBack={onBack} />
+
+      <div className="flex items-center gap-2 mb-3 px-1">
+        <MaxIcon size={22} />
+        <p className="text-[13px] text-muted-foreground leading-snug">
+          Скопируй ссылку на свой профиль в MAX и вставь её ниже — бадди сможет тебе написать.
+        </p>
+      </div>
+
+      {/* Видеоинструкция */}
+      <div
+        className="rounded-2xl mb-4 overflow-hidden hairline"
+        style={{ background: "linear-gradient(135deg, #fff1e0, #ffe3c2)" }}
+      >
+        <div className="aspect-video flex items-center justify-center relative">
+          <div
+            className="h-14 w-14 rounded-full flex items-center justify-center"
+            style={{ background: "rgba(255,255,255,0.9)", boxShadow: "0 4px 14px rgba(0,0,0,0.15)" }}
+          >
+            <Play className="h-6 w-6" style={{ color: "#FF6D00" }} fill="#FF6D00" />
+          </div>
+        </div>
+        <div className="px-4 py-3 bg-card">
+          <p className="text-[13px] font-semibold">🎬 Видео: как получить ссылку на профиль в MAX</p>
+          <p className="text-[12px] text-muted-foreground mt-0.5">1:10 · пошагово, со скриншотами</p>
+        </div>
+      </div>
+
+      <h3 className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground mb-2 px-1">
+        Пошагово
+      </h3>
+      <div className="space-y-3 mb-4">
+        {MAX_STEPS.map((s, i) => (
+          <div key={i} className="bg-card hairline shadow-card rounded-2xl p-3.5">
+            <div className="flex items-start gap-3">
+              <div
+                className="h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-[13px] font-bold text-white"
+                style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+              >
+                {i + 1}
+              </div>
+              <div className="min-w-0 flex-1">
+                <h4 className="text-[14px] font-semibold leading-tight">{s.title}</h4>
+                <p className="text-[13px] text-muted-foreground mt-1 leading-snug">{s.text}</p>
+              </div>
+            </div>
+            <div
+              className="mt-3 rounded-xl flex items-center justify-center text-[11px] text-muted-foreground"
+              style={{
+                background: "repeating-linear-gradient(45deg, #f5efe4, #f5efe4 8px, #ede4d0 8px, #ede4d0 16px)",
+                height: 140,
+              }}
+            >
+              скриншот шага {i + 1}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mb-3">
+        <h3 className="text-[14px] font-semibold mb-1">Вставь скопированное</h3>
+        <p className="text-[12px] text-muted-foreground mb-2">
+          Вставляй всё как есть — вместе с текстом «Я пользуюсь мессенджером MAX…». Мы сами найдём ссылку.
+        </p>
+        <textarea
+          value={pasted}
+          onChange={(e) => {
+            setPasted(e.target.value);
+            if (error) setError(null);
+          }}
+          placeholder="Например: Я пользуюсь мессенджером MAX. Пиши мне: https://max.ru/u/…"
+          className="w-full bg-card rounded-xl px-3.5 py-3 text-[14px] outline-none transition-colors resize-none"
+          style={{ minHeight: 110, border: `1px solid ${pasted ? "#FF6D00" : "#ede8df"}` }}
+        />
+        {error && (
+          <div
+            className="mt-2 rounded-xl p-3 text-[13px] flex items-start gap-2"
+            style={{ background: "#fff4f4", border: "1px solid #ffcccc", color: "#c62828" }}
+          >
+            <X className="h-4 w-4 mt-0.5 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+      </div>
+
+      <button
+        onClick={handleCheck}
+        className="w-full rounded-2xl py-3.5 text-[14px] font-bold text-white transition-all"
+        style={{
+          background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+          opacity: valid ? 1 : 0.6,
+          boxShadow: valid ? "0 6px 20px rgba(255,109,0,0.40)" : "none",
+        }}
+      >
+        Проверить
+      </button>
+    </div>
+  );
+}
+
