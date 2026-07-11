@@ -6,9 +6,12 @@ import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
 
 export const Route = createFileRoute("/_app/buddy")({
-  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" } => {
+  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "create-tg-no-username" | "create-max" } => {
     const d = search.demo;
-    return d === "has" || d === "waiting" ? { demo: d } : {};
+    if (d === "has" || d === "waiting" || d === "create-tg-no-username" || d === "create-max") {
+      return { demo: d };
+    }
+    return {};
   },
   head: () => ({
     meta: [
