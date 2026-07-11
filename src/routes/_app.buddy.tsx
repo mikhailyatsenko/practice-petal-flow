@@ -766,12 +766,28 @@ function RequestCard({ req, onSend }: { req: BuddyRequest; onSend: () => void })
           <h3 className="text-[15px] font-bold leading-tight">{req.name}</h3>
           <p className="text-[12px] text-muted-foreground mt-0.5">{req.job}</p>
         </div>
-        <span
-          className="text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0"
-          style={{ background: "#fff3e0", color: "#FF6D00" }}
-        >
-          {req.day} · {req.time}
-        </span>
+        <div className="flex flex-wrap gap-1.5 justify-end shrink-0">
+          <span
+            className="text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0 inline-flex items-center"
+            style={{ background: "#fff3e0", color: "#FF6D00" }}
+          >
+            {req.day} · {req.time}
+          </span>
+          {req.channels.map((ch) => {
+            const Icon = ch === "tg" ? TelegramIcon : MaxIcon;
+            const label = ch === "tg" ? "Telegram" : "MAX";
+            return (
+              <span
+                key={ch}
+                className="text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0 inline-flex items-center gap-1"
+                style={{ background: "#fff3e0", color: "#FF6D00" }}
+              >
+                <Icon size={14} />
+                {label}
+              </span>
+            );
+          })}
+        </div>
       </div>
 
       <div
