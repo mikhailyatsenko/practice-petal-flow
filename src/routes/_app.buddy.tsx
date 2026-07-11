@@ -1295,6 +1295,7 @@ const TG_STEPS = [
 function ContactStepTelegram({ onBack, onDone }: { onBack: () => void; onDone: () => void }) {
   const [checks, setChecks] = useState(0);
   const [status, setStatus] = useState<"idle" | "not_found" | "checking">("idle");
+  const [tab, setTab] = useState<"text" | "video">("text");
 
   const handleCheck = () => {
     setStatus("checking");
@@ -1309,6 +1310,7 @@ function ContactStepTelegram({ onBack, onDone }: { onBack: () => void; onDone: (
       }
     }, 700);
   };
+
 
   return (
     <div className="px-4 pb-8">
