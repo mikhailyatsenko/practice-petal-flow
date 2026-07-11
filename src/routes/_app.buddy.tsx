@@ -40,9 +40,11 @@ type Screen =
   | { name: "no_buddy" }
   | { name: "instructions" }
   | { name: "create_request" }
+  | { name: "contact_step" }
   | { name: "browse_requests" }
   | { name: "waiting"; to: BuddyRequest }
   | { name: "has_buddy" };
+
 
 const DAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 const HOURS = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, "0")}:00`);
