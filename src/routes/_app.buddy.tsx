@@ -109,7 +109,9 @@ function BuddyScreen() {
       ? { name: "has_buddy" }
       : demo === "waiting"
         ? { name: "waiting", to: DEMO_REQUESTS[0] }
-        : { name: "no_buddy" };
+        : demo === "create-tg-no-username" || demo === "create-max"
+          ? { name: "create_request" }
+          : { name: "no_buddy" };
   const [screen, setScreen] = useState<Screen>(initial);
   const lastDemo = useRef(demo);
   useEffect(() => {
@@ -119,6 +121,9 @@ function BuddyScreen() {
     }
   }, [demo]);
 
+  const contactVariant: ContactVariant =
+    demo === "create-max" ? "max" : demo === "create-tg-no-username" ? "tg-no-username" : "none";
+
   switch (screen.name) {
     case "no_buddy":
       return <NoBuddy onNavigate={setScreen} />;
@@ -127,6 +132,7 @@ function BuddyScreen() {
     case "create_request":
       return (
         <CreateRequest
+          contactVariant={contactVariant}
           onBack={() => setScreen({ name: "no_buddy" })}
           onSubmit={() => setScreen({ name: "waiting", to: DEMO_REQUESTS[0] })}
         />
@@ -144,6 +150,8 @@ function BuddyScreen() {
       return <HasBuddy onBack={() => setScreen({ name: "no_buddy" })} buddy={DEMO_BUDDY} />;
   }
 }
+
+type ContactVariant = "none" | "tg-no-username" | "max";
 
 // ───────────────────────── Shared header ─────────────────────────
 
