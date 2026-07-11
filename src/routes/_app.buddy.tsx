@@ -559,23 +559,17 @@ function Chip({
 function CreateRequest({
   onBack,
   onSubmit,
-  contactVariant = "none",
 }: {
   onBack: () => void;
   onSubmit: () => void;
-  contactVariant?: ContactVariant;
 }) {
   const [day, setDay] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
   const [job, setJob] = useState("");
   const [bio, setBio] = useState("");
   const [extra, setExtra] = useState("");
-  const [contact, setContact] = useState("");
 
-  const contactValid =
-    contactVariant === "none" ? true : contact.trim().length > 3;
-  const valid =
-    !!day && !!time && job.trim().length > 1 && bio.trim().length > 20 && contactValid;
+  const valid = !!day && !!time && job.trim().length > 1 && bio.trim().length > 20;
 
   return (
     <div className="px-4 pb-8">
@@ -640,7 +634,6 @@ function CreateRequest({
           </div>
         </div>
 
-
         {/* Extra comments */}
         <div>
           <h3 className="text-[14px] font-semibold">Дополнительные комментарии</h3>
@@ -657,12 +650,6 @@ function CreateRequest({
             />
           </div>
         </div>
-
-        {contactVariant !== "none" && (
-          <ContactField variant={contactVariant} value={contact} onChange={setContact} />
-        )}
-
-
 
         <button
           disabled={!valid}
@@ -681,6 +668,7 @@ function CreateRequest({
     </div>
   );
 }
+
 
 // ───────────────────────── Screen 4: Browse requests ─────────────────────────
 
