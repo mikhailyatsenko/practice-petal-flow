@@ -539,14 +539,26 @@ function Chip({
   );
 }
 
-function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () => void }) {
+function CreateRequest({
+  onBack,
+  onSubmit,
+  contactVariant = "none",
+}: {
+  onBack: () => void;
+  onSubmit: () => void;
+  contactVariant?: ContactVariant;
+}) {
   const [day, setDay] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
   const [job, setJob] = useState("");
   const [bio, setBio] = useState("");
   const [extra, setExtra] = useState("");
+  const [contact, setContact] = useState("");
 
-  const valid = !!day && !!time && job.trim().length > 1 && bio.trim().length > 20;
+  const contactValid =
+    contactVariant === "none" ? true : contact.trim().length > 3;
+  const valid =
+    !!day && !!time && job.trim().length > 1 && bio.trim().length > 20 && contactValid;
 
   return (
     <div className="px-4 pb-8">
