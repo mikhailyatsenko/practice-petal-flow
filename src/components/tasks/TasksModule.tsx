@@ -2216,7 +2216,7 @@ function KeyTreeSection({
         </div>
 
         {isOpen && canExpand && (
-          <div className="mt-2 space-y-2">
+          <div className="mt-1 space-y-1">
             {children.map((c) => renderNode(c, level + 1, task.id))}
           </div>
         )}
