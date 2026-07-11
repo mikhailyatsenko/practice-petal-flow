@@ -128,7 +128,11 @@ function BuddyScreen() {
         ? { name: "waiting", to: DEMO_REQUESTS[0] }
         : demo === "create-tg-no-username" || demo === "create-max"
           ? { name: "contact_step" }
-          : { name: "no_buddy" };
+          : demo === "start-max-bot"
+            ? { name: "start_bot", variant: "max" }
+            : demo === "start-tg-bot"
+              ? { name: "start_bot", variant: "tg" }
+              : { name: "no_buddy" };
 
   const [screen, setScreen] = useState<Screen>(initial);
   const lastDemo = useRef(demo);
@@ -160,11 +164,28 @@ function BuddyScreen() {
           }}
         />
       );
-    case "contact_step":
+    case "contact_step": {
+      const v =
+        screen.variant ?? (contactVariant === "none" ? "tg-no-username" : contactVariant);
       return (
         <ContactStep
-          variant={contactVariant === "none" ? "tg-no-username" : contactVariant}
-          onBack={() => setScreen({ name: "create_request" })}
+          variant={v}
+          onBack={() => setScreen({ name: "no_buddy" })}
+          onDone={() => setScreen({ name: "waiting", to: DEMO_REQUESTS[0] })}
+        />
+      );
+    }
+    case "start_bot":
+      return (
+        <StartBotStep
+          variant={screen.variant}
+          onBack={() => setScreen({ name: "no_buddy" })}
+          onNeedProfile={() =>
+            setScreen({
+              name: "contact_step",
+              variant: screen.variant === "max" ? "max" : "tg-no-username",
+            })
+          }
           onDone={() => setScreen({ name: "waiting", to: DEMO_REQUESTS[0] })}
         />
       );
