@@ -216,38 +216,8 @@ function PromoteBanner({ variant }: { variant: "max" | "telegram" }) {
         {isMax ? "Открыть в MAX →" : "Открыть в Telegram →"}
       </a>
 
-      {false && (
-        <div
-          className="mt-2.5 relative aspect-video w-full rounded-xl flex items-center justify-center overflow-hidden"
-          style={{ background: "linear-gradient(135deg, #2a1a05 0%, #4a2c0a 50%, #1a0e00 100%)" }}
-        >
-          <button
-            aria-label="Воспроизвести"
-            className="tap h-14 w-14 rounded-full flex items-center justify-center text-white shadow-lg"
-            style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="white" className="ml-0.5">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          </button>
-          <span className="absolute bottom-2 right-2.5 rounded-md bg-black/60 px-2 py-0.5 text-[11px] font-medium text-white">
-            0:45
-          </span>
-        </div>
-      )}
-
-      <div className="mt-3 flex justify-center">
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="tap inline-flex items-center justify-center rounded-xl px-10 py-2.5 text-white font-semibold text-[13.5px] shadow-[0_4px_12px_rgba(255,109,0,0.30)]"
-          style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
-        >
-          {isMax ? "Открыть в MAX →" : "Открыть в Telegram →"}
-        </a>
-      </div>
     </div>
   );
 }
+
 
