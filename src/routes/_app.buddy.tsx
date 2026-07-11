@@ -113,8 +113,9 @@ function BuddyScreen() {
       : demo === "waiting"
         ? { name: "waiting", to: DEMO_REQUESTS[0] }
         : demo === "create-tg-no-username" || demo === "create-max"
-          ? { name: "create_request" }
+          ? { name: "contact_step" }
           : { name: "no_buddy" };
+
   const [screen, setScreen] = useState<Screen>(initial);
   const lastDemo = useRef(demo);
   useEffect(() => {
