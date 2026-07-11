@@ -654,7 +654,41 @@ function CreateRequest({
           </div>
         </div>
 
+        {/* Preferred contact channel */}
+        <div>
+          <h3 className="text-[14px] font-semibold">Где ты хочешь, чтобы Бадди с тобой связался</h3>
+          <p className="text-[12px] text-muted-foreground mt-0.5 mb-2">
+            Выбери мессенджер для связи
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            {([
+              { k: "tg" as const, label: "Telegram", Icon: TelegramIcon },
+              { k: "max" as const, label: "MAX", Icon: MaxIcon },
+            ]).map(({ k, label, Icon }) => {
+              const active = channel === k;
+              return (
+                <button
+                  key={k}
+                  type="button"
+                  onClick={() => setChannel(k)}
+                  className="tap rounded-xl px-3 py-3 flex items-center justify-center gap-2 text-[14px] font-semibold transition-all"
+                  style={{
+                    background: active ? "linear-gradient(135deg, #FFB300, #FF6D00)" : "#fff",
+                    color: active ? "#fff" : "#3a352d",
+                    border: `1px solid ${active ? "#FF6D00" : "#ede8df"}`,
+                    boxShadow: active ? "0 4px 14px rgba(255,109,0,0.25)" : "none",
+                  }}
+                >
+                  <Icon className="h-5 w-5" />
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <button
+
           disabled={!valid}
           onClick={() => valid && onSubmit()}
           className="w-full rounded-2xl py-3.5 text-[14px] font-bold text-white transition-all"
