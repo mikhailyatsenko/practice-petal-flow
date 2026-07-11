@@ -8,9 +8,13 @@ import { isFeatureUnlocked, unlockLevelOf, usePreviewLevel } from "@/lib/preview
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 export const Route = createFileRoute("/_app/community")({
-  validateSearch: (search: Record<string, unknown>): { promote?: "max" | "telegram" } => {
+  validateSearch: (search: Record<string, unknown>): { promote?: "max" | "telegram"; country?: "kz" } => {
     const p = search.promote;
-    return p === "max" || p === "telegram" ? { promote: p } : {};
+    const c = search.country;
+    const out: { promote?: "max" | "telegram"; country?: "kz" } = {};
+    if (p === "max" || p === "telegram") out.promote = p;
+    if (c === "kz") out.country = "kz";
+    return out;
   },
   head: () => ({
     meta: [
@@ -20,6 +24,7 @@ export const Route = createFileRoute("/_app/community")({
   }),
   component: CommunityScreen,
 });
+
 
 type ChannelKey = "channel" | "chat" | "help";
 
@@ -64,28 +69,34 @@ function CommunityScreen() {
   const previewLevel = usePreviewLevel();
   const buddyOpen = isFeatureUnlocked("buddy", previewLevel);
   const foursomeOpen = isFeatureUnlocked("foursome", previewLevel);
-  const { promote } = Route.useSearch();
+  const { promote, country } = Route.useSearch();
+  const isKz = country === "kz";
 
   const [openKey, setOpenKey] = useState<ChannelKey | null>(null);
 
   return (
     <div className="px-4">
-      {promote === "max" && <PromoteBanner variant="max" />}
-      {promote === "telegram" && <PromoteBanner variant="telegram" />}
+      {!isKz && promote === "max" && <PromoteBanner variant="max" />}
+      {!isKz && promote === "telegram" && <PromoteBanner variant="telegram" />}
 
       <SectionHeader emoji="👥" title="Комьюнити" subtitle="Поддержка, общение и партнёры по росту" />
 
-      {/* Каналы с раскрытием мессенджеров */}
+      {/* Каналы */}
       <div className="space-y-2">
-        {CHANNELS.map((c) => (
-          <ChannelRow
-            key={c.key}
-            item={c}
-            open={openKey === c.key}
-            onToggle={() => setOpenKey(openKey === c.key ? null : c.key)}
-          />
-        ))}
+        {CHANNELS.map((c) =>
+          isKz ? (
+            <ChannelRowKz key={c.key} item={c} />
+          ) : (
+            <ChannelRow
+              key={c.key}
+              item={c}
+              open={openKey === c.key}
+              onToggle={() => setOpenKey(openKey === c.key ? null : c.key)}
+            />
+          )
+        )}
       </div>
+
 
       {/* Затем: Бадди и Четвёрка — открытые или с замком */}
       <div className="mt-3 space-y-2">
@@ -168,7 +179,31 @@ function ChannelRow({
   );
 }
 
+
+function ChannelRowKz({ item }: { item: ChannelItem }) {
+  return (
+    <a
+      href={item.telegram}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="tap w-full bg-card hairline rounded-xl shadow-card px-3.5 py-3 flex items-center gap-3 text-left"
+    >
+      <div className="h-10 w-10 shrink-0 rounded-xl bg-secondary flex items-center justify-center text-xl">
+        {item.emoji}
+      </div>
+      <div className="min-w-0 flex-1">
+        <h3 className="text-[14px] font-medium leading-tight truncate">{item.title}</h3>
+        <p className="mt-0.5 text-[11.5px] text-muted-foreground leading-snug line-clamp-2">
+          {item.subtitle}
+        </p>
+      </div>
+      <TelegramIcon size={20} />
+    </a>
+  );
+}
+
 function MessengerLink({ href, kind }: { href: string; kind: "telegram" | "max" }) {
+
   return (
     <a
       href={href}
