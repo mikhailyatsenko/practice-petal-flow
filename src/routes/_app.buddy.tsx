@@ -569,8 +569,10 @@ function CreateRequest({
   const [job, setJob] = useState("");
   const [bio, setBio] = useState("");
   const [extra, setExtra] = useState("");
+  const [channel, setChannel] = useState<"tg" | "max" | null>(null);
 
-  const valid = !!day && !!time && job.trim().length > 1 && bio.trim().length > 20;
+  const valid = !!day && !!time && job.trim().length > 1 && bio.trim().length > 20 && !!channel;
+
 
   return (
     <div className="px-4 pb-8">
