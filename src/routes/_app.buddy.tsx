@@ -7,9 +7,16 @@ import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 export const Route = createFileRoute("/_app/buddy")({
-  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "create-tg-no-username" | "create-max" } => {
+  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "create-tg-no-username" | "create-max" | "start-max-bot" | "start-tg-bot" } => {
     const d = search.demo;
-    if (d === "has" || d === "waiting" || d === "create-tg-no-username" || d === "create-max") {
+    if (
+      d === "has" ||
+      d === "waiting" ||
+      d === "create-tg-no-username" ||
+      d === "create-max" ||
+      d === "start-max-bot" ||
+      d === "start-tg-bot"
+    ) {
       return { demo: d };
     }
     return {};
