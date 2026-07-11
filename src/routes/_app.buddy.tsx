@@ -34,6 +34,7 @@ interface BuddyRequest {
   time: string;
   bio: string;
   extra?: string;
+  channels: ("tg" | "max")[];
 }
 
 type Screen =
@@ -59,6 +60,7 @@ const DEMO_REQUESTS: BuddyRequest[] = [
     time: "19:00",
     bio: "Запускаю свой бренд косметики. Ищу партнёра, с которым будем держать друг друга в фокусе и без откладываний.",
     extra: "Если среда не подойдёт — могу также во вторник или четверг с 18:00 до 21:00 МСК. По выходным занята. Созваниваюсь через Яндекс Телемост.",
+    channels: ["tg"],
   },
   {
     id: "2",
@@ -69,6 +71,7 @@ const DEMO_REQUESTS: BuddyRequest[] = [
     time: "10:00",
     bio: "Развиваю IT-агентство, цель — выйти на 1М/мес. Хочу системного бадди, кто умеет ставить чёткие задачи.",
     extra: "Кроме пятницы свободен в понедельник и среду утром (09:00–12:00 МСК). Прошу не опаздывать — у меня плотный график.",
+    channels: ["max"],
   },
   {
     id: "3",
@@ -79,6 +82,7 @@ const DEMO_REQUESTS: BuddyRequest[] = [
     time: "20:00",
     bio: "Веду частную практику, расту в личном бренде. Ищу человека на длинную дистанцию, без воды.",
     extra: "Запасные слоты: четверг 19:00–21:00, суббота утром 10:00–12:00 МСК. Готова созваниваться через Zoom или Telemost.",
+    channels: ["tg", "max"],
   },
   {
     id: "4",
@@ -89,6 +93,7 @@ const DEMO_REQUESTS: BuddyRequest[] = [
     time: "12:00",
     bio: "Перехожу из найма во фриланс, выстраиваю поток клиентов. Готов делиться прогрессом каждую неделю.",
     extra: "Помимо субботы могу в воскресенье днём и по будням после 20:00 МСК. Часовой пояс — Москва.",
+    channels: ["tg"],
   },
 ];
 
@@ -101,6 +106,7 @@ const DEMO_BUDDY: BuddyRequest = {
   day: "Чт",
   time: "20:00",
   bio: "Развиваю продукт в финтехе, цель года — вырасти в директора. Ценю чёткость и регулярность.",
+  channels: ["tg"],
 };
 
 // ───────────────────────── Root ─────────────────────────
@@ -760,12 +766,28 @@ function RequestCard({ req, onSend }: { req: BuddyRequest; onSend: () => void })
           <h3 className="text-[15px] font-bold leading-tight">{req.name}</h3>
           <p className="text-[12px] text-muted-foreground mt-0.5">{req.job}</p>
         </div>
-        <span
-          className="text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0"
-          style={{ background: "#fff3e0", color: "#FF6D00" }}
-        >
-          {req.day} · {req.time}
-        </span>
+        <div className="flex flex-wrap gap-1.5 justify-end shrink-0">
+          <span
+            className="text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0 inline-flex items-center"
+            style={{ background: "#fff3e0", color: "#FF6D00" }}
+          >
+            {req.day} · {req.time}
+          </span>
+          {req.channels.map((ch) => {
+            const Icon = ch === "tg" ? TelegramIcon : MaxIcon;
+            const label = ch === "tg" ? "Telegram" : "MAX";
+            return (
+              <span
+                key={ch}
+                className="text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0 inline-flex items-center gap-1"
+                style={{ background: "#fff3e0", color: "#FF6D00" }}
+              >
+                <Icon size={14} />
+                {label}
+              </span>
+            );
+          })}
+        </div>
       </div>
 
       <div
@@ -897,6 +919,7 @@ const INCOMING_REQUESTS: BuddyRequest[] = [
     time: "19:00",
     bio: "Запускаю SaaS для логистики. Хочу бадди, который держит фокус и не сливается через месяц.",
     extra: "Свободен также по понедельникам вечером. Telegram: @sergey_demo",
+    channels: ["tg"],
   },
   {
     id: "in2",
@@ -907,6 +930,7 @@ const INCOMING_REQUESTS: BuddyRequest[] = [
     time: "19:00",
     bio: "Развиваю практику и личный бренд. Ищу системного партнёра на длинную дистанцию.",
     extra: "Запасные слоты — четверг и пятница после 18:00 МСК. Telegram: @olga_demo",
+    channels: ["tg"],
   },
 ];
 
