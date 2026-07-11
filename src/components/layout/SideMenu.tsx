@@ -196,6 +196,15 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             <span>Открыть клуб в Telegram</span>
           </Link>
           <Link
+            to="/community"
+            search={{ country: "kz" }}
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <TelegramIcon size={18} />
+            <span>Комьюнити — Казахстан</span>
+
+          <Link
             to="/buddy"
             search={{ demo: "create-tg-no-username" }}
             onClick={() => onOpenChange(false)}
