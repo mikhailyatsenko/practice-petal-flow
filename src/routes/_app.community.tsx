@@ -209,12 +209,13 @@ function PromoteBanner({ variant }: { variant: "max" | "telegram" }) {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="tap mt-3 flex items-center justify-center gap-2 rounded-2xl py-3 text-white font-semibold text-[14px] shadow-[0_10px_30px_rgba(255,109,0,0.35)]"
+        className="tap mt-2.5 inline-flex items-center justify-center gap-1.5 rounded-xl px-3.5 py-2 text-white font-semibold text-[12.5px] shadow-[0_4px_12px_rgba(255,109,0,0.30)]"
         style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
       >
-        {isMax ? <MaxIcon size={20} /> : <TelegramIcon size={20} />}
+        {isMax ? <MaxIcon size={14} /> : <TelegramIcon size={14} />}
         <span>{isMax ? "Открыть в MAX" : "Открыть в Telegram"} →</span>
       </a>
+
     </div>
   );
 }
