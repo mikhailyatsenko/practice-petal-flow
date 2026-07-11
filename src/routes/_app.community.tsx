@@ -67,18 +67,11 @@ function CommunityScreen() {
   const { promote } = Route.useSearch();
 
   const [openKey, setOpenKey] = useState<ChannelKey | null>(null);
-  const [bannerClosed, setBannerClosed] = useState(false);
-
-  const showBanner = !!promote && !bannerClosed;
 
   return (
     <div className="px-4">
-      {showBanner && promote === "max" && (
-        <PromoteBanner variant="max" onClose={() => setBannerClosed(true)} />
-      )}
-      {showBanner && promote === "telegram" && (
-        <PromoteBanner variant="telegram" onClose={() => setBannerClosed(true)} />
-      )}
+      {promote === "max" && <PromoteBanner variant="max" />}
+      {promote === "telegram" && <PromoteBanner variant="telegram" />}
 
       <SectionHeader emoji="👥" title="Комьюнити" subtitle="Поддержка, общение и партнёры по росту" />
 
