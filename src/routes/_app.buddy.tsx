@@ -4,11 +4,15 @@ import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, MessageCircl
 import { BackButton } from "@/components/layout/BackButton";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
+import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 export const Route = createFileRoute("/_app/buddy")({
-  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" } => {
+  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "create-tg-no-username" | "create-max" } => {
     const d = search.demo;
-    return d === "has" || d === "waiting" ? { demo: d } : {};
+    if (d === "has" || d === "waiting" || d === "create-tg-no-username" || d === "create-max") {
+      return { demo: d };
+    }
+    return {};
   },
   head: () => ({
     meta: [
@@ -106,7 +110,9 @@ function BuddyScreen() {
       ? { name: "has_buddy" }
       : demo === "waiting"
         ? { name: "waiting", to: DEMO_REQUESTS[0] }
-        : { name: "no_buddy" };
+        : demo === "create-tg-no-username" || demo === "create-max"
+          ? { name: "create_request" }
+          : { name: "no_buddy" };
   const [screen, setScreen] = useState<Screen>(initial);
   const lastDemo = useRef(demo);
   useEffect(() => {
@@ -116,6 +122,9 @@ function BuddyScreen() {
     }
   }, [demo]);
 
+  const contactVariant: ContactVariant =
+    demo === "create-max" ? "max" : demo === "create-tg-no-username" ? "tg-no-username" : "none";
+
   switch (screen.name) {
     case "no_buddy":
       return <NoBuddy onNavigate={setScreen} />;
@@ -124,6 +133,7 @@ function BuddyScreen() {
     case "create_request":
       return (
         <CreateRequest
+          contactVariant={contactVariant}
           onBack={() => setScreen({ name: "no_buddy" })}
           onSubmit={() => setScreen({ name: "waiting", to: DEMO_REQUESTS[0] })}
         />
@@ -141,6 +151,8 @@ function BuddyScreen() {
       return <HasBuddy onBack={() => setScreen({ name: "no_buddy" })} buddy={DEMO_BUDDY} />;
   }
 }
+
+type ContactVariant = "none" | "tg-no-username" | "max";
 
 // ───────────────────────── Shared header ─────────────────────────
 
@@ -528,14 +540,26 @@ function Chip({
   );
 }
 
-function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () => void }) {
+function CreateRequest({
+  onBack,
+  onSubmit,
+  contactVariant = "none",
+}: {
+  onBack: () => void;
+  onSubmit: () => void;
+  contactVariant?: ContactVariant;
+}) {
   const [day, setDay] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
   const [job, setJob] = useState("");
   const [bio, setBio] = useState("");
   const [extra, setExtra] = useState("");
+  const [contact, setContact] = useState("");
 
-  const valid = !!day && !!time && job.trim().length > 1 && bio.trim().length > 20;
+  const contactValid =
+    contactVariant === "none" ? true : contact.trim().length > 3;
+  const valid =
+    !!day && !!time && job.trim().length > 1 && bio.trim().length > 20 && contactValid;
 
   return (
     <div className="px-4 pb-8">
@@ -617,6 +641,12 @@ function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () 
             />
           </div>
         </div>
+
+        {contactVariant !== "none" && (
+          <ContactField variant={contactVariant} value={contact} onChange={setContact} />
+        )}
+
+
 
         <button
           disabled={!valid}
@@ -1218,3 +1248,40 @@ function AnswerBlock({ title, text }: { title: string; text: string }) {
   );
 }
 
+
+function ContactField({
+  variant,
+  value,
+  onChange,
+}: {
+  variant: Exclude<ContactVariant, "none">;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const isMax = variant === "max";
+  const title = isMax ? "Ссылка на профиль в MAX" : "Ссылка на профиль в Telegram";
+  const hint = isMax
+    ? "У тебя нет username, поэтому вставь прямую ссылку на свой профиль в MAX — по ней с тобой смогут связаться."
+    : "У тебя не задан username в Telegram. Вставь прямую ссылку на свой профиль (t.me/+…) — по ней с тобой смогут связаться.";
+  const placeholder = isMax ? "https://max.ru/…" : "https://t.me/+…";
+
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-1">
+        {isMax ? <MaxIcon size={18} /> : <TelegramIcon size={18} />}
+        <h3 className="text-[14px] font-semibold">{title}</h3>
+      </div>
+      <p className="text-[12px] text-muted-foreground mb-2">{hint}</p>
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        inputMode="url"
+        autoCapitalize="off"
+        autoCorrect="off"
+        className="w-full bg-card rounded-xl px-3.5 py-3 text-[14px] outline-none transition-colors"
+        style={{ border: `1px solid ${value ? "#FF6D00" : "#ede8df"}` }}
+      />
+    </div>
+  );
+}
