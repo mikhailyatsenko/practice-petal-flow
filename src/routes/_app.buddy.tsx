@@ -903,6 +903,7 @@ const INCOMING_REQUESTS: BuddyRequest[] = [
     time: "19:00",
     bio: "Запускаю SaaS для логистики. Хочу бадди, который держит фокус и не сливается через месяц.",
     extra: "Свободен также по понедельникам вечером. Telegram: @sergey_demo",
+    channels: ["tg"],
   },
   {
     id: "in2",
@@ -913,6 +914,7 @@ const INCOMING_REQUESTS: BuddyRequest[] = [
     time: "19:00",
     bio: "Развиваю практику и личный бренд. Ищу системного партнёра на длинную дистанцию.",
     extra: "Запасные слоты — четверг и пятница после 18:00 МСК. Telegram: @olga_demo",
+    channels: ["tg"],
   },
 ];
 
