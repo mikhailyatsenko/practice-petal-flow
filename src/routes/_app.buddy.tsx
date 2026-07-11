@@ -48,7 +48,8 @@ type Screen =
   | { name: "no_buddy" }
   | { name: "instructions" }
   | { name: "create_request" }
-  | { name: "contact_step" }
+  | { name: "contact_step"; variant?: "max" | "tg-no-username" }
+  | { name: "start_bot"; variant: "max" | "tg" }
   | { name: "browse_requests" }
   | { name: "waiting"; to: BuddyRequest }
   | { name: "has_buddy" };
