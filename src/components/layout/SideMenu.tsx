@@ -5,6 +5,7 @@ import { resetAllPractices, advanceToNextDay } from "@/lib/practicesStore";
 import { useBuddyRequestMode, toggleBuddyRequestMode } from "@/lib/buddyRequestMode";
 import { useFoursomeRequestMode, toggleFoursomeRequestMode } from "@/lib/foursomeRequestMode";
 import { usePreviewLevel, togglePreviewLevel, type PreviewLevel } from "@/lib/previewLevel";
+import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 interface SideMenuProps {
   open: boolean;
