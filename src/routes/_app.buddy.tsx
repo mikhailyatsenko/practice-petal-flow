@@ -34,6 +34,7 @@ interface BuddyRequest {
   time: string;
   bio: string;
   extra?: string;
+  channels: ("tg" | "max")[];
 }
 
 type Screen =
