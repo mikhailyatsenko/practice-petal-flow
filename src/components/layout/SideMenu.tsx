@@ -132,6 +132,15 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             <Users className="h-[18px] w-[18px]" strokeWidth={2} />
             <span>Бадди — есть бадди</span>
           </Link>
+
+          <Link
+            to="/telemost-link"
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <Video className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>Ссылка для созвонов</span>
+          </Link>
           <button
             onClick={() => {
               toggleBuddyRequestMode();
