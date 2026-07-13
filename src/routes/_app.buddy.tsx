@@ -1185,8 +1185,10 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
   const card = useBuddyCard();
   const filled = isBuddyCardFilled(card);
   const meetingLink = useTelemostLink();
-  const { mode: callMode, ack: callAck } = useCallReminder();
+  const { mode: callMode, ack: callAck, startAt, now } = useCallReminder();
   const showCallInfo = !noLink && callMode === "buddy" && !callAck;
+  const show2h = !noLink && callMode === "buddy-2h" && startAt != null;
+  const countdown = show2h ? formatCallCountdown(startAt! - now) : null;
 
   return (
     <div className="px-4 pb-6">
