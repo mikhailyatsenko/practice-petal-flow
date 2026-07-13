@@ -1365,10 +1365,18 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
             <p className="text-[12px] text-muted-foreground mt-0.5">
               {buddy.job} · @{buddy.name.toLowerCase()}
             </p>
-            <p className="text-[12px] font-bold mt-1" style={{ color: "#FF6D00" }}>
-              📅 {buddy.day} · {buddy.time}
-            </p>
-          </div>
+            <div className="mt-1 flex items-center gap-2 flex-wrap">
+              <p className="text-[12px] font-bold" style={{ color: "#FF6D00" }}>
+                📅 {schedule.day} · {schedule.time} {schedule.timezone}
+              </p>
+              <button
+                onClick={() => setEditSchedule(true)}
+                className="tap inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
+                style={{ color: "#FF6D00", background: "rgba(255,109,0,0.10)" }}
+              >
+                <Pencil className="h-3 w-3" /> Изменить
+              </button>
+            </div>
         </div>
 
         <div
