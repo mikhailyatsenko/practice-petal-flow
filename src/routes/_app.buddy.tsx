@@ -5,6 +5,7 @@ import { BackButton } from "@/components/layout/BackButton";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
 import { setTelemostLink, useTelemostLink } from "@/lib/telemostLinkStore";
+import { ackCallReminder, useCallReminder } from "@/lib/callReminderMode";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 export const Route = createFileRoute("/_app/buddy")({
@@ -1184,6 +1185,8 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
   const card = useBuddyCard();
   const filled = isBuddyCardFilled(card);
   const meetingLink = useTelemostLink();
+  const { mode: callMode, ack: callAck } = useCallReminder();
+  const showCallInfo = !noLink && callMode === "buddy" && !callAck;
 
   return (
     <div className="px-4 pb-6">
@@ -1228,6 +1231,29 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
                 100% { transform: translateX(200%); }
               }
             `}</style>
+          </button>
+        </div>
+      ) : showCallInfo ? (
+        <div
+          className="rounded-2xl p-4 animate-fade-up"
+          style={{ background: "linear-gradient(135deg, #E3F2FD, #BBDEFB)", border: "1px solid #90CAF9" }}
+        >
+          <p className="text-[15px] font-bold leading-tight" style={{ color: "#0D47A1" }}>
+            📞 Завтра созвон с Бадди
+          </p>
+          <p className="text-[13px] mt-1.5 leading-snug" style={{ color: "#1565C0" }}>
+            Напоминаем: завтра в <span style={{ fontWeight: 700 }}>20:00 МСК</span> состоится созвон с Бадди.
+            Подключиться можно на этой странице по кнопке «Перейти в комнату созвона».
+          </p>
+          <button
+            onClick={ackCallReminder}
+            className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white"
+            style={{
+              background: "linear-gradient(135deg, #42A5F5, #1E88E5)",
+              boxShadow: "0 6px 20px rgba(30,136,229,0.35)",
+            }}
+          >
+            Понятно, буду готов
           </button>
         </div>
       ) : (
