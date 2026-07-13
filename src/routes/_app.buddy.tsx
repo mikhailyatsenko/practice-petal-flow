@@ -200,7 +200,7 @@ function BuddyScreen() {
     case "waiting":
       return <Waiting to={screen.to} onBack={() => setScreen({ name: "no_buddy" })} />;
     case "has_buddy":
-      return <HasBuddy onBack={() => setScreen({ name: "no_buddy" })} buddy={DEMO_BUDDY} />;
+      return <HasBuddy onBack={() => setScreen({ name: "no_buddy" })} buddy={DEMO_BUDDY} noLink={demo === "has-no-link"} />;
   }
 }
 
