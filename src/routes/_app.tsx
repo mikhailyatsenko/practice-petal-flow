@@ -11,6 +11,7 @@ import { CallReminderBanner } from "@/components/layout/CallReminderBanner";
 import { useBuddyRequestMode } from "@/lib/buddyRequestMode";
 import { useFoursomeRequestMode } from "@/lib/foursomeRequestMode";
 import { useCallReminder } from "@/lib/callReminderMode";
+import { useTelemostLink } from "@/lib/telemostLinkStore";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
