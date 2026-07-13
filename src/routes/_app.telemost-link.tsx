@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ExternalLink, Play, Check, X, Video } from "lucide-react";
 import { BackButton } from "@/components/layout/BackButton";
+import { setTelemostLink } from "@/lib/telemostLinkStore";
 
 export const Route = createFileRoute("/_app/telemost-link")({
   component: TelemostLinkPage,
