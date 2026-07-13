@@ -23,7 +23,12 @@ function AppLayout() {
   const foursomeMode = useFoursomeRequestMode();
   const { mode: callMode, ack: callAck } = useCallReminder();
   const callBannerOn =
-    !!callMode && (callMode === "buddy-2h" ? true : !callAck);
+    !!callMode &&
+    (callMode === "buddy-2h" ||
+      callMode === "buddy-2h-no-link" ||
+      callMode === "buddy-no-link"
+      ? true
+      : !callAck);
 
   const BANNER_H = 76;
   const topPad =
