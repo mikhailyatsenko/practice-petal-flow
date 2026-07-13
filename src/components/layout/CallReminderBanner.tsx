@@ -6,16 +6,13 @@ import {
   formatHMS,
   isNoLinkMode,
 } from "@/lib/callReminderMode";
-import { useTelemostLink } from "@/lib/telemostLinkStore";
 
 export function CallReminderBanner() {
   const navigate = useNavigate();
   const { mode, ack, startAt, now } = useCallReminder();
-  const link = useTelemostLink();
   if (!mode) return null;
 
-  const noLinkRequested = isNoLinkMode(mode);
-  const noLink = noLinkRequested && !link; // если ссылка появилась — режим "как обычно"
+  const noLink = isNoLinkMode(mode); // режим сам заявляет, что ссылки нет
 
   const isFoursome = mode === "foursome";
   const is2h = mode === "buddy-2h" || mode === "buddy-2h-no-link";
