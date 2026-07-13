@@ -1293,15 +1293,30 @@ function HasBuddy({ buddy, onBack }: { buddy: BuddyRequest; onBack: () => void }
         {/* Divider before Telegram */}
         <div className="my-4 border-t border-border" />
 
-        <button
-          className="tap w-full rounded-2xl py-3 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
-          style={{
-            background: "linear-gradient(135deg, #8BC34A, #4CAF50)",
-            boxShadow: "0 6px 20px rgba(76,175,80,0.35)",
-          }}
-        >
-          <MessageCircle className="h-4 w-4" /> Написать в Telegram
-        </button>
+        <div className="space-y-2">
+          {buddy.channels.includes("tg") && (
+            <button
+              className="tap w-full rounded-2xl py-3 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
+              style={{
+                background: "linear-gradient(135deg, #2AABEE, #229ED9)",
+                boxShadow: "0 6px 20px rgba(34,158,217,0.35)",
+              }}
+            >
+              <TelegramIcon size={18} /> Написать в Telegram
+            </button>
+          )}
+          {buddy.channels.includes("max") && (
+            <button
+              className="tap w-full rounded-2xl py-3 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
+              style={{
+                background: "linear-gradient(135deg, #2E7BFF, #7B4DFF)",
+                boxShadow: "0 6px 20px rgba(123,77,255,0.35)",
+              }}
+            >
+              <MaxIcon size={18} /> Написать в MAX
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Format */}
