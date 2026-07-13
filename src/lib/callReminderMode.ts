@@ -137,7 +137,7 @@ export function useCallReminder(): {
     window.addEventListener(EVT, sync);
     window.addEventListener("storage", sync);
     // тикаем для обратного отсчёта
-    const id = window.setInterval(sync, 15000);
+    const id = window.setInterval(sync, 1000);
     return () => {
       window.removeEventListener(EVT, sync);
       window.removeEventListener("storage", sync);
@@ -204,4 +204,13 @@ export function formatCallCountdown(remainingMs: number): {
     ctaLabel: "Перейти в комнату созвона",
     started: false,
   };
+}
+
+// HH:MM:SS для крупного таймера на странице.
+export function formatHMS(remainingMs: number): string {
+  const s = Math.max(0, Math.floor(remainingMs / 1000));
+  const hh = String(Math.floor(s / 3600)).padStart(2, "0");
+  const mm = String(Math.floor((s % 3600) / 60)).padStart(2, "0");
+  const ss = String(s % 60).padStart(2, "0");
+  return `${hh}:${mm}:${ss}`;
 }

@@ -5,7 +5,7 @@ import { BackButton } from "@/components/layout/BackButton";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
 import { setTelemostLink, useTelemostLink } from "@/lib/telemostLinkStore";
-import { ackCallReminder, useCallReminder, formatCallCountdown } from "@/lib/callReminderMode";
+import { ackCallReminder, useCallReminder, formatCallCountdown, formatHMS } from "@/lib/callReminderMode";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 export const Route = createFileRoute("/_app/buddy")({
@@ -1244,10 +1244,15 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
             {countdown.started ? "Созвон идёт" : "Сегодня созвон с Бадди"}
           </p>
           <p
-            className="mt-1 text-[20px] font-extrabold leading-tight"
-            style={{ color: "#1a0e00" }}
+            className="mt-1 font-extrabold leading-none tabular-nums"
+            style={{
+              color: "#1a0e00",
+              fontSize: countdown.started ? 24 : 40,
+              letterSpacing: countdown.started ? 0 : "0.02em",
+              fontVariantNumeric: "tabular-nums",
+            }}
           >
-            {countdown.started ? "Созвон с Бадди начался" : countdown.pageValue}
+            {countdown.started ? "Созвон с Бадди начался" : formatHMS(startAt! - now)}
           </p>
           {meetingLink && (
             <a
@@ -1327,7 +1332,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
         </div>
       )}
 
-      {!noLink && meetingLink && (
+      {!noLink && !show2h && meetingLink && (
         <a
           href={meetingLink}
           target="_blank"
