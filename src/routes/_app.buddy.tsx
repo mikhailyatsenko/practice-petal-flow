@@ -1235,24 +1235,40 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
         </div>
       ) : showCallInfo ? (
         <div
-          className="rounded-2xl p-4 animate-fade-up"
-          style={{ background: "linear-gradient(135deg, #E3F2FD, #BBDEFB)", border: "1px solid #90CAF9" }}
+          className="rounded-2xl p-4 animate-fade-up bg-card hairline shadow-card"
         >
-          <p className="text-[15px] font-bold leading-tight" style={{ color: "#0D47A1" }}>
+          <p className="text-[15px] font-bold leading-tight" style={{ color: "#1a0e00" }}>
             📞 Завтра созвон с Бадди
           </p>
-          <p className="text-[13px] mt-1.5 leading-snug" style={{ color: "#1565C0" }}>
-            Напоминаем о созвоне с Бадди завтра в <span style={{ fontWeight: 700 }}>20:00 МСК</span>. В назначенное время нажмите кнопку «Перейти в комнату созвона», чтобы присоединиться к встрече.
+          <p className="text-[13px] mt-1.5 leading-snug text-muted-foreground">
+            Напоминаем о созвоне с Бадди завтра в <span className="font-bold" style={{ color: "#1a0e00" }}>20:00 МСК</span>. В назначенное время нажмите кнопку «Перейти в комнату созвона», чтобы присоединиться к встрече.
           </p>
           <button
             onClick={ackCallReminder}
-            className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white"
+            className="tap relative mt-3 w-full overflow-hidden rounded-2xl py-3 text-[14px] font-bold text-white"
             style={{
-              background: "linear-gradient(135deg, #42A5F5, #1E88E5)",
-              boxShadow: "0 6px 20px rgba(30,136,229,0.35)",
+              background: "linear-gradient(135deg, #16a34a, #22c55e)",
+              boxShadow: "0 6px 20px rgba(34, 197, 94, 0.35)",
             }}
           >
-            Понятно, буду готов
+            <span className="relative z-10">Понятно, буду готов</span>
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 z-0"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0) 100%)",
+                transform: "translateX(-100%)",
+                animation: "green-shimmer 2.8s ease-in-out infinite",
+              }}
+            />
+            <style>{`
+              @keyframes green-shimmer {
+                0% { transform: translateX(-100%); }
+                45% { transform: translateX(200%); }
+                100% { transform: translateX(200%); }
+              }
+            `}</style>
           </button>
         </div>
       ) : (

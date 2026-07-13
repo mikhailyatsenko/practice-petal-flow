@@ -9,7 +9,6 @@ export function CallReminderBanner() {
 
   const isBuddy = mode === "buddy";
   const title = isBuddy ? "Завтра созвон с Бадди!" : "Завтра созвон с Четвёркой!";
-  const subtitle = "Подготовься и приходи вовремя";
 
   return (
     <div
@@ -26,43 +25,47 @@ export function CallReminderBanner() {
           if (isBuddy) navigate({ to: "/buddy", search: { demo: "has" } });
           else navigate({ to: "/foursome" });
         }}
-        className="tap relative overflow-hidden rounded-2xl px-4 py-3 flex items-center gap-3 text-white shadow-[0_10px_30px_rgba(30,136,229,0.45)] w-full text-left"
-        style={{
-          background: "linear-gradient(135deg, #42A5F5, #1E88E5)",
-          animation: "callrem-pulse 1.8s ease-in-out infinite",
-        }}
+        className="tap relative overflow-hidden rounded-2xl px-4 py-3 flex items-center gap-3 w-full text-left bg-card hairline shadow-card"
       >
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3"
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%)",
-            animation: "callrem-shine 2.4s linear infinite",
-          }}
-        />
-        <span className="relative h-9 w-9 shrink-0 rounded-full bg-white/20 flex items-center justify-center">
+        <span className="relative h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-white"
+          style={{ background: "linear-gradient(135deg, #16a34a, #22c55e)" }}
+        >
           <CalendarClock className="h-5 w-5" />
         </span>
         <div className="relative min-w-0 flex-1">
-          <p className="text-[14px] font-bold leading-tight">{title}</p>
-          <p className="text-[12px] opacity-95 leading-tight mt-0.5">{subtitle}</p>
+          <p className="text-[14px] font-bold leading-tight" style={{ color: "#1a0e00" }}>
+            {title}
+          </p>
+          <p className="text-[12px] leading-tight mt-0.5" style={{ color: "#6b6356" }}>
+            Подготовься и приходи вовремя
+          </p>
         </div>
         <span
-          className="relative text-[12px] font-bold bg-white/25 rounded-full px-3 py-1.5"
+          className="relative overflow-hidden rounded-full px-3 py-1.5 text-[12px] font-bold text-white shrink-0"
+          style={{
+            background: "linear-gradient(135deg, #16a34a, #22c55e)",
+            boxShadow: "0 4px 14px rgba(34, 197, 94, 0.35)",
+          }}
         >
-          Открыть
+          <span className="relative z-10">Открыть</span>
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-0"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0) 100%)",
+              transform: "translateX(-100%)",
+              animation: "green-shimmer 2.8s ease-in-out infinite",
+            }}
+          />
         </span>
       </button>
 
       <style>{`
-        @keyframes callrem-pulse {
-          0%, 100% { transform: translateY(0); box-shadow: 0 10px 30px rgba(30,136,229,0.45); }
-          50% { transform: translateY(-1px); box-shadow: 0 14px 36px rgba(30,136,229,0.6); }
-        }
-        @keyframes callrem-shine {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(500%); }
+        @keyframes green-shimmer {
+          0% { transform: translateX(-100%); }
+          45% { transform: translateX(200%); }
+          100% { transform: translateX(200%); }
         }
       `}</style>
     </div>
