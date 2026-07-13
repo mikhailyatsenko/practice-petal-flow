@@ -1187,24 +1187,42 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
       {noLink ? (
         <div
           className="rounded-2xl p-4 animate-fade-up hairline"
-          style={{ background: "linear-gradient(135deg, #FFF3E0, #FFE0B2)" }}
+          style={{ background: "#effaf1", border: "1px solid #bfe6c8" }}
         >
-          <p className="text-[15px] font-bold leading-tight" style={{ color: "#BF4A00" }}>
+          <p className="text-[15px] font-bold leading-tight" style={{ color: "#1f7a3a" }}>
             📞 Создайте ссылку на созвоны
           </p>
-          <p className="text-[13px] mt-1.5 leading-snug" style={{ color: "#6b4a20" }}>
-            Создайте постоянную ссылку Яндекс Телемоста для ваших еженедельных встреч и начните получать{" "}
-            <span style={{ fontWeight: 700 }}>+2 очка каждый день</span>.
+          <p className="text-[13px] mt-1.5 leading-snug" style={{ color: "#3d6b4d" }}>
+            Получайте{" "}
+            <span style={{ fontWeight: 700 }}>+2 очка каждый день</span>{" "}
+            после того, как создадите постоянную ссылку для созвонов в Яндекс Телемосте.
           </p>
           <button
             onClick={() => navigate({ to: "/telemost-link" })}
-            className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white"
+            className="tap relative mt-3 w-full overflow-hidden rounded-2xl py-3 text-[14px] font-bold text-white"
             style={{
-              background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-              boxShadow: "0 6px 20px rgba(255,109,0,0.40)",
+              background: "linear-gradient(135deg, #8BC34A, #4CAF50)",
+              boxShadow: "0 6px 20px rgba(76,175,80,0.35)",
             }}
           >
-            Создать ссылку на созвоны
+            <span className="relative z-10">Создать ссылку на созвоны</span>
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 z-0"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0) 100%)",
+                transform: "translateX(-100%)",
+                animation: "green-shimmer 2.8s ease-in-out infinite",
+              }}
+            />
+            <style>{`
+              @keyframes green-shimmer {
+                0% { transform: translateX(-100%); }
+                45% { transform: translateX(200%); }
+                100% { transform: translateX(200%); }
+              }
+            `}</style>
           </button>
         </div>
       ) : (

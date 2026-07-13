@@ -67,8 +67,8 @@ function TelemostLinkPage() {
         rel="noopener noreferrer"
         className="tap w-full rounded-2xl py-3.5 mb-4 text-[14px] font-bold text-white flex items-center justify-center gap-2"
         style={{
-          background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-          boxShadow: "0 6px 20px rgba(255,109,0,0.40)",
+          background: "linear-gradient(135deg, #66BB6A, #43A047)",
+          boxShadow: "0 6px 20px rgba(67,160,71,0.35)",
         }}
       >
         <ExternalLink className="h-4 w-4" />
