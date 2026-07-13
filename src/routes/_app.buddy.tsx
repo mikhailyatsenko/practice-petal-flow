@@ -1233,6 +1233,29 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
             `}</style>
           </button>
         </div>
+      ) : showCallInfo ? (
+        <div
+          className="rounded-2xl p-4 animate-fade-up"
+          style={{ background: "linear-gradient(135deg, #E3F2FD, #BBDEFB)", border: "1px solid #90CAF9" }}
+        >
+          <p className="text-[15px] font-bold leading-tight" style={{ color: "#0D47A1" }}>
+            📞 Завтра созвон с Бадди
+          </p>
+          <p className="text-[13px] mt-1.5 leading-snug" style={{ color: "#1565C0" }}>
+            Напоминаем: завтра в <span style={{ fontWeight: 700 }}>20:00 МСК</span> состоится созвон с Бадди.
+            Подключиться можно на этой странице по кнопке «Перейти в комнату созвона».
+          </p>
+          <button
+            onClick={ackCallReminder}
+            className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white"
+            style={{
+              background: "linear-gradient(135deg, #42A5F5, #1E88E5)",
+              boxShadow: "0 6px 20px rgba(30,136,229,0.35)",
+            }}
+          >
+            Понятно, буду готов
+          </button>
+        </div>
       ) : (
         <div
           className="rounded-2xl p-4 flex items-center gap-3 animate-fade-up"
