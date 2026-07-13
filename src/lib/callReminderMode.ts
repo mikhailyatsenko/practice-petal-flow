@@ -6,7 +6,23 @@
 
 import { useEffect, useState } from "react";
 
-export type CallReminderKind = "buddy" | "foursome" | "buddy-2h";
+export type CallReminderKind =
+  | "buddy"
+  | "foursome"
+  | "buddy-2h"
+  | "buddy-no-link"
+  | "buddy-2h-no-link";
+
+// Возвращает базовый режим (со ссылкой) для no-link режимов.
+export function baseModeOf(mode: CallReminderKind | null): CallReminderKind | null {
+  if (mode === "buddy-no-link") return "buddy";
+  if (mode === "buddy-2h-no-link") return "buddy-2h";
+  return mode;
+}
+
+export function isNoLinkMode(mode: CallReminderKind | null): boolean {
+  return mode === "buddy-no-link" || mode === "buddy-2h-no-link";
+}
 
 const KEY_MODE = "call-reminder-mode";
 const KEY_ACK = "call-reminder-ack";
