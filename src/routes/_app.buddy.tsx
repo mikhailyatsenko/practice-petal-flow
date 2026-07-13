@@ -1183,8 +1183,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
   const navigate = useNavigate();
   const card = useBuddyCard();
   const filled = isBuddyCardFilled(card);
-  const [meetingLink, setMeetingLink] = useState<string | null>(null);
-  useEffect(() => setMeetingLink(getTelemostLink()), []);
+  const meetingLink = useTelemostLink();
 
   return (
     <div className="px-4 pb-6">
