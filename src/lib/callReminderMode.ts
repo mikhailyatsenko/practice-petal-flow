@@ -6,7 +6,23 @@
 
 import { useEffect, useState } from "react";
 
-export type CallReminderKind = "buddy" | "foursome" | "buddy-2h";
+export type CallReminderKind =
+  | "buddy"
+  | "foursome"
+  | "buddy-2h"
+  | "buddy-no-link"
+  | "buddy-2h-no-link";
+
+// Возвращает базовый режим (со ссылкой) для no-link режимов.
+export function baseModeOf(mode: CallReminderKind | null): CallReminderKind | null {
+  if (mode === "buddy-no-link") return "buddy";
+  if (mode === "buddy-2h-no-link") return "buddy-2h";
+  return mode;
+}
+
+export function isNoLinkMode(mode: CallReminderKind | null): boolean {
+  return mode === "buddy-no-link" || mode === "buddy-2h-no-link";
+}
 
 const KEY_MODE = "call-reminder-mode";
 const KEY_ACK = "call-reminder-ack";
@@ -26,7 +42,13 @@ function readMode(): CallReminderKind | null {
   if (typeof window === "undefined") return null;
   try {
     const v = window.localStorage.getItem(KEY_MODE);
-    return v === "buddy" || v === "foursome" || v === "buddy-2h" ? v : null;
+    return v === "buddy" ||
+      v === "foursome" ||
+      v === "buddy-2h" ||
+      v === "buddy-no-link" ||
+      v === "buddy-2h-no-link"
+      ? (v as CallReminderKind)
+      : null;
   } catch {
     return null;
   }
@@ -43,15 +65,19 @@ function readT0(): number | null {
   }
 }
 
+function isTimedMode(mode: CallReminderKind | null): boolean {
+  return mode === "buddy-2h" || mode === "buddy-2h-no-link";
+}
+
 export function getCallStartAt(): number | null {
-  if (readMode() !== "buddy-2h") return null;
+  if (!isTimedMode(readMode())) return null;
   const t0 = readT0();
   return t0 == null ? null : t0 + CALL_2H_LEAD_MS;
 }
 
 export function getCallReminderMode(): CallReminderKind | null {
   const mode = readMode();
-  if (mode !== "buddy-2h") return mode;
+  if (!isTimedMode(mode)) return mode;
   const startAt = getCallStartAt();
   if (startAt == null) return null;
   if (Date.now() > startAt + CALL_2H_TAIL_MS) {
@@ -83,7 +109,7 @@ export function setCallReminderMode(mode: CallReminderKind | null) {
     if (mode) {
       window.localStorage.setItem(KEY_MODE, mode);
       window.localStorage.removeItem(KEY_ACK);
-      if (mode === "buddy-2h") {
+      if (isTimedMode(mode)) {
         window.localStorage.setItem(KEY_T0, String(Date.now()));
       } else {
         window.localStorage.removeItem(KEY_T0);

@@ -1189,9 +1189,17 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
   const { mode: callMode, ack: callAck, startAt, now } = useCallReminder();
   const schedule = useBuddySchedule();
   const [editSchedule, setEditSchedule] = useState(false);
-  const showCallInfo = !noLink && callMode === "buddy" && !callAck;
-  const show2h = !noLink && callMode === "buddy-2h" && startAt != null;
+  const linkMissing = !meetingLink;
+  const modeNoLinkTomorrow = callMode === "buddy-no-link" && linkMissing;
+  const modeNoLink2h = callMode === "buddy-2h-no-link" && linkMissing && startAt != null;
+  const showCallInfo = !noLink && !linkMissing && (callMode === "buddy" || callMode === "buddy-no-link") && !callAck;
+  const show2h =
+    !noLink &&
+    !linkMissing &&
+    (callMode === "buddy-2h" || callMode === "buddy-2h-no-link") &&
+    startAt != null;
   const countdown = show2h ? formatCallCountdown(startAt! - now) : null;
+  const noLink2hCountdown = modeNoLink2h ? formatCallCountdown(startAt! - now) : null;
 
   return (
     <div className="px-4 pb-6">
@@ -1236,6 +1244,82 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
                 100% { transform: translateX(200%); }
               }
             `}</style>
+          </button>
+        </div>
+      ) : modeNoLink2h && noLink2hCountdown ? (
+        <div className="rounded-2xl p-5 animate-fade-up bg-card hairline shadow-card text-center">
+          <p
+            className="text-[12px] font-bold uppercase tracking-wider"
+            style={{ color: "#FF6D00", letterSpacing: "0.08em" }}
+          >
+            {noLink2hCountdown.started ? "Созвон идёт" : "Сегодня созвон с Бадди"}
+          </p>
+          <p
+            className="mt-1 font-extrabold leading-none tabular-nums"
+            style={{
+              color: "#1a0e00",
+              fontSize: noLink2hCountdown.started ? 24 : 40,
+              letterSpacing: noLink2hCountdown.started ? 0 : "0.02em",
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
+            {noLink2hCountdown.started
+              ? "Созвон с Бадди начался"
+              : `До начала: ${formatHMS(startAt! - now)}`}
+          </p>
+          <p className="text-[13px] mt-3 leading-snug" style={{ color: "#2b2419" }}>
+            Ссылка на комнату ещё не создана. Создайте её сейчас, чтобы успеть к созвону.
+          </p>
+          <button
+            onClick={() => navigate({ to: "/telemost-link" })}
+            className="tap relative mt-3 w-full overflow-hidden rounded-2xl py-3 text-[14px] font-bold text-white"
+            style={{
+              background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+              boxShadow: "0 6px 20px rgba(255,109,0,0.35)",
+            }}
+          >
+            <span className="relative z-10">Срочно создать ссылку</span>
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 z-0"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)",
+                transform: "translateX(-100%)",
+                animation: "green-shimmer 2.8s ease-in-out infinite",
+              }}
+            />
+          </button>
+        </div>
+      ) : modeNoLinkTomorrow ? (
+        <div className="rounded-2xl p-4 animate-fade-up bg-card hairline shadow-card">
+          <p className="text-[15px] font-bold leading-tight" style={{ color: "#1a0e00" }}>
+            📞 Завтра созвон с Бадди
+          </p>
+          <p className="text-[13.5px] mt-1.5 leading-snug" style={{ color: "#2b2419", fontWeight: 500 }}>
+            Напоминаем о созвоне с Бадди завтра в{" "}
+            <span className="font-bold">{schedule.time} {schedule.timezone}</span>.
+            Ссылка на комнату ещё не создана. Создайте её заранее, чтобы созвон состоялся.
+          </p>
+          <button
+            onClick={() => navigate({ to: "/telemost-link" })}
+            className="tap relative mt-3 w-full overflow-hidden rounded-2xl py-3 text-[14px] font-bold text-white"
+            style={{
+              background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+              boxShadow: "0 6px 20px rgba(255,109,0,0.35)",
+            }}
+          >
+            <span className="relative z-10">Создать ссылку на созвон</span>
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 z-0"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)",
+                transform: "translateX(-100%)",
+                animation: "green-shimmer 2.8s ease-in-out infinite",
+              }}
+            />
           </button>
         </div>
       ) : show2h && countdown ? (
