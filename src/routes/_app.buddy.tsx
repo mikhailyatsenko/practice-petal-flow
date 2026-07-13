@@ -4,7 +4,7 @@ import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, MessageCircl
 import { BackButton } from "@/components/layout/BackButton";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
-import { getTelemostLink, setTelemostLink } from "@/lib/telemostLinkStore";
+import { setTelemostLink, useTelemostLink } from "@/lib/telemostLinkStore";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 export const Route = createFileRoute("/_app/buddy")({
