@@ -1189,9 +1189,17 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
   const { mode: callMode, ack: callAck, startAt, now } = useCallReminder();
   const schedule = useBuddySchedule();
   const [editSchedule, setEditSchedule] = useState(false);
-  const showCallInfo = !noLink && callMode === "buddy" && !callAck;
-  const show2h = !noLink && callMode === "buddy-2h" && startAt != null;
+  const linkMissing = !meetingLink;
+  const modeNoLinkTomorrow = callMode === "buddy-no-link" && linkMissing;
+  const modeNoLink2h = callMode === "buddy-2h-no-link" && linkMissing && startAt != null;
+  const showCallInfo = !noLink && !linkMissing && (callMode === "buddy" || callMode === "buddy-no-link") && !callAck;
+  const show2h =
+    !noLink &&
+    !linkMissing &&
+    (callMode === "buddy-2h" || callMode === "buddy-2h-no-link") &&
+    startAt != null;
   const countdown = show2h ? formatCallCountdown(startAt! - now) : null;
+  const noLink2hCountdown = modeNoLink2h ? formatCallCountdown(startAt! - now) : null;
 
   return (
     <div className="px-4 pb-6">
