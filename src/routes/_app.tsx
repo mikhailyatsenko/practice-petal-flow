@@ -22,13 +22,9 @@ function AppLayout() {
   const buddyMode = useBuddyRequestMode();
   const foursomeMode = useFoursomeRequestMode();
   const { mode: callMode, ack: callAck } = useCallReminder();
-  const meetingLink = useTelemostLink();
-  const noLinkActive =
-    !meetingLink && (callMode === "buddy-no-link" || callMode === "buddy-2h-no-link");
+  const noLinkActive = callMode === "buddy-no-link" || callMode === "buddy-2h-no-link";
   const isTimed = callMode === "buddy-2h" || callMode === "buddy-2h-no-link";
-  const isTomorrow = callMode === "buddy" || callMode === "buddy-no-link";
-  const callBannerOn =
-    !!callMode && (isTimed || noLinkActive || (isTomorrow ? !callAck : !callAck));
+  const callBannerOn = !!callMode && (isTimed || noLinkActive || !callAck);
 
   const BANNER_H = 76;
   const topPad =
