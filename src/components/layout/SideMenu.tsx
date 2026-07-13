@@ -17,6 +17,7 @@ interface SideMenuProps {
 export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps) {
   const buddyMode = useBuddyRequestMode();
   const foursomeMode = useFoursomeRequestMode();
+  const { mode: callMode } = useCallReminder();
   const previewLevel = usePreviewLevel();
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
