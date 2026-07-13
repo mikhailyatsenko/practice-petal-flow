@@ -15,6 +15,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppWishesRouteImport } from './routes/_app.wishes'
 import { Route as AppValuesRouteImport } from './routes/_app.values'
+import { Route as AppTelemostLinkRouteImport } from './routes/_app.telemost-link'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
 import { Route as AppSelfImproveRouteImport } from './routes/_app.self-improve'
 import { Route as AppSectionsRouteImport } from './routes/_app.sections'
@@ -70,6 +71,11 @@ const AppWishesRoute = AppWishesRouteImport.update({
 const AppValuesRoute = AppValuesRouteImport.update({
   id: '/values',
   path: '/values',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTelemostLinkRoute = AppTelemostLinkRouteImport.update({
+  id: '/telemost-link',
+  path: '/telemost-link',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
@@ -229,6 +235,7 @@ export interface FileRoutesByFullPath {
   '/sections': typeof AppSectionsRoute
   '/self-improve': typeof AppSelfImproveRoute
   '/settings': typeof AppSettingsRoute
+  '/telemost-link': typeof AppTelemostLinkRoute
   '/values': typeof AppValuesRoute
   '/wishes': typeof AppWishesRoute
   '/practice/essay': typeof AppPracticeEssayRoute
@@ -262,6 +269,7 @@ export interface FileRoutesByTo {
   '/sections': typeof AppSectionsRoute
   '/self-improve': typeof AppSelfImproveRoute
   '/settings': typeof AppSettingsRoute
+  '/telemost-link': typeof AppTelemostLinkRoute
   '/values': typeof AppValuesRoute
   '/wishes': typeof AppWishesRoute
   '/': typeof AppIndexRoute
@@ -298,6 +306,7 @@ export interface FileRoutesById {
   '/_app/sections': typeof AppSectionsRoute
   '/_app/self-improve': typeof AppSelfImproveRoute
   '/_app/settings': typeof AppSettingsRoute
+  '/_app/telemost-link': typeof AppTelemostLinkRoute
   '/_app/values': typeof AppValuesRoute
   '/_app/wishes': typeof AppWishesRoute
   '/_app/': typeof AppIndexRoute
@@ -335,6 +344,7 @@ export interface FileRouteTypes {
     | '/sections'
     | '/self-improve'
     | '/settings'
+    | '/telemost-link'
     | '/values'
     | '/wishes'
     | '/practice/essay'
@@ -368,6 +378,7 @@ export interface FileRouteTypes {
     | '/sections'
     | '/self-improve'
     | '/settings'
+    | '/telemost-link'
     | '/values'
     | '/wishes'
     | '/'
@@ -403,6 +414,7 @@ export interface FileRouteTypes {
     | '/_app/sections'
     | '/_app/self-improve'
     | '/_app/settings'
+    | '/_app/telemost-link'
     | '/_app/values'
     | '/_app/wishes'
     | '/_app/'
@@ -466,6 +478,13 @@ declare module '@tanstack/react-router' {
       path: '/values'
       fullPath: '/values'
       preLoaderRoute: typeof AppValuesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/telemost-link': {
+      id: '/_app/telemost-link'
+      path: '/telemost-link'
+      fullPath: '/telemost-link'
+      preLoaderRoute: typeof AppTelemostLinkRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/settings': {
@@ -678,6 +697,7 @@ interface AppRouteChildren {
   AppSectionsRoute: typeof AppSectionsRoute
   AppSelfImproveRoute: typeof AppSelfImproveRoute
   AppSettingsRoute: typeof AppSettingsRoute
+  AppTelemostLinkRoute: typeof AppTelemostLinkRoute
   AppValuesRoute: typeof AppValuesRoute
   AppWishesRoute: typeof AppWishesRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -711,6 +731,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSectionsRoute: AppSectionsRoute,
   AppSelfImproveRoute: AppSelfImproveRoute,
   AppSettingsRoute: AppSettingsRoute,
+  AppTelemostLinkRoute: AppTelemostLinkRoute,
   AppValuesRoute: AppValuesRoute,
   AppWishesRoute: AppWishesRoute,
   AppIndexRoute: AppIndexRoute,
@@ -736,12 +757,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
