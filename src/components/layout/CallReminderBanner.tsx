@@ -1,6 +1,6 @@
 import { CalendarClock } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
-import { useCallReminder, formatCallCountdown } from "@/lib/callReminderMode";
+import { useCallReminder, formatCallCountdown, formatHMS } from "@/lib/callReminderMode";
 
 export function CallReminderBanner() {
   const navigate = useNavigate();
@@ -18,8 +18,11 @@ export function CallReminderBanner() {
   let subtitle: string;
 
   if (is2h && startAt != null) {
-    const f = formatCallCountdown(startAt - now);
-    title = f.bannerTitle;
+    const remaining = startAt - now;
+    const f = formatCallCountdown(remaining);
+    title = f.started
+      ? "Созвон с Бадди начался"
+      : `До созвона с Бадди — ${formatHMS(remaining)}`;
     subtitle = "Подключайся к комнате созвона вовремя";
   } else if (isBuddy) {
     title = "Завтра созвон с Бадди!";

@@ -6,6 +6,7 @@ import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
 import { setTelemostLink, useTelemostLink } from "@/lib/telemostLinkStore";
 import { ackCallReminder, useCallReminder, formatCallCountdown, formatHMS } from "@/lib/callReminderMode";
+import { useBuddySchedule, setBuddySchedule, DAYS_FULL, TIMEZONES } from "@/lib/buddyScheduleStore";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 export const Route = createFileRoute("/_app/buddy")({
@@ -1186,6 +1187,8 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
   const filled = isBuddyCardFilled(card);
   const meetingLink = useTelemostLink();
   const { mode: callMode, ack: callAck, startAt, now } = useCallReminder();
+  const schedule = useBuddySchedule();
+  const [editSchedule, setEditSchedule] = useState(false);
   const showCallInfo = !noLink && callMode === "buddy" && !callAck;
   const show2h = !noLink && callMode === "buddy-2h" && startAt != null;
   const countdown = show2h ? formatCallCountdown(startAt! - now) : null;
@@ -1236,7 +1239,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
           </button>
         </div>
       ) : show2h && countdown ? (
-        <div className="rounded-2xl p-5 animate-fade-up bg-card hairline shadow-card">
+        <div className="rounded-2xl p-5 animate-fade-up bg-card hairline shadow-card text-center">
           <p
             className="text-[12px] font-bold uppercase tracking-wider"
             style={{ color: "#16a34a", letterSpacing: "0.08em" }}
@@ -1288,7 +1291,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
             📞 Завтра созвон с Бадди
           </p>
           <p className="text-[13.5px] mt-1.5 leading-snug" style={{ color: "#2b2419", fontWeight: 500 }}>
-            Напоминаем о созвоне с Бадди завтра в <span className="font-bold">20:00 МСК</span>. В назначенное время нажмите кнопку «Перейти в комнату созвона», чтобы присоединиться к встрече.
+            Напоминаем о созвоне с Бадди завтра в <span className="font-bold">{schedule.time} {schedule.timezone}</span>. В назначенное время нажмите кнопку «Перейти в комнату созвона», чтобы присоединиться к встрече.
           </p>
           <button
             onClick={ackCallReminder}
@@ -1362,9 +1365,18 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
             <p className="text-[12px] text-muted-foreground mt-0.5">
               {buddy.job} · @{buddy.name.toLowerCase()}
             </p>
-            <p className="text-[12px] font-bold mt-1" style={{ color: "#FF6D00" }}>
-              📅 {buddy.day} · {buddy.time}
-            </p>
+            <div className="mt-1 flex items-center gap-2 flex-wrap">
+              <p className="text-[12px] font-bold" style={{ color: "#FF6D00" }}>
+                📅 {schedule.day} · {schedule.time} {schedule.timezone}
+              </p>
+              <button
+                onClick={() => setEditSchedule(true)}
+                className="tap inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
+                style={{ color: "#FF6D00", background: "rgba(255,109,0,0.10)" }}
+              >
+                <Pencil className="h-3 w-3" /> Изменить
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1502,6 +1514,104 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
         <FormatRowGreen time="20 мин" text="Ты делишься успехами за неделю" />
         <FormatRowGreen time="20 мин" text={`${buddy.name} делится своими успехами`} />
         <FormatRowGreen time="20 мин" text="Вместе ставите задачи на неделю" />
+      </div>
+
+      {editSchedule && (
+        <ScheduleEditDialog
+          initial={schedule}
+          onCancel={() => setEditSchedule(false)}
+          onSave={(s) => {
+            setBuddySchedule(s);
+            setEditSchedule(false);
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function ScheduleEditDialog({
+  initial,
+  onCancel,
+  onSave,
+}: {
+  initial: { day: string; time: string; timezone: string };
+  onCancel: () => void;
+  onSave: (s: { day: string; time: string; timezone: string }) => void;
+}) {
+  const [day, setDay] = useState(initial.day);
+  const [time, setTime] = useState(initial.time);
+  const [timezone, setTimezone] = useState(initial.timezone);
+  return (
+    <div
+      className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center bg-black/40 animate-fade-up"
+      onClick={onCancel}
+    >
+      <div
+        className="w-full max-w-md bg-card rounded-t-2xl sm:rounded-2xl p-5 shadow-card"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h3 className="text-[16px] font-bold mb-1">Изменить расписание созвона</h3>
+        <p className="text-[12px] text-muted-foreground mb-4">
+          Новое время увидят оба Бадди и оно будет использоваться для следующих напоминаний.
+        </p>
+
+        <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">День недели</p>
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {DAYS_FULL.map((d) => (
+            <button
+              key={d}
+              onClick={() => setDay(d)}
+              className="tap px-3 py-1.5 rounded-full text-[13px] font-medium"
+              style={{
+                background: day === d ? "linear-gradient(135deg, #FFB300, #FF6D00)" : "#FAF6EF",
+                color: day === d ? "#fff" : "#5a5044",
+                border: day === d ? "none" : "1px solid #ede8df",
+              }}
+            >
+              {d}
+            </button>
+          ))}
+        </div>
+
+        <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">Время</p>
+        <input
+          type="time"
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
+          className="w-full mb-4 rounded-xl px-3 py-2.5 text-[14px] bg-background border border-border"
+        />
+
+        <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">Часовой пояс</p>
+        <select
+          value={timezone}
+          onChange={(e) => setTimezone(e.target.value)}
+          className="w-full mb-5 rounded-xl px-3 py-2.5 text-[14px] bg-background border border-border"
+        >
+          {TIMEZONES.map((tz) => (
+            <option key={tz} value={tz}>{tz}</option>
+          ))}
+        </select>
+
+        <div className="flex gap-2">
+          <button
+            onClick={onCancel}
+            className="tap flex-1 rounded-xl py-2.5 text-[14px] font-medium"
+            style={{ background: "transparent", border: "1px solid #ede8df", color: "var(--muted-foreground)" }}
+          >
+            Отмена
+          </button>
+          <button
+            onClick={() => onSave({ day, time, timezone })}
+            className="tap flex-1 rounded-xl py-2.5 text-[14px] font-bold text-white"
+            style={{
+              background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+              boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
+            }}
+          >
+            Сохранить
+          </button>
+        </div>
       </div>
     </div>
   );
