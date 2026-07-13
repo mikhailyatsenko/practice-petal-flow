@@ -267,6 +267,34 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
           </Link>
 
           <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
+            Напоминание о созвоне
+          </div>
+          <button
+            onClick={() => toggleCallReminderMode("buddy")}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+            style={{ color: callMode === "buddy" ? "#E53935" : "#1E88E5" }}
+          >
+            <CalendarClock className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>
+              {callMode === "buddy"
+                ? "Выключить: завтра созвон с Бадди"
+                : "Включить: завтра созвон с Бадди"}
+            </span>
+          </button>
+          <button
+            onClick={() => toggleCallReminderMode("foursome")}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+            style={{ color: callMode === "foursome" ? "#E53935" : "#1E88E5" }}
+          >
+            <CalendarClock className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>
+              {callMode === "foursome"
+                ? "Выключить: завтра созвон с Четвёркой"
+                : "Включить: завтра созвон с Четвёркой"}
+            </span>
+          </button>
+
+          <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
             Демо-уровни
           </div>
           {([1, 2, 3, 4, 5, 6] as PreviewLevel[]).map((n) => {
