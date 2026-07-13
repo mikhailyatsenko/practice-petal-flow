@@ -913,6 +913,16 @@ function ConfirmSheet({
         </p>
 
         <div className="mt-4 space-y-2">
+          <button
+            onClick={onConfirm}
+            className="tap w-full rounded-2xl py-3.5 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
+            style={{
+              background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+              boxShadow: "0 6px 20px rgba(255,109,0,0.40)",
+            }}
+          >
+            <Check className="h-4 w-4" /> Подтвердить отправку запроса
+          </button>
           {req.channels.includes("tg") && (
             <button
               className="tap w-full rounded-2xl py-3 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
@@ -935,16 +945,6 @@ function ConfirmSheet({
               <MaxIcon size={18} /> Написать в MAX
             </button>
           )}
-          <button
-            onClick={onConfirm}
-            className="tap w-full rounded-2xl py-3.5 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
-            style={{
-              background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-              boxShadow: "0 6px 20px rgba(255,109,0,0.40)",
-            }}
-          >
-            <Check className="h-4 w-4" /> Отправить запрос
-          </button>
           <button
             onClick={onClose}
             className="tap w-full rounded-2xl py-3 text-[14px] font-medium inline-flex items-center justify-center gap-2"
