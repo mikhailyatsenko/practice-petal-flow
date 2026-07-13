@@ -137,7 +137,7 @@ export function useCallReminder(): {
     window.addEventListener(EVT, sync);
     window.addEventListener("storage", sync);
     // тикаем для обратного отсчёта
-    const id = window.setInterval(sync, 15000);
+    const id = window.setInterval(sync, 1000);
     return () => {
       window.removeEventListener(EVT, sync);
       window.removeEventListener("storage", sync);
