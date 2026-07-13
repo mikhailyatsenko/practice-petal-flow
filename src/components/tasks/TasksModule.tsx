@@ -401,6 +401,7 @@ export function TasksModule({ goals, initialGoalId, onClearGoalFilter, initialBr
 
   const handleListPointerDown = (e: React.PointerEvent, task: Task) => {
     if (e.pointerType === "mouse" && e.button !== 0) return;
+    if (task.done) return; // выполненные задачи не перетаскиваются
     listStartPosRef.current = { x: e.clientX, y: e.clientY };
     const el = e.currentTarget as HTMLElement;
     const pid = e.pointerId;
@@ -2169,6 +2170,7 @@ function KeyTreeSection({
 
   const handlePointerDown = (e: React.PointerEvent, task: Task, level: number) => {
     if (e.pointerType === "mouse" && e.button !== 0) return;
+    if (task.done) return; // выполненные задачи не перетаскиваются
     startPosRef.current = { x: e.clientX, y: e.clientY };
     const el = e.currentTarget as HTMLElement;
     const pid = e.pointerId;
