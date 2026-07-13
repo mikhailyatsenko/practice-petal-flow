@@ -7,10 +7,11 @@ import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 export const Route = createFileRoute("/_app/buddy")({
-  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "create-tg-no-username" | "create-max" | "start-max-bot" | "start-tg-bot" } => {
+  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "has-no-link" | "waiting" | "create-tg-no-username" | "create-max" | "start-max-bot" | "start-tg-bot" } => {
     const d = search.demo;
     if (
       d === "has" ||
+      d === "has-no-link" ||
       d === "waiting" ||
       d === "create-tg-no-username" ||
       d === "create-max" ||
