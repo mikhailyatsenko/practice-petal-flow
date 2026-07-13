@@ -42,6 +42,7 @@ function TelemostLinkPage() {
 
   const handleConfirm = () => {
     setConfirmed(true);
+    setTelemostLink(link.trim());
     setTimeout(() => navigate({ to: "/community" }), 700);
   };
 
