@@ -305,6 +305,30 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                 : "2 часа до созвона"}
             </span>
           </button>
+          <button
+            onClick={() => toggleCallReminderMode("buddy-no-link")}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+            style={{ color: callMode === "buddy-no-link" ? "#E53935" : "#FF6D00" }}
+          >
+            <CalendarClock className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>
+              {callMode === "buddy-no-link"
+                ? "Выключить: завтра созвон — ссылки нет"
+                : "Завтра созвон — ссылки нет"}
+            </span>
+          </button>
+          <button
+            onClick={() => toggleCallReminderMode("buddy-2h-no-link")}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+            style={{ color: callMode === "buddy-2h-no-link" ? "#E53935" : "#FF6D00" }}
+          >
+            <CalendarClock className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>
+              {callMode === "buddy-2h-no-link"
+                ? "Выключить: 2 часа до созвона — ссылки нет"
+                : "2 часа до созвона — ссылки нет"}
+            </span>
+          </button>
 
           <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
             Демо-уровни
