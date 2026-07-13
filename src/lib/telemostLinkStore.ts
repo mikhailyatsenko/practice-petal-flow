@@ -28,6 +28,7 @@ export function useTelemostLink() {
     const sync = () => setLink(getTelemostLink());
     window.addEventListener(EVT, sync);
     window.addEventListener("storage", sync);
+    sync();
     return () => {
       window.removeEventListener(EVT, sync);
       window.removeEventListener("storage", sync);
