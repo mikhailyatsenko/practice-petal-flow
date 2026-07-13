@@ -20,8 +20,13 @@ export function CallReminderBanner() {
       }}
       role="status"
     >
-      <div
-        className="relative overflow-hidden rounded-2xl px-4 py-3 flex items-center gap-3 text-white shadow-[0_10px_30px_rgba(30,136,229,0.45)]"
+      <button
+        type="button"
+        onClick={() => {
+          if (isBuddy) navigate({ to: "/buddy", search: { demo: "has" } });
+          else navigate({ to: "/foursome" });
+        }}
+        className="tap relative overflow-hidden rounded-2xl px-4 py-3 flex items-center gap-3 text-white shadow-[0_10px_30px_rgba(30,136,229,0.45)] w-full text-left"
         style={{
           background: "linear-gradient(135deg, #42A5F5, #1E88E5)",
           animation: "callrem-pulse 1.8s ease-in-out infinite",
@@ -43,14 +48,12 @@ export function CallReminderBanner() {
           <p className="text-[14px] font-bold leading-tight">{title}</p>
           <p className="text-[12px] opacity-95 leading-tight mt-0.5">{subtitle}</p>
         </div>
-        <button
-          type="button"
-          onClick={ackCallReminder}
-          className="tap relative text-[12px] font-bold bg-white/25 hover:bg-white/35 rounded-full px-3 py-1.5 transition-colors"
+        <span
+          className="relative text-[12px] font-bold bg-white/25 rounded-full px-3 py-1.5"
         >
-          Я готов
-        </button>
-      </div>
+          Открыть
+        </span>
+      </button>
 
       <style>{`
         @keyframes callrem-pulse {
