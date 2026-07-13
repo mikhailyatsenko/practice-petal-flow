@@ -1415,7 +1415,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
         </div>
       )}
 
-      {!noLink && !show2h && meetingLink && (
+      {!noLink && !noLinkActive && !show2h && meetingLink && (
         <a
           href={meetingLink}
           target="_blank"
