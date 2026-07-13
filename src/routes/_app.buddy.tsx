@@ -7,10 +7,11 @@ import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 export const Route = createFileRoute("/_app/buddy")({
-  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "create-tg-no-username" | "create-max" | "start-max-bot" | "start-tg-bot" } => {
+  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "has-no-link" | "waiting" | "create-tg-no-username" | "create-max" | "start-max-bot" | "start-tg-bot" } => {
     const d = search.demo;
     if (
       d === "has" ||
+      d === "has-no-link" ||
       d === "waiting" ||
       d === "create-tg-no-username" ||
       d === "create-max" ||
@@ -122,7 +123,7 @@ const DEMO_BUDDY: BuddyRequest = {
 function BuddyScreen() {
   const { demo } = Route.useSearch();
   const initial: Screen =
-    demo === "has"
+    demo === "has" || demo === "has-no-link"
       ? { name: "has_buddy" }
       : demo === "waiting"
         ? { name: "waiting", to: DEMO_REQUESTS[0] }
@@ -199,7 +200,7 @@ function BuddyScreen() {
     case "waiting":
       return <Waiting to={screen.to} onBack={() => setScreen({ name: "no_buddy" })} />;
     case "has_buddy":
-      return <HasBuddy onBack={() => setScreen({ name: "no_buddy" })} buddy={DEMO_BUDDY} />;
+      return <HasBuddy onBack={() => setScreen({ name: "no_buddy" })} buddy={DEMO_BUDDY} noLink={demo === "has-no-link"} />;
   }
 }
 
@@ -1174,7 +1175,7 @@ function IncomingRequestCard({
 
 // ───────────────────────── Screen 6: Has buddy ─────────────────────────
 
-function HasBuddy({ buddy, onBack }: { buddy: BuddyRequest; onBack: () => void }) {
+function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () => void; noLink?: boolean }) {
   const navigate = useNavigate();
   const card = useBuddyCard();
   const filled = isBuddyCardFilled(card);
@@ -1183,17 +1184,41 @@ function HasBuddy({ buddy, onBack }: { buddy: BuddyRequest; onBack: () => void }
     <div className="px-4 pb-6">
       <PageHeader title="Мой Бадди" onBack={() => navigate({ to: "/community" })} />
 
-      {/* Active bonus banner */}
-      <div
-        className="rounded-2xl p-4 flex items-center gap-3 animate-fade-up"
-        style={{ background: "linear-gradient(135deg, #8BC34A, #4CAF50)" }}
-      >
-        <Zap className="h-8 w-8 shrink-0 text-white" fill="#fff" />
-        <div className="min-w-0 text-white">
-          <p className="text-[15px] font-bold leading-tight">+2 очка каждый день активны!</p>
-          <p className="text-[12px] opacity-85 mt-0.5">Пока у тебя есть Бадди</p>
+      {noLink ? (
+        <div
+          className="rounded-2xl p-4 animate-fade-up hairline"
+          style={{ background: "linear-gradient(135deg, #FFF3E0, #FFE0B2)" }}
+        >
+          <p className="text-[15px] font-bold leading-tight" style={{ color: "#BF4A00" }}>
+            📞 Создайте ссылку на созвоны
+          </p>
+          <p className="text-[13px] mt-1.5 leading-snug" style={{ color: "#6b4a20" }}>
+            Создайте постоянную ссылку Яндекс Телемоста для ваших еженедельных встреч и начните получать{" "}
+            <span style={{ fontWeight: 700 }}>+2 очка каждый день</span>.
+          </p>
+          <button
+            onClick={() => navigate({ to: "/telemost-link" })}
+            className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white"
+            style={{
+              background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+              boxShadow: "0 6px 20px rgba(255,109,0,0.40)",
+            }}
+          >
+            Создать ссылку на созвоны
+          </button>
         </div>
-      </div>
+      ) : (
+        <div
+          className="rounded-2xl p-4 flex items-center gap-3 animate-fade-up"
+          style={{ background: "linear-gradient(135deg, #8BC34A, #4CAF50)" }}
+        >
+          <Zap className="h-8 w-8 shrink-0 text-white" fill="#fff" />
+          <div className="min-w-0 text-white">
+            <p className="text-[15px] font-bold leading-tight">+2 очка каждый день активны!</p>
+            <p className="text-[12px] opacity-85 mt-0.5">Пока у тебя есть Бадди</p>
+          </div>
+        </div>
+      )}
 
       {/* Buddy card */}
       <div className="mt-4 bg-card hairline shadow-card rounded-2xl p-4 animate-fade-up">
