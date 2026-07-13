@@ -1244,6 +1244,22 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
         </div>
       )}
 
+      {meetingLink && (
+        <a
+          href={meetingLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2 animate-fade-up"
+          style={{
+            background: "linear-gradient(135deg, #4A90E2, #2E6BB8)",
+            boxShadow: "0 6px 20px rgba(46,107,184,0.35)",
+          }}
+        >
+          <Video className="h-4 w-4" />
+          Перейти в комнату созвона
+        </a>
+      )}
+
       {/* Buddy card */}
       <div className="mt-4 bg-card hairline shadow-card rounded-2xl p-4 animate-fade-up">
         <div className="flex items-center gap-3">
