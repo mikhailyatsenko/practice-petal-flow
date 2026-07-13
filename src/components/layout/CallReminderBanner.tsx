@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { ackCallReminder, useCallReminder } from "@/lib/callReminderMode";
 
 export function CallReminderBanner() {
+  const navigate = useNavigate();
   const { mode, ack } = useCallReminder();
   if (!mode || ack) return null;
 
