@@ -1,6 +1,6 @@
 import { CalendarClock } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
-import { useCallReminder, formatCallCountdown } from "@/lib/callReminderMode";
+import { useCallReminder, formatCallCountdown, formatHMS } from "@/lib/callReminderMode";
 
 export function CallReminderBanner() {
   const navigate = useNavigate();
