@@ -1236,7 +1236,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
           </button>
         </div>
       ) : show2h && countdown ? (
-        <div className="rounded-2xl p-5 animate-fade-up bg-card hairline shadow-card">
+        <div className="rounded-2xl p-5 animate-fade-up bg-card hairline shadow-card text-center">
           <p
             className="text-[12px] font-bold uppercase tracking-wider"
             style={{ color: "#16a34a", letterSpacing: "0.08em" }}
