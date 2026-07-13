@@ -143,9 +143,9 @@ function BuddyScreen() {
       lastDemo.current = demo;
       setScreen(initial);
     }
-    if (demo === "has" && !getTelemostLink()) {
-      setTelemostLink("https://telemost.yandex.ru/j/demo-buddy-room");
-    }
+      if (demo === "has" && !window.localStorage.getItem("telemost-meeting-link")) {
+        setTelemostLink("https://telemost.yandex.ru/j/demo-buddy-room");
+      }
   }, [demo]);
 
   const contactVariant: ContactVariant =
