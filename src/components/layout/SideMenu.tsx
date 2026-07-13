@@ -1,9 +1,10 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, RotateCcw, CalendarPlus, Bell, BellOff, Sparkles, Crown, ShieldCheck, Globe, Video } from "lucide-react";
+import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, RotateCcw, CalendarPlus, Bell, BellOff, Sparkles, Crown, ShieldCheck, Globe, Video, CalendarClock } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { resetAllPractices, advanceToNextDay } from "@/lib/practicesStore";
 import { useBuddyRequestMode, toggleBuddyRequestMode } from "@/lib/buddyRequestMode";
 import { useFoursomeRequestMode, toggleFoursomeRequestMode } from "@/lib/foursomeRequestMode";
+import { useCallReminder, toggleCallReminderMode } from "@/lib/callReminderMode";
 import { usePreviewLevel, togglePreviewLevel, type PreviewLevel } from "@/lib/previewLevel";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
