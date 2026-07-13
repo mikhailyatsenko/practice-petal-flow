@@ -1,14 +1,33 @@
 import { CalendarClock } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
-import { useCallReminder } from "@/lib/callReminderMode";
+import { useCallReminder, formatCallCountdown } from "@/lib/callReminderMode";
 
 export function CallReminderBanner() {
   const navigate = useNavigate();
-  const { mode, ack } = useCallReminder();
-  if (!mode || ack) return null;
+  const { mode, ack, startAt, now } = useCallReminder();
+  if (!mode) return null;
 
   const isBuddy = mode === "buddy";
-  const title = isBuddy ? "Завтра созвон с Бадди!" : "Завтра созвон с Четвёркой!";
+  const isFoursome = mode === "foursome";
+  const is2h = mode === "buddy-2h";
+
+  // "завтра" режимы скрываются после подтверждения
+  if ((isBuddy || isFoursome) && ack) return null;
+
+  let title: string;
+  let subtitle: string;
+
+  if (is2h && startAt != null) {
+    const f = formatCallCountdown(startAt - now);
+    title = f.bannerTitle;
+    subtitle = "Подключайся к комнате созвона вовремя";
+  } else if (isBuddy) {
+    title = "Завтра созвон с Бадди!";
+    subtitle = "Подготовься и приходи вовремя";
+  } else {
+    title = "Завтра созвон с Четвёркой!";
+    subtitle = "Подготовься и приходи вовремя";
+  }
 
   return (
     <div
@@ -22,8 +41,8 @@ export function CallReminderBanner() {
       <button
         type="button"
         onClick={() => {
-          if (isBuddy) navigate({ to: "/buddy", search: { demo: "has" } });
-          else navigate({ to: "/foursome" });
+          if (isFoursome) navigate({ to: "/foursome" });
+          else navigate({ to: "/buddy", search: { demo: "has" } });
         }}
         className="tap relative overflow-hidden rounded-2xl px-4 py-3 flex items-center gap-3 w-full text-left bg-card hairline shadow-card"
       >
@@ -36,8 +55,8 @@ export function CallReminderBanner() {
           <p className="text-[14px] font-bold leading-tight" style={{ color: "#1a0e00" }}>
             {title}
           </p>
-          <p className="text-[12px] leading-tight mt-0.5" style={{ color: "#6b6356" }}>
-            Подготовься и приходи вовремя
+          <p className="text-[12px] leading-tight mt-0.5" style={{ color: "#5a5044" }}>
+            {subtitle}
           </p>
         </div>
         <span
