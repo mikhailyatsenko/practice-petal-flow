@@ -1367,8 +1367,8 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
               onClick={() => navigate({ to: "/my-buddy-card" })}
               className="tap mt-4 w-full rounded-2xl py-3 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
               style={{
-                background: "linear-gradient(135deg, #43A047, #66BB6A)",
-                boxShadow: "0 6px 20px rgba(67,160,71,0.35)",
+                background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                boxShadow: "0 6px 20px rgba(255,109,0,0.35)",
               }}
             >
               <ClipboardList className="h-4 w-4" /> Заполнить карточку Бадди
