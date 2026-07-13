@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, MessageCircle, Check, X, Send, Pencil, ClipboardList } from "lucide-react";
+import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, MessageCircle, Check, X, Send, Pencil, ClipboardList, Video } from "lucide-react";
 import { BackButton } from "@/components/layout/BackButton";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
+import { setTelemostLink, useTelemostLink } from "@/lib/telemostLinkStore";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 export const Route = createFileRoute("/_app/buddy")({
@@ -142,6 +143,9 @@ function BuddyScreen() {
       lastDemo.current = demo;
       setScreen(initial);
     }
+      if (demo === "has" && !window.localStorage.getItem("telemost-meeting-link")) {
+        setTelemostLink("https://telemost.yandex.ru/j/demo-buddy-room");
+      }
   }, [demo]);
 
   const contactVariant: ContactVariant =
@@ -1179,6 +1183,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
   const navigate = useNavigate();
   const card = useBuddyCard();
   const filled = isBuddyCardFilled(card);
+  const meetingLink = useTelemostLink();
 
   return (
     <div className="px-4 pb-6">
@@ -1236,6 +1241,22 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
             <p className="text-[12px] opacity-85 mt-0.5">Пока у тебя есть Бадди</p>
           </div>
         </div>
+      )}
+
+      {meetingLink && (
+        <a
+          href={meetingLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2 animate-fade-up"
+          style={{
+            background: "linear-gradient(135deg, #4A90E2, #2E6BB8)",
+            boxShadow: "0 6px 20px rgba(46,107,184,0.35)",
+          }}
+        >
+          <Video className="h-4 w-4" />
+          Перейти в комнату созвона
+        </a>
       )}
 
       {/* Buddy card */}
