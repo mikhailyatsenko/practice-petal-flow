@@ -1,18 +1,28 @@
 import { CalendarClock } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
-import { useCallReminder, formatCallCountdown, formatHMS } from "@/lib/callReminderMode";
+import {
+  useCallReminder,
+  formatCallCountdown,
+  formatHMS,
+  isNoLinkMode,
+} from "@/lib/callReminderMode";
+import { useTelemostLink } from "@/lib/telemostLinkStore";
 
 export function CallReminderBanner() {
   const navigate = useNavigate();
   const { mode, ack, startAt, now } = useCallReminder();
+  const link = useTelemostLink();
   if (!mode) return null;
 
-  const isBuddy = mode === "buddy";
-  const isFoursome = mode === "foursome";
-  const is2h = mode === "buddy-2h";
+  const noLinkRequested = isNoLinkMode(mode);
+  const noLink = noLinkRequested && !link; // если ссылка появилась — режим "как обычно"
 
-  // "завтра" режимы скрываются после подтверждения
-  if ((isBuddy || isFoursome) && ack) return null;
+  const isFoursome = mode === "foursome";
+  const is2h = mode === "buddy-2h" || mode === "buddy-2h-no-link";
+  const isBuddyTomorrow = mode === "buddy" || mode === "buddy-no-link";
+
+  // "завтра" режимы скрываются после подтверждения — но только если ссылка есть.
+  if (isBuddyTomorrow && ack && !noLink) return null;
 
   let title: string;
   let subtitle: string;
@@ -23,14 +33,20 @@ export function CallReminderBanner() {
     title = f.started
       ? "Созвон с Бадди начался"
       : `До созвона с Бадди — ${formatHMS(remaining)}`;
-    subtitle = "Подключайся к комнате созвона вовремя";
-  } else if (isBuddy) {
-    title = "Завтра созвон с Бадди!";
-    subtitle = "Подготовься и приходи вовремя";
+    subtitle = noLink
+      ? "Ссылка на комнату ещё не создана"
+      : "Подключайся к комнате созвона вовремя";
+  } else if (isBuddyTomorrow) {
+    title = "Завтра созвон с Бадди";
+    subtitle = noLink
+      ? "Ссылка на комнату ещё не создана"
+      : "Подготовься и приходи вовремя";
   } else {
     title = "Завтра созвон с Четвёркой!";
     subtitle = "Подготовься и приходи вовремя";
   }
+
+  const ctaLabel = noLink ? "Создать ссылку" : "Открыть";
 
   return (
     <div
@@ -44,7 +60,8 @@ export function CallReminderBanner() {
       <button
         type="button"
         onClick={() => {
-          if (isFoursome) navigate({ to: "/foursome" });
+          if (noLink) navigate({ to: "/telemost-link" });
+          else if (isFoursome) navigate({ to: "/foursome" });
           else navigate({ to: "/buddy", search: { demo: "has" } });
         }}
         className="tap relative overflow-hidden rounded-2xl px-4 py-3 flex items-center gap-3 w-full text-left bg-card hairline shadow-card"
@@ -69,7 +86,7 @@ export function CallReminderBanner() {
             boxShadow: "0 4px 14px rgba(34, 197, 94, 0.35)",
           }}
         >
-          <span className="relative z-10">Открыть</span>
+          <span className="relative z-10">{ctaLabel}</span>
           <span
             aria-hidden
             className="pointer-events-none absolute inset-0 z-0"
