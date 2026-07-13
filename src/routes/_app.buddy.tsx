@@ -5,7 +5,7 @@ import { BackButton } from "@/components/layout/BackButton";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
 import { setTelemostLink, useTelemostLink } from "@/lib/telemostLinkStore";
-import { ackCallReminder, useCallReminder } from "@/lib/callReminderMode";
+import { ackCallReminder, useCallReminder, formatCallCountdown } from "@/lib/callReminderMode";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 export const Route = createFileRoute("/_app/buddy")({
@@ -1185,8 +1185,10 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
   const card = useBuddyCard();
   const filled = isBuddyCardFilled(card);
   const meetingLink = useTelemostLink();
-  const { mode: callMode, ack: callAck } = useCallReminder();
+  const { mode: callMode, ack: callAck, startAt, now } = useCallReminder();
   const showCallInfo = !noLink && callMode === "buddy" && !callAck;
+  const show2h = !noLink && callMode === "buddy-2h" && startAt != null;
+  const countdown = show2h ? formatCallCountdown(startAt! - now) : null;
 
   return (
     <div className="px-4 pb-6">
@@ -1233,6 +1235,46 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
             `}</style>
           </button>
         </div>
+      ) : show2h && countdown ? (
+        <div className="rounded-2xl p-5 animate-fade-up bg-card hairline shadow-card">
+          <p
+            className="text-[12px] font-bold uppercase tracking-wider"
+            style={{ color: "#16a34a", letterSpacing: "0.08em" }}
+          >
+            {countdown.started ? "Созвон идёт" : "Сегодня созвон с Бадди"}
+          </p>
+          <p
+            className="mt-1 text-[20px] font-extrabold leading-tight"
+            style={{ color: "#1a0e00" }}
+          >
+            {countdown.started ? "Созвон с Бадди начался" : countdown.pageValue}
+          </p>
+          {meetingLink && (
+            <a
+              href={meetingLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tap relative mt-4 w-full overflow-hidden rounded-2xl py-3 text-[14px] font-bold text-white flex items-center justify-center gap-2"
+              style={{
+                background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                boxShadow: "0 6px 20px rgba(255,109,0,0.35)",
+              }}
+            >
+              <Video className="h-4 w-4 relative z-10" />
+              <span className="relative z-10">{countdown.ctaLabel}</span>
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-0 z-0"
+                style={{
+                  background:
+                    "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)",
+                  transform: "translateX(-100%)",
+                  animation: "green-shimmer 2.8s ease-in-out infinite",
+                }}
+              />
+            </a>
+          )}
+        </div>
       ) : showCallInfo ? (
         <div
           className="rounded-2xl p-4 animate-fade-up bg-card hairline shadow-card"
@@ -1240,8 +1282,8 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
           <p className="text-[15px] font-bold leading-tight" style={{ color: "#1a0e00" }}>
             📞 Завтра созвон с Бадди
           </p>
-          <p className="text-[13px] mt-1.5 leading-snug text-muted-foreground">
-            Напоминаем о созвоне с Бадди завтра в <span className="font-bold" style={{ color: "#1a0e00" }}>20:00 МСК</span>. В назначенное время нажмите кнопку «Перейти в комнату созвона», чтобы присоединиться к встрече.
+          <p className="text-[13.5px] mt-1.5 leading-snug" style={{ color: "#2b2419", fontWeight: 500 }}>
+            Напоминаем о созвоне с Бадди завтра в <span className="font-bold">20:00 МСК</span>. В назначенное время нажмите кнопку «Перейти в комнату созвона», чтобы присоединиться к встрече.
           </p>
           <button
             onClick={ackCallReminder}
@@ -1271,6 +1313,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
             `}</style>
           </button>
         </div>
+
       ) : (
         <div
           className="rounded-2xl p-4 flex items-center gap-3 animate-fade-up"

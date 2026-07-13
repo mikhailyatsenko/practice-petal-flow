@@ -293,6 +293,18 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                 : "Включить: завтра созвон с Четвёркой"}
             </span>
           </button>
+          <button
+            onClick={() => toggleCallReminderMode("buddy-2h")}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+            style={{ color: callMode === "buddy-2h" ? "#E53935" : "#16a34a" }}
+          >
+            <CalendarClock className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>
+              {callMode === "buddy-2h"
+                ? "Выключить: 2 часа до созвона"
+                : "2 часа до созвона"}
+            </span>
+          </button>
 
           <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
             Демо-уровни
