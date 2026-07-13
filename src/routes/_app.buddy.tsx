@@ -1377,6 +1377,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
                 <Pencil className="h-3 w-3" /> Изменить
               </button>
             </div>
+          </div>
         </div>
 
         <div
