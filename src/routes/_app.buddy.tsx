@@ -123,7 +123,7 @@ const DEMO_BUDDY: BuddyRequest = {
 function BuddyScreen() {
   const { demo } = Route.useSearch();
   const initial: Screen =
-    demo === "has"
+    demo === "has" || demo === "has-no-link"
       ? { name: "has_buddy" }
       : demo === "waiting"
         ? { name: "waiting", to: DEMO_REQUESTS[0] }
