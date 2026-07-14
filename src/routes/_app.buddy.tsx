@@ -1297,7 +1297,7 @@ function NoLinkTomorrowCard({ time, timezone }: { time: string; timezone: string
             </p>
           </div>
         </div>
-        <div className="mt-2.5 flex items-start gap-2">
+        <div className="mt-2.5 flex items-center gap-2">
           <div
             className="flex-1 min-w-0 rounded-[16px] p-3"
             style={{ background: "#fff", border: "1px solid #ede8df" }}
