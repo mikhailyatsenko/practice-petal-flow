@@ -1345,6 +1345,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
             <span className="font-bold">{schedule.time} {schedule.timezone}</span>.
             Ссылка на комнату ещё не создана. Создайте её заранее, чтобы созвон состоялся.
           </p>
+          <BuddyReminderTemplate time={schedule.time} timezone={schedule.timezone} />
           <button
             onClick={() => navigate({ to: "/telemost-link" })}
             className="tap relative mt-3 w-full overflow-hidden rounded-2xl py-3 text-[14px] font-bold text-white"
