@@ -1179,6 +1179,54 @@ function IncomingRequestCard({
   );
 }
 
+function BuddyReminderTemplate({ time, timezone }: { time: string; timezone: string }) {
+  const [copied, setCopied] = useState(false);
+  const text = `Привет! Напоминаю, завтра у нас созвон в ${time} ${timezone}.`;
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      } catch {
+        /* noop */
+      }
+    }
+  };
+  return (
+    <div className="mt-3">
+      <p className="text-[13.5px] font-semibold leading-snug" style={{ color: "#1a0e00" }}>
+        Напишите Бадди:
+      </p>
+      <div
+        className="mt-2 rounded-xl p-3 flex items-start gap-3"
+        style={{ background: "#FAF6EF", border: "1px solid #ece4d4" }}
+      >
+        <MessageCircle className="h-5 w-5 shrink-0 mt-0.5" style={{ color: "#FF6D00" }} />
+        <p className="text-[14px] leading-relaxed flex-1" style={{ color: "#2b2419" }}>
+          {text}
+        </p>
+        <button
+          onClick={onCopy}
+          className="tap shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold transition-colors"
+          style={{ background: "#fff", color: "#FF6D00", border: "1px solid #ede8df" }}
+        >
+          {copied ? "Скопировано" : "Скопировать"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ───────────────────────── Screen 6: Has buddy ─────────────────────────
 
 function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () => void; noLink?: boolean }) {
