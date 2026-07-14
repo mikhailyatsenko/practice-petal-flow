@@ -1516,7 +1516,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
               <button
                 type="button"
                 onClick={() => {
-                  console.log("open edit schedule");
+                  console.log("open edit schedule", typeof setEditSchedule, setEditSchedule === undefined, setEditSchedule);
                   try {
                     setEditSchedule(true);
                     console.log("after setEditSchedule");
