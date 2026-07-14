@@ -1295,7 +1295,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
           <div className="rounded-2xl p-5 animate-fade-up bg-card hairline shadow-card text-center">
             <p
               className="text-[12px] font-bold uppercase tracking-wider"
-              style={{ color: "#FF6D00", letterSpacing: "0.08em" }}
+              style={{ color: "#16a34a", letterSpacing: "0.08em" }}
             >
               {noLink2hCountdown.started ? "Созвон с Бадди начался" : "До созвона с Бадди осталось"}
             </p>
