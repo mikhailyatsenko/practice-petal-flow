@@ -82,9 +82,8 @@ export function CallReminderBanner() {
 
   const ctaLabel = noLink ? "Создать ссылку" : "Открыть";
   const handleClick = () => {
-    if (noLink) navigate({ to: "/telemost-link" });
-    else if (isFoursome) navigate({ to: "/foursome" });
-    else navigate({ to: "/buddy", search: { demo: "has" } });
+    if (isFoursome) navigate({ to: "/foursome" });
+    else navigate({ to: "/buddy", search: { demo: noLink ? "has-no-link" : "has" } });
   };
 
   const wrapper = (children: React.ReactNode) => (

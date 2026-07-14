@@ -1291,32 +1291,38 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
           </button>
         </div>
       ) : modeNoLink2h && noLink2hCountdown ? (
-        <div className="rounded-2xl p-5 animate-fade-up bg-card hairline shadow-card text-center">
-          <p
-            className="text-[12px] font-bold uppercase tracking-wider"
-            style={{ color: "#FF6D00", letterSpacing: "0.08em" }}
+        <>
+          <div className="rounded-2xl p-5 animate-fade-up bg-card hairline shadow-card text-center">
+            <p
+              className="text-[12px] font-bold uppercase tracking-wider"
+              style={{ color: "#FF6D00", letterSpacing: "0.08em" }}
+            >
+              {noLink2hCountdown.started ? "Созвон с Бадди начался" : "До созвона с Бадди осталось"}
+            </p>
+            <p
+              className="mt-1 font-extrabold leading-none tabular-nums"
+              style={{
+                color: "#1a0e00",
+                fontSize: noLink2hCountdown.started ? 24 : 40,
+                letterSpacing: noLink2hCountdown.started ? 0 : "0.02em",
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {noLink2hCountdown.started ? "Сейчас" : formatHMS(startAt! - now)}
+            </p>
+          </div>
+          <div
+            className="mt-3 rounded-2xl p-4 animate-fade-up"
+            style={{ background: "#fff7ed", border: "1px solid #fed7aa" }}
           >
-            {noLink2hCountdown.started ? "Созвон идёт" : "Сегодня созвон с Бадди"}
-          </p>
-          <p
-            className="mt-1 font-extrabold leading-none tabular-nums"
-            style={{
-              color: "#1a0e00",
-              fontSize: noLink2hCountdown.started ? 24 : 40,
-              letterSpacing: noLink2hCountdown.started ? 0 : "0.02em",
-              fontVariantNumeric: "tabular-nums",
-            }}
-          >
-            {noLink2hCountdown.started
-              ? "Созвон с Бадди начался"
-              : `До начала: ${formatHMS(startAt! - now)}`}
-          </p>
-          <p className="text-[13px] mt-3 leading-snug" style={{ color: "#2b2419" }}>
-            Ссылка на комнату ещё не создана. Создайте её сейчас, чтобы успеть к созвону.
-          </p>
+            <p className="text-[14px] leading-snug" style={{ color: "#1a0e00", fontWeight: 500 }}>
+              <span style={{ color: "#FF6D00", fontWeight: 800 }}>⚠️ Внимание!</span>{" "}
+              Ссылка на комнату ещё не создана. Создайте её сейчас, чтобы успеть к созвону.
+            </p>
+          </div>
           <button
             onClick={() => navigate({ to: "/telemost-link" })}
-            className="tap relative mt-3 w-full overflow-hidden rounded-2xl py-3 text-[14px] font-bold text-white"
+            className="tap relative mt-3 w-full overflow-hidden rounded-2xl py-3.5 text-[14px] font-bold text-white"
             style={{
               background: "linear-gradient(135deg, #FFB300, #FF6D00)",
               boxShadow: "0 6px 20px rgba(255,109,0,0.35)",
@@ -1328,13 +1334,14 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
               className="pointer-events-none absolute inset-0 z-0"
               style={{
                 background:
-                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)",
+                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0) 100%)",
                 transform: "translateX(-100%)",
-                animation: "green-shimmer 2.8s ease-in-out infinite",
+                animation: "room-shimmer 2.6s ease-in-out infinite",
               }}
             />
           </button>
-        </div>
+        </>
+
       ) : modeNoLinkTomorrow ? (
         <div className="rounded-2xl p-4 animate-fade-up bg-card hairline shadow-card">
           <p className="text-[15px] font-bold leading-tight" style={{ color: "#1a0e00" }}>
