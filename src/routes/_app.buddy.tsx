@@ -1408,13 +1408,13 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
                   background:
                     "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0) 100%)",
                   transform: "translateX(-100%)",
-                  animation: "green-shimmer 2.8s ease-in-out infinite",
+                  animation: "room-shimmer 2.6s ease-in-out infinite",
                 }}
               />
               <style>{`
-                @keyframes green-shimmer {
+                @keyframes room-shimmer {
                   0% { transform: translateX(-100%); }
-                  45% { transform: translateX(200%); }
+                  65% { transform: translateX(200%); }
                   100% { transform: translateX(200%); }
                 }
               `}</style>
