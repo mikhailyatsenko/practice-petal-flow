@@ -1297,30 +1297,25 @@ function NoLinkTomorrowCard({ time, timezone }: { time: string; timezone: string
             </p>
           </div>
         </div>
-        <div className="mt-2.5 flex items-stretch gap-2">
-          <div
-            className="flex-1 min-w-0 rounded-[16px] p-3 flex items-start gap-2"
-            style={{ background: "#fff", border: "1px solid #ede8df" }}
-          >
-            <MessageCircle className="h-4 w-4 shrink-0 mt-0.5" style={{ color: "#FF6D00" }} />
-            <p className="text-[13.5px] leading-snug" style={{ color: "#2b2419" }}>
-              {text}
-            </p>
-          </div>
+        <div
+          className="mt-2.5 flex items-center gap-2 rounded-[16px] p-3"
+          style={{ background: "#fff", border: "1px solid #ede8df" }}
+        >
+          <MessageCircle className="h-4 w-4 shrink-0 mt-0.5" style={{ color: "#FF6D00" }} />
+          <p className="flex-1 min-w-0 text-[13.5px] leading-snug" style={{ color: "#2b2419" }}>
+            {text}
+          </p>
           <button
             onClick={onCopy}
-            className="tap shrink-0 rounded-[16px] px-3 py-2 text-[12px] font-semibold inline-flex flex-col items-center justify-center gap-1 transition-colors"
+            className="tap shrink-0 rounded-full px-2.5 py-1.5 text-[11px] font-semibold inline-flex items-center justify-center gap-1 transition-colors"
             style={{
-              background: copied ? "#fff" : "#fff",
+              background: "#fff",
               color: copied ? "#16a34a" : "#FF6D00",
               border: copied ? "1px solid #16a34a" : "1px solid #FF6D00",
-              minWidth: 96,
             }}
           >
-            <Copy className="h-4 w-4" />
-            <span className="text-center leading-tight">
-              {copied ? "Скопировано" : "Скопировать сообщение"}
-            </span>
+            <Copy className="h-3.5 w-3.5" />
+            <span>{copied ? "Скопировано" : "Скопировать"}</span>
           </button>
         </div>
       </div>
