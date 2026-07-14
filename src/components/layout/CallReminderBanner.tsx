@@ -65,9 +65,9 @@ const iconKeyframes = `
     0% { transform: translateX(0); }
     100% { transform: translateX(500%); }
   }
-  @keyframes call-open-btn-pulse {
-    0%, 100% { transform: scale(1); box-shadow: 0 4px 12px rgba(255,109,0,0.35); }
-    50% { transform: scale(1.04); box-shadow: 0 6px 16px rgba(255,109,0,0.5); }
+  @keyframes call-open-btn-shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
   }
 `;
 
@@ -135,13 +135,21 @@ export function CallReminderBanner() {
           </p>
         </div>
         <span
-          className="relative rounded-full px-3 py-1.5 text-[12px] font-bold text-white shrink-0"
+          className="relative overflow-hidden rounded-full px-3 py-1.5 text-[12px] font-bold text-white shrink-0"
           style={{
             background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-            animation: "call-open-btn-pulse 1.8s ease-in-out infinite",
           }}
         >
-          {ctaLabel}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 w-1/2"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0) 100%)",
+              animation: "call-open-btn-shine 2.4s linear infinite",
+            }}
+          />
+          <span className="relative">{ctaLabel}</span>
         </span>
       </button>,
     );
