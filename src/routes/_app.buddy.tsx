@@ -1518,6 +1518,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
                 onClick={() => {
                   console.log("open edit schedule");
                   setEditSchedule(true);
+                  setTimeout(() => console.log("editSchedule after timeout", editSchedule), 0);
                 }}
                 className="tap inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
                 style={{ color: "#FF6D00", background: "rgba(255,109,0,0.10)" }}
