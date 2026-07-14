@@ -1421,6 +1421,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
           <p className="text-[13.5px] mt-1.5 leading-snug" style={{ color: "#2b2419", fontWeight: 500 }}>
             Напоминаем о созвоне с Бадди завтра в <span className="font-bold">{schedule.time} {schedule.timezone}</span>. В назначенное время нажмите кнопку «Перейти в комнату созвона», чтобы присоединиться к встрече.
           </p>
+          <BuddyReminderTemplate time={schedule.time} timezone={schedule.timezone} />
           <button
             onClick={ackCallReminder}
             className="tap relative mt-3 w-full overflow-hidden rounded-2xl py-3 text-[14px] font-bold text-white"
