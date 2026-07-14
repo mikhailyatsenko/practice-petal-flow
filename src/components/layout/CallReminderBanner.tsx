@@ -89,6 +89,7 @@ export function CallReminderBanner() {
 
   const wrapper = (children: React.ReactNode) => (
     <div
+      data-call-reminder-banner
       className="fixed left-1/2 -translate-x-1/2 z-[61] w-full max-w-md px-3 pb-2 block"
       style={{
         top: "var(--call-reminder-top, 0px)",
