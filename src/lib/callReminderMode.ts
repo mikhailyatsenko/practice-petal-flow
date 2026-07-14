@@ -147,10 +147,10 @@ export function useCallReminder(): {
   now: number;
 } {
   const [state, setState] = useState(() => ({
-    mode: getCallReminderMode(),
-    ack: getCallReminderAck(),
-    startAt: getCallStartAt(),
-    now: Date.now(),
+    mode: null as CallReminderKind | null,
+    ack: false,
+    startAt: null as number | null,
+    now: 0,
   }));
   useEffect(() => {
     const sync = () =>
@@ -160,6 +160,7 @@ export function useCallReminder(): {
         startAt: getCallStartAt(),
         now: Date.now(),
       });
+    sync();
     window.addEventListener(EVT, sync);
     window.addEventListener("storage", sync);
     // тикаем для обратного отсчёта

@@ -5,16 +5,16 @@ import {
   isNoLinkMode,
 } from "@/lib/callReminderMode";
 
-// Иконка двух человек (Бадди) — с лёгкой пульсацией/сближением
+// Иконка двух человек (Бадди) — лёгкое синхронное подпрыгивание на месте
 function BuddyIcon({ tone = "white" }: { tone?: "white" | "orange" }) {
   const color = tone === "white" ? "#fff" : "#FF6D00";
   return (
     <svg viewBox="0 0 40 32" width="28" height="24" fill="none">
-      <g style={{ transformOrigin: "13px 16px", animation: "buddy-icon-lean-l 1.8s ease-in-out infinite" }}>
+      <g style={{ transformOrigin: "13px 16px", animation: "buddy-icon-bounce 1.8s ease-in-out infinite" }}>
         <circle cx="13" cy="9" r="5" fill={color} />
         <path d="M4 28c0-5 4-9 9-9s9 4 9 9v2H4v-2z" fill={color} />
       </g>
-      <g style={{ transformOrigin: "27px 16px", animation: "buddy-icon-lean-r 1.8s ease-in-out infinite" }}>
+      <g style={{ transformOrigin: "27px 16px", animation: "buddy-icon-bounce 1.8s ease-in-out infinite" }}>
         <circle cx="27" cy="9" r="5" fill={color} />
         <path d="M18 28c0-5 4-9 9-9s9 4 9 9v2H18v-2z" fill={color} />
       </g>
@@ -45,13 +45,9 @@ function FoursomeIcon({ tone = "white" }: { tone?: "white" | "orange" }) {
 }
 
 const iconKeyframes = `
-  @keyframes buddy-icon-lean-l {
-    0%, 100% { transform: translateX(0) scale(1); }
-    50% { transform: translateX(1.5px) scale(1.05); }
-  }
-  @keyframes buddy-icon-lean-r {
-    0%, 100% { transform: translateX(0) scale(1); }
-    50% { transform: translateX(-1.5px) scale(1.05); }
+  @keyframes buddy-icon-bounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-2.5px) scale(1.05); }
   }
   @keyframes foursome-icon-pulse {
     0%, 100% { transform: translateY(0) scale(1); opacity: 1; }
