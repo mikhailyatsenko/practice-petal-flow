@@ -65,8 +65,9 @@ export function buddyCardProgress(card: BuddyCard): number {
 }
 
 export function useBuddyCard(): BuddyCard {
-  const [card, setCard] = useState<BuddyCard>(() => getBuddyCard());
+  const [card, setCard] = useState<BuddyCard>(EMPTY_BUDDY_CARD);
   useEffect(() => {
+    setCard(getBuddyCard());
     const sync = () => setCard(getBuddyCard());
     window.addEventListener(EVT, sync);
     window.addEventListener("storage", sync);
