@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { AutoResizeTextarea } from "@/components/ui/AutoResizeTextarea";
 import { BackButton } from "@/components/layout/BackButton";
 import {
   getBuddyCard,
@@ -80,13 +81,12 @@ function MyBuddyCardForm() {
         title="Главная цель на 1–2 года"
         hint="Опиши его цель — какой один большой результат он хотел бы получить за ближайшие 1–2 года"
       >
-        <textarea
+        <AutoResizeTextarea
           value={card.goal}
           onChange={(e) => update({ goal: e.target.value })}
-          rows={3}
           placeholder="Например: открыть своё дело и выйти на доход 300 тысяч в месяц"
-          className="w-full rounded-xl px-3 py-2.5 text-[14px] outline-none resize-none transition-colors focus:border-[#FF6D00]"
-          style={{ background: "#FAF6EF", border: "1px solid #ece4d4", lineHeight: 1.5 }}
+          className="w-full rounded-xl px-3 py-2.5 text-[14px] outline-none transition-colors focus:border-[#FF6D00]"
+          style={{ background: "#FAF6EF", border: "1px solid #ece4d4", lineHeight: 1.5, minHeight: 80 }}
         />
       </FieldCard>
 
@@ -134,13 +134,12 @@ function MyBuddyCardForm() {
         title="Сильные стороны"
         hint="В чём он действительно силён — его таланты, качества и преимущества которые помогают ему достигать результатов"
       >
-        <textarea
+        <AutoResizeTextarea
           value={card.strengths}
           onChange={(e) => update({ strengths: e.target.value })}
-          rows={3}
           placeholder="Например: целеустремлённый, умеет слушать, системно мыслит"
-          className="w-full rounded-xl px-3 py-2.5 text-[14px] outline-none resize-none transition-colors focus:border-[#FF6D00]"
-          style={{ background: "#FAF6EF", border: "1px solid #ece4d4", lineHeight: 1.5 }}
+          className="w-full rounded-xl px-3 py-2.5 text-[14px] outline-none transition-colors focus:border-[#FF6D00]"
+          style={{ background: "#FAF6EF", border: "1px solid #ece4d4", lineHeight: 1.5, minHeight: 80 }}
         />
       </FieldCard>
 
@@ -150,13 +149,12 @@ function MyBuddyCardForm() {
         title="Что мешает достигать успеха"
         hint="Что чаще всего останавливает его на пути к цели — какие внутренние препятствия он сам признаёт, которые мешают ему достигать результатов"
       >
-        <textarea
+        <AutoResizeTextarea
           value={card.blockers}
           onChange={(e) => update({ blockers: e.target.value })}
-          rows={3}
           placeholder="Например: откладывает важные решения, боится оценки других"
-          className="w-full rounded-xl px-3 py-2.5 text-[14px] outline-none resize-none transition-colors focus:border-[#FF6D00]"
-          style={{ background: "#FAF6EF", border: "1px solid #ece4d4", lineHeight: 1.5 }}
+          className="w-full rounded-xl px-3 py-2.5 text-[14px] outline-none transition-colors focus:border-[#FF6D00]"
+          style={{ background: "#FAF6EF", border: "1px solid #ece4d4", lineHeight: 1.5, minHeight: 80 }}
         />
       </FieldCard>
 
@@ -166,13 +164,12 @@ function MyBuddyCardForm() {
         title="В чём нужна моя поддержка"
         hint="Какая поддержка для него важнее всего — где твоя помощь будет для него наиболее ценной"
       >
-        <textarea
+        <AutoResizeTextarea
           value={card.support}
           onChange={(e) => update({ support: e.target.value })}
-          rows={3}
           placeholder="Например: напоминать о целях, задавать честные вопросы"
-          className="w-full rounded-xl px-3 py-2.5 text-[14px] outline-none resize-none transition-colors focus:border-[#FF6D00]"
-          style={{ background: "#FAF6EF", border: "1px solid #ece4d4", lineHeight: 1.5 }}
+          className="w-full rounded-xl px-3 py-2.5 text-[14px] outline-none transition-colors focus:border-[#FF6D00]"
+          style={{ background: "#FAF6EF", border: "1px solid #ece4d4", lineHeight: 1.5, minHeight: 80 }}
         />
       </FieldCard>
 

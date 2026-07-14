@@ -1509,6 +1509,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
                 📅 {schedule.day} · {schedule.time} {schedule.timezone}
               </p>
               <button
+                type="button"
                 onClick={() => setEditSchedule(true)}
                 className="tap inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
                 style={{ color: "#FF6D00", background: "rgba(255,109,0,0.10)" }}
@@ -1822,9 +1823,15 @@ function ScheduleEditDialog({
                 </div>
               </div>
 
-              <p className="text-[13px] mb-5 leading-snug" style={{ color: "#3f3a33", fontWeight: 500 }}>
-                Новое расписание изменится и у вашего Бадди. Сначала предупредите его — отправьте сообщение ниже, а затем подтвердите изменение.
-              </p>
+              <div className="mb-5">
+                <div className="flex items-center gap-1.5 mb-2">
+                  <span className="text-[18px]">⚠️</span>
+                  <span className="text-[15px] font-bold" style={{ color: "#FF6D00" }}>ВНИМАНИЕ</span>
+                </div>
+                <p className="text-[13px] leading-snug" style={{ color: "#3f3a33", fontWeight: 500 }}>
+                  Новое расписание изменится и у вашего Бадди. Сначала предупредите его — отправьте сообщение ниже, а затем подтвердите изменение.
+                </p>
+              </div>
 
               <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: "#a59a85" }}>Напишите Бадди</p>
               <div className="rounded-2xl p-3.5 mb-4" style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}>
