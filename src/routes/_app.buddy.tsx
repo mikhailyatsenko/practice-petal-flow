@@ -1802,13 +1802,13 @@ function ScheduleEditDialog({
               <div className="flex items-center gap-2 mb-4">
                 <div className="flex-1 rounded-2xl p-3" style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}>
                   <p className="text-[11px] font-bold uppercase tracking-wider mb-1" style={{ color: "#FF8A00" }}>Было</p>
-                  <p className="text-[15px] font-bold" style={{ color: "#3f3a33" }}>{DAYS_FULL.find(d => d === initial.day) ?? initial.day}</p>
+                  <p className="text-[15px] font-bold" style={{ color: "#3f3a33" }}>{DAY_FULL_NAMES[initial.day] ?? initial.day}</p>
                   <p className="text-[13px] font-medium" style={{ color: "#5a5044" }}>{initial.time} МСК</p>
                 </div>
                 <div className="shrink-0 text-[16px]" style={{ color: "#FF8A00" }}>→</div>
                 <div className="flex-1 rounded-2xl p-3" style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}>
                   <p className="text-[11px] font-bold uppercase tracking-wider mb-1" style={{ color: "#FF8A00" }}>Будет</p>
-                  <p className="text-[15px] font-bold" style={{ color: "#3f3a33" }}>{DAYS_FULL.find(d => d === day) ?? day}</p>
+                  <p className="text-[15px] font-bold" style={{ color: "#3f3a33" }}>{DAY_FULL_NAMES[day] ?? day}</p>
                   <p className="text-[13px] font-medium" style={{ color: "#5a5044" }}>{time} МСК</p>
                 </div>
               </div>
