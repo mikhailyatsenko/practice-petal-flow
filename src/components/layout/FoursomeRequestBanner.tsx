@@ -9,6 +9,7 @@ export function FoursomeRequestBanner() {
     <Link
       to="/foursome"
       search={{ demo: "waiting" }}
+      data-foursome-request-banner
       className="fixed left-1/2 -translate-x-1/2 z-[59] w-full max-w-md px-3 pb-2 block"
       style={{ top: "var(--foursome-banner-top, 0px)", paddingTop: "var(--foursome-banner-pt, max(env(safe-area-inset-top), 8px))" }}
       aria-label="У тебя новый запрос на четвёрку — открыть"

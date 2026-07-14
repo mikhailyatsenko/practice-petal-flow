@@ -10,6 +10,7 @@ export function BuddyRequestBanner() {
     <Link
       to="/buddy"
       search={{ demo: "waiting" }}
+      data-buddy-request-banner
       className="fixed top-0 left-1/2 -translate-x-1/2 z-[60] w-full max-w-md px-3 pt-[max(env(safe-area-inset-top),8px)] pb-2 block"
       aria-label="У тебя новый запрос на бадди — открыть"
     >

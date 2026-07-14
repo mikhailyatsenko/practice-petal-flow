@@ -1,5 +1,5 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Topbar } from "@/components/layout/Topbar";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { SideMenu } from "@/components/layout/SideMenu";
@@ -16,6 +16,38 @@ export const Route = createFileRoute("/_app")({
   component: AppLayout,
 });
 
+// Measures actual rendered height of a fixed banner by its data-attribute.
+function useBannerHeight(selector: string, active: boolean, deps: unknown[] = []) {
+  const [h, setH] = useState(0);
+  useEffect(() => {
+    if (!active) {
+      setH(0);
+      return;
+    }
+    let ro: ResizeObserver | null = null;
+    let raf = 0;
+    const attach = () => {
+      const el = document.querySelector(selector) as HTMLElement | null;
+      if (!el) {
+        raf = window.requestAnimationFrame(attach);
+        return;
+      }
+      const update = () => setH(el.getBoundingClientRect().height);
+      update();
+      ro = new ResizeObserver(update);
+      ro.observe(el);
+      window.addEventListener("resize", update);
+    };
+    attach();
+    return () => {
+      if (raf) window.cancelAnimationFrame(raf);
+      if (ro) ro.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selector, active, ...deps]);
+  return active ? h : 0;
+}
+
 function AppLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [demoOnboarding, setDemoOnboarding] = useState(false);
@@ -26,14 +58,13 @@ function AppLayout() {
   const isTimed = callMode === "buddy-2h" || callMode === "buddy-2h-no-link";
   const callBannerOn = !!callMode && (isTimed || noLinkActive || !callAck);
 
-  const BANNER_H = 76;
-  const topPad =
-    (buddyMode ? BANNER_H : 0) +
-    (foursomeMode ? BANNER_H : 0) +
-    (callBannerOn ? BANNER_H : 0);
+  const buddyH = useBannerHeight("[data-buddy-request-banner]", buddyMode);
+  const foursomeH = useBannerHeight("[data-foursome-request-banner]", foursomeMode);
+  const callH = useBannerHeight("[data-call-reminder-banner]", callBannerOn, [callMode]);
 
-  const foursomeTop = buddyMode ? BANNER_H : 0;
-  const callTop = foursomeTop + (foursomeMode ? BANNER_H : 0);
+  const foursomeTop = buddyH;
+  const callTop = buddyH + foursomeH;
+  const topPad = buddyH + foursomeH + callH;
 
   return (
     <div className="mx-auto min-h-screen max-w-md bg-background">
