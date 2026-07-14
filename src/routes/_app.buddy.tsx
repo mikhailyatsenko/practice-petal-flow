@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, MessageCircle, Check, X, Send, Pencil, ClipboardList, Video, Copy } from "lucide-react";
+import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, MessageCircle, Check, X, Send, Pencil, ClipboardList, Video, Copy, Phone, Link } from "lucide-react";
 import { BackButton } from "@/components/layout/BackButton";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
@@ -1227,6 +1227,166 @@ function BuddyReminderTemplate({ time, timezone }: { time: string; timezone: str
   );
 }
 
+function NoLinkTomorrowCard({ time, timezone }: { time: string; timezone: string }) {
+  const navigate = useNavigate();
+  const [copied, setCopied] = useState(false);
+  const text = `Привет! Напоминаю, завтра у нас созвон в ${time} ${timezone}.`;
+
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      } catch {
+        /* noop */
+      }
+    }
+  };
+
+  return (
+    <div className="rounded-[24px] p-4 animate-fade-up bg-white hairline shadow-card">
+      {/* Header */}
+      <div className="flex items-start gap-3">
+        <div
+          className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center"
+          style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+        >
+          <Phone className="h-5 w-5 text-white" />
+        </div>
+        <div className="min-w-0 flex-1 pt-0.5">
+          <p className="text-[17px] font-bold leading-tight" style={{ color: "#1a0e00" }}>
+            Завтра созвон с Бадди
+          </p>
+          <p className="text-[13.5px] mt-1 leading-snug" style={{ color: "#2b2419" }}>
+            Созвон:{" "}
+            <span style={{ color: "#FF6D00", fontWeight: 700 }}>
+              завтра в {time} {timezone}
+            </span>
+          </p>
+        </div>
+      </div>
+
+      {/* Block 1 — Напомните Бадди */}
+      <div
+        className="mt-4 rounded-[20px] p-3.5"
+        style={{ background: "#FAF6EF", border: "1px solid #ece4d4" }}
+      >
+        <div className="flex items-start gap-3">
+          <div
+            className="h-6 w-6 shrink-0 rounded-full flex items-center justify-center text-[13px] font-bold text-white"
+            style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+          >
+            1
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-[15px] font-bold leading-tight" style={{ color: "#1a0e00" }}>
+              Напомните Бадди
+            </p>
+            <p className="text-[12px] mt-0.5" style={{ color: "#6b6356" }}>
+              Напишите ему:
+            </p>
+          </div>
+        </div>
+        <div className="mt-2.5 flex items-stretch gap-2">
+          <div
+            className="flex-1 min-w-0 rounded-[16px] p-3 flex items-start gap-2"
+            style={{ background: "#fff", border: "1px solid #ede8df" }}
+          >
+            <MessageCircle className="h-4 w-4 shrink-0 mt-0.5" style={{ color: "#FF6D00" }} />
+            <p className="text-[13.5px] leading-snug" style={{ color: "#2b2419" }}>
+              {text}
+            </p>
+          </div>
+          <button
+            onClick={onCopy}
+            className="tap shrink-0 rounded-[16px] px-3 py-2 text-[12px] font-semibold inline-flex flex-col items-center justify-center gap-1 transition-colors"
+            style={{
+              background: copied ? "#fff" : "#fff",
+              color: copied ? "#16a34a" : "#FF6D00",
+              border: copied ? "1px solid #16a34a" : "1px solid #FF6D00",
+              minWidth: 96,
+            }}
+          >
+            <Copy className="h-4 w-4" />
+            <span className="text-center leading-tight">
+              {copied ? "Скопировано" : "Скопировать сообщение"}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* Block 2 — Важно: ссылка ещё не создана */}
+      <div
+        className="mt-3 rounded-[20px] p-3.5"
+        style={{ background: "#FAF6EF", border: "1px solid #ece4d4" }}
+      >
+        <div className="flex items-start gap-3">
+          <div
+            className="h-6 w-6 shrink-0 rounded-full flex items-center justify-center text-[13px] font-bold text-white"
+            style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+          >
+            2
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-[15px] font-bold leading-tight" style={{ color: "#1a0e00" }}>
+              Важно: ссылка ещё не создана
+            </p>
+            <p className="text-[13px] mt-1 leading-snug" style={{ color: "#6b6356" }}>
+              Создайте ссылку заранее, чтобы завтра созвон состоялся без сбоев.
+            </p>
+          </div>
+          <div
+            className="h-10 w-10 shrink-0 rounded-full flex items-center justify-center"
+            style={{ background: "#fff", border: "1px solid #FF6D00" }}
+          >
+            <span style={{ color: "#FF6D00", fontWeight: 800, fontSize: 18 }}>!</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom CTA */}
+      <button
+        onClick={() => navigate({ to: "/telemost-link" })}
+        className="tap relative mt-4 w-full overflow-hidden rounded-[20px] py-3.5 text-[15px] font-bold text-white inline-flex items-center justify-center gap-2"
+        style={{
+          background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+          boxShadow: "0 6px 20px rgba(255,109,0,0.35)",
+        }}
+      >
+        <Link className="h-4 w-4 relative z-10" />
+        <span className="relative z-10">Создать ссылку на созвон</span>
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0) 100%)",
+            transform: "translateX(-100%)",
+            animation: "room-shimmer 2.6s ease-in-out infinite",
+          }}
+        />
+        <style>{`
+          @keyframes room-shimmer {
+            0% { transform: translateX(-100%); }
+            65% { transform: translateX(200%); }
+            100% { transform: translateX(200%); }
+          }
+        `}</style>
+      </button>
+    </div>
+  );
+}
+
 // ───────────────────────── Screen 6: Has buddy ─────────────────────────
 
 function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () => void; noLink?: boolean }) {
@@ -1351,44 +1511,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
         </>
 
       ) : modeNoLinkTomorrow ? (
-        <div className="rounded-2xl p-4 animate-fade-up bg-card hairline shadow-card">
-          <p className="text-[15px] font-bold leading-tight" style={{ color: "#1a0e00" }}>
-            📞 Завтра созвон с Бадди
-          </p>
-          <p className="text-[13.5px] mt-1.5 leading-snug" style={{ color: "#2b2419", fontWeight: 500 }}>
-            Напоминаем о созвоне с Бадди завтра в{" "}
-            <span className="font-bold">{schedule.time} {schedule.timezone}</span>.
-            Ссылка на комнату ещё не создана. Создайте её заранее, чтобы созвон состоялся.
-          </p>
-          <BuddyReminderTemplate time={schedule.time} timezone={schedule.timezone} />
-          <button
-            onClick={() => navigate({ to: "/telemost-link" })}
-            className="tap relative mt-3 w-full overflow-hidden rounded-2xl py-3 text-[14px] font-bold text-white"
-            style={{
-              background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-              boxShadow: "0 6px 20px rgba(255,109,0,0.35)",
-            }}
-          >
-            <span className="relative z-10">Создать ссылку на созвон</span>
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-0 z-0"
-              style={{
-                background:
-                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0) 100%)",
-                transform: "translateX(-100%)",
-                animation: "room-shimmer 2.6s ease-in-out infinite",
-              }}
-            />
-            <style>{`
-              @keyframes room-shimmer {
-                0% { transform: translateX(-100%); }
-                65% { transform: translateX(200%); }
-                100% { transform: translateX(200%); }
-              }
-            `}</style>
-          </button>
-        </div>
+        <NoLinkTomorrowCard time={schedule.time} timezone={schedule.timezone} />
       ) : show2h && countdown ? (
         <>
           <div className="rounded-2xl p-5 animate-fade-up bg-card hairline shadow-card text-center">
