@@ -1785,31 +1785,47 @@ function ScheduleEditDialog({
           };
           return (
             <>
-              <h3 className="text-[16px] font-bold mb-2">Подтвердите изменение</h3>
-              <p className="text-[14px] text-foreground mb-3 leading-snug">
-                Вы хотите изменить время созвона с <span className="font-bold">{oldStr}</span> на <span className="font-bold">{newStr}</span>.
+              <h3 className="text-[16px] font-bold mb-3">Подтвердите изменение</h3>
+              <p className="text-[13px] font-medium mb-3" style={{ color: "#3f3a33" }}>
+                Вы хотите изменить время созвона:
               </p>
-              <p className="text-[13px] mb-4 leading-snug" style={{ color: "#3f3a33" }}>
+
+              <div className="flex items-center gap-2 mb-4">
+                <div className="flex-1 rounded-2xl p-3" style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}>
+                  <p className="text-[11px] font-bold uppercase tracking-wider mb-1" style={{ color: "#FF8A00" }}>Было</p>
+                  <p className="text-[15px] font-bold" style={{ color: "#3f3a33" }}>{DAYS_FULL.find(d => d === initial.day) ?? initial.day}</p>
+                  <p className="text-[13px] font-medium" style={{ color: "#5a5044" }}>{initial.time} МСК</p>
+                </div>
+                <div className="shrink-0 text-[16px]" style={{ color: "#FF8A00" }}>→</div>
+                <div className="flex-1 rounded-2xl p-3" style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}>
+                  <p className="text-[11px] font-bold uppercase tracking-wider mb-1" style={{ color: "#FF8A00" }}>Будет</p>
+                  <p className="text-[15px] font-bold" style={{ color: "#3f3a33" }}>{DAYS_FULL.find(d => d === day) ?? day}</p>
+                  <p className="text-[13px] font-medium" style={{ color: "#5a5044" }}>{time} МСК</p>
+                </div>
+              </div>
+
+              <p className="text-[13px] mb-5 leading-snug" style={{ color: "#3f3a33", fontWeight: 500 }}>
                 Новое расписание изменится и у вашего Бадди. Сначала предупредите его — отправьте сообщение ниже, а затем подтвердите изменение.
               </p>
 
-              <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">Напишите Бадди</p>
-              <div className="rounded-xl p-3 mb-2" style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}>
-                <p className="text-[13px] text-foreground leading-snug">{confirmMsg}</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: "#a59a85" }}>Напишите Бадди</p>
+              <div className="rounded-2xl p-3.5 mb-4" style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}>
+                <p className="text-[13px] leading-snug" style={{ color: "#3f3a33" }}>{confirmMsg}</p>
               </div>
               <button
                 onClick={doCopy}
-                className="tap w-full mb-5 rounded-xl py-2 text-[13px] font-bold"
-                style={{ background: "#FAF6EF", border: "1px solid #ede8df", color: "#5a5044" }}
+                className="tap w-full mb-5 rounded-2xl py-3 px-4 flex items-center justify-center gap-2 text-[14px] font-bold"
+                style={{ background: "#FAF6EF", border: "1px solid #ede8df", color: "#FF8A00" }}
               >
-                {copied ? "Скопировано" : "Скопировать"}
+                {copied ? <Check size={18} /> : <Copy size={18} />}
+                {copied ? "Скопировано" : "Скопировать сообщение"}
               </button>
 
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 <button
                   onClick={() => setStep("edit")}
-                  className="tap flex-1 rounded-xl py-2.5 text-[14px] font-medium"
-                  style={{ background: "transparent", border: "1px solid #ede8df", color: "var(--muted-foreground)" }}
+                  className="tap flex-1 rounded-2xl py-3 text-[14px] font-medium"
+                  style={{ background: "transparent", color: "#8b7f6f" }}
                 >
                   Отмена
                 </button>
@@ -1818,7 +1834,7 @@ function ScheduleEditDialog({
                     onSave({ day, time, timezone: TZ });
                     setStep("done");
                   }}
-                  className="tap flex-1 rounded-xl py-2.5 text-[13px] font-bold text-white leading-tight"
+                  className="tap flex-[1.5] rounded-2xl py-3 text-[13px] font-bold text-white leading-tight"
                   style={{
                     background: "linear-gradient(135deg, #FFB300, #FF6D00)",
                     boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
