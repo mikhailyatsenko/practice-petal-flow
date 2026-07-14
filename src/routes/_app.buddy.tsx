@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, MessageCircle, Check, X, Send, Pencil, ClipboardList, Video, Copy, Phone, Link } from "lucide-react";
+import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Check, X, Send, Pencil, ClipboardList, Video, Copy, Phone, Link } from "lucide-react";
 import { BackButton } from "@/components/layout/BackButton";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
@@ -1208,13 +1208,17 @@ function BuddyReminderTemplate({ time, timezone }: { time: string; timezone: str
         Напишите Бадди:
       </p>
       <div
-        className="mt-2 rounded-xl p-3 flex items-start gap-3"
+        className="mt-2 rounded-xl p-3 flex items-center gap-3"
         style={{ background: "#FAF6EF", border: "1px solid #ece4d4" }}
       >
-        <MessageCircle className="h-5 w-5 shrink-0 mt-0.5" style={{ color: "#FF6D00" }} />
-        <p className="text-[14px] leading-relaxed flex-1" style={{ color: "#2b2419" }}>
-          {text}
-        </p>
+        <div
+          className="flex-1 min-w-0 rounded-[16px] p-3"
+          style={{ background: "#fff", border: "1px solid #ede8df" }}
+        >
+          <p className="text-[14px] leading-relaxed" style={{ color: "#2b2419" }}>
+            {text}
+          </p>
+        </div>
         <button
           onClick={onCopy}
           className="tap shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold transition-colors"
