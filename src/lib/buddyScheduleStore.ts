@@ -39,11 +39,12 @@ export function setBuddySchedule(s: BuddySchedule) {
 }
 
 export function useBuddySchedule(): BuddySchedule {
-  const [s, setS] = useState<BuddySchedule>(() => getBuddySchedule());
+  const [s, setS] = useState<BuddySchedule>(DEFAULT);
   useEffect(() => {
     const sync = () => setS(getBuddySchedule());
     window.addEventListener(EVT, sync);
     window.addEventListener("storage", sync);
+    sync();
     return () => {
       window.removeEventListener(EVT, sync);
       window.removeEventListener("storage", sync);

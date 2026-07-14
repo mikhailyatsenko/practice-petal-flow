@@ -1368,50 +1368,59 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
           </button>
         </div>
       ) : show2h && countdown ? (
-        <div className="rounded-2xl p-5 animate-fade-up bg-card hairline shadow-card text-center">
-          <p
-            className="text-[12px] font-bold uppercase tracking-wider"
-            style={{ color: "#16a34a", letterSpacing: "0.08em" }}
-          >
-            {countdown.started ? "Созвон идёт" : "Сегодня созвон с Бадди"}
-          </p>
-          <p
-            className="mt-1 font-extrabold leading-none tabular-nums"
-            style={{
-              color: "#1a0e00",
-              fontSize: countdown.started ? 24 : 40,
-              letterSpacing: countdown.started ? 0 : "0.02em",
-              fontVariantNumeric: "tabular-nums",
-            }}
-          >
-            {countdown.started ? "Созвон с Бадди начался" : formatHMS(startAt! - now)}
-          </p>
+        <>
+          <div className="rounded-2xl p-5 animate-fade-up bg-card hairline shadow-card text-center">
+            <p
+              className="text-[12px] font-bold uppercase tracking-wider"
+              style={{ color: "#16a34a", letterSpacing: "0.08em" }}
+            >
+              {countdown.started ? "Созвон с Бадди начался" : "До созвона с Бадди осталось"}
+            </p>
+            <p
+              className="mt-1 font-extrabold leading-none tabular-nums"
+              style={{
+                color: "#1a0e00",
+                fontSize: countdown.started ? 24 : 40,
+                letterSpacing: countdown.started ? 0 : "0.02em",
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {countdown.started ? "Созвон с Бадди начался" : formatHMS(startAt! - now)}
+            </p>
+          </div>
           {meetingLink && (
             <a
               href={meetingLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="tap relative mt-4 w-full overflow-hidden rounded-2xl py-3 text-[14px] font-bold text-white flex items-center justify-center gap-2"
+              className="tap mt-3 w-full overflow-hidden rounded-2xl py-3.5 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2 animate-fade-up relative"
               style={{
                 background: "linear-gradient(135deg, #FFB300, #FF6D00)",
                 boxShadow: "0 6px 20px rgba(255,109,0,0.35)",
               }}
             >
               <Video className="h-4 w-4 relative z-10" />
-              <span className="relative z-10">{countdown.ctaLabel}</span>
+              <span className="relative z-10">Перейти в комнату созвона</span>
               <span
                 aria-hidden
                 className="pointer-events-none absolute inset-0 z-0"
                 style={{
                   background:
-                    "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)",
+                    "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0) 100%)",
                   transform: "translateX(-100%)",
                   animation: "green-shimmer 2.8s ease-in-out infinite",
                 }}
               />
+              <style>{`
+                @keyframes green-shimmer {
+                  0% { transform: translateX(-100%); }
+                  45% { transform: translateX(200%); }
+                  100% { transform: translateX(200%); }
+                }
+              `}</style>
             </a>
           )}
-        </div>
+        </>
       ) : showCallInfo ? (
         <div
           className="rounded-2xl p-4 animate-fade-up bg-card hairline shadow-card"

@@ -23,7 +23,7 @@ export function setTelemostLink(link: string) {
 }
 
 export function useTelemostLink() {
-  const [link, setLink] = useState<string | null>(() => getTelemostLink());
+  const [link, setLink] = useState<string | null>(null);
   useEffect(() => {
     const sync = () => setLink(getTelemostLink());
     window.addEventListener(EVT, sync);
