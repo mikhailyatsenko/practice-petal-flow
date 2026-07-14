@@ -1340,6 +1340,13 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
                 animation: "room-shimmer 2.6s ease-in-out infinite",
               }}
             />
+            <style>{`
+              @keyframes room-shimmer {
+                0% { transform: translateX(-100%); }
+                65% { transform: translateX(200%); }
+                100% { transform: translateX(200%); }
+              }
+            `}</style>
           </button>
         </>
 
