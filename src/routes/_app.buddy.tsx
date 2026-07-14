@@ -1297,7 +1297,7 @@ function NoLinkTomorrowCard({ time, timezone }: { time: string; timezone: string
             </p>
           </div>
         </div>
-        <div className="mt-2.5 flex items-stretch gap-2">
+        <div className="mt-2.5 flex items-start gap-2">
           <div
             className="flex-1 min-w-0 rounded-[16px] p-3"
             style={{ background: "#fff", border: "1px solid #ede8df" }}
@@ -1308,14 +1308,18 @@ function NoLinkTomorrowCard({ time, timezone }: { time: string; timezone: string
           </div>
           <button
             onClick={onCopy}
-            className="tap shrink-0 self-stretch rounded-lg px-2.5 py-1.5 text-[11px] font-semibold inline-flex items-center justify-center gap-1.5 transition-colors"
+            className="tap shrink-0 rounded-lg px-3 py-2 text-[13px] font-medium inline-flex items-center gap-1.5 transition-colors"
             style={{
               background: "#fff",
               color: copied ? "#16a34a" : "#FF6D00",
               border: copied ? "1px solid #16a34a" : "1px solid #FF6D00",
             }}
           >
-            <Copy className="h-3.5 w-3.5" />
+            {copied ? (
+              <Check className="h-4 w-4" />
+            ) : (
+              <Copy className="h-4 w-4" />
+            )}
             <span>{copied ? "Скопировано" : "Скопировать"}</span>
           </button>
         </div>
