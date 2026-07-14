@@ -135,13 +135,21 @@ export function CallReminderBanner() {
           </p>
         </div>
         <span
-          className="relative rounded-full px-3 py-1.5 text-[12px] font-bold text-white shrink-0"
+          className="relative overflow-hidden rounded-full px-3 py-1.5 text-[12px] font-bold text-white shrink-0"
           style={{
             background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-            animation: "call-open-btn-pulse 1.8s ease-in-out infinite",
           }}
         >
-          {ctaLabel}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 w-1/2"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0) 100%)",
+              animation: "call-open-btn-shine 2.4s linear infinite",
+            }}
+          />
+          <span className="relative">{ctaLabel}</span>
         </span>
       </button>,
     );
