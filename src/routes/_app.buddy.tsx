@@ -1308,7 +1308,7 @@ function NoLinkTomorrowCard({ time, timezone }: { time: string; timezone: string
           </div>
           <button
             onClick={onCopy}
-            className="tap shrink-0 self-stretch rounded-full px-2.5 py-1.5 text-[11px] font-semibold inline-flex items-center justify-center gap-1 transition-colors"
+            className="tap shrink-0 self-stretch rounded-lg px-2.5 py-1.5 text-[11px] font-semibold inline-flex items-center justify-center gap-1.5 transition-colors"
             style={{
               background: "#fff",
               color: copied ? "#16a34a" : "#FF6D00",
