@@ -1420,7 +1420,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
             📞 Завтра созвон с Бадди
           </p>
           <p className="text-[13.5px] mt-1.5 leading-snug" style={{ color: "#2b2419", fontWeight: 500 }}>
-            Напоминаем о созвоне с Бадди завтра в <span className="font-bold">{schedule.time} {schedule.timezone}</span>. В назначенное время нажмите кнопку «Перейти в комнату созвона», чтобы присоединиться к встрече.
+            Напоминаем о созвоне с Бадди завтра в <span className="font-bold">{schedule.time} {schedule.timezone}</span>.
           </p>
           <BuddyReminderTemplate time={schedule.time} timezone={schedule.timezone} />
           <button
@@ -1431,7 +1431,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
               boxShadow: "0 6px 20px rgba(34, 197, 94, 0.35)",
             }}
           >
-            <span className="relative z-10">Понятно, буду готов</span>
+            <span className="relative z-10">Понял, свяжусь с Бадди</span>
             <span
               aria-hidden
               className="pointer-events-none absolute inset-0 z-0"
