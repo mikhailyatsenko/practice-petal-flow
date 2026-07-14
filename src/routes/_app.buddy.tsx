@@ -1249,7 +1249,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
     <div className="px-4 pb-6">
       <PageHeader title="Мой Бадди" onBack={() => navigate({ to: "/community" })} />
 
-      {noLink ? (
+      {modeNoLink2h && noLink2hCountdown ? null : noLink ? (
         <div
           className="rounded-2xl p-4 animate-fade-up hairline"
           style={{ background: "#effaf1", border: "1px solid #bfe6c8" }}
@@ -1290,7 +1290,8 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
             `}</style>
           </button>
         </div>
-      ) : modeNoLink2h && noLink2hCountdown ? (
+      ) : null}
+      {modeNoLink2h && noLink2hCountdown ? (
         <>
           <div className="rounded-2xl p-5 animate-fade-up bg-card hairline shadow-card text-center">
             <p
