@@ -153,6 +153,7 @@ function BuddyScreen() {
   const contactVariant: ContactVariant =
     demo === "create-max" ? "max" : demo === "create-tg-no-username" ? "tg-no-username" : "none";
 
+  console.log("BuddyScreen render", screen.name);
   switch (screen.name) {
     case "no_buddy":
       return <NoBuddy onNavigate={setScreen} />;
