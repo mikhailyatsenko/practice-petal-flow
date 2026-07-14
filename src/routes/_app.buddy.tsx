@@ -1517,7 +1517,12 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
                 type="button"
                 onClick={() => {
                   console.log("open edit schedule");
-                  setEditSchedule(true);
+                  try {
+                    setEditSchedule(true);
+                    console.log("after setEditSchedule");
+                  } catch (e) {
+                    console.error("error setting editSchedule", e);
+                  }
                   setTimeout(() => console.log("editSchedule after timeout", editSchedule), 0);
                 }}
                 className="tap inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
