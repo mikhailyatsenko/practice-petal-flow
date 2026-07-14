@@ -1237,9 +1237,6 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
   const { mode: callMode, ack: callAck, startAt, now } = useCallReminder();
   const schedule = useBuddySchedule();
   const [editSchedule, setEditSchedule] = useState(false);
-  useEffect(() => {
-    console.log("editSchedule changed:", editSchedule);
-  }, [editSchedule]);
   const modeNoLinkTomorrow = callMode === "buddy-no-link";
   const modeNoLink2h = callMode === "buddy-2h-no-link" && startAt != null;
   const noLinkActive = modeNoLinkTomorrow || modeNoLink2h;
