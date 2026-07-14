@@ -1230,6 +1230,7 @@ function BuddyReminderTemplate({ time, timezone }: { time: string; timezone: str
 // ───────────────────────── Screen 6: Has buddy ─────────────────────────
 
 function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () => void; noLink?: boolean }) {
+  console.log("HasBuddy render");
   const navigate = useNavigate();
   const card = useBuddyCard();
   const filled = isBuddyCardFilled(card);
