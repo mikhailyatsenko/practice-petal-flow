@@ -65,9 +65,9 @@ const iconKeyframes = `
     0% { transform: translateX(0); }
     100% { transform: translateX(500%); }
   }
-  @keyframes call-open-btn-pulse {
-    0%, 100% { transform: scale(1); box-shadow: 0 4px 12px rgba(255,109,0,0.35); }
-    50% { transform: scale(1.04); box-shadow: 0 6px 16px rgba(255,109,0,0.5); }
+  @keyframes call-open-btn-shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
   }
 `;
 
