@@ -1678,6 +1678,15 @@ const DAY_ACC: Record<string, string> = {
   "Сб": "субботу",
   "Вс": "воскресенье",
 };
+const DAY_FULL_NAMES: Record<string, string> = {
+  "Пн": "Понедельник",
+  "Вт": "Вторник",
+  "Ср": "Среда",
+  "Чт": "Четверг",
+  "Пт": "Пятница",
+  "Сб": "Суббота",
+  "Вс": "Воскресенье",
+};
 
 function ScheduleEditDialog({
   initial,
