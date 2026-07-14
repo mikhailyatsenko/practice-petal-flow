@@ -1509,7 +1509,11 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
                 📅 {schedule.day} · {schedule.time} {schedule.timezone}
               </p>
               <button
-                onClick={() => setEditSchedule(true)}
+                type="button"
+                onClick={() => {
+                  console.log("open edit schedule");
+                  setEditSchedule(true);
+                }}
                 className="tap inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
                 style={{ color: "#FF6D00", background: "rgba(255,109,0,0.10)" }}
               >
