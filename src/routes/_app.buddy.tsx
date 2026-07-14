@@ -1221,10 +1221,19 @@ function BuddyReminderTemplate({ time, timezone }: { time: string; timezone: str
         </div>
         <button
           onClick={onCopy}
-          className="tap shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold transition-colors"
-          style={{ background: "#fff", color: "#FF6D00", border: "1px solid #ede8df" }}
+          className="tap shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold inline-flex items-center gap-1.5 transition-colors"
+          style={{
+            background: "#fff",
+            color: copied ? "#16a34a" : "#FF6D00",
+            border: copied ? "1px solid #16a34a" : "1px solid #FF6D00",
+          }}
         >
-          {copied ? "Скопировано" : "Скопировать"}
+          {copied ? (
+            <Check className="h-4 w-4" />
+          ) : (
+            <Copy className="h-4 w-4" />
+          )}
+          <span>{copied ? "Скопировано" : "Скопировать"}</span>
         </button>
       </div>
     </div>
