@@ -1774,39 +1774,62 @@ function ScheduleEditDialog({
           </>
         )}
 
-        {step === "confirm" && (
-          <>
-            <h3 className="text-[16px] font-bold mb-2">Подтвердите изменение</h3>
-            <p className="text-[13px] text-foreground mb-3 leading-snug">
-              Вы хотите изменить время созвона с <span className="font-bold">{oldStr}</span> на <span className="font-bold">{newStr}</span>.
-            </p>
-            <p className="text-[12px] text-muted-foreground mb-5 leading-snug">
-              Новое расписание изменится и у вашего Бадди. После подтверждения обязательно напишите ему и предупредите об изменении.
-            </p>
-            <div className="flex gap-2">
+        {step === "confirm" && (() => {
+          const confirmMsg = `Привет! Хочу изменить время нашего созвона. Теперь встречаемся в ${DAY_ACC[day] ?? day} в ${time} МСК.`;
+          const doCopy = async () => {
+            try {
+              await navigator.clipboard.writeText(confirmMsg);
+              setCopied(true);
+              setTimeout(() => setCopied(false), 1800);
+            } catch { /* noop */ }
+          };
+          return (
+            <>
+              <h3 className="text-[16px] font-bold mb-2">Подтвердите изменение</h3>
+              <p className="text-[14px] text-foreground mb-3 leading-snug">
+                Вы хотите изменить время созвона с <span className="font-bold">{oldStr}</span> на <span className="font-bold">{newStr}</span>.
+              </p>
+              <p className="text-[13px] mb-4 leading-snug" style={{ color: "#3f3a33" }}>
+                Новое расписание изменится и у вашего Бадди. Сначала предупредите его — отправьте сообщение ниже, а затем подтвердите изменение.
+              </p>
+
+              <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">Напишите Бадди</p>
+              <div className="rounded-xl p-3 mb-2" style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}>
+                <p className="text-[13px] text-foreground leading-snug">{confirmMsg}</p>
+              </div>
               <button
-                onClick={() => setStep("edit")}
-                className="tap flex-1 rounded-xl py-2.5 text-[14px] font-medium"
-                style={{ background: "transparent", border: "1px solid #ede8df", color: "var(--muted-foreground)" }}
+                onClick={doCopy}
+                className="tap w-full mb-5 rounded-xl py-2 text-[13px] font-bold"
+                style={{ background: "#FAF6EF", border: "1px solid #ede8df", color: "#5a5044" }}
               >
-                Отмена
+                {copied ? "Скопировано" : "Скопировать"}
               </button>
-              <button
-                onClick={() => {
-                  onSave({ day, time, timezone: TZ });
-                  setStep("done");
-                }}
-                className="tap flex-1 rounded-xl py-2.5 text-[14px] font-bold text-white"
-                style={{
-                  background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-                  boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
-                }}
-              >
-                Подтвердить изменение
-              </button>
-            </div>
-          </>
-        )}
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setStep("edit")}
+                  className="tap flex-1 rounded-xl py-2.5 text-[14px] font-medium"
+                  style={{ background: "transparent", border: "1px solid #ede8df", color: "var(--muted-foreground)" }}
+                >
+                  Отмена
+                </button>
+                <button
+                  onClick={() => {
+                    onSave({ day, time, timezone: TZ });
+                    setStep("done");
+                  }}
+                  className="tap flex-1 rounded-xl py-2.5 text-[13px] font-bold text-white leading-tight"
+                  style={{
+                    background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                    boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
+                  }}
+                >
+                  Я написал Бадди — изменить расписание
+                </button>
+              </div>
+            </>
+          );
+        })()}
 
         {step === "done" && (
           <>
