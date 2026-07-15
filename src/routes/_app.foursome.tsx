@@ -1042,7 +1042,7 @@ function ConfirmSheet({
 
         <div className="rounded-2xl p-3.5 space-y-2.5 mb-3" style={{ background: "#FAF6EF" }}>
           {req.members.map((m) => (
-            <MemberRow key={m.userId} m={m} />
+            <MemberRow key={m.userId} m={m} isRepresentative={m.userId === req.representativeId} />
           ))}
           <div className="flex flex-wrap gap-2 pt-1">
             <span
@@ -1060,6 +1060,13 @@ function ConfirmSheet({
           </div>
         </div>
 
+        <ChatBadge messenger={req.chatMessenger} />
+
+        {(() => {
+          const rep = req.members.find((m) => m.userId === req.representativeId);
+          return rep ? <WriteToRepresentative rep={rep} /> : null;
+        })()}
+
         {req.extra && (
           <div
             className="rounded-2xl p-3.5 mb-3 text-[13px]"
@@ -1071,6 +1078,7 @@ function ConfirmSheet({
             <p className="text-foreground/85">{req.extra}</p>
           </div>
         )}
+
 
         <p className="text-[13px] text-muted-foreground text-center mb-4 px-2" style={{ lineHeight: 1.5 }}>
           Сначала подтвердит твой бадди, затем оба участника пары. Если все согласны — Четвёрка создана ✅
