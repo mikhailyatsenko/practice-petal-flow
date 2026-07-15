@@ -10,6 +10,7 @@ export type CallReminderKind =
   | "buddy"
   | "foursome"
   | "buddy-2h"
+  | "foursome-2h"
   | "buddy-no-link"
   | "buddy-2h-no-link";
 
@@ -22,6 +23,10 @@ export function baseModeOf(mode: CallReminderKind | null): CallReminderKind | nu
 
 export function isNoLinkMode(mode: CallReminderKind | null): boolean {
   return mode === "buddy-no-link" || mode === "buddy-2h-no-link";
+}
+
+export function isFoursomeMode(mode: CallReminderKind | null): boolean {
+  return mode === "foursome" || mode === "foursome-2h";
 }
 
 const KEY_MODE = "call-reminder-mode";
