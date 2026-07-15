@@ -32,19 +32,18 @@ function TelemostLinkPage() {
   const [tab, setTab] = useState<"text" | "video">("text");
   const [link, setLink] = useState("");
   const [status, setStatus] = useState<"idle" | "ok" | "error">("idle");
-  const [confirmed, setConfirmed] = useState(false);
 
   const handleCheck = () => {
     const v = link.trim();
     const ok = /^https?:\/\/(www\.)?telemost\.yandex\.(ru|com|by|kz)\/.+/i.test(v);
-    setStatus(ok ? "ok" : "error");
+    if (ok) {
+      setTelemostLink(v);
+      setStatus("ok");
+    } else {
+      setStatus("error");
+    }
   };
 
-  const handleConfirm = () => {
-    setConfirmed(true);
-    setTelemostLink(link.trim());
-    setTimeout(() => navigate({ to: "/community" }), 700);
-  };
 
   return (
     <div className="px-4 pb-8">
@@ -160,8 +159,8 @@ function TelemostLinkPage() {
           onChange={(e) => {
             setLink(e.target.value);
             if (status !== "idle") setStatus("idle");
-            if (confirmed) setConfirmed(false);
           }}
+
           placeholder="Вставь ссылку на встречу"
           className="w-full rounded-xl px-3 py-2.5 text-[14px] outline-none hairline bg-background"
         />
@@ -199,18 +198,17 @@ function TelemostLinkPage() {
           </button>
         ) : (
           <button
-            onClick={handleConfirm}
-            disabled={confirmed}
+            onClick={() => navigate({ to: "/buddy", search: { demo: "has" } })}
             className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white"
             style={{
               background: "linear-gradient(135deg, #43A047, #2E7D32)",
               boxShadow: "0 6px 20px rgba(46,125,50,0.35)",
-              opacity: confirmed ? 0.75 : 1,
             }}
           >
-            {confirmed ? "Сохранено ✓" : "Подтвердить"}
+            Готово — перейти к Бадди
           </button>
         )}
+
       </div>
     </div>
   );
