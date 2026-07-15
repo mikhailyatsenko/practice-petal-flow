@@ -159,8 +159,8 @@ function TelemostLinkPage() {
           onChange={(e) => {
             setLink(e.target.value);
             if (status !== "idle") setStatus("idle");
-            if (confirmed) setConfirmed(false);
           }}
+
           placeholder="Вставь ссылку на встречу"
           className="w-full rounded-xl px-3 py-2.5 text-[14px] outline-none hairline bg-background"
         />
