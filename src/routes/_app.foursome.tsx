@@ -301,7 +301,7 @@ function WriteToRepresentative({ rep }: { rep: Member }) {
         ✉️ Написать представителю
       </div>
       <div className="text-[13px] text-foreground/85 mb-2.5">
-        Представитель пары: <span className="font-semibold">{rep.name}</span>
+        Представитель пары: <span className="font-semibold">{fullName(rep)}</span>
       </div>
       <div className="flex flex-col gap-2">
         {hasTg && (
