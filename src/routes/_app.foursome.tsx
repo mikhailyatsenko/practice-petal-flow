@@ -1550,7 +1550,7 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
             target="_blank"
             rel="noopener noreferrer"
             className="tap relative overflow-hidden mt-2 w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white"
-            style={{ background: "#000" }}
+            style={{ background: "linear-gradient(135deg, #2E7BFF, #7B4DFF)" }}
           >
             <span
               aria-hidden
