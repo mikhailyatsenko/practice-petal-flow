@@ -75,15 +75,15 @@ const DAY_FULL: Record<string, string> = {
   Вс: "Первое воскресенье месяца",
 };
 
-const ME: Member = { userId: "me", name: "Ты", avatar: "🙂", job: "Участник клуба" };
-const MY_BUDDY: Member = { userId: "b1", name: "Алексей", avatar: "🧑‍💻", job: "Продакт-менеджер", username: "алексей" };
+const ME: Member = ME_MEMBER;
+const MY_BUDDY: Member = { ...MY_BUDDY_MEMBER, username: MY_BUDDY_MEMBER.telegram };
 
 const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f1",
     members: [
-      { userId: "u1", name: "Анна", avatar: "🌸", job: "Маркетолог", telegram: "anna_mkt", max: "https://max.ru/anna.mkt", bio: "Запускаю свой бренд косметики, цель — выйти на стабильные 300к/мес. Ищу системность и поддержку." },
-      { userId: "u2", name: "Ольга", avatar: "🌿", job: "Психолог", bio: "Веду частную практику и онлайн-курс. Хочу окружение, где растут и не сливаются с целей." },
+      { userId: "u1", name: "Анна", lastName: "Петрова", avatar: "🌸", job: "Маркетолог", telegram: "anna_mkt", max: "https://max.ru/anna.mkt", bio: "Запускаю свой бренд косметики, цель — выйти на стабильные 300к/мес. Ищу системность и поддержку." },
+      { userId: "u2", name: "Ольга", lastName: "Ковалёва", avatar: "🌿", job: "Психолог", bio: "Веду частную практику и онлайн-курс. Хочу окружение, где растут и не сливаются с целей." },
     ],
     representativeId: "u1",
     chatMessenger: "telegram",
@@ -94,8 +94,8 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f2",
     members: [
-      { userId: "u3", name: "Дмитрий", avatar: "🎯", job: "Предприниматель", max: "https://max.ru/dmitry.biz", bio: "Развиваю IT-агентство, цель года — 1М/мес. Ценю чёткие задачи и дисциплину." },
-      { userId: "u4", name: "Сергей", avatar: "🚀", job: "Основатель стартапа", bio: "Делаю SaaS для малого бизнеса. Хочу окружение людей, которые тоже строят и не боятся больших целей." },
+      { userId: "u3", name: "Дмитрий", lastName: "Соколов", avatar: "🎯", job: "Предприниматель", max: "https://max.ru/dmitry.biz", bio: "Развиваю IT-агентство, цель года — 1М/мес. Ценю чёткие задачи и дисциплину." },
+      { userId: "u4", name: "Сергей", lastName: "Волков", avatar: "🚀", job: "Основатель стартапа", bio: "Делаю SaaS для малого бизнеса. Хочу окружение людей, которые тоже строят и не боятся больших целей." },
     ],
     representativeId: "u3",
     chatMessenger: "max",
@@ -106,8 +106,8 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f3",
     members: [
-      { userId: "u5", name: "Мария", avatar: "✨", job: "Коуч", telegram: "maria_coach", max: "https://max.ru/maria.coach", bio: "Расту в личном бренде, веду программу для женщин. Ищу длинную дистанцию и честную обратную связь." },
-      { userId: "u6", name: "Ирина", avatar: "🌷", job: "HR-директор", bio: "Перехожу из найма в консалтинг. Нужна команда, которая держит в фокусе и помогает не откладывать." },
+      { userId: "u5", name: "Мария", lastName: "Новикова", avatar: "✨", job: "Коуч", telegram: "maria_coach", max: "https://max.ru/maria.coach", bio: "Расту в личном бренде, веду программу для женщин. Ищу длинную дистанцию и честную обратную связь." },
+      { userId: "u6", name: "Ирина", lastName: "Белова", avatar: "🌷", job: "HR-директор", bio: "Перехожу из найма в консалтинг. Нужна команда, которая держит в фокусе и помогает не откладывать." },
     ],
     representativeId: "u5",
     chatMessenger: "telegram",
@@ -120,10 +120,10 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
 const DEMO_FOURSOME: FoursomeData = {
   pair1: { members: [ME, MY_BUDDY] },
   pair2: {
-    members: [
-      { userId: "u7", name: "Елена", avatar: "🦋", job: "Архитектор", username: "elena_arc" },
-      { userId: "u8", name: "Павел", avatar: "🎸", job: "Музыкант · продюсер", username: "pavel_m" },
-    ],
+    members: FOURSOME_DEMO_MEMBERS.filter((m) => m.userId === "u7" || m.userId === "u8").map((m) => ({
+      ...m,
+      username: m.telegram,
+    })),
   },
   day: "Ср",
   time: "19:00",
