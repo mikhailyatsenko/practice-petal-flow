@@ -1817,6 +1817,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
       {editSchedule && (
         <ScheduleEditDialog
           initial={schedule}
+          channels={buddy.channels}
           onCancel={() => setEditSchedule(false)}
           onSave={(s) => {
             setBuddySchedule(s);
