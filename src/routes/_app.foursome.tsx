@@ -1665,17 +1665,46 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         className="rounded-2xl p-4 mb-4"
         style={{ background: "#fff8ee", border: "1px solid #ffe0a3" }}
       >
-        <div
-          className="text-[12px] uppercase font-medium mb-1"
-          style={{ letterSpacing: 0.5, color: "#FF6D00" }}
-        >
-          Следующий созвон
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div
+              className="text-[12px] uppercase font-medium mb-1"
+              style={{ letterSpacing: 0.5, color: "#FF6D00" }}
+            >
+              Следующий созвон
+            </div>
+            <div className="text-[16px] font-bold" style={{ color: "#FF6D00" }}>
+              📅 {DAY_FULL[schedule.day]} · {schedule.time} МСК
+            </div>
+            <div className="text-[12px] text-muted-foreground mt-1">Яндекс Телемост · 60 минут</div>
+          </div>
+          <button
+            onClick={openEdit}
+            className="tap shrink-0 rounded-lg px-3 py-1.5 text-[12px] font-semibold"
+            style={{ background: "#fff", color: "#FF6D00", border: "1px solid #FF6D00" }}
+          >
+            Изменить
+          </button>
         </div>
-        <div className="text-[16px] font-bold" style={{ color: "#FF6D00" }}>
-          📅 {DAY_FULL[data.day]} · {data.time} МСК
-        </div>
-        <div className="text-[12px] text-muted-foreground mt-1">Яндекс Телемост · 60 минут</div>
       </div>
+
+      {editStep && (
+        <EditScheduleModal
+          step={editStep}
+          setStep={setEditStep}
+          currentDay={schedule.day}
+          currentTime={schedule.time}
+          draftDay={draftDay}
+          draftTime={draftTime}
+          setDraftDay={setDraftDay}
+          setDraftTime={setDraftTime}
+          onConfirm={() => {
+            setSchedule({ day: draftDay, time: draftTime });
+            setEditStep(null);
+          }}
+        />
+      )}
+
 
       {/* Заполнение карточек участников — блок скрывается когда все заполнены */}
       {!allOthersFilled && (
