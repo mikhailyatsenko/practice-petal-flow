@@ -192,7 +192,7 @@ function FoursomeScreen() {
 const ORANGE_GRADIENT = "linear-gradient(135deg, #FFB300, #FF6D00)";
 const LIME_GRADIENT = "linear-gradient(135deg, #8BC34A, #4CAF50)";
 
-function PageHeader({ title, onBack, badge }: { title: string; onBack: () => void; badge?: string }) {
+function PageHeader({ title, onBack, badge, right }: { title: string; onBack: () => void; badge?: string; right?: React.ReactNode }) {
   return (
     <div className="relative flex items-center px-1 pt-2 pb-3">
       <div className="relative z-10">
@@ -201,14 +201,14 @@ function PageHeader({ title, onBack, badge }: { title: string; onBack: () => voi
       <h1 className="pointer-events-none absolute left-0 right-0 text-center text-[18px] font-semibold leading-tight">
         {title}
       </h1>
-      {badge && (
+      {right ? right : badge ? (
         <span
           className="ml-auto relative z-10 text-[11px] font-bold text-white px-2.5 py-1 rounded-full"
           style={{ background: ORANGE_GRADIENT }}
         >
           {badge}
         </span>
-      )}
+      ) : null}
     </div>
   );
 }
