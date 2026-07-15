@@ -55,7 +55,7 @@ function AppLayout() {
   const foursomeMode = useFoursomeRequestMode();
   const { mode: callMode, ack: callAck } = useCallReminder();
   const noLinkActive = callMode === "buddy-no-link" || callMode === "buddy-2h-no-link";
-  const isTimed = callMode === "buddy-2h" || callMode === "buddy-2h-no-link";
+  const isTimed = callMode === "buddy-2h" || callMode === "buddy-2h-no-link" || callMode === "foursome-2h";
   const callBannerOn = !!callMode && (isTimed || noLinkActive || !callAck);
 
   const buddyH = useBannerHeight("[data-buddy-request-banner]", buddyMode);

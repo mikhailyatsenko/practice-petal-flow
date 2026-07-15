@@ -73,12 +73,12 @@ export function CallReminderBanner() {
   if (!mode) return null;
 
   const noLink = isNoLinkMode(mode);
-  const isFoursome = mode === "foursome";
-  const is2h = mode === "buddy-2h" || mode === "buddy-2h-no-link";
-  const isBuddyTomorrow = mode === "buddy" || mode === "buddy-no-link";
+  const isFoursome = mode === "foursome" || mode === "foursome-2h";
+  const is2h = mode === "buddy-2h" || mode === "buddy-2h-no-link" || mode === "foursome-2h";
+  const isTomorrow = mode === "buddy" || mode === "buddy-no-link" || mode === "foursome";
 
   // «завтра»-режимы скрываются после подтверждения (если ссылка есть)
-  if (isBuddyTomorrow && ack && !noLink) return null;
+  if (isTomorrow && ack && !noLink) return null;
 
   const ctaLabel = noLink ? "Создать ссылку" : "Открыть";
   const handleClick = () => {
@@ -105,9 +105,10 @@ export function CallReminderBanner() {
   if (is2h) {
     const remaining = startAt != null ? startAt - now : 0;
     const started = remaining <= 0;
+    const who = isFoursome ? "с Четвёркой" : "с Бадди";
     const title = started
-      ? "Созвон с Бадди начался"
-      : `До созвона с Бадди — ${formatHMS(remaining)}`;
+      ? `Созвон ${who} начался`
+      : `До созвона ${who} — ${formatHMS(remaining)}`;
 
     return wrapper(
       <button
@@ -120,7 +121,7 @@ export function CallReminderBanner() {
         <span className="relative h-10 w-10 shrink-0 rounded-full flex items-center justify-center"
           style={{ background: "rgba(255,109,0,0.10)" }}
         >
-          <BuddyIcon tone="orange" />
+          {isFoursome ? <FoursomeIcon tone="orange" /> : <BuddyIcon tone="orange" />}
         </span>
         <div className="relative min-w-0 flex-1">
           <p className="text-[14px] font-bold leading-tight text-slate-900 tabular-nums">
@@ -157,7 +158,9 @@ export function CallReminderBanner() {
     : "Завтра созвон с Бадди!";
   const subtitle = noLink
     ? "Ссылка на комнату ещё не создана"
-    : "Подготовься и приходи вовремя";
+    : isFoursome
+      ? "Подготовьтесь и приходите вовремя"
+      : "Подготовься и приходи вовремя";
 
   return wrapper(
     <button
