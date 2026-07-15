@@ -27,6 +27,7 @@ export const Route = createFileRoute("/_app/foursome")({
 interface Member {
   userId: string;
   name: string;
+  lastName?: string;
   avatar: string;
   job: string;
   username?: string;
