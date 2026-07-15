@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Play, Check, X, Video } from "lucide-react";
 import { z } from "zod";
 import { BackButton } from "@/components/layout/BackButton";
-import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 import { setFoursomeChat, type FoursomeMessenger } from "@/lib/foursomeChatStore";
 
 const searchSchema = z.object({
@@ -49,18 +48,10 @@ function FoursomeChatPage() {
     messenger === "telegram"
       ? {
           name: "Telegram",
-          url: "https://t.me/",
-          gradient: "linear-gradient(135deg, #29B6F6, #0288D1)",
-          shadow: "0 6px 20px rgba(2,136,209,0.35)",
-          Icon: TelegramIcon,
           re: /^https?:\/\/(t\.me|telegram\.me)\/.+/i,
         }
       : {
           name: "MAX",
-          url: "https://max.ru/",
-          gradient: "linear-gradient(135deg, #7C4DFF, #5E35B1)",
-          shadow: "0 6px 20px rgba(94,53,177,0.35)",
-          Icon: MaxIcon,
           re: /^https?:\/\/(www\.)?max\.(ru|com)\/.+/i,
         };
 
