@@ -1946,7 +1946,7 @@ function ScheduleEditDialog({
             </p>
 
             <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: "#a59a85" }}>Напишите Бадди</p>
-            <div className="flex items-start gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-4">
               <div className="flex-1 rounded-2xl p-3.5" style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}>
                 <p className="text-[13px] leading-snug" style={{ color: "#3f3a33" }}>{warnText}</p>
               </div>
