@@ -1951,7 +1951,7 @@ function EditScheduleModal({
 }) {
   const [copied, setCopied] = useState(false);
   const warnText =
-    "Привет! Хочу изменить день или время нашего созвона Четвёрки. Напишите, пожалуйста, какие варианты вам подходят.";
+    "Привет! Предлагаю изменить день или время нашего созвона Четвёрки. Напишите, пожалуйста, согласны ли вы и какой вариант вам подходит.";
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(warnText);
