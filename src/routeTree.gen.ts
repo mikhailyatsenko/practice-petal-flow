@@ -28,6 +28,7 @@ import { Route as AppMistakesRouteImport } from './routes/_app.mistakes'
 import { Route as AppLibraryRouteImport } from './routes/_app.library'
 import { Route as AppHabitsRouteImport } from './routes/_app.habits'
 import { Route as AppGratitudeRouteImport } from './routes/_app.gratitude'
+import { Route as AppFoursomeChatRouteImport } from './routes/_app.foursome-chat'
 import { Route as AppFoursomeRouteImport } from './routes/_app.foursome'
 import { Route as AppFlywheelRouteImport } from './routes/_app.flywheel'
 import { Route as AppDecisionsRouteImport } from './routes/_app.decisions'
@@ -138,6 +139,11 @@ const AppGratitudeRoute = AppGratitudeRouteImport.update({
   path: '/gratitude',
   getParentRoute: () => AppRoute,
 } as any)
+const AppFoursomeChatRoute = AppFoursomeChatRouteImport.update({
+  id: '/foursome-chat',
+  path: '/foursome-chat',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppFoursomeRoute = AppFoursomeRouteImport.update({
   id: '/foursome',
   path: '/foursome',
@@ -223,6 +229,7 @@ export interface FileRoutesByFullPath {
   '/decisions': typeof AppDecisionsRoute
   '/flywheel': typeof AppFlywheelRoute
   '/foursome': typeof AppFoursomeRoute
+  '/foursome-chat': typeof AppFoursomeChatRoute
   '/gratitude': typeof AppGratitudeRoute
   '/habits': typeof AppHabitsRoute
   '/library': typeof AppLibraryRoute
@@ -257,6 +264,7 @@ export interface FileRoutesByTo {
   '/decisions': typeof AppDecisionsRoute
   '/flywheel': typeof AppFlywheelRoute
   '/foursome': typeof AppFoursomeRoute
+  '/foursome-chat': typeof AppFoursomeChatRoute
   '/gratitude': typeof AppGratitudeRoute
   '/habits': typeof AppHabitsRoute
   '/library': typeof AppLibraryRoute
@@ -294,6 +302,7 @@ export interface FileRoutesById {
   '/_app/decisions': typeof AppDecisionsRoute
   '/_app/flywheel': typeof AppFlywheelRoute
   '/_app/foursome': typeof AppFoursomeRoute
+  '/_app/foursome-chat': typeof AppFoursomeChatRoute
   '/_app/gratitude': typeof AppGratitudeRoute
   '/_app/habits': typeof AppHabitsRoute
   '/_app/library': typeof AppLibraryRoute
@@ -332,6 +341,7 @@ export interface FileRouteTypes {
     | '/decisions'
     | '/flywheel'
     | '/foursome'
+    | '/foursome-chat'
     | '/gratitude'
     | '/habits'
     | '/library'
@@ -366,6 +376,7 @@ export interface FileRouteTypes {
     | '/decisions'
     | '/flywheel'
     | '/foursome'
+    | '/foursome-chat'
     | '/gratitude'
     | '/habits'
     | '/library'
@@ -402,6 +413,7 @@ export interface FileRouteTypes {
     | '/_app/decisions'
     | '/_app/flywheel'
     | '/_app/foursome'
+    | '/_app/foursome-chat'
     | '/_app/gratitude'
     | '/_app/habits'
     | '/_app/library'
@@ -571,6 +583,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppGratitudeRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/foursome-chat': {
+      id: '/_app/foursome-chat'
+      path: '/foursome-chat'
+      fullPath: '/foursome-chat'
+      preLoaderRoute: typeof AppFoursomeChatRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/foursome': {
       id: '/_app/foursome'
       path: '/foursome'
@@ -685,6 +704,7 @@ interface AppRouteChildren {
   AppDecisionsRoute: typeof AppDecisionsRoute
   AppFlywheelRoute: typeof AppFlywheelRoute
   AppFoursomeRoute: typeof AppFoursomeRoute
+  AppFoursomeChatRoute: typeof AppFoursomeChatRoute
   AppGratitudeRoute: typeof AppGratitudeRoute
   AppHabitsRoute: typeof AppHabitsRoute
   AppLibraryRoute: typeof AppLibraryRoute
@@ -719,6 +739,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppDecisionsRoute: AppDecisionsRoute,
   AppFlywheelRoute: AppFlywheelRoute,
   AppFoursomeRoute: AppFoursomeRoute,
+  AppFoursomeChatRoute: AppFoursomeChatRoute,
   AppGratitudeRoute: AppGratitudeRoute,
   AppHabitsRoute: AppHabitsRoute,
   AppLibraryRoute: AppLibraryRoute,
