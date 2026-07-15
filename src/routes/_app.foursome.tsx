@@ -2029,10 +2029,21 @@ function EditScheduleModal({
               href="https://max.ru/"
               target="_blank"
               rel="noopener noreferrer"
-              className="tap w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white mb-4"
-              style={{ background: "#000" }}
+              className="tap relative overflow-hidden w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white mb-4"
+              style={{ background: "linear-gradient(135deg, #2E7BFF, #7B4DFF)" }}
             >
-              <MaxIcon size={16} /> Перейти в общий чат MAX
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-y-0 left-0 w-1/3"
+                style={{
+                  background:
+                    "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%)",
+                  animation: "foursome-chat-shine 2.6s ease-in-out 0.4s infinite",
+                }}
+              />
+              <span className="relative inline-flex items-center gap-1.5">
+                <MaxIcon size={16} /> Перейти в общий чат MAX
+              </span>
             </a>
 
             <button
