@@ -29,11 +29,15 @@ interface Member {
   job: string;
   username?: string;
   bio?: string;
+  telegram?: string; // username без @
+  max?: string;      // ссылка на профиль
 }
 
 interface FoursomeRequest {
   id: string;
   members: Member[]; // 2
+  representativeId: string; // userId представителя пары
+  chatMessenger: "telegram" | "max"; // где будет общий чат Четвёрки
   day: string;
   time: string;
   extra?: string;
