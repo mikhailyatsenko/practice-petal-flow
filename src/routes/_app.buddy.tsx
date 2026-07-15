@@ -1859,21 +1859,23 @@ const DAY_FULL_NAMES: Record<string, string> = {
 
 function ScheduleEditDialog({
   initial,
+  channels,
   onCancel,
   onSave,
 }: {
   initial: { day: string; time: string; timezone: string };
+  channels: ("tg" | "max")[];
   onCancel: () => void;
   onSave: (s: { day: string; time: string; timezone: string }) => void;
 }) {
   const [day, setDay] = useState(initial.day);
   const [time, setTime] = useState(initial.time);
-  const [step, setStep] = useState<"edit" | "confirm" | "done">("edit");
+  const [step, setStep] = useState<"warn" | "edit" | "confirm" | "done">("warn");
   const [copied, setCopied] = useState(false);
+  const [warnCopied, setWarnCopied] = useState(false);
   const TZ = "МСК";
 
-  const oldStr = `${DAY_GENITIVE[initial.day] ?? initial.day}, ${initial.time} МСК`;
-  const newStr = `${DAY_ACC[day] ?? day}, ${time} МСК`;
+  const warnText = "Привет! Предлагаю изменить день или время нашего созвона. Напиши, пожалуйста, согласен ли ты и какой вариант тебе подходит.";
   const notifyText = `Привет! Я изменил время нашего созвона. Теперь встречаемся в ${DAY_ACC[day] ?? day} в ${time} МСК.`;
 
   const handleCopy = async () => {
@@ -1881,6 +1883,14 @@ function ScheduleEditDialog({
       await navigator.clipboard.writeText(notifyText);
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
+    } catch { /* noop */ }
+  };
+
+  const copyWarn = async () => {
+    try {
+      await navigator.clipboard.writeText(warnText);
+      setWarnCopied(true);
+      setTimeout(() => setWarnCopied(false), 1800);
     } catch { /* noop */ }
   };
 
@@ -1893,6 +1903,78 @@ function ScheduleEditDialog({
         className="w-full max-w-md bg-card rounded-t-2xl sm:rounded-2xl p-5 shadow-card"
         onClick={(e) => e.stopPropagation()}
       >
+        {step === "warn" && (
+          <>
+            <h3 className="text-[16px] font-bold mb-2">Сначала предупредите Бадди</h3>
+            <p className="text-[13px] mb-4 leading-snug" style={{ color: "#3f3a33" }}>
+              Перед изменением расписания сообщите об этом своему Бадди и согласуйте с ним новый день и время.
+            </p>
+
+            <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: "#a59a85" }}>Напишите Бадди</p>
+            <div className="flex items-start gap-2 mb-4">
+              <div className="flex-1 rounded-2xl p-3.5" style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}>
+                <p className="text-[13px] leading-snug" style={{ color: "#3f3a33" }}>{warnText}</p>
+              </div>
+              <button
+                onClick={copyWarn}
+                className="tap shrink-0 rounded-xl px-3 py-2 text-[12px] font-bold inline-flex items-center gap-1"
+                style={
+                  warnCopied
+                    ? { background: "linear-gradient(135deg, #16a34a, #22c55e)", color: "#fff" }
+                    : { background: "#FAF6EF", border: "1px solid #ede8df", color: "#FF8A00" }
+                }
+              >
+                {warnCopied ? <><Check size={14} /> Скопировано</> : <><Copy size={14} /> Скопировать</>}
+              </button>
+            </div>
+
+            <div className="space-y-2 mb-4">
+              {channels.includes("tg") && (
+                <a
+                  href="https://t.me/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tap w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white"
+                  style={{ background: "#229ED9" }}
+                >
+                  <TelegramIcon size={16} /> Написать в Telegram
+                </a>
+              )}
+              {channels.includes("max") && (
+                <a
+                  href="https://max.ru/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tap w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white"
+                  style={{ background: "linear-gradient(135deg, #2E7BFF, #7B4DFF)" }}
+                >
+                  <MaxIcon size={16} /> Написать в MAX
+                </a>
+              )}
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                onClick={onCancel}
+                className="tap flex-1 rounded-xl py-2.5 text-[14px] font-medium"
+                style={{ background: "transparent", border: "1px solid #ede8df", color: "var(--muted-foreground)" }}
+              >
+                Отмена
+              </button>
+              <button
+                onClick={() => setStep("edit")}
+                className="tap flex-[1.5] rounded-xl py-2.5 text-[14px] font-bold text-white"
+                style={{
+                  background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                  boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
+                }}
+              >
+                Я написал Бадди — продолжить
+              </button>
+            </div>
+          </>
+        )}
+
         {step === "edit" && (
           <>
             <h3 className="text-[16px] font-bold mb-1">Изменить расписание созвона</h3>
@@ -1929,11 +2011,11 @@ function ScheduleEditDialog({
 
             <div className="flex gap-2">
               <button
-                onClick={onCancel}
+                onClick={() => setStep("warn")}
                 className="tap flex-1 rounded-xl py-2.5 text-[14px] font-medium"
                 style={{ background: "transparent", border: "1px solid #ede8df", color: "var(--muted-foreground)" }}
               >
-                Отмена
+                Назад
               </button>
               <button
                 onClick={() => {
@@ -1946,90 +2028,67 @@ function ScheduleEditDialog({
                   boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
                 }}
               >
-                Сохранить
+                Продолжить
               </button>
             </div>
           </>
         )}
 
-        {step === "confirm" && (() => {
-          const confirmMsg = `Привет! Хочу изменить время нашего созвона. Теперь встречаемся в ${DAY_ACC[day] ?? day} в ${time} МСК.`;
-          const doCopy = async () => {
-            try {
-              await navigator.clipboard.writeText(confirmMsg);
-              setCopied(true);
-              setTimeout(() => setCopied(false), 1800);
-            } catch { /* noop */ }
-          };
-          return (
-            <>
-              <h3 className="text-[16px] font-bold mb-3">Подтвердите изменение</h3>
-              <p className="text-[13px] font-medium mb-3" style={{ color: "#3f3a33" }}>
-                Вы хотите изменить время созвона:
+        {step === "confirm" && (
+          <>
+            <h3 className="text-[16px] font-bold mb-3">Подтвердите изменение</h3>
+
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex-1 rounded-2xl p-3" style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}>
+                <p className="text-[11px] font-bold uppercase tracking-wider mb-1" style={{ color: "#FF8A00" }}>Было</p>
+                <p className="text-[15px] font-bold" style={{ color: "#3f3a33" }}>{DAY_FULL_NAMES[initial.day] ?? initial.day}</p>
+                <p className="text-[13px] font-medium" style={{ color: "#5a5044" }}>{initial.time} МСК</p>
+              </div>
+              <div className="shrink-0 text-[16px]" style={{ color: "#FF8A00" }}>→</div>
+              <div className="flex-1 rounded-2xl p-3" style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}>
+                <p className="text-[11px] font-bold uppercase tracking-wider mb-1" style={{ color: "#FF8A00" }}>Будет</p>
+                <p className="text-[15px] font-bold" style={{ color: "#3f3a33" }}>{DAY_FULL_NAMES[day] ?? day}</p>
+                <p className="text-[13px] font-medium" style={{ color: "#5a5044" }}>{time} МСК</p>
+              </div>
+            </div>
+
+            <div className="mb-5">
+              <div className="flex items-center gap-1.5 mb-2">
+                <span className="text-[18px]">⚠️</span>
+                <span className="text-[15px] font-bold" style={{ color: "#FF6D00" }}>ВНИМАНИЕ</span>
+              </div>
+              <p className="text-[13px] leading-snug mb-2" style={{ color: "#3f3a33", fontWeight: 500 }}>
+                Новое расписание изменится и у вашего Бадди.
               </p>
+              <p className="text-[13px] leading-snug" style={{ color: "#5a5044" }}>
+                Убедитесь, что Бадди знает и согласен с новым расписанием.
+              </p>
+            </div>
 
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex-1 rounded-2xl p-3" style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}>
-                  <p className="text-[11px] font-bold uppercase tracking-wider mb-1" style={{ color: "#FF8A00" }}>Было</p>
-                  <p className="text-[15px] font-bold" style={{ color: "#3f3a33" }}>{DAY_FULL_NAMES[initial.day] ?? initial.day}</p>
-                  <p className="text-[13px] font-medium" style={{ color: "#5a5044" }}>{initial.time} МСК</p>
-                </div>
-                <div className="shrink-0 text-[16px]" style={{ color: "#FF8A00" }}>→</div>
-                <div className="flex-1 rounded-2xl p-3" style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}>
-                  <p className="text-[11px] font-bold uppercase tracking-wider mb-1" style={{ color: "#FF8A00" }}>Будет</p>
-                  <p className="text-[15px] font-bold" style={{ color: "#3f3a33" }}>{DAY_FULL_NAMES[day] ?? day}</p>
-                  <p className="text-[13px] font-medium" style={{ color: "#5a5044" }}>{time} МСК</p>
-                </div>
-              </div>
-
-              <div className="mb-5">
-                <div className="flex items-center gap-1.5 mb-2">
-                  <span className="text-[18px]">⚠️</span>
-                  <span className="text-[15px] font-bold" style={{ color: "#FF6D00" }}>ВНИМАНИЕ</span>
-                </div>
-                <p className="text-[13px] leading-snug" style={{ color: "#3f3a33", fontWeight: 500 }}>
-                  Новое расписание изменится и у вашего Бадди. Сначала предупредите его — отправьте сообщение ниже, а затем подтвердите изменение.
-                </p>
-              </div>
-
-              <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: "#a59a85" }}>Напишите Бадди</p>
-              <div className="rounded-2xl p-3.5 mb-4" style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}>
-                <p className="text-[13px] leading-snug" style={{ color: "#3f3a33" }}>{confirmMsg}</p>
-              </div>
+            <div className="flex gap-3">
               <button
-                onClick={doCopy}
-                className="tap w-full mb-5 rounded-2xl py-3 px-4 flex items-center justify-center gap-2 text-[14px] font-bold"
-                style={{ background: "#FAF6EF", border: "1px solid #ede8df", color: "#FF8A00" }}
+                onClick={() => setStep("edit")}
+                className="tap flex-1 rounded-2xl py-3 text-[14px] font-medium"
+                style={{ background: "transparent", color: "#8b7f6f" }}
               >
-                {copied ? <Check size={18} /> : <Copy size={18} />}
-                {copied ? "Скопировано" : "Скопировать сообщение"}
+                Отмена
               </button>
-
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setStep("edit")}
-                  className="tap flex-1 rounded-2xl py-3 text-[14px] font-medium"
-                  style={{ background: "transparent", color: "#8b7f6f" }}
-                >
-                  Отмена
-                </button>
-                <button
-                  onClick={() => {
-                    onSave({ day, time, timezone: TZ });
-                    setStep("done");
-                  }}
-                  className="tap flex-[1.5] rounded-2xl py-3 text-[13px] font-bold text-white leading-tight"
-                  style={{
-                    background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-                    boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
-                  }}
-                >
-                  Я написал Бадди — изменить расписание
-                </button>
-              </div>
-            </>
-          );
-        })()}
+              <button
+                onClick={() => {
+                  onSave({ day, time, timezone: TZ });
+                  setStep("done");
+                }}
+                className="tap flex-[1.5] rounded-2xl py-3 text-[13px] font-bold text-white leading-tight"
+                style={{
+                  background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                  boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
+                }}
+              >
+                Бадди предупреждён — изменить расписание
+              </button>
+            </div>
+          </>
+        )}
 
         {step === "done" && (
           <>
