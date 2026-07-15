@@ -1413,6 +1413,12 @@ function StepRow({ n, title, sub, active }: { n: number; title: string; sub: str
 // ───────────────────────── Screen 7: Has foursome ─────────────────────────
 
 function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void }) {
+  const profiles = useFoursomeProfiles();
+  const others = [...data.pair1.members, ...data.pair2.members].filter((m) => m.userId !== "me");
+  const filledCount = others.filter((m) => isProfileFilled(profiles[m.userId])).length;
+  const totalOthers = others.length;
+  const allFilled = filledCount === totalOthers;
+
   return (
     <div className="px-4 pb-8">
       <PageHeader title="Моя Четвёрка" onBack={onBack} />
@@ -1448,14 +1454,40 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         <div className="text-[12px] text-muted-foreground mt-1">Яндекс Телемост · 60 минут</div>
       </div>
 
+      {/* Прогресс анкет */}
+      <div
+        className="rounded-2xl p-3.5 mb-4 flex items-center gap-3"
+        style={{
+          background: allFilled ? "#f0fdf4" : "#f7f3ec",
+          border: `1px solid ${allFilled ? "#bbf7d0" : "#ede8df"}`,
+        }}
+      >
+        <div
+          className="h-10 w-10 rounded-xl flex items-center justify-center text-[20px] shrink-0"
+          style={{ background: "#fff" }}
+        >
+          📋
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-[13px] font-bold">
+            {allFilled ? "Все анкеты заполнены" : `Анкеты участников: ${filledCount} из ${totalOthers} заполнено`}
+          </div>
+          <div className="text-[11.5px] text-muted-foreground leading-snug">
+            {allFilled
+              ? "Отличная работа — теперь у вас есть карта каждого участника."
+              : "На первом созвоне заполните анкеты остальных участников."}
+          </div>
+        </div>
+      </div>
+
       {/* Foursome composition */}
       <Card className="p-4 mb-4">
         <div className="text-[12px] uppercase font-medium mb-2.5" style={{ letterSpacing: 0.5, color: "#FF6D00" }}>
           Пара 1 · Ваша пара
         </div>
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {data.pair1.members.map((m) => (
-            <MemberRow key={m.userId} m={m} />
+            <FoursomeMemberCard key={m.userId} m={m} profileFilled={isProfileFilled(profiles[m.userId])} />
           ))}
         </div>
 
@@ -1464,9 +1496,9 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         <div className="text-[12px] uppercase font-medium mb-2.5" style={{ letterSpacing: 0.5, color: "#FF6D00" }}>
           Пара 2
         </div>
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {data.pair2.members.map((m) => (
-            <MemberRow key={m.userId} m={m} withMessage />
+            <FoursomeMemberCard key={m.userId} m={m} profileFilled={isProfileFilled(profiles[m.userId])} />
           ))}
         </div>
       </Card>
@@ -1483,3 +1515,85 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
     </div>
   );
 }
+
+function FoursomeMemberCard({ m, profileFilled }: { m: Member; profileFilled: boolean }) {
+  const isMe = m.userId === "me";
+  const hasTg = !!m.telegram;
+  const hasMax = !!m.max;
+
+  return (
+    <div
+      className="rounded-2xl p-3"
+      style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}
+    >
+      <div className="flex items-center gap-3">
+        <div
+          className="h-11 w-11 rounded-xl flex items-center justify-center text-[22px] shrink-0"
+          style={{ background: "#fff" }}
+        >
+          {m.avatar}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-[14px] font-semibold truncate">
+            {fullName(m)}
+            {isMe && (
+              <span className="ml-1.5 text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full align-middle" style={{ background: LIME_GRADIENT }}>
+                вы
+              </span>
+            )}
+          </div>
+          <div className="text-[12px] text-muted-foreground truncate">{m.job}</div>
+        </div>
+        <div className="flex items-center gap-1.5 shrink-0">
+          {hasTg && (
+            <a
+              href={`https://t.me/${m.telegram}`}
+              target="_blank"
+              rel="noreferrer"
+              className="tap h-9 w-9 rounded-full flex items-center justify-center bg-white"
+              style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}
+              aria-label="Telegram"
+              title={`Telegram · @${m.telegram}`}
+            >
+              <TelegramIcon size={20} />
+            </a>
+          )}
+          {hasMax && (
+            <a
+              href={m.max}
+              target="_blank"
+              rel="noreferrer"
+              className="tap h-9 w-9 rounded-full flex items-center justify-center bg-white"
+              style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}
+              aria-label="MAX"
+              title="MAX"
+            >
+              <MaxIcon size={20} />
+            </a>
+          )}
+        </div>
+      </div>
+
+      <Link
+        to="/foursome-profile/$userId"
+        params={{ userId: m.userId }}
+        className="tap mt-2.5 w-full rounded-xl py-2 text-[12.5px] font-semibold inline-flex items-center justify-center gap-1.5"
+        style={
+          profileFilled
+            ? { background: "#fff", color: "#166534", border: "1px solid #bbf7d0" }
+            : { background: ORANGE_GRADIENT, color: "#fff" }
+        }
+      >
+        <FileText className="h-3.5 w-3.5" />
+        {isMe
+          ? profileFilled
+            ? "Моя анкета — открыть"
+            : "Заполнить свою анкету"
+          : profileFilled
+            ? "Посмотреть анкету"
+            : "Заполнить анкету"}
+      </Link>
+    </div>
+  );
+}
+
