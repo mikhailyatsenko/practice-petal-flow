@@ -158,7 +158,9 @@ export function CallReminderBanner() {
     : "Завтра созвон с Бадди!";
   const subtitle = noLink
     ? "Ссылка на комнату ещё не создана"
-    : "Подготовься и приходи вовремя";
+    : isFoursome
+      ? "Подготовьтесь и приходите вовремя"
+      : "Подготовься и приходи вовремя";
 
   return wrapper(
     <button
