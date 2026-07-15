@@ -1576,7 +1576,7 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
               boxShadow: "0 6px 20px rgba(34, 197, 94, 0.35)",
             }}
           >
-            Хорошо, напишу в чат
+            Хорошо, мы уже связались
           </button>
         </div>
       )}
