@@ -1418,10 +1418,6 @@ function StepRow({ n, title, sub, active }: { n: number; title: string; sub: str
 
 function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void }) {
   const profiles = useFoursomeProfiles();
-  const others = [...data.pair1.members, ...data.pair2.members].filter((m) => m.userId !== "me");
-  const filledCount = others.filter((m) => isProfileFilled(profiles[m.userId])).length;
-  const totalOthers = others.length;
-  const allFilled = filledCount === totalOthers;
 
   const meetingLink = useTelemostLink();
   const chat = useFoursomeChat();
@@ -1457,7 +1453,7 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         </div>
       </div>
 
-      {/* Постоянная кнопка входа в комнату */}
+      {/* Постоянная кнопка входа в комнату — блик только в режиме «2 часа» */}
       {meetingLink && (
         <a
           href={meetingLink}
@@ -1471,23 +1467,27 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         >
           <Video className="h-4 w-4 relative z-10" />
           <span className="relative z-10">Перейти в комнату созвона</span>
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-0 z-0"
-            style={{
-              background:
-                "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0) 100%)",
-              transform: "translateX(-100%)",
-              animation: "room-shimmer-4 2.6s ease-in-out infinite",
-            }}
-          />
-          <style>{`
-            @keyframes room-shimmer-4 {
-              0% { transform: translateX(-100%); }
-              65% { transform: translateX(200%); }
-              100% { transform: translateX(200%); }
-            }
-          `}</style>
+          {show2h && (
+            <>
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-0 z-0"
+                style={{
+                  background:
+                    "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0) 100%)",
+                  transform: "translateX(-100%)",
+                  animation: "room-shimmer-4 2.6s ease-in-out infinite",
+                }}
+              />
+              <style>{`
+                @keyframes room-shimmer-4 {
+                  0% { transform: translateX(-100%); }
+                  65% { transform: translateX(200%); }
+                  100% { transform: translateX(200%); }
+                }
+              `}</style>
+            </>
+          )}
         </a>
       )}
 
