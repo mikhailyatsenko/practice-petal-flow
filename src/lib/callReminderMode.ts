@@ -72,7 +72,7 @@ function readT0(): number | null {
 }
 
 function isTimedMode(mode: CallReminderKind | null): boolean {
-  return mode === "buddy-2h" || mode === "buddy-2h-no-link";
+  return mode === "buddy-2h" || mode === "buddy-2h-no-link" || mode === "foursome-2h";
 }
 
 export function getCallStartAt(): number | null {
