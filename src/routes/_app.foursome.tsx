@@ -1450,9 +1450,20 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
   const allOthersFilled = others.every(isMemberFilled);
 
   const [copied, setCopied] = useState(false);
-  const reminderText = `Привет! Напоминаю, завтра у нас созвон Четвёрки в ${data.time} МСК. Подтвердите, пожалуйста, участие сообщением «ОК».`;
+  const reminderText = `Привет! Напоминаю, завтра в ${data.time} МСК у нас созвон Четвёрки. Напишите «ОК» для подтверждения участия.`;
   const handleCopy = async () => {
-    try { await navigator.clipboard.writeText(reminderText); } catch { /* noop */ }
+    try {
+      await navigator.clipboard.writeText(reminderText);
+    } catch {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = reminderText;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      } catch { /* noop */ }
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 1600);
   };
@@ -1466,6 +1477,12 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
       {/* Режим: завтра созвон — карточка напоминания в чат (вместо зелёного бонус-блока) */}
       {showTomorrow && (
         <div className="rounded-2xl p-4 mb-4 bg-card hairline shadow-card animate-fade-up">
+          <style>{`
+            @keyframes foursome-chat-shine {
+              0% { transform: translateX(-120%); }
+              60%, 100% { transform: translateX(320%); }
+            }
+          `}</style>
           <p className="text-[15px] font-bold leading-tight" style={{ color: "#1a0e00" }}>
             📞 Завтра созвон с Четвёркой
           </p>
@@ -1473,41 +1490,80 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
             Напоминаем: завтра в {data.time} МСК состоится созвон с Четвёркой.
           </p>
 
-          <p className="text-[12px] mt-3 mb-1.5 font-semibold" style={{ color: "#2b2419" }}>
+          <p className="text-[13.5px] mt-3 font-semibold" style={{ color: "#1a0e00" }}>
             Напишите в общий чат:
           </p>
-          <div className="rounded-xl p-3 text-[13px] leading-snug" style={{ background: "#FAF6EF", border: "1px solid #ede8df", color: "#2b2419" }}>
-            {reminderText}
+          <div
+            className="mt-2 rounded-xl p-3 flex items-center gap-3"
+            style={{ background: "#FAF6EF", border: "1px solid #ece4d4" }}
+          >
+            <div
+              className="flex-1 min-w-0 rounded-[16px] p-3"
+              style={{ background: "#fff", border: "1px solid #ede8df" }}
+            >
+              <p className="text-[14px] leading-relaxed" style={{ color: "#2b2419" }}>
+                {reminderText}
+              </p>
+            </div>
+            <button
+              onClick={handleCopy}
+              className="tap shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold inline-flex items-center gap-1.5 transition-colors"
+              style={{
+                background: "#fff",
+                color: copied ? "#16a34a" : "#FF6D00",
+                border: copied ? "1px solid #16a34a" : "1px solid #FF6D00",
+              }}
+            >
+              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              <span>{copied ? "Скопировано" : "Скопировать"}</span>
+            </button>
           </div>
 
-          <button
-            onClick={handleCopy}
-            className="tap mt-2 w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 transition-colors"
-            style={
-              copied
-                ? { background: "#16a34a", border: "1px solid #16a34a", color: "#fff" }
-                : { background: "#fff", border: "1px solid #ede8df", color: "#2b2419" }
-            }
+          <a
+            href="https://t.me/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="tap relative overflow-hidden mt-3 w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white"
+            style={{ background: "#229ED9" }}
           >
-            {copied ? <><Check className="h-4 w-4" /> Скопировано</> : <><Copy className="h-4 w-4" /> Скопировать</>}
-          </button>
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0 left-0 w-1/3"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0) 100%)",
+                animation: "foursome-chat-shine 2.6s ease-in-out infinite",
+              }}
+            />
+            <span className="relative inline-flex items-center gap-1.5">
+              <TelegramIcon size={16} /> Перейти в общий чат Telegram
+            </span>
+          </a>
 
-          {chat?.link && (
-            <a
-              href={chat.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="tap mt-2 w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white"
-              style={{ background: chat.messenger === "telegram" ? "#229ED9" : "#000" }}
-            >
-              {chat.messenger === "telegram" ? <TelegramIcon size={16} /> : <MaxIcon size={16} />}
-              {chat.messenger === "telegram" ? "Перейти в общий чат Telegram" : "Перейти в общий чат MAX"}
-            </a>
-          )}
+          <a
+            href="https://max.ru/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="tap relative overflow-hidden mt-2 w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white"
+            style={{ background: "#000" }}
+          >
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0 left-0 w-1/3"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%)",
+                animation: "foursome-chat-shine 2.6s ease-in-out 0.4s infinite",
+              }}
+            />
+            <span className="relative inline-flex items-center gap-1.5">
+              <MaxIcon size={16} /> Перейти в общий чат MAX
+            </span>
+          </a>
 
           <button
             onClick={ackCallReminder}
-            className="tap relative mt-3 w-full overflow-hidden rounded-2xl py-3 text-[14px] font-bold text-white"
+            className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white"
             style={{
               background: "linear-gradient(135deg, #16a34a, #22c55e)",
               boxShadow: "0 6px 20px rgba(34, 197, 94, 0.35)",
