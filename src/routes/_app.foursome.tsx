@@ -1507,14 +1507,9 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
             className="mt-2 rounded-xl p-3 flex items-center gap-3"
             style={{ background: "#FAF6EF", border: "1px solid #ece4d4" }}
           >
-            <div
-              className="flex-1 min-w-0 rounded-[16px] p-3"
-              style={{ background: "#fff", border: "1px solid #ede8df" }}
-            >
-              <p className="text-[14px] leading-relaxed" style={{ color: "#2b2419" }}>
-                {reminderText}
-              </p>
-            </div>
+            <p className="flex-1 min-w-0 text-[14px] leading-relaxed" style={{ color: "#2b2419" }}>
+              {reminderText}
+            </p>
             <button
               onClick={handleCopy}
               className="tap shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold inline-flex items-center gap-1.5 transition-colors"
