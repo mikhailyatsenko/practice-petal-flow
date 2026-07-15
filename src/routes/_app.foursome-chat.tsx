@@ -79,8 +79,9 @@ function FoursomeChatPage() {
       {/* Header */}
       <div className="relative flex items-center px-1 pt-2 pb-3">
         <div className="relative z-10">
-          <BackButton onClick={() => navigate({ to: "/foursome", search: { demo: "no" } })} />
+          <BackButton onClick={() => navigate({ to: "/foursome" })} />
         </div>
+
         <h1 className="pointer-events-none absolute left-0 right-0 text-center text-[18px] font-semibold leading-tight">
           Создай общий чат в {cfg.name}
         </h1>
