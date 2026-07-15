@@ -234,7 +234,7 @@ function MemberRow({ m, withMessage, isRepresentative }: { m: Member; withMessag
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-[14px] font-semibold truncate flex items-center gap-1.5">
-          {m.name}
+          {fullName(m)}
           {isRepresentative && (
             <span
               className="text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
