@@ -847,28 +847,41 @@ function BrowseRequests({
         {DEMO_REQUESTS.map((req) => (
           <Card key={req.id} className="p-4">
             <div className="space-y-2 mb-3">
-              {req.members.map((m) => (
-                <div
-                  key={m.userId}
-                  className="rounded-xl p-2.5"
-                  style={{ background: "#FAF6EF" }}
-                >
-                  <div className="flex items-center gap-2">
-                    <div className="h-9 w-9 rounded-lg bg-white flex items-center justify-center text-[18px] shrink-0">
-                      {m.avatar}
+              {req.members.map((m) => {
+                const isRep = m.userId === req.representativeId;
+                return (
+                  <div
+                    key={m.userId}
+                    className="rounded-xl p-2.5"
+                    style={{ background: "#FAF6EF" }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="h-9 w-9 rounded-lg bg-white flex items-center justify-center text-[18px] shrink-0">
+                        {m.avatar}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-[13px] font-semibold truncate flex items-center gap-1.5">
+                          {m.name}
+                          {isRep && (
+                            <span
+                              className="text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
+                              style={{ background: "#fff3e0", color: "#FF6D00" }}
+                            >
+                              Представитель
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[11px] text-muted-foreground truncate">{m.job}</div>
+                      </div>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-[13px] font-semibold truncate">{m.name}</div>
-                      <div className="text-[11px] text-muted-foreground truncate">{m.job}</div>
-                    </div>
+                    {m.bio && (
+                      <p className="text-[12px] text-foreground/80 mt-2" style={{ lineHeight: 1.5 }}>
+                        {m.bio}
+                      </p>
+                    )}
                   </div>
-                  {m.bio && (
-                    <p className="text-[12px] text-foreground/80 mt-2" style={{ lineHeight: 1.5 }}>
-                      {m.bio}
-                    </p>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="flex flex-wrap gap-2 mb-3">
@@ -885,6 +898,9 @@ function BrowseRequests({
                 🕐 {req.time} МСК
               </span>
             </div>
+
+            <ChatBadge messenger={req.chatMessenger} />
+
 
             {req.extra && (
               <div
