@@ -13,9 +13,13 @@ import { ackCallReminder, useCallReminder, formatHMS } from "@/lib/callReminderM
 
 
 export const Route = createFileRoute("/_app/foursome")({
-  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "locked" } => {
+  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "locked"; cards?: "empty" | "full" } => {
     const d = search.demo;
-    return d === "has" || d === "waiting" || d === "locked" ? { demo: d } : {};
+    const c = search.cards;
+    const out: { demo?: "has" | "waiting" | "locked"; cards?: "empty" | "full" } = {};
+    if (d === "has" || d === "waiting" || d === "locked") out.demo = d;
+    if (c === "empty" || c === "full") out.cards = c;
+    return out;
   },
   head: () => ({
     meta: [
