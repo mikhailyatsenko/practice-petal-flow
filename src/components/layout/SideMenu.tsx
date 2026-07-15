@@ -288,66 +288,27 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
           <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
             Напоминание о созвоне
           </div>
-          <button
-            onClick={() => toggleCallReminderMode("buddy")}
-            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
-            style={{ color: callMode === "buddy" ? "#E53935" : "#1E88E5" }}
-          >
-            <CalendarClock className="h-[18px] w-[18px]" strokeWidth={2} />
-            <span>
-              {callMode === "buddy"
-                ? "Выключить: завтра созвон с Бадди"
-                : "Включить: завтра созвон с Бадди"}
-            </span>
-          </button>
-          <button
-            onClick={() => toggleCallReminderMode("foursome")}
-            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
-            style={{ color: callMode === "foursome" ? "#E53935" : "#1E88E5" }}
-          >
-            <CalendarClock className="h-[18px] w-[18px]" strokeWidth={2} />
-            <span>
-              {callMode === "foursome"
-                ? "Выключить: завтра созвон с Четвёркой"
-                : "Включить: завтра созвон с Четвёркой"}
-            </span>
-          </button>
-          <button
-            onClick={() => toggleCallReminderMode("buddy-2h")}
-            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
-            style={{ color: callMode === "buddy-2h" ? "#E53935" : "#16a34a" }}
-          >
-            <CalendarClock className="h-[18px] w-[18px]" strokeWidth={2} />
-            <span>
-              {callMode === "buddy-2h"
-                ? "Выключить: 2 часа до созвона"
-                : "2 часа до созвона"}
-            </span>
-          </button>
-          <button
-            onClick={() => toggleCallReminderMode("buddy-no-link")}
-            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
-            style={{ color: callMode === "buddy-no-link" ? "#E53935" : "#FF6D00" }}
-          >
-            <CalendarClock className="h-[18px] w-[18px]" strokeWidth={2} />
-            <span>
-              {callMode === "buddy-no-link"
-                ? "Выключить: завтра созвон — ссылки нет"
-                : "Завтра созвон — ссылки нет"}
-            </span>
-          </button>
-          <button
-            onClick={() => toggleCallReminderMode("buddy-2h-no-link")}
-            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
-            style={{ color: callMode === "buddy-2h-no-link" ? "#E53935" : "#FF6D00" }}
-          >
-            <CalendarClock className="h-[18px] w-[18px]" strokeWidth={2} />
-            <span>
-              {callMode === "buddy-2h-no-link"
-                ? "Выключить: 2 часа до созвона — ссылки нет"
-                : "2 часа до созвона — ссылки нет"}
-            </span>
-          </button>
+          {([
+            { m: "buddy" as const, label: "Завтра созвон с Бадди", off: "Выключить: завтра созвон с Бадди" },
+            { m: "buddy-2h" as const, label: "2 часа до созвона с Бадди", off: "Выключить: 2 часа до созвона с Бадди" },
+            { m: "buddy-no-link" as const, label: "Завтра созвон с Бадди — ссылки нет", off: "Выключить: завтра созвон с Бадди — ссылки нет" },
+            { m: "buddy-2h-no-link" as const, label: "2 часа до созвона с Бадди — ссылки нет", off: "Выключить: 2 часа до созвона с Бадди — ссылки нет" },
+            { m: "foursome" as const, label: "Завтра созвон с Четвёркой", off: "Выключить: завтра созвон с Четвёркой" },
+            { m: "foursome-2h" as const, label: "2 часа до созвона с Четвёркой", off: "Выключить: 2 часа до созвона с Четвёркой" },
+          ]).map(({ m, label, off }) => {
+            const active = callMode === m;
+            return (
+              <button
+                key={m}
+                onClick={() => toggleCallReminderMode(m)}
+                className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+                style={{ color: active ? "#E53935" : "#1E88E5" }}
+              >
+                <CalendarClock className="h-[18px] w-[18px]" strokeWidth={2} />
+                <span>{active ? off : label}</span>
+              </button>
+            );
+          })}
 
           <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
             Демо-уровни
