@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ExternalLink, Play, Check, X, Video } from "lucide-react";
+import { Play, Check, X, Video } from "lucide-react";
 import { z } from "zod";
 import { BackButton } from "@/components/layout/BackButton";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_app/foursome-chat")({
 const STEPS = [
   {
     title: "Откройте мессенджер",
-    text: "Нажмите кнопку выше и войдите в свой аккаунт.",
+    text: "Откройте выбранный мессенджер и войдите в свой аккаунт.",
   },
   {
     title: "Создайте новый групповой чат",
@@ -90,18 +90,6 @@ function FoursomeChatPage() {
       <p className="text-[13px] text-muted-foreground leading-snug px-1 mb-3">
         Создайте групповой чат в {cfg.name} для всех четырёх участников Четвёрки и добавьте ссылку-приглашение.
       </p>
-
-      {/* CTA button */}
-      <a
-        href={cfg.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="tap w-full rounded-2xl py-3.5 mb-4 text-[14px] font-bold text-white flex items-center justify-center gap-2"
-        style={{ background: cfg.gradient, boxShadow: cfg.shadow }}
-      >
-        <ExternalLink className="h-4 w-4" />
-        Открыть {cfg.name}
-      </a>
 
       {/* Text / Video toggle */}
       <div className="flex rounded-xl mb-3" style={{ background: "#f0ebe2", padding: 4 }}>
@@ -226,14 +214,14 @@ function FoursomeChatPage() {
           </button>
         ) : (
           <button
-            onClick={() => navigate({ to: "/foursome" })}
+            onClick={() => navigate({ to: "/foursome", search: { demo: "waiting" } })}
             className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white"
             style={{
               background: "linear-gradient(135deg, #43A047, #2E7D32)",
               boxShadow: "0 6px 20px rgba(46,125,50,0.35)",
             }}
           >
-            Готово — перейти к Четвёрке
+            Готово — перейти к заявке
           </button>
         )}
       </div>

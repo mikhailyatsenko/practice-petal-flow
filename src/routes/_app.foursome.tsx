@@ -710,7 +710,7 @@ function CreateRequest({ onBack }: { onBack: () => void }) {
   return (
     <div className="px-4 pb-8">
       <PageHeader title="Оставить заявку" onBack={onBack} />
-      <p className="text-[13px] text-muted-foreground mb-4 px-1">
+      <p className="text-[13px] text-foreground mb-4 px-1">
         Заявка подаётся от имени вашей пары. Другие пары увидят её в списке.
       </p>
 
