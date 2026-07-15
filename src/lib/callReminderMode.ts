@@ -50,6 +50,7 @@ function readMode(): CallReminderKind | null {
     return v === "buddy" ||
       v === "foursome" ||
       v === "buddy-2h" ||
+      v === "foursome-2h" ||
       v === "buddy-no-link" ||
       v === "buddy-2h-no-link"
       ? (v as CallReminderKind)
