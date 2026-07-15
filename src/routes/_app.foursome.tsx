@@ -1580,31 +1580,8 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         <div className="text-[12px] text-muted-foreground mt-1">Яндекс Телемост · 60 минут</div>
       </div>
 
-      {/* Прогресс анкет */}
-      <div
-        className="rounded-2xl p-3.5 mb-4 flex items-center gap-3"
-        style={{
-          background: allFilled ? "#f0fdf4" : "#f7f3ec",
-          border: `1px solid ${allFilled ? "#bbf7d0" : "#ede8df"}`,
-        }}
-      >
-        <div
-          className="h-10 w-10 rounded-xl flex items-center justify-center text-[20px] shrink-0"
-          style={{ background: "#fff" }}
-        >
-          📋
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="text-[13px] font-bold">
-            {allFilled ? "Все анкеты заполнены" : `Анкеты участников: ${filledCount} из ${totalOthers} заполнено`}
-          </div>
-          <div className="text-[11.5px] text-muted-foreground leading-snug">
-            {allFilled
-              ? "Отличная работа — теперь у вас есть карта каждого участника."
-              : "На первом созвоне заполните анкеты остальных участников."}
-          </div>
-        </div>
-      </div>
+
+
 
       {/* Foursome composition */}
       <Card className="p-4 mb-4">
