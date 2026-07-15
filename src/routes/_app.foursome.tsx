@@ -940,7 +940,7 @@ function BrowseRequests({
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="text-[13px] font-semibold truncate flex items-center gap-1.5">
-                          {m.name}
+                          {fullName(m)}
                           {isRep && (
                             <span
                               className="text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
