@@ -4,6 +4,7 @@ import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Calendar, Gl
 import { BackButton } from "@/components/layout/BackButton";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
+import { LeaveMenu } from "@/components/layout/LeaveMenu";
 import { FOURSOME_DEMO_MEMBERS, MY_BUDDY_MEMBER, ME_MEMBER, fullName } from "@/lib/foursomeDemo";
 import { useFoursomeProfiles, isProfileFilled } from "@/lib/foursomeProfileStore";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
