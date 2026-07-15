@@ -8,6 +8,7 @@ import { setTelemostLink, useTelemostLink } from "@/lib/telemostLinkStore";
 import { ackCallReminder, useCallReminder, formatCallCountdown, formatHMS } from "@/lib/callReminderMode";
 import { useBuddySchedule, setBuddySchedule, DAYS_FULL } from "@/lib/buddyScheduleStore";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
+import { LeaveMenu } from "@/components/layout/LeaveMenu";
 
 export const Route = createFileRoute("/_app/buddy")({
   validateSearch: (search: Record<string, unknown>): { demo?: "has" | "has-no-link" | "waiting" | "create-tg-no-username" | "create-max" | "start-max-bot" | "start-tg-bot" } => {
