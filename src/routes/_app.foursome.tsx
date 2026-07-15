@@ -1513,6 +1513,52 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         </a>
       )}
 
+      {/* Заполнение карточек участников — блок скрывается когда все заполнены */}
+      {!allOthersFilled && (
+        <Card className="p-4 mb-4 animate-fade-up">
+          <div className="text-[12px] uppercase font-medium mb-3" style={{ letterSpacing: 0.5, color: "#FF6D00" }}>
+            Заполнение карточек участников
+          </div>
+          <div className="space-y-2">
+            {others.map((m) => {
+              const filled = isMemberFilled(m);
+              const to = m.userId === "b1" ? "/my-buddy-card" : "/foursome-profile/$userId";
+              const params = m.userId === "b1" ? undefined : { userId: m.userId };
+              return (
+                <Link
+                  key={m.userId}
+                  to={to}
+                  {...(params ? { params } : {})}
+                  className="tap flex items-center gap-3 rounded-xl px-2.5 py-2 -mx-1"
+                  style={{ background: filled ? "#f0fdf4" : "#FAF6EF", border: `1px solid ${filled ? "#bbf7d0" : "#ede8df"}` }}
+                >
+                  <div
+                    className="h-6 w-6 rounded-full flex items-center justify-center shrink-0"
+                    style={{
+                      background: filled ? "#16a34a" : "#fff",
+                      border: filled ? "none" : "1.5px solid #d5cebe",
+                    }}
+                  >
+                    {filled && <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />}
+                  </div>
+                  <div className="flex-1 min-w-0 text-[13.5px] font-semibold truncate">
+                    {fullName(m)}
+                  </div>
+                  <div
+                    className="text-[11.5px] font-bold shrink-0"
+                    style={{ color: filled ? "#16a34a" : "#a59a85" }}
+                  >
+                    {filled ? "Заполнена" : "Не заполнена"}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </Card>
+      )}
+
+
+
       {/* Режим: 2 часа до созвона — крупный таймер */}
       {show2h && (
         <div className="rounded-2xl p-5 mb-4 bg-card hairline shadow-card text-center animate-fade-up">
