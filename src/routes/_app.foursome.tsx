@@ -1450,30 +1450,111 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
   const allOthersFilled = others.every(isMemberFilled);
 
   const [copied, setCopied] = useState(false);
-  const reminderText = `📞 Напоминаю, завтра у нас созвон Четвёркой в ${data.time} МСК.\nКомната: ${meetingLink ?? "(ссылку добавим ближе к созвону)"}\nБудьте вовремя 🙌`;
+  const reminderText = `Привет! Напоминаю, завтра у нас созвон Четвёрки в ${data.time} МСК. Подтвердите, пожалуйста, участие сообщением «ОК».`;
   const handleCopy = async () => {
     try { await navigator.clipboard.writeText(reminderText); } catch { /* noop */ }
     setCopied(true);
     setTimeout(() => setCopied(false), 1600);
   };
 
+  const hideBonus = showTomorrow || show2h;
+
   return (
     <div className="px-4 pb-8">
       <PageHeader title="Моя Четвёрка" onBack={onBack} />
 
-      {/* Bonus banner */}
-      <div
-        className="rounded-2xl p-4 mb-4 flex items-center gap-3"
-        style={{ background: LIME_GRADIENT, color: "#fff" }}
-      >
-        <Zap className="h-7 w-7 shrink-0" />
-        <div className="flex-1">
-          <div className="text-[15px] font-bold">+2 очка каждый день активны!</div>
-          <div className="text-[12px]" style={{ color: "rgba(255,255,255,0.85)" }}>
-            Пока твоя пара состоит в Четвёрке
+      {/* Режим: завтра созвон — карточка напоминания в чат (вместо зелёного бонус-блока) */}
+      {showTomorrow && (
+        <div className="rounded-2xl p-4 mb-4 bg-card hairline shadow-card animate-fade-up">
+          <p className="text-[15px] font-bold leading-tight" style={{ color: "#1a0e00" }}>
+            📞 Завтра созвон с Четвёркой
+          </p>
+          <p className="text-[13.5px] mt-1.5 leading-snug" style={{ color: "#2b2419", fontWeight: 500 }}>
+            Напоминаем: завтра в {data.time} МСК состоится созвон с Четвёркой.
+          </p>
+
+          <p className="text-[12px] mt-3 mb-1.5 font-semibold" style={{ color: "#2b2419" }}>
+            Напишите в общий чат:
+          </p>
+          <div className="rounded-xl p-3 text-[13px] leading-snug" style={{ background: "#FAF6EF", border: "1px solid #ede8df", color: "#2b2419" }}>
+            {reminderText}
+          </div>
+
+          <button
+            onClick={handleCopy}
+            className="tap mt-2 w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 transition-colors"
+            style={
+              copied
+                ? { background: "#16a34a", border: "1px solid #16a34a", color: "#fff" }
+                : { background: "#fff", border: "1px solid #ede8df", color: "#2b2419" }
+            }
+          >
+            {copied ? <><Check className="h-4 w-4" /> Скопировано</> : <><Copy className="h-4 w-4" /> Скопировать</>}
+          </button>
+
+          {chat?.link && (
+            <a
+              href={chat.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tap mt-2 w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white"
+              style={{ background: chat.messenger === "telegram" ? "#229ED9" : "#000" }}
+            >
+              {chat.messenger === "telegram" ? <TelegramIcon size={16} /> : <MaxIcon size={16} />}
+              {chat.messenger === "telegram" ? "Перейти в общий чат Telegram" : "Перейти в общий чат MAX"}
+            </a>
+          )}
+
+          <button
+            onClick={ackCallReminder}
+            className="tap relative mt-3 w-full overflow-hidden rounded-2xl py-3 text-[14px] font-bold text-white"
+            style={{
+              background: "linear-gradient(135deg, #16a34a, #22c55e)",
+              boxShadow: "0 6px 20px rgba(34, 197, 94, 0.35)",
+            }}
+          >
+            Хорошо, напишу в чат
+          </button>
+        </div>
+      )}
+
+      {/* Режим: 2 часа до созвона — крупный таймер */}
+      {show2h && (
+        <div className="rounded-2xl p-5 mb-4 bg-card hairline shadow-card text-center animate-fade-up">
+          <p
+            className="text-[12px] font-bold uppercase tracking-wider"
+            style={{ color: "#16a34a", letterSpacing: "0.08em" }}
+          >
+            {started2h ? "Созвон с Четвёркой начался" : "До созвона с Четвёркой осталось"}
+          </p>
+          <p
+            className="mt-1 font-extrabold leading-none tabular-nums"
+            style={{
+              color: "#1a0e00",
+              fontSize: started2h ? 22 : 40,
+              letterSpacing: started2h ? 0 : "0.02em",
+            }}
+          >
+            {started2h ? "Пора подключаться" : formatHMS(remaining2h)}
+          </p>
+        </div>
+      )}
+
+      {/* Обычный бонус-блок «+2 очка» — скрыт в режимах напоминания */}
+      {!hideBonus && (
+        <div
+          className="rounded-2xl p-4 mb-4 flex items-center gap-3"
+          style={{ background: LIME_GRADIENT, color: "#fff" }}
+        >
+          <Zap className="h-7 w-7 shrink-0" />
+          <div className="flex-1">
+            <div className="text-[15px] font-bold">+2 очка каждый день активны!</div>
+            <div className="text-[12px]" style={{ color: "rgba(255,255,255,0.85)" }}>
+              Пока твоя пара состоит в Четвёрке
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Постоянная кнопка входа в комнату — блик только в режиме «2 часа» */}
       {meetingLink && (
@@ -1512,6 +1593,23 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
           )}
         </a>
       )}
+
+      {/* Следующий созвон — теперь выше блока заполнения карточек */}
+      <div
+        className="rounded-2xl p-4 mb-4"
+        style={{ background: "#fff8ee", border: "1px solid #ffe0a3" }}
+      >
+        <div
+          className="text-[12px] uppercase font-medium mb-1"
+          style={{ letterSpacing: 0.5, color: "#FF6D00" }}
+        >
+          Следующий созвон
+        </div>
+        <div className="text-[16px] font-bold" style={{ color: "#FF6D00" }}>
+          📅 {DAY_FULL[data.day]} · {data.time} МСК
+        </div>
+        <div className="text-[12px] text-muted-foreground mt-1">Яндекс Телемост · 60 минут</div>
+      </div>
 
       {/* Заполнение карточек участников — блок скрывается когда все заполнены */}
       {!allOthersFilled && (
@@ -1557,96 +1655,6 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         </Card>
       )}
 
-
-
-      {/* Режим: 2 часа до созвона — крупный таймер */}
-      {show2h && (
-        <div className="rounded-2xl p-5 mb-4 bg-card hairline shadow-card text-center animate-fade-up">
-          <p
-            className="text-[12px] font-bold uppercase tracking-wider"
-            style={{ color: "#16a34a", letterSpacing: "0.08em" }}
-          >
-            {started2h ? "Созвон с Четвёркой начался" : "До созвона с Четвёркой осталось"}
-          </p>
-          <p
-            className="mt-1 font-extrabold leading-none tabular-nums"
-            style={{
-              color: "#1a0e00",
-              fontSize: started2h ? 22 : 40,
-              letterSpacing: started2h ? 0 : "0.02em",
-            }}
-          >
-            {started2h ? "Пора подключаться" : formatHMS(remaining2h)}
-          </p>
-        </div>
-      )}
-
-      {/* Режим: завтра созвон — карточка напоминания в чат */}
-      {showTomorrow && (
-        <div className="rounded-2xl p-4 mb-4 bg-card hairline shadow-card animate-fade-up">
-          <p className="text-[15px] font-bold leading-tight" style={{ color: "#1a0e00" }}>
-            📞 Завтра созвон с Четвёркой
-          </p>
-          <p className="text-[13.5px] mt-1.5 leading-snug" style={{ color: "#2b2419", fontWeight: 500 }}>
-            Напомни участникам в общем чате — так все точно будут вовремя.
-          </p>
-
-          <div className="mt-3 rounded-xl p-3 text-[13px] whitespace-pre-line" style={{ background: "#FAF6EF", border: "1px solid #ede8df", color: "#2b2419" }}>
-            {reminderText}
-          </div>
-
-          <div className="mt-2 flex gap-2">
-            <button
-              onClick={handleCopy}
-              className="tap flex-1 rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5"
-              style={{ background: "#fff", border: "1px solid #ede8df", color: "#2b2419" }}
-            >
-              {copied ? <><Check className="h-4 w-4" style={{ color: "#16a34a" }} /> Скопировано</> : <><Copy className="h-4 w-4" /> Скопировать</>}
-            </button>
-            {chat?.link && (
-              <a
-                href={chat.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="tap flex-1 rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white"
-                style={{ background: chat.messenger === "telegram" ? "#229ED9" : "#000" }}
-              >
-                {chat.messenger === "telegram" ? <TelegramIcon className="h-4 w-4" /> : <MaxIcon className="h-4 w-4" />}
-                Открыть чат
-              </a>
-            )}
-          </div>
-
-          <button
-            onClick={ackCallReminder}
-            className="tap relative mt-3 w-full overflow-hidden rounded-2xl py-3 text-[14px] font-bold text-white"
-            style={{
-              background: "linear-gradient(135deg, #16a34a, #22c55e)",
-              boxShadow: "0 6px 20px rgba(34, 197, 94, 0.35)",
-            }}
-          >
-            Понятно, буду готов
-          </button>
-        </div>
-      )}
-
-
-      {/* Next call */}
-      <div
-        className="rounded-2xl p-4 mb-4"
-        style={{ background: "#fff8ee", border: "1px solid #ffe0a3" }}
-      >
-        <div
-          className="text-[12px] uppercase font-medium mb-1"
-          style={{ letterSpacing: 0.5, color: "#FF6D00" }}
-        >
-          Следующий созвон
-        </div>
-        <div className="text-[16px] font-bold" style={{ color: "#FF6D00" }}>
-          📅 {DAY_FULL[data.day]} · {data.time} МСК
-        </div>
-        <div className="text-[12px] text-muted-foreground mt-1">Яндекс Телемост · 60 минут</div>
-      </div>
 
 
 
