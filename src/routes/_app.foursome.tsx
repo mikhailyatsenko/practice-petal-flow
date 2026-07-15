@@ -1423,6 +1423,22 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
   const totalOthers = others.length;
   const allFilled = filledCount === totalOthers;
 
+  const meetingLink = useTelemostLink();
+  const chat = useFoursomeChat();
+  const { mode: callMode, ack: callAck, startAt, now } = useCallReminder();
+  const showTomorrow = callMode === "foursome" && !callAck;
+  const show2h = callMode === "foursome-2h";
+  const remaining2h = startAt != null ? startAt - now : 0;
+  const started2h = show2h && remaining2h <= 0;
+
+  const [copied, setCopied] = useState(false);
+  const reminderText = `📞 Напоминаю, завтра у нас созвон Четвёркой в ${data.time} МСК.\nКомната: ${meetingLink ?? "(ссылку добавим ближе к созвону)"}\nБудьте вовремя 🙌`;
+  const handleCopy = async () => {
+    try { await navigator.clipboard.writeText(reminderText); } catch { /* noop */ }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1600);
+  };
+
   return (
     <div className="px-4 pb-8">
       <PageHeader title="Моя Четвёрка" onBack={onBack} />
@@ -1440,6 +1456,112 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
           </div>
         </div>
       </div>
+
+      {/* Постоянная кнопка входа в комнату */}
+      {meetingLink && (
+        <a
+          href={meetingLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="tap relative overflow-hidden mb-4 w-full rounded-2xl py-3.5 text-[14px] font-bold text-white flex items-center justify-center gap-2"
+          style={{
+            background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+            boxShadow: "0 6px 20px rgba(255,109,0,0.35)",
+          }}
+        >
+          <Video className="h-4 w-4 relative z-10" />
+          <span className="relative z-10">Перейти в комнату созвона</span>
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-0"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0) 100%)",
+              transform: "translateX(-100%)",
+              animation: "room-shimmer-4 2.6s ease-in-out infinite",
+            }}
+          />
+          <style>{`
+            @keyframes room-shimmer-4 {
+              0% { transform: translateX(-100%); }
+              65% { transform: translateX(200%); }
+              100% { transform: translateX(200%); }
+            }
+          `}</style>
+        </a>
+      )}
+
+      {/* Режим: 2 часа до созвона — крупный таймер */}
+      {show2h && (
+        <div className="rounded-2xl p-5 mb-4 bg-card hairline shadow-card text-center animate-fade-up">
+          <p
+            className="text-[12px] font-bold uppercase tracking-wider"
+            style={{ color: "#16a34a", letterSpacing: "0.08em" }}
+          >
+            {started2h ? "Созвон с Четвёркой начался" : "До созвона с Четвёркой осталось"}
+          </p>
+          <p
+            className="mt-1 font-extrabold leading-none tabular-nums"
+            style={{
+              color: "#1a0e00",
+              fontSize: started2h ? 22 : 40,
+              letterSpacing: started2h ? 0 : "0.02em",
+            }}
+          >
+            {started2h ? "Пора подключаться" : formatHMS(remaining2h)}
+          </p>
+        </div>
+      )}
+
+      {/* Режим: завтра созвон — карточка напоминания в чат */}
+      {showTomorrow && (
+        <div className="rounded-2xl p-4 mb-4 bg-card hairline shadow-card animate-fade-up">
+          <p className="text-[15px] font-bold leading-tight" style={{ color: "#1a0e00" }}>
+            📞 Завтра созвон с Четвёркой
+          </p>
+          <p className="text-[13.5px] mt-1.5 leading-snug" style={{ color: "#2b2419", fontWeight: 500 }}>
+            Напомни участникам в общем чате — так все точно будут вовремя.
+          </p>
+
+          <div className="mt-3 rounded-xl p-3 text-[13px] whitespace-pre-line" style={{ background: "#FAF6EF", border: "1px solid #ede8df", color: "#2b2419" }}>
+            {reminderText}
+          </div>
+
+          <div className="mt-2 flex gap-2">
+            <button
+              onClick={handleCopy}
+              className="tap flex-1 rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5"
+              style={{ background: "#fff", border: "1px solid #ede8df", color: "#2b2419" }}
+            >
+              {copied ? <><Check className="h-4 w-4" style={{ color: "#16a34a" }} /> Скопировано</> : <><Copy className="h-4 w-4" /> Скопировать</>}
+            </button>
+            {chat?.link && (
+              <a
+                href={chat.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tap flex-1 rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white"
+                style={{ background: chat.messenger === "telegram" ? "#229ED9" : "#000" }}
+              >
+                {chat.messenger === "telegram" ? <TelegramIcon className="h-4 w-4" /> : <MaxIcon className="h-4 w-4" />}
+                Открыть чат
+              </a>
+            )}
+          </div>
+
+          <button
+            onClick={ackCallReminder}
+            className="tap relative mt-3 w-full overflow-hidden rounded-2xl py-3 text-[14px] font-bold text-white"
+            style={{
+              background: "linear-gradient(135deg, #16a34a, #22c55e)",
+              boxShadow: "0 6px 20px rgba(34, 197, 94, 0.35)",
+            }}
+          >
+            Понятно, буду готов
+          </button>
+        </div>
+      )}
+
 
       {/* Next call */}
       <div
