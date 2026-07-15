@@ -1460,7 +1460,7 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
   const allOthersFilled = others.every(isMemberFilled);
 
   const [copied, setCopied] = useState(false);
-  const reminderText = `Привет! Напоминаю, завтра в ${schedule.time} МСК у нас созвон Четвёрки. Напишите «ОК» для подтверждения участия.`;
+  const reminderText = "Привет! Напоминаю, завтра в 19:00 МСК у нас созвон Четвёрки. Напишите «ОК» для подтверждения участия."
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(reminderText);
@@ -1503,13 +1503,15 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
           <p className="text-[13.5px] mt-3 font-semibold" style={{ color: "#1a0e00" }}>
             Напишите в общий чат:
           </p>
-          <div
-            className="mt-2 rounded-xl p-3 flex items-center gap-3"
-            style={{ background: "#FAF6EF", border: "1px solid #ece4d4" }}
-          >
-            <p className="flex-1 min-w-0 text-[14px] leading-relaxed" style={{ color: "#2b2419" }}>
-              {reminderText}
-            </p>
+          <div className="mt-2 flex items-center gap-3">
+            <div
+              className="flex-1 min-w-0 rounded-xl p-3"
+              style={{ background: "#FAF6EF", border: "1px solid #ece4d4" }}
+            >
+              <p className="text-[14px] leading-relaxed" style={{ color: "#2b2419" }}>
+                {reminderText}
+              </p>
+            </div>
             <button
               onClick={handleCopy}
               className="tap shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold inline-flex items-center gap-1.5 transition-colors"
@@ -1574,7 +1576,7 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
               boxShadow: "0 6px 20px rgba(34, 197, 94, 0.35)",
             }}
           >
-            Хорошо, напишу в чат
+            Хорошо, мы уже связались
           </button>
         </div>
       )}
@@ -1949,7 +1951,7 @@ function EditScheduleModal({
 }) {
   const [copied, setCopied] = useState(false);
   const warnText =
-    "Привет! Хочу изменить день или время нашего созвона Четвёрки. Напишите, пожалуйста, какие варианты вам подходят.";
+    "Привет! Предлагаю изменить день или время нашего созвона Четвёрки. Напишите, пожалуйста, согласны ли вы и какой вариант вам подходит.";
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(warnText);
@@ -1990,15 +1992,12 @@ function EditScheduleModal({
             <p className="text-[13px] font-semibold mb-2" style={{ color: "#1a0e00" }}>
               Напишите в общий чат:
             </p>
-            <div
-              className="rounded-xl p-3 flex items-center gap-3 mb-3"
-              style={{ background: "#FAF6EF", border: "1px solid #ece4d4" }}
-            >
+            <div className="flex items-center gap-3 mb-3">
               <div
-                className="flex-1 min-w-0 rounded-[14px] p-3"
-                style={{ background: "#fff", border: "1px solid #ede8df" }}
+                className="flex-1 min-w-0 rounded-xl p-3"
+                style={{ background: "#FAF6EF", border: "1px solid #ece4d4" }}
               >
-                <p className="text-[13.5px] leading-relaxed" style={{ color: "#2b2419" }}>
+                <p className="text-[14px] leading-relaxed" style={{ color: "#2b2419" }}>
                   {warnText}
                 </p>
               </div>
