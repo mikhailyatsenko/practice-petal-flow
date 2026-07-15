@@ -697,11 +697,13 @@ const INSTRUCTION_CARDS: { emoji: string; title: string; text: string; important
 
 // ───────────────────────── Screen 4: Create request ─────────────────────────
 
-function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () => void }) {
+function CreateRequest({ onBack }: { onBack: () => void }) {
+  const navigate = useNavigate();
   const [day, setDay] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
   const [extra, setExtra] = useState("");
-  const valid = !!day && !!time;
+  const [messenger, setMessenger] = useState<"telegram" | "max" | null>(null);
+  const valid = !!day && !!time && !!messenger;
 
   return (
     <div className="px-4 pb-8">
@@ -718,7 +720,7 @@ function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () 
           Ваша пара
         </div>
         <MemberRow m={ME} />
-        <MemberRow m={MY_BUDDY} withMessage />
+        <MemberRow m={MY_BUDDY} />
       </div>
 
       <Card className="p-4 mb-3">
@@ -763,9 +765,40 @@ function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () 
         />
       </Card>
 
+      <Card className="p-4 mb-4">
+        <div className="text-[14px] font-semibold mb-1">Где будет общий чат Четвёрки?</div>
+        <div className="text-[11px] text-muted-foreground mb-3">
+          Выберите мессенджер, в котором будут общаться все четыре участника
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {(["telegram", "max"] as const).map((m) => {
+            const active = messenger === m;
+            const Icon = m === "telegram" ? TelegramIcon : MaxIcon;
+            return (
+              <button
+                key={m}
+                onClick={() => setMessenger(m)}
+                className="tap flex items-center justify-center gap-2 rounded-xl py-2.5 text-[14px] font-medium transition-colors"
+                style={{
+                  background: active ? "linear-gradient(135deg, #FFB300, #FF6D00)" : "#faf6ef",
+                  color: active ? "#fff" : "#3a3527",
+                  border: `1px solid ${active ? "transparent" : "#ede8df"}`,
+                }}
+              >
+                <Icon size={18} />
+                {m === "telegram" ? "Telegram" : "MAX"}
+              </button>
+            );
+          })}
+        </div>
+      </Card>
+
       <button
         disabled={!valid}
-        onClick={onSubmit}
+        onClick={() =>
+          messenger &&
+          navigate({ to: "/foursome-chat", search: { messenger } })
+        }
         className="tap w-full py-3.5 rounded-2xl text-white text-[14px] font-bold transition"
         style={{
           background: ORANGE_GRADIENT,
@@ -773,11 +806,12 @@ function CreateRequest({ onBack, onSubmit }: { onBack: () => void; onSubmit: () 
           cursor: valid ? "pointer" : "not-allowed",
         }}
       >
-        Опубликовать заявку
+        Продолжить
       </button>
     </div>
   );
 }
+
 
 // ───────────────────────── Screen 5: Browse requests ─────────────────────────
 
