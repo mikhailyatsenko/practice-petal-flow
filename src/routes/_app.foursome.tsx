@@ -1992,15 +1992,12 @@ function EditScheduleModal({
             <p className="text-[13px] font-semibold mb-2" style={{ color: "#1a0e00" }}>
               Напишите в общий чат:
             </p>
-            <div
-              className="rounded-xl p-3 flex items-center gap-3 mb-3"
-              style={{ background: "#FAF6EF", border: "1px solid #ece4d4" }}
-            >
+            <div className="flex items-center gap-3 mb-3">
               <div
-                className="flex-1 min-w-0 rounded-[14px] p-3"
-                style={{ background: "#fff", border: "1px solid #ede8df" }}
+                className="flex-1 min-w-0 rounded-xl p-3"
+                style={{ background: "#FAF6EF", border: "1px solid #ece4d4" }}
               >
-                <p className="text-[13.5px] leading-relaxed" style={{ color: "#2b2419" }}>
+                <p className="text-[14px] leading-relaxed" style={{ color: "#2b2419" }}>
                   {warnText}
                 </p>
               </div>
