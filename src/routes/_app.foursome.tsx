@@ -1658,7 +1658,7 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         </div>
         <div className="space-y-3">
           {data.pair1.members.map((m) => (
-            <FoursomeMemberCard key={m.userId} m={m} profileFilled={isProfileFilled(profiles[m.userId])} />
+            <FoursomeMemberCard key={m.userId} m={m} profileFilled={isMemberFilled(m)} />
           ))}
         </div>
 
