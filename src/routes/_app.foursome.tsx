@@ -1422,7 +1422,10 @@ function StepRow({ n, title, sub, active }: { n: number; title: string; sub: str
 // ───────────────────────── Screen 7: Has foursome ─────────────────────────
 
 function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void }) {
+  const { cards } = Route.useSearch();
   const profiles = useFoursomeProfiles();
+  const buddyCard = useBuddyCard();
+  const buddyFilled = isBuddyCardFilled(buddyCard);
 
   const meetingLink = useTelemostLink();
   const chat = useFoursomeChat();
@@ -1431,6 +1434,20 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
   const show2h = callMode === "foursome-2h";
   const remaining2h = startAt != null ? startAt - now : 0;
   const started2h = show2h && remaining2h <= 0;
+
+  const forceFull = cards === "full";
+
+  // Три других участника (без "me")
+  const others: Member[] = [
+    ...data.pair1.members.filter((m) => m.userId !== "me"),
+    ...data.pair2.members,
+  ];
+  const isMemberFilled = (m: Member): boolean => {
+    if (m.userId === "b1") return buddyFilled;
+    if (forceFull) return true;
+    return isProfileFilled(profiles[m.userId]);
+  };
+  const allOthersFilled = others.every(isMemberFilled);
 
   const [copied, setCopied] = useState(false);
   const reminderText = `📞 Напоминаю, завтра у нас созвон Четвёркой в ${data.time} МСК.\nКомната: ${meetingLink ?? "(ссылку добавим ближе к созвону)"}\nБудьте вовремя 🙌`;
