@@ -44,6 +44,7 @@ import { Route as AppPracticeStepRouteImport } from './routes/_app.practice.step
 import { Route as AppPracticeSkillRouteImport } from './routes/_app.practice.skill'
 import { Route as AppPracticeSelfProgRouteImport } from './routes/_app.practice.self-prog'
 import { Route as AppPracticeEssayRouteImport } from './routes/_app.practice.essay'
+import { Route as AppFoursomeProfileUserIdRouteImport } from './routes/_app.foursome-profile.$userId'
 
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
@@ -219,6 +220,12 @@ const AppPracticeEssayRoute = AppPracticeEssayRouteImport.update({
   path: '/practice/essay',
   getParentRoute: () => AppRoute,
 } as any)
+const AppFoursomeProfileUserIdRoute =
+  AppFoursomeProfileUserIdRouteImport.update({
+    id: '/foursome-profile/$userId',
+    path: '/foursome-profile/$userId',
+    getParentRoute: () => AppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -245,6 +252,7 @@ export interface FileRoutesByFullPath {
   '/telemost-link': typeof AppTelemostLinkRoute
   '/values': typeof AppValuesRoute
   '/wishes': typeof AppWishesRoute
+  '/foursome-profile/$userId': typeof AppFoursomeProfileUserIdRoute
   '/practice/essay': typeof AppPracticeEssayRoute
   '/practice/self-prog': typeof AppPracticeSelfProgRoute
   '/practice/skill': typeof AppPracticeSkillRoute
@@ -281,6 +289,7 @@ export interface FileRoutesByTo {
   '/values': typeof AppValuesRoute
   '/wishes': typeof AppWishesRoute
   '/': typeof AppIndexRoute
+  '/foursome-profile/$userId': typeof AppFoursomeProfileUserIdRoute
   '/practice/essay': typeof AppPracticeEssayRoute
   '/practice/self-prog': typeof AppPracticeSelfProgRoute
   '/practice/skill': typeof AppPracticeSkillRoute
@@ -319,6 +328,7 @@ export interface FileRoutesById {
   '/_app/values': typeof AppValuesRoute
   '/_app/wishes': typeof AppWishesRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/foursome-profile/$userId': typeof AppFoursomeProfileUserIdRoute
   '/_app/practice/essay': typeof AppPracticeEssayRoute
   '/_app/practice/self-prog': typeof AppPracticeSelfProgRoute
   '/_app/practice/skill': typeof AppPracticeSkillRoute
@@ -357,6 +367,7 @@ export interface FileRouteTypes {
     | '/telemost-link'
     | '/values'
     | '/wishes'
+    | '/foursome-profile/$userId'
     | '/practice/essay'
     | '/practice/self-prog'
     | '/practice/skill'
@@ -393,6 +404,7 @@ export interface FileRouteTypes {
     | '/values'
     | '/wishes'
     | '/'
+    | '/foursome-profile/$userId'
     | '/practice/essay'
     | '/practice/self-prog'
     | '/practice/skill'
@@ -430,6 +442,7 @@ export interface FileRouteTypes {
     | '/_app/values'
     | '/_app/wishes'
     | '/_app/'
+    | '/_app/foursome-profile/$userId'
     | '/_app/practice/essay'
     | '/_app/practice/self-prog'
     | '/_app/practice/skill'
@@ -695,6 +708,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPracticeEssayRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/foursome-profile/$userId': {
+      id: '/_app/foursome-profile/$userId'
+      path: '/foursome-profile/$userId'
+      fullPath: '/foursome-profile/$userId'
+      preLoaderRoute: typeof AppFoursomeProfileUserIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -721,6 +741,7 @@ interface AppRouteChildren {
   AppValuesRoute: typeof AppValuesRoute
   AppWishesRoute: typeof AppWishesRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppFoursomeProfileUserIdRoute: typeof AppFoursomeProfileUserIdRoute
   AppPracticeEssayRoute: typeof AppPracticeEssayRoute
   AppPracticeSelfProgRoute: typeof AppPracticeSelfProgRoute
   AppPracticeSkillRoute: typeof AppPracticeSkillRoute
@@ -756,6 +777,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppValuesRoute: AppValuesRoute,
   AppWishesRoute: AppWishesRoute,
   AppIndexRoute: AppIndexRoute,
+  AppFoursomeProfileUserIdRoute: AppFoursomeProfileUserIdRoute,
   AppPracticeEssayRoute: AppPracticeEssayRoute,
   AppPracticeSelfProgRoute: AppPracticeSelfProgRoute,
   AppPracticeSkillRoute: AppPracticeSkillRoute,

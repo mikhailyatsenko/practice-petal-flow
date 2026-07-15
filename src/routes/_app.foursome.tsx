@@ -1,9 +1,11 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Calendar, Globe, MessageCircle, Users, Check, X, Send } from "lucide-react";
+import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Calendar, Globe, MessageCircle, Users, Check, X, Send, FileText } from "lucide-react";
 import { BackButton } from "@/components/layout/BackButton";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
+import { FOURSOME_DEMO_MEMBERS, MY_BUDDY_MEMBER, ME_MEMBER, fullName } from "@/lib/foursomeDemo";
+import { useFoursomeProfiles, isProfileFilled } from "@/lib/foursomeProfileStore";
 
 
 export const Route = createFileRoute("/_app/foursome")({
