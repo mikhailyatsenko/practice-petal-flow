@@ -73,12 +73,12 @@ export function CallReminderBanner() {
   if (!mode) return null;
 
   const noLink = isNoLinkMode(mode);
-  const isFoursome = mode === "foursome";
-  const is2h = mode === "buddy-2h" || mode === "buddy-2h-no-link";
-  const isBuddyTomorrow = mode === "buddy" || mode === "buddy-no-link";
+  const isFoursome = mode === "foursome" || mode === "foursome-2h";
+  const is2h = mode === "buddy-2h" || mode === "buddy-2h-no-link" || mode === "foursome-2h";
+  const isTomorrow = mode === "buddy" || mode === "buddy-no-link" || mode === "foursome";
 
   // «завтра»-режимы скрываются после подтверждения (если ссылка есть)
-  if (isBuddyTomorrow && ack && !noLink) return null;
+  if (isTomorrow && ack && !noLink) return null;
 
   const ctaLabel = noLink ? "Создать ссылку" : "Открыть";
   const handleClick = () => {
