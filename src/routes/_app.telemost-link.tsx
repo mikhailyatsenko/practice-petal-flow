@@ -32,19 +32,18 @@ function TelemostLinkPage() {
   const [tab, setTab] = useState<"text" | "video">("text");
   const [link, setLink] = useState("");
   const [status, setStatus] = useState<"idle" | "ok" | "error">("idle");
-  const [confirmed, setConfirmed] = useState(false);
 
   const handleCheck = () => {
     const v = link.trim();
     const ok = /^https?:\/\/(www\.)?telemost\.yandex\.(ru|com|by|kz)\/.+/i.test(v);
-    setStatus(ok ? "ok" : "error");
+    if (ok) {
+      setTelemostLink(v);
+      setStatus("ok");
+    } else {
+      setStatus("error");
+    }
   };
 
-  const handleConfirm = () => {
-    setConfirmed(true);
-    setTelemostLink(link.trim());
-    setTimeout(() => navigate({ to: "/community" }), 700);
-  };
 
   return (
     <div className="px-4 pb-8">
