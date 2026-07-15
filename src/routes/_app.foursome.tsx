@@ -1296,8 +1296,8 @@ function IncomingFoursomeCard({
         <div className="mt-4">
           <SectionLabel>Статус подтверждений</SectionLabel>
           <div className="rounded-[12px] p-3 space-y-1.5" style={{ background: "#fff", border: "1px solid #ede8df" }}>
-            <ConfirmRow label={`${req.members[0].name} (их пара)`} ok={status("theirA") === "ok"} />
-            <ConfirmRow label={`${req.members[1].name} (их пара)`} ok={status("theirB") === "ok"} />
+            <ConfirmRow label={`${fullName(req.members[0])} (их пара)`} ok={status("theirA") === "ok"} />
+            <ConfirmRow label={`${fullName(req.members[1])} (их пара)`} ok={status("theirB") === "ok"} />
             <ConfirmRow label="Твой бадди (Алексей)" ok={status("myBuddy") === "ok"} />
             <div className="my-1 h-px" style={{ background: "#f1ebe0" }} />
             <ConfirmRow label="Ты — твоё решение" ok={false} pending />
