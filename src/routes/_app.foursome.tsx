@@ -1,9 +1,11 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Calendar, Globe, MessageCircle, Users, Check, X, Send } from "lucide-react";
+import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Calendar, Globe, MessageCircle, Users, Check, X, Send, FileText } from "lucide-react";
 import { BackButton } from "@/components/layout/BackButton";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
+import { FOURSOME_DEMO_MEMBERS, MY_BUDDY_MEMBER, ME_MEMBER, fullName } from "@/lib/foursomeDemo";
+import { useFoursomeProfiles, isProfileFilled } from "@/lib/foursomeProfileStore";
 
 
 export const Route = createFileRoute("/_app/foursome")({
@@ -25,6 +27,7 @@ export const Route = createFileRoute("/_app/foursome")({
 interface Member {
   userId: string;
   name: string;
+  lastName?: string;
   avatar: string;
   job: string;
   username?: string;
@@ -72,15 +75,15 @@ const DAY_FULL: Record<string, string> = {
   Вс: "Первое воскресенье месяца",
 };
 
-const ME: Member = { userId: "me", name: "Ты", avatar: "🙂", job: "Участник клуба" };
-const MY_BUDDY: Member = { userId: "b1", name: "Алексей", avatar: "🧑‍💻", job: "Продакт-менеджер", username: "алексей" };
+const ME: Member = ME_MEMBER;
+const MY_BUDDY: Member = { ...MY_BUDDY_MEMBER, username: MY_BUDDY_MEMBER.telegram };
 
 const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f1",
     members: [
-      { userId: "u1", name: "Анна", avatar: "🌸", job: "Маркетолог", telegram: "anna_mkt", max: "https://max.ru/anna.mkt", bio: "Запускаю свой бренд косметики, цель — выйти на стабильные 300к/мес. Ищу системность и поддержку." },
-      { userId: "u2", name: "Ольга", avatar: "🌿", job: "Психолог", bio: "Веду частную практику и онлайн-курс. Хочу окружение, где растут и не сливаются с целей." },
+      { userId: "u1", name: "Анна", lastName: "Петрова", avatar: "🌸", job: "Маркетолог", telegram: "anna_mkt", max: "https://max.ru/anna.mkt", bio: "Запускаю свой бренд косметики, цель — выйти на стабильные 300к/мес. Ищу системность и поддержку." },
+      { userId: "u2", name: "Ольга", lastName: "Ковалёва", avatar: "🌿", job: "Психолог", bio: "Веду частную практику и онлайн-курс. Хочу окружение, где растут и не сливаются с целей." },
     ],
     representativeId: "u1",
     chatMessenger: "telegram",
@@ -91,8 +94,8 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f2",
     members: [
-      { userId: "u3", name: "Дмитрий", avatar: "🎯", job: "Предприниматель", max: "https://max.ru/dmitry.biz", bio: "Развиваю IT-агентство, цель года — 1М/мес. Ценю чёткие задачи и дисциплину." },
-      { userId: "u4", name: "Сергей", avatar: "🚀", job: "Основатель стартапа", bio: "Делаю SaaS для малого бизнеса. Хочу окружение людей, которые тоже строят и не боятся больших целей." },
+      { userId: "u3", name: "Дмитрий", lastName: "Соколов", avatar: "🎯", job: "Предприниматель", max: "https://max.ru/dmitry.biz", bio: "Развиваю IT-агентство, цель года — 1М/мес. Ценю чёткие задачи и дисциплину." },
+      { userId: "u4", name: "Сергей", lastName: "Волков", avatar: "🚀", job: "Основатель стартапа", bio: "Делаю SaaS для малого бизнеса. Хочу окружение людей, которые тоже строят и не боятся больших целей." },
     ],
     representativeId: "u3",
     chatMessenger: "max",
@@ -103,8 +106,8 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f3",
     members: [
-      { userId: "u5", name: "Мария", avatar: "✨", job: "Коуч", telegram: "maria_coach", max: "https://max.ru/maria.coach", bio: "Расту в личном бренде, веду программу для женщин. Ищу длинную дистанцию и честную обратную связь." },
-      { userId: "u6", name: "Ирина", avatar: "🌷", job: "HR-директор", bio: "Перехожу из найма в консалтинг. Нужна команда, которая держит в фокусе и помогает не откладывать." },
+      { userId: "u5", name: "Мария", lastName: "Новикова", avatar: "✨", job: "Коуч", telegram: "maria_coach", max: "https://max.ru/maria.coach", bio: "Расту в личном бренде, веду программу для женщин. Ищу длинную дистанцию и честную обратную связь." },
+      { userId: "u6", name: "Ирина", lastName: "Белова", avatar: "🌷", job: "HR-директор", bio: "Перехожу из найма в консалтинг. Нужна команда, которая держит в фокусе и помогает не откладывать." },
     ],
     representativeId: "u5",
     chatMessenger: "telegram",
@@ -117,10 +120,10 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
 const DEMO_FOURSOME: FoursomeData = {
   pair1: { members: [ME, MY_BUDDY] },
   pair2: {
-    members: [
-      { userId: "u7", name: "Елена", avatar: "🦋", job: "Архитектор", username: "elena_arc" },
-      { userId: "u8", name: "Павел", avatar: "🎸", job: "Музыкант · продюсер", username: "pavel_m" },
-    ],
+    members: FOURSOME_DEMO_MEMBERS.filter((m) => m.userId === "u7" || m.userId === "u8").map((m) => ({
+      ...m,
+      username: m.telegram,
+    })),
   },
   day: "Ср",
   time: "19:00",
@@ -231,7 +234,7 @@ function MemberRow({ m, withMessage, isRepresentative }: { m: Member; withMessag
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-[14px] font-semibold truncate flex items-center gap-1.5">
-          {m.name}
+          {fullName(m)}
           {isRepresentative && (
             <span
               className="text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
@@ -298,7 +301,7 @@ function WriteToRepresentative({ rep }: { rep: Member }) {
         ✉️ Написать представителю
       </div>
       <div className="text-[13px] text-foreground/85 mb-2.5">
-        Представитель пары: <span className="font-semibold">{rep.name}</span>
+        Представитель пары: <span className="font-semibold">{fullName(rep)}</span>
       </div>
       <div className="flex flex-col gap-2">
         {hasTg && (
@@ -444,7 +447,7 @@ function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       >
         <div className="flex-1">
           <div className="text-[12px] text-muted-foreground">Твоя пара</div>
-          <div className="text-[14px] font-bold mt-0.5">Ты + {MY_BUDDY.name}</div>
+          <div className="text-[14px] font-bold mt-0.5">Ты + {fullName(MY_BUDDY)}</div>
         </div>
         <span
           className="text-[11px] font-bold text-white px-2.5 py-1 rounded-full"
@@ -937,7 +940,7 @@ function BrowseRequests({
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="text-[13px] font-semibold truncate flex items-center gap-1.5">
-                          {m.name}
+                          {fullName(m)}
                           {isRep && (
                             <span
                               className="text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
@@ -1143,7 +1146,7 @@ function Waiting({ to, onBack }: { to: FoursomeRequest; onBack: () => void }) {
           <div className="text-[56px] leading-none">🎉</div>
           <h2 className="mt-3 text-[18px] font-bold">Четвёрка собрана!</h2>
           <p className="mt-2 text-[14px] text-muted-foreground leading-snug max-w-[320px] mx-auto">
-            Ты подтвердил пару {accepted.members.map((m) => m.name).join(" и ")}. Согласуйте первый созвон в чате.
+            Ты подтвердил пару {accepted.members.map((m) => fullName(m)).join(" и ")}. Согласуйте первый созвон в чате.
           </p>
         </div>
       ) : (
@@ -1270,7 +1273,7 @@ function IncomingFoursomeCard({
                 {m.avatar}
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-[14px] font-bold leading-tight truncate">{m.name}</div>
+                <div className="text-[14px] font-bold leading-tight truncate">{fullName(m)}</div>
                 <div className="text-[12px] text-muted-foreground truncate">{m.job}</div>
               </div>
             </div>
@@ -1283,7 +1286,7 @@ function IncomingFoursomeCard({
           <div className="rounded-[12px] p-3 text-[13px] space-y-2" style={{ background: "#FAF6EF", lineHeight: 1.55 }}>
             {req.members.map((m) => (
               <p key={m.userId}>
-                <span className="font-semibold">{m.name}:</span> {m.bio}
+                <span className="font-semibold">{fullName(m)}:</span> {m.bio}
               </p>
             ))}
           </div>
@@ -1293,8 +1296,8 @@ function IncomingFoursomeCard({
         <div className="mt-4">
           <SectionLabel>Статус подтверждений</SectionLabel>
           <div className="rounded-[12px] p-3 space-y-1.5" style={{ background: "#fff", border: "1px solid #ede8df" }}>
-            <ConfirmRow label={`${req.members[0].name} (их пара)`} ok={status("theirA") === "ok"} />
-            <ConfirmRow label={`${req.members[1].name} (их пара)`} ok={status("theirB") === "ok"} />
+            <ConfirmRow label={`${fullName(req.members[0])} (их пара)`} ok={status("theirA") === "ok"} />
+            <ConfirmRow label={`${fullName(req.members[1])} (их пара)`} ok={status("theirB") === "ok"} />
             <ConfirmRow label="Твой бадди (Алексей)" ok={status("myBuddy") === "ok"} />
             <div className="my-1 h-px" style={{ background: "#f1ebe0" }} />
             <ConfirmRow label="Ты — твоё решение" ok={false} pending />
@@ -1410,6 +1413,12 @@ function StepRow({ n, title, sub, active }: { n: number; title: string; sub: str
 // ───────────────────────── Screen 7: Has foursome ─────────────────────────
 
 function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void }) {
+  const profiles = useFoursomeProfiles();
+  const others = [...data.pair1.members, ...data.pair2.members].filter((m) => m.userId !== "me");
+  const filledCount = others.filter((m) => isProfileFilled(profiles[m.userId])).length;
+  const totalOthers = others.length;
+  const allFilled = filledCount === totalOthers;
+
   return (
     <div className="px-4 pb-8">
       <PageHeader title="Моя Четвёрка" onBack={onBack} />
@@ -1445,14 +1454,40 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         <div className="text-[12px] text-muted-foreground mt-1">Яндекс Телемост · 60 минут</div>
       </div>
 
+      {/* Прогресс анкет */}
+      <div
+        className="rounded-2xl p-3.5 mb-4 flex items-center gap-3"
+        style={{
+          background: allFilled ? "#f0fdf4" : "#f7f3ec",
+          border: `1px solid ${allFilled ? "#bbf7d0" : "#ede8df"}`,
+        }}
+      >
+        <div
+          className="h-10 w-10 rounded-xl flex items-center justify-center text-[20px] shrink-0"
+          style={{ background: "#fff" }}
+        >
+          📋
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-[13px] font-bold">
+            {allFilled ? "Все анкеты заполнены" : `Анкеты участников: ${filledCount} из ${totalOthers} заполнено`}
+          </div>
+          <div className="text-[11.5px] text-muted-foreground leading-snug">
+            {allFilled
+              ? "Отличная работа — теперь у вас есть карта каждого участника."
+              : "На первом созвоне заполните анкеты остальных участников."}
+          </div>
+        </div>
+      </div>
+
       {/* Foursome composition */}
       <Card className="p-4 mb-4">
         <div className="text-[12px] uppercase font-medium mb-2.5" style={{ letterSpacing: 0.5, color: "#FF6D00" }}>
           Пара 1 · Ваша пара
         </div>
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {data.pair1.members.map((m) => (
-            <MemberRow key={m.userId} m={m} />
+            <FoursomeMemberCard key={m.userId} m={m} profileFilled={isProfileFilled(profiles[m.userId])} />
           ))}
         </div>
 
@@ -1461,9 +1496,9 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         <div className="text-[12px] uppercase font-medium mb-2.5" style={{ letterSpacing: 0.5, color: "#FF6D00" }}>
           Пара 2
         </div>
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {data.pair2.members.map((m) => (
-            <MemberRow key={m.userId} m={m} withMessage />
+            <FoursomeMemberCard key={m.userId} m={m} profileFilled={isProfileFilled(profiles[m.userId])} />
           ))}
         </div>
       </Card>
@@ -1480,3 +1515,85 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
     </div>
   );
 }
+
+function FoursomeMemberCard({ m, profileFilled }: { m: Member; profileFilled: boolean }) {
+  const isMe = m.userId === "me";
+  const hasTg = !!m.telegram;
+  const hasMax = !!m.max;
+
+  return (
+    <div
+      className="rounded-2xl p-3"
+      style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}
+    >
+      <div className="flex items-center gap-3">
+        <div
+          className="h-11 w-11 rounded-xl flex items-center justify-center text-[22px] shrink-0"
+          style={{ background: "#fff" }}
+        >
+          {m.avatar}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-[14px] font-semibold truncate">
+            {fullName(m)}
+            {isMe && (
+              <span className="ml-1.5 text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full align-middle" style={{ background: LIME_GRADIENT }}>
+                вы
+              </span>
+            )}
+          </div>
+          <div className="text-[12px] text-muted-foreground truncate">{m.job}</div>
+        </div>
+        <div className="flex items-center gap-1.5 shrink-0">
+          {hasTg && (
+            <a
+              href={`https://t.me/${m.telegram}`}
+              target="_blank"
+              rel="noreferrer"
+              className="tap h-9 w-9 rounded-full flex items-center justify-center bg-white"
+              style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}
+              aria-label="Telegram"
+              title={`Telegram · @${m.telegram}`}
+            >
+              <TelegramIcon size={20} />
+            </a>
+          )}
+          {hasMax && (
+            <a
+              href={m.max}
+              target="_blank"
+              rel="noreferrer"
+              className="tap h-9 w-9 rounded-full flex items-center justify-center bg-white"
+              style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}
+              aria-label="MAX"
+              title="MAX"
+            >
+              <MaxIcon size={20} />
+            </a>
+          )}
+        </div>
+      </div>
+
+      <Link
+        to="/foursome-profile/$userId"
+        params={{ userId: m.userId }}
+        className="tap mt-2.5 w-full rounded-xl py-2 text-[12.5px] font-semibold inline-flex items-center justify-center gap-1.5"
+        style={
+          profileFilled
+            ? { background: "#fff", color: "#166534", border: "1px solid #bbf7d0" }
+            : { background: ORANGE_GRADIENT, color: "#fff" }
+        }
+      >
+        <FileText className="h-3.5 w-3.5" />
+        {isMe
+          ? profileFilled
+            ? "Моя анкета — открыть"
+            : "Заполнить свою анкету"
+          : profileFilled
+            ? "Посмотреть анкету"
+            : "Заполнить анкету"}
+      </Link>
+    </div>
+  );
+}
+
