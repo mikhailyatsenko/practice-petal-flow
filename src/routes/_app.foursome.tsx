@@ -6,6 +6,7 @@ import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 import { FOURSOME_DEMO_MEMBERS, MY_BUDDY_MEMBER, ME_MEMBER, fullName } from "@/lib/foursomeDemo";
 import { useFoursomeProfiles, isProfileFilled } from "@/lib/foursomeProfileStore";
+import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
 import { useTelemostLink } from "@/lib/telemostLinkStore";
 import { useFoursomeChat } from "@/lib/foursomeChatStore";
 import { ackCallReminder, useCallReminder, formatHMS } from "@/lib/callReminderMode";
