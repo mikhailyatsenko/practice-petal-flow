@@ -1693,13 +1693,8 @@ function FoursomeMemberCard({ m, profileFilled }: { m: Member; profileFilled: bo
   const hasMax = !!m.max;
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  const cardLabel = isMe
-    ? profileFilled
-      ? "Моя карточка"
-      : "Заполнить карточку"
-    : profileFilled
-      ? "Открыть карточку"
-      : "Карточка участника";
+  const isBuddy = m.userId === "b1";
+  const cardLabel = profileFilled ? "Открыть карточку" : "Карточка участника";
 
   return (
     <div
@@ -1732,27 +1727,40 @@ function FoursomeMemberCard({ m, profileFilled }: { m: Member; profileFilled: bo
         )}
       </div>
 
-      <div className="mt-2.5 flex items-center gap-2">
-        <Link
-          to="/foursome-profile/$userId"
-          params={{ userId: m.userId }}
-          className="tap flex-1 min-w-0 rounded-xl py-2 text-[12.5px] font-bold text-white inline-flex items-center justify-center gap-1.5"
-          style={{ background: ORANGE_GRADIENT }}
-        >
-          <FileText className="h-3.5 w-3.5" />
-          {cardLabel}
-        </Link>
-        {!isMe && (hasTg || hasMax) && (
-          <button
-            onClick={() => setSheetOpen(true)}
-            className="tap shrink-0 rounded-xl px-3.5 py-2 text-[12.5px] font-semibold inline-flex items-center justify-center gap-1.5"
-            style={{ background: "#fff", border: "1px solid #ede8df", color: "#1a1a1a" }}
-          >
-            <MessageCircle className="h-3.5 w-3.5" />
-            Написать
-          </button>
-        )}
-      </div>
+      {!isMe && (
+        <div className="mt-2.5 flex items-center gap-2">
+          {isBuddy ? (
+            <Link
+              to="/my-buddy-card"
+              className="tap flex-1 min-w-0 rounded-xl py-2 text-[12.5px] font-bold text-white inline-flex items-center justify-center gap-1.5"
+              style={{ background: ORANGE_GRADIENT }}
+            >
+              <FileText className="h-3.5 w-3.5" />
+              {cardLabel}
+            </Link>
+          ) : (
+            <Link
+              to="/foursome-profile/$userId"
+              params={{ userId: m.userId }}
+              className="tap flex-1 min-w-0 rounded-xl py-2 text-[12.5px] font-bold text-white inline-flex items-center justify-center gap-1.5"
+              style={{ background: ORANGE_GRADIENT }}
+            >
+              <FileText className="h-3.5 w-3.5" />
+              {cardLabel}
+            </Link>
+          )}
+          {(hasTg || hasMax) && (
+            <button
+              onClick={() => setSheetOpen(true)}
+              className="tap shrink-0 rounded-xl px-3.5 py-2 text-[12.5px] font-semibold inline-flex items-center justify-center gap-1.5"
+              style={{ background: "#fff", border: "1px solid #ede8df", color: "#1a1a1a" }}
+            >
+              <MessageCircle className="h-3.5 w-3.5" />
+              Написать
+            </button>
+          )}
+        </div>
+      )}
 
       {sheetOpen && (
         <ContactSheet member={m} onClose={() => setSheetOpen(false)} />
