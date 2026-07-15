@@ -226,7 +226,7 @@ function FoursomeChatPage() {
           </button>
         ) : (
           <button
-            onClick={() => navigate({ to: "/foursome", search: { demo: "no" } })}
+            onClick={() => navigate({ to: "/foursome" })}
             className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white"
             style={{
               background: "linear-gradient(135deg, #43A047, #2E7D32)",
