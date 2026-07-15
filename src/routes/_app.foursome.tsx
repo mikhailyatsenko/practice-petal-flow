@@ -1460,7 +1460,7 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
   const allOthersFilled = others.every(isMemberFilled);
 
   const [copied, setCopied] = useState(false);
-  const reminderText = `Привет! Напоминаю, завтра в ${data.time} МСК у нас созвон Четвёрки. Напишите «ОК» для подтверждения участия.`;
+  const reminderText = `Привет! Напоминаю, завтра в ${schedule.time} МСК у нас созвон Четвёрки. Напишите «ОК» для подтверждения участия.`;
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(reminderText);
