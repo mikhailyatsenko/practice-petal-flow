@@ -220,7 +220,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-function MemberRow({ m, withMessage }: { m: Member; withMessage?: boolean }) {
+function MemberRow({ m, withMessage, isRepresentative }: { m: Member; withMessage?: boolean; isRepresentative?: boolean }) {
   return (
     <div className="flex items-center gap-3">
       <div
@@ -230,7 +230,17 @@ function MemberRow({ m, withMessage }: { m: Member; withMessage?: boolean }) {
         {m.avatar}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-[14px] font-semibold truncate">{m.name}</div>
+        <div className="text-[14px] font-semibold truncate flex items-center gap-1.5">
+          {m.name}
+          {isRepresentative && (
+            <span
+              className="text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
+              style={{ background: "#fff3e0", color: "#FF6D00" }}
+            >
+              Представитель
+            </span>
+          )}
+        </div>
         <div className="text-[12px] text-muted-foreground truncate">
           {m.job}
           {m.username ? ` · @${m.username}` : ""}
@@ -248,6 +258,72 @@ function MemberRow({ m, withMessage }: { m: Member; withMessage?: boolean }) {
           <MessageCircle className="h-4 w-4" />
         </a>
       )}
+    </div>
+  );
+}
+
+function ChatBadge({ messenger, className = "" }: { messenger: "telegram" | "max"; className?: string }) {
+  const isTg = messenger === "telegram";
+  return (
+    <div
+      className={`flex items-center gap-2 rounded-xl px-3 py-2 mb-3 ${className}`}
+      style={{
+        background: isTg ? "#e8f4fc" : "#f1ecff",
+        border: `1px solid ${isTg ? "#b6dcf3" : "#d8ccff"}`,
+      }}
+    >
+      {isTg ? <TelegramIcon size={20} /> : <MaxIcon size={20} />}
+      <div className="min-w-0 flex-1">
+        <div className="text-[10px] font-bold uppercase text-muted-foreground" style={{ letterSpacing: 0.4 }}>
+          Общий чат Четвёрки
+        </div>
+        <div className="text-[13px] font-semibold leading-tight">
+          {isTg ? "Общий чат в Telegram" : "Общий чат в MAX"}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WriteToRepresentative({ rep }: { rep: Member }) {
+  const hasTg = !!rep.telegram;
+  const hasMax = !!rep.max;
+  if (!hasTg && !hasMax) return null;
+  return (
+    <div
+      className="rounded-2xl p-3.5 mb-3"
+      style={{ background: "#f0fdf4", border: "1px solid #bbf7d0" }}
+    >
+      <div className="text-[11px] font-bold uppercase mb-1" style={{ color: "#166534", letterSpacing: 0.4 }}>
+        ✉️ Написать представителю
+      </div>
+      <div className="text-[13px] text-foreground/85 mb-2.5">
+        Представитель пары: <span className="font-semibold">{rep.name}</span>
+      </div>
+      <div className="flex flex-col gap-2">
+        {hasTg && (
+          <a
+            href={`https://t.me/${rep.telegram}`}
+            target="_blank"
+            rel="noreferrer"
+            className="tap flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-[13px] font-bold"
+            style={{ background: "#229ED9" }}
+          >
+            <TelegramIcon size={18} /> Написать в Telegram
+          </a>
+        )}
+        {hasMax && (
+          <a
+            href={rep.max}
+            target="_blank"
+            rel="noreferrer"
+            className="tap flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-[13px] font-bold"
+            style={{ background: "linear-gradient(135deg, #2E7BFF, #7B4DFF)" }}
+          >
+            <MaxIcon size={18} /> Написать в MAX
+          </a>
+        )}
+      </div>
     </div>
   );
 }
