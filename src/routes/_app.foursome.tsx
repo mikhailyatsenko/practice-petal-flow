@@ -308,7 +308,7 @@ function Locked({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         <SectionLabel>Что даёт Четвёрка</SectionLabel>
         <div className="space-y-3 mt-1">
           <BenefitRow icon={<Zap className="h-4 w-4" />} title="+2 очка каждый день" sub="Пока твоя пара состоит в Четвёрке" />
-          <BenefitRow icon={<Calendar className="h-4 w-4" />} title="Ежемесячный созвон" sub="80 минут в первую неделю месяца" />
+          <BenefitRow icon={<Calendar className="h-4 w-4" />} title="Ежемесячный созвон" sub="60 минут в первую неделю месяца" />
           <BenefitRow icon={<Globe className="h-4 w-4" />} title="Более широкий круг" sub="Новые идеи и свежий взгляд" />
         </div>
       </Card>
@@ -443,11 +443,11 @@ function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
       {/* Формат */}
       <Card className="p-4 mb-4">
-        <SectionLabel>Формат созвона · 80 минут</SectionLabel>
-        <FormatRow time="15 мин" text="Первый участник делится успехами за месяц" />
-        <FormatRow time="15 мин" text="Второй участник делится успехами за месяц" />
-        <FormatRow time="15 мин" text="Третий участник делится успехами за месяц" />
-        <FormatRow time="15 мин" text="Четвёртый участник делится успехами за месяц" />
+        <SectionLabel>Формат созвона · 60 минут</SectionLabel>
+        <FormatRow time="10 мин" text="Первый участник делится успехами за месяц" />
+        <FormatRow time="10 мин" text="Второй участник делится успехами за месяц" />
+        <FormatRow time="10 мин" text="Третий участник делится успехами за месяц" />
+        <FormatRow time="10 мин" text="Четвёртый участник делится успехами за месяц" />
         <FormatRow time="20 мин" text="Все ставят задачи на следующий месяц" />
       </Card>
 
@@ -687,7 +687,7 @@ const INSTRUCTION_CARDS: { emoji: string; title: string; text: string; important
     emoji: "📞",
     title: "Формат созвона",
     text:
-      "Созвоны проходят в первую неделю месяца.\n\n80 минут:\n— По 15 мин каждый: успехи за месяц, что получилось, что нет\n— 20 мин: каждый планирует задачи на следующий месяц\n\n☝️ После созвона каждый фиксирует задачи в разделе «Задачи» и скидывает скрин в общий чат Четвёрки. Созвон считается завершённым только после этого.",
+      "Созвоны проходят в первую неделю месяца.\n\n60 минут:\n— По 10 мин каждый: успехи за месяц, что получилось, что нет\n— 20 мин: все вместе ставят задачи на следующий месяц\n\n☝️ После созвона каждый фиксирует задачи в разделе «Задачи» и скидывает скрин в общий чат Четвёрки. Созвон считается завершённым только после этого.",
   },
   {
     emoji: "💡",
@@ -1332,7 +1332,7 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         <div className="text-[16px] font-bold" style={{ color: "#FF6D00" }}>
           📅 {DAY_FULL[data.day]} · {data.time} МСК
         </div>
-        <div className="text-[12px] text-muted-foreground mt-1">Яндекс Телемост · 80 минут</div>
+        <div className="text-[12px] text-muted-foreground mt-1">Яндекс Телемост · 60 минут</div>
       </div>
 
       {/* Foursome composition */}
@@ -1360,11 +1360,11 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
 
       {/* Format */}
       <Card className="p-4">
-        <SectionLabel>Формат созвона · 80 мин</SectionLabel>
-        <FormatRow lime time="15 мин" text="Первый участник делится успехами за месяц" />
-        <FormatRow lime time="15 мин" text="Второй участник делится успехами за месяц" />
-        <FormatRow lime time="15 мин" text="Третий участник делится успехами за месяц" />
-        <FormatRow lime time="15 мин" text="Четвёртый участник делится успехами за месяц" />
+        <SectionLabel>Формат созвона · 60 минут</SectionLabel>
+        <FormatRow lime time="10 мин" text="Первый участник делится успехами за месяц" />
+        <FormatRow lime time="10 мин" text="Второй участник делится успехами за месяц" />
+        <FormatRow lime time="10 мин" text="Третий участник делится успехами за месяц" />
+        <FormatRow lime time="10 мин" text="Четвёртый участник делится успехами за месяц" />
         <FormatRow lime time="20 мин" text="Все ставят задачи на следующий месяц" />
       </Card>
     </div>
