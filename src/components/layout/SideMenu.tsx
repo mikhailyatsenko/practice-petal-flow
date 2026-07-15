@@ -153,6 +153,25 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             <Video className="h-[18px] w-[18px]" strokeWidth={2} />
             <span>Ссылка для созвонов</span>
           </Link>
+          <Link
+            to="/foursome-chat"
+            search={{ messenger: "telegram" }}
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <TelegramIcon size={18} />
+            <span>Общий чат Четвёрки — Telegram</span>
+          </Link>
+          <Link
+            to="/foursome-chat"
+            search={{ messenger: "max" }}
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <MaxIcon size={18} />
+            <span>Общий чат Четвёрки — MAX</span>
+          </Link>
+
           <button
             onClick={() => {
               toggleBuddyRequestMode();
