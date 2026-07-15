@@ -8,6 +8,7 @@ import { setTelemostLink, useTelemostLink } from "@/lib/telemostLinkStore";
 import { ackCallReminder, useCallReminder, formatCallCountdown, formatHMS } from "@/lib/callReminderMode";
 import { useBuddySchedule, setBuddySchedule, DAYS_FULL } from "@/lib/buddyScheduleStore";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
+import { LeaveMenu } from "@/components/layout/LeaveMenu";
 
 export const Route = createFileRoute("/_app/buddy")({
   validateSearch: (search: Record<string, unknown>): { demo?: "has" | "has-no-link" | "waiting" | "create-tg-no-username" | "create-max" | "start-max-bot" | "start-tg-bot" } => {
@@ -215,7 +216,7 @@ type ContactVariant = "none" | "tg-no-username" | "max";
 
 // ───────────────────────── Shared header ─────────────────────────
 
-function PageHeader({ title, onBack, badge }: { title: string; onBack: () => void; badge?: string }) {
+function PageHeader({ title, onBack, badge, right }: { title: string; onBack: () => void; badge?: string; right?: React.ReactNode }) {
   return (
     <div className="relative flex items-center px-1 pt-2 pb-3">
       <div className="relative z-10">
@@ -224,14 +225,14 @@ function PageHeader({ title, onBack, badge }: { title: string; onBack: () => voi
       <h1 className="pointer-events-none absolute left-0 right-0 text-center text-[18px] font-semibold leading-tight">
         {title}
       </h1>
-      {badge && (
+      {right ? right : badge ? (
         <span
           className="ml-auto relative z-10 text-[11px] font-bold text-white px-2.5 py-1 rounded-full"
           style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
         >
           {badge}
         </span>
-      )}
+      ) : null}
     </div>
   );
 }
@@ -1420,7 +1421,41 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
 
   return (
     <div className="px-4 pb-6">
-      <PageHeader title="Мой Бадди" onBack={() => navigate({ to: "/community" })} />
+      <PageHeader
+        title="Мой Бадди"
+        onBack={() => navigate({ to: "/community" })}
+        right={
+          <LeaveMenu
+            menuItemLabel="Выйти из Бадди"
+            confirmTitle="Выйти из Бадди?"
+            confirmBody={
+              <>
+                <p>
+                  Ваша пара Бадди будет расформирована. Вы потеряете доступ к карточке Бадди, общей ссылке на созвон и другим совместным функциям.
+                </p>
+                <p
+                  className="mt-3 rounded-lg px-3 py-2.5 font-semibold"
+                  style={{ background: "#fff2f2", color: "#b02020", border: "1px solid #f3c4c4" }}
+                >
+                  Важно: если вы состоите в Четвёрке, она также будет полностью расформирована для всех четырёх участников.
+                </p>
+                <p className="mt-3">
+                  После выхода вам и другим участникам потребуется заново найти Бадди и сформировать новую Четвёрку.
+                </p>
+              </>
+            }
+            confirmButtonLabel="Выйти из Бадди"
+            onConfirm={() => {
+              try {
+                ["buddy-card", "telemost-meeting-link", "buddy-schedule", "foursome-chat"].forEach((k) =>
+                  window.localStorage.removeItem(k),
+                );
+              } catch { /* noop */ }
+              navigate({ to: "/buddy", search: {} });
+            }}
+          />
+        }
+      />
 
       {noLinkActive ? null : noLink ? (
         <div

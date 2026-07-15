@@ -4,6 +4,7 @@ import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Calendar, Gl
 import { BackButton } from "@/components/layout/BackButton";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
+import { LeaveMenu } from "@/components/layout/LeaveMenu";
 import { FOURSOME_DEMO_MEMBERS, MY_BUDDY_MEMBER, ME_MEMBER, fullName } from "@/lib/foursomeDemo";
 import { useFoursomeProfiles, isProfileFilled } from "@/lib/foursomeProfileStore";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
@@ -192,7 +193,7 @@ function FoursomeScreen() {
 const ORANGE_GRADIENT = "linear-gradient(135deg, #FFB300, #FF6D00)";
 const LIME_GRADIENT = "linear-gradient(135deg, #8BC34A, #4CAF50)";
 
-function PageHeader({ title, onBack, badge }: { title: string; onBack: () => void; badge?: string }) {
+function PageHeader({ title, onBack, badge, right }: { title: string; onBack: () => void; badge?: string; right?: React.ReactNode }) {
   return (
     <div className="relative flex items-center px-1 pt-2 pb-3">
       <div className="relative z-10">
@@ -201,14 +202,14 @@ function PageHeader({ title, onBack, badge }: { title: string; onBack: () => voi
       <h1 className="pointer-events-none absolute left-0 right-0 text-center text-[18px] font-semibold leading-tight">
         {title}
       </h1>
-      {badge && (
+      {right ? right : badge ? (
         <span
           className="ml-auto relative z-10 text-[11px] font-bold text-white px-2.5 py-1 rounded-full"
           style={{ background: ORANGE_GRADIENT }}
         >
           {badge}
         </span>
-      )}
+      ) : null}
     </div>
   );
 }
@@ -1422,6 +1423,7 @@ function StepRow({ n, title, sub, active }: { n: number; title: string; sub: str
 // ───────────────────────── Screen 7: Has foursome ─────────────────────────
 
 function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void }) {
+  const navigate = useNavigate();
   const { cards } = Route.useSearch();
   const profiles = useFoursomeProfiles();
   const buddyCard = useBuddyCard();
@@ -1482,7 +1484,36 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
 
   return (
     <div className="px-4 pb-8">
-      <PageHeader title="Моя Четвёрка" onBack={onBack} />
+      <PageHeader
+        title="Моя Четвёрка"
+        onBack={onBack}
+        right={
+          <LeaveMenu
+            menuItemLabel="Выйти из Четвёрки"
+            confirmTitle="Выйти из Четвёрки?"
+            confirmBody={
+              <>
+                <p>
+                  Вы перестанете быть участником этой Четвёрки. Четвёрка будет расформирована, и все четыре участника потеряют доступ к общему чату, карточкам участников и запланированным созвонам.
+                </p>
+                <p
+                  className="mt-3 rounded-lg px-3 py-2.5 font-semibold"
+                  style={{ background: "#effaf1", color: "#1f7a3a", border: "1px solid #bfe6c8" }}
+                >
+                  Ваша пара Бадди при этом сохранится.
+                </p>
+              </>
+            }
+            confirmButtonLabel="Выйти из Четвёрки"
+            onConfirm={() => {
+              try {
+                window.localStorage.removeItem("foursome-chat");
+              } catch { /* noop */ }
+              navigate({ to: "/foursome", search: {} });
+            }}
+          />
+        }
+      />
 
       {/* Режим: завтра созвон — карточка напоминания в чат (вместо зелёного бонус-блока) */}
       {showTomorrow && (
