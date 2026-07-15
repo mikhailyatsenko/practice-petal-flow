@@ -1497,7 +1497,7 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
             📞 Завтра созвон с Четвёркой
           </p>
           <p className="text-[13.5px] mt-1.5 leading-snug" style={{ color: "#2b2419", fontWeight: 500 }}>
-            Напоминаем: завтра в {data.time} МСК состоится созвон с Четвёркой.
+            Напоминаем: завтра в {schedule.time} МСК состоится созвон с Четвёркой.
           </p>
 
           <p className="text-[13.5px] mt-3 font-semibold" style={{ color: "#1a0e00" }}>
