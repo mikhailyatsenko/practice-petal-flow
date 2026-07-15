@@ -29,11 +29,15 @@ interface Member {
   job: string;
   username?: string;
   bio?: string;
+  telegram?: string; // username без @
+  max?: string;      // ссылка на профиль
 }
 
 interface FoursomeRequest {
   id: string;
   members: Member[]; // 2
+  representativeId: string; // userId представителя пары
+  chatMessenger: "telegram" | "max"; // где будет общий чат Четвёрки
   day: string;
   time: string;
   extra?: string;
@@ -75,9 +79,11 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f1",
     members: [
-      { userId: "u1", name: "Анна", avatar: "🌸", job: "Маркетолог", bio: "Запускаю свой бренд косметики, цель — выйти на стабильные 300к/мес. Ищу системность и поддержку." },
+      { userId: "u1", name: "Анна", avatar: "🌸", job: "Маркетолог", telegram: "anna_mkt", max: "https://max.ru/anna.mkt", bio: "Запускаю свой бренд косметики, цель — выйти на стабильные 300к/мес. Ищу системность и поддержку." },
       { userId: "u2", name: "Ольга", avatar: "🌿", job: "Психолог", bio: "Веду частную практику и онлайн-курс. Хочу окружение, где растут и не сливаются с целей." },
     ],
+    representativeId: "u1",
+    chatMessenger: "telegram",
     day: "Вт",
     time: "19:00",
     extra: "Если первый вторник не подойдёт — готовы перенести на первую среду или четверг (19:00–21:00 МСК). Созваниваемся через Zoom.",
@@ -85,9 +91,11 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f2",
     members: [
-      { userId: "u3", name: "Дмитрий", avatar: "🎯", job: "Предприниматель", bio: "Развиваю IT-агентство, цель года — 1М/мес. Ценю чёткие задачи и дисциплину." },
+      { userId: "u3", name: "Дмитрий", avatar: "🎯", job: "Предприниматель", max: "https://max.ru/dmitry.biz", bio: "Развиваю IT-агентство, цель года — 1М/мес. Ценю чёткие задачи и дисциплину." },
       { userId: "u4", name: "Сергей", avatar: "🚀", job: "Основатель стартапа", bio: "Делаю SaaS для малого бизнеса. Хочу окружение людей, которые тоже строят и не боятся больших целей." },
     ],
+    representativeId: "u3",
+    chatMessenger: "max",
     day: "Чт",
     time: "20:00",
     extra: "Альтернативные слоты: первая пятница 19:00–21:00 МСК или первая суббота утром 10:00–12:00. Просим заранее предупреждать о переносах.",
@@ -95,9 +103,11 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f3",
     members: [
-      { userId: "u5", name: "Мария", avatar: "✨", job: "Коуч", bio: "Расту в личном бренде, веду программу для женщин. Ищу длинную дистанцию и честную обратную связь." },
+      { userId: "u5", name: "Мария", avatar: "✨", job: "Коуч", telegram: "maria_coach", max: "https://max.ru/maria.coach", bio: "Расту в личном бренде, веду программу для женщин. Ищу длинную дистанцию и честную обратную связь." },
       { userId: "u6", name: "Ирина", avatar: "🌷", job: "HR-директор", bio: "Перехожу из найма в консалтинг. Нужна команда, которая держит в фокусе и помогает не откладывать." },
     ],
+    representativeId: "u5",
+    chatMessenger: "telegram",
     day: "Ср",
     time: "10:00",
     extra: "Если утро не подходит — можем в первый вторник или четверг с 19:00 до 21:00 МСК. Созваниваемся через Яндекс Телемост.",
@@ -210,7 +220,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-function MemberRow({ m, withMessage }: { m: Member; withMessage?: boolean }) {
+function MemberRow({ m, withMessage, isRepresentative }: { m: Member; withMessage?: boolean; isRepresentative?: boolean }) {
   return (
     <div className="flex items-center gap-3">
       <div
@@ -220,7 +230,17 @@ function MemberRow({ m, withMessage }: { m: Member; withMessage?: boolean }) {
         {m.avatar}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-[14px] font-semibold truncate">{m.name}</div>
+        <div className="text-[14px] font-semibold truncate flex items-center gap-1.5">
+          {m.name}
+          {isRepresentative && (
+            <span
+              className="text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
+              style={{ background: "#fff3e0", color: "#FF6D00" }}
+            >
+              Представитель
+            </span>
+          )}
+        </div>
         <div className="text-[12px] text-muted-foreground truncate">
           {m.job}
           {m.username ? ` · @${m.username}` : ""}
@@ -238,6 +258,72 @@ function MemberRow({ m, withMessage }: { m: Member; withMessage?: boolean }) {
           <MessageCircle className="h-4 w-4" />
         </a>
       )}
+    </div>
+  );
+}
+
+function ChatBadge({ messenger, className = "" }: { messenger: "telegram" | "max"; className?: string }) {
+  const isTg = messenger === "telegram";
+  return (
+    <div
+      className={`flex items-center gap-2 rounded-xl px-3 py-2 mb-3 ${className}`}
+      style={{
+        background: isTg ? "#e8f4fc" : "#f1ecff",
+        border: `1px solid ${isTg ? "#b6dcf3" : "#d8ccff"}`,
+      }}
+    >
+      {isTg ? <TelegramIcon size={20} /> : <MaxIcon size={20} />}
+      <div className="min-w-0 flex-1">
+        <div className="text-[10px] font-bold uppercase text-muted-foreground" style={{ letterSpacing: 0.4 }}>
+          Общий чат Четвёрки
+        </div>
+        <div className="text-[13px] font-semibold leading-tight">
+          {isTg ? "Общий чат в Telegram" : "Общий чат в MAX"}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WriteToRepresentative({ rep }: { rep: Member }) {
+  const hasTg = !!rep.telegram;
+  const hasMax = !!rep.max;
+  if (!hasTg && !hasMax) return null;
+  return (
+    <div
+      className="rounded-2xl p-3.5 mb-3"
+      style={{ background: "#f0fdf4", border: "1px solid #bbf7d0" }}
+    >
+      <div className="text-[11px] font-bold uppercase mb-1" style={{ color: "#166534", letterSpacing: 0.4 }}>
+        ✉️ Написать представителю
+      </div>
+      <div className="text-[13px] text-foreground/85 mb-2.5">
+        Представитель пары: <span className="font-semibold">{rep.name}</span>
+      </div>
+      <div className="flex flex-col gap-2">
+        {hasTg && (
+          <a
+            href={`https://t.me/${rep.telegram}`}
+            target="_blank"
+            rel="noreferrer"
+            className="tap flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-[13px] font-bold"
+            style={{ background: "#229ED9" }}
+          >
+            <TelegramIcon size={18} /> Написать в Telegram
+          </a>
+        )}
+        {hasMax && (
+          <a
+            href={rep.max}
+            target="_blank"
+            rel="noreferrer"
+            className="tap flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-[13px] font-bold"
+            style={{ background: "linear-gradient(135deg, #2E7BFF, #7B4DFF)" }}
+          >
+            <MaxIcon size={18} /> Написать в MAX
+          </a>
+        )}
+      </div>
     </div>
   );
 }
@@ -837,28 +923,41 @@ function BrowseRequests({
         {DEMO_REQUESTS.map((req) => (
           <Card key={req.id} className="p-4">
             <div className="space-y-2 mb-3">
-              {req.members.map((m) => (
-                <div
-                  key={m.userId}
-                  className="rounded-xl p-2.5"
-                  style={{ background: "#FAF6EF" }}
-                >
-                  <div className="flex items-center gap-2">
-                    <div className="h-9 w-9 rounded-lg bg-white flex items-center justify-center text-[18px] shrink-0">
-                      {m.avatar}
+              {req.members.map((m) => {
+                const isRep = m.userId === req.representativeId;
+                return (
+                  <div
+                    key={m.userId}
+                    className="rounded-xl p-2.5"
+                    style={{ background: "#FAF6EF" }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="h-9 w-9 rounded-lg bg-white flex items-center justify-center text-[18px] shrink-0">
+                        {m.avatar}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-[13px] font-semibold truncate flex items-center gap-1.5">
+                          {m.name}
+                          {isRep && (
+                            <span
+                              className="text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
+                              style={{ background: "#fff3e0", color: "#FF6D00" }}
+                            >
+                              Представитель
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[11px] text-muted-foreground truncate">{m.job}</div>
+                      </div>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-[13px] font-semibold truncate">{m.name}</div>
-                      <div className="text-[11px] text-muted-foreground truncate">{m.job}</div>
-                    </div>
+                    {m.bio && (
+                      <p className="text-[12px] text-foreground/80 mt-2" style={{ lineHeight: 1.5 }}>
+                        {m.bio}
+                      </p>
+                    )}
                   </div>
-                  {m.bio && (
-                    <p className="text-[12px] text-foreground/80 mt-2" style={{ lineHeight: 1.5 }}>
-                      {m.bio}
-                    </p>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="flex flex-wrap gap-2 mb-3">
@@ -875,6 +974,9 @@ function BrowseRequests({
                 🕐 {req.time} МСК
               </span>
             </div>
+
+            <ChatBadge messenger={req.chatMessenger} />
+
 
             {req.extra && (
               <div
@@ -940,7 +1042,7 @@ function ConfirmSheet({
 
         <div className="rounded-2xl p-3.5 space-y-2.5 mb-3" style={{ background: "#FAF6EF" }}>
           {req.members.map((m) => (
-            <MemberRow key={m.userId} m={m} />
+            <MemberRow key={m.userId} m={m} isRepresentative={m.userId === req.representativeId} />
           ))}
           <div className="flex flex-wrap gap-2 pt-1">
             <span
@@ -958,6 +1060,13 @@ function ConfirmSheet({
           </div>
         </div>
 
+        <ChatBadge messenger={req.chatMessenger} />
+
+        {(() => {
+          const rep = req.members.find((m) => m.userId === req.representativeId);
+          return rep ? <WriteToRepresentative rep={rep} /> : null;
+        })()}
+
         {req.extra && (
           <div
             className="rounded-2xl p-3.5 mb-3 text-[13px]"
@@ -969,6 +1078,7 @@ function ConfirmSheet({
             <p className="text-foreground/85">{req.extra}</p>
           </div>
         )}
+
 
         <p className="text-[13px] text-muted-foreground text-center mb-4 px-2" style={{ lineHeight: 1.5 }}>
           Сначала подтвердит твой бадди, затем оба участника пары. Если все согласны — Четвёрка создана ✅
