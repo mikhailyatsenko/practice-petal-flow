@@ -1507,14 +1507,9 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
             className="mt-2 rounded-xl p-3 flex items-center gap-3"
             style={{ background: "#FAF6EF", border: "1px solid #ece4d4" }}
           >
-            <div
-              className="flex-1 min-w-0 rounded-[16px] p-3"
-              style={{ background: "#fff", border: "1px solid #ede8df" }}
-            >
-              <p className="text-[14px] leading-relaxed" style={{ color: "#2b2419" }}>
-                {reminderText}
-              </p>
-            </div>
+            <p className="flex-1 min-w-0 text-[14px] leading-relaxed" style={{ color: "#2b2419" }}>
+              {reminderText}
+            </p>
             <button
               onClick={handleCopy}
               className="tap shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold inline-flex items-center gap-1.5 transition-colors"
@@ -1555,7 +1550,7 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
             target="_blank"
             rel="noopener noreferrer"
             className="tap relative overflow-hidden mt-2 w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white"
-            style={{ background: "#000" }}
+            style={{ background: "linear-gradient(135deg, #2E7BFF, #7B4DFF)" }}
           >
             <span
               aria-hidden
@@ -2034,10 +2029,21 @@ function EditScheduleModal({
               href="https://max.ru/"
               target="_blank"
               rel="noopener noreferrer"
-              className="tap w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white mb-4"
-              style={{ background: "#000" }}
+              className="tap relative overflow-hidden w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white mb-4"
+              style={{ background: "linear-gradient(135deg, #2E7BFF, #7B4DFF)" }}
             >
-              <MaxIcon size={16} /> Перейти в общий чат MAX
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-y-0 left-0 w-1/3"
+                style={{
+                  background:
+                    "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%)",
+                  animation: "foursome-chat-shine 2.6s ease-in-out 0.4s infinite",
+                }}
+              />
+              <span className="relative inline-flex items-center gap-1.5">
+                <MaxIcon size={16} /> Перейти в общий чат MAX
+              </span>
             </a>
 
             <button
