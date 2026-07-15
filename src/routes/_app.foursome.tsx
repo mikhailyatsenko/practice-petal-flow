@@ -146,8 +146,8 @@ function FoursomeScreen() {
       return (
         <CreateRequest
           onBack={() => setScreen({ name: "no_foursome" })}
-          onSubmit={() => setScreen({ name: "waiting", to: DEMO_REQUESTS[0] })}
         />
+
       );
     case "browse_requests":
       return (
