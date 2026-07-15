@@ -1530,8 +1530,29 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
             href="https://t.me/"
             target="_blank"
             rel="noopener noreferrer"
-            className="tap relative overflow-hidden mt-3 w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white"
+            className="tap mt-3 w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white"
             style={{ background: "#229ED9" }}
+          >
+            <TelegramIcon size={16} /> Перейти в общий чат Telegram
+          </a>
+
+          <a
+            href="https://max.ru/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="tap mt-2 w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white"
+            style={{ background: "linear-gradient(135deg, #2E7BFF, #7B4DFF)" }}
+          >
+            <MaxIcon size={16} /> Перейти в общий чат MAX
+          </a>
+
+          <button
+            onClick={ackCallReminder}
+            className="tap relative overflow-hidden mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white"
+            style={{
+              background: "linear-gradient(135deg, #16a34a, #22c55e)",
+              boxShadow: "0 6px 20px rgba(34, 197, 94, 0.35)",
+            }}
           >
             <span
               aria-hidden
@@ -1543,40 +1564,8 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
               }}
             />
             <span className="relative inline-flex items-center gap-1.5">
-              <TelegramIcon size={16} /> Перейти в общий чат Telegram
+              Хорошо, мы уже связались
             </span>
-          </a>
-
-          <a
-            href="https://max.ru/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="tap relative overflow-hidden mt-2 w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white"
-            style={{ background: "linear-gradient(135deg, #2E7BFF, #7B4DFF)" }}
-          >
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-y-0 left-0 w-1/3"
-              style={{
-                background:
-                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%)",
-                animation: "foursome-chat-shine 2.6s ease-in-out 0.4s infinite",
-              }}
-            />
-            <span className="relative inline-flex items-center gap-1.5">
-              <MaxIcon size={16} /> Перейти в общий чат MAX
-            </span>
-          </a>
-
-          <button
-            onClick={ackCallReminder}
-            className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white"
-            style={{
-              background: "linear-gradient(135deg, #16a34a, #22c55e)",
-              boxShadow: "0 6px 20px rgba(34, 197, 94, 0.35)",
-            }}
-          >
-            Хорошо, мы уже связались
           </button>
         </div>
       )}
