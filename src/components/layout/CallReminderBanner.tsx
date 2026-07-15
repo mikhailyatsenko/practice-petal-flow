@@ -82,7 +82,7 @@ export function CallReminderBanner() {
 
   const ctaLabel = noLink ? "Создать ссылку" : "Открыть";
   const handleClick = () => {
-    if (isFoursome) navigate({ to: "/foursome" });
+    if (isFoursome) navigate({ to: "/foursome", search: { demo: "has", cards: "full" } });
     else navigate({ to: "/buddy", search: { demo: noLink ? "has-no-link" : "has" } });
   };
 
