@@ -1273,7 +1273,7 @@ function IncomingFoursomeCard({
                 {m.avatar}
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-[14px] font-bold leading-tight truncate">{m.name}</div>
+                <div className="text-[14px] font-bold leading-tight truncate">{fullName(m)}</div>
                 <div className="text-[12px] text-muted-foreground truncate">{m.job}</div>
               </div>
             </div>
