@@ -198,18 +198,17 @@ function TelemostLinkPage() {
           </button>
         ) : (
           <button
-            onClick={handleConfirm}
-            disabled={confirmed}
+            onClick={() => navigate({ to: "/buddy", search: { demo: "has" } })}
             className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold text-white"
             style={{
               background: "linear-gradient(135deg, #43A047, #2E7D32)",
               boxShadow: "0 6px 20px rgba(46,125,50,0.35)",
-              opacity: confirmed ? 0.75 : 1,
             }}
           >
-            {confirmed ? "Сохранено ✓" : "Подтвердить"}
+            Готово — перейти к Бадди
           </button>
         )}
+
       </div>
     </div>
   );
