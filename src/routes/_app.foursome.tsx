@@ -1929,5 +1929,267 @@ function ContactSheet({ member, onClose }: { member: Member; onClose: () => void
   );
 }
 
+// ───────────────────────── Edit schedule modal ─────────────────────────
+
+function EditScheduleModal({
+  step,
+  setStep,
+  currentDay,
+  currentTime,
+  draftDay,
+  draftTime,
+  setDraftDay,
+  setDraftTime,
+  onConfirm,
+}: {
+  step: "warn" | "pick" | "confirm";
+  setStep: (s: null | "warn" | "pick" | "confirm") => void;
+  currentDay: string;
+  currentTime: string;
+  draftDay: string;
+  draftTime: string;
+  setDraftDay: (d: string) => void;
+  setDraftTime: (t: string) => void;
+  onConfirm: () => void;
+}) {
+  const [copied, setCopied] = useState(false);
+  const warnText =
+    "Привет! Хочу изменить день или время нашего созвона Четвёрки. Напишите, пожалуйста, какие варианты вам подходят.";
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(warnText);
+    } catch {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = warnText;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      } catch { /* noop */ }
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1600);
+  };
+
+  const close = () => setStep(null);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center animate-fade-up"
+      style={{ background: "rgba(0,0,0,0.4)" }}
+      onClick={close}
+    >
+      <div
+        className="w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl p-5 pb-6 max-h-[92vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mx-auto mb-3 h-1 w-10 rounded-full sm:hidden" style={{ background: "#e5e0d5" }} />
+
+        {step === "warn" && (
+          <>
+            <div className="text-[17px] font-bold mb-1.5">Сначала предупредите участников</div>
+            <p className="text-[13.5px] text-muted-foreground leading-snug mb-3">
+              Перед изменением расписания сообщите об этом в общий чат Четвёрки и убедитесь, что все участники согласны.
+            </p>
+            <p className="text-[13px] font-semibold mb-2" style={{ color: "#1a0e00" }}>
+              Напишите в общий чат:
+            </p>
+            <div
+              className="rounded-xl p-3 flex items-center gap-3 mb-3"
+              style={{ background: "#FAF6EF", border: "1px solid #ece4d4" }}
+            >
+              <div
+                className="flex-1 min-w-0 rounded-[14px] p-3"
+                style={{ background: "#fff", border: "1px solid #ede8df" }}
+              >
+                <p className="text-[13.5px] leading-relaxed" style={{ color: "#2b2419" }}>
+                  {warnText}
+                </p>
+              </div>
+              <button
+                onClick={handleCopy}
+                className="tap shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold inline-flex items-center gap-1.5"
+                style={{
+                  background: "#fff",
+                  color: copied ? "#16a34a" : "#FF6D00",
+                  border: copied ? "1px solid #16a34a" : "1px solid #FF6D00",
+                }}
+              >
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                <span>{copied ? "Скопировано" : "Скопировать"}</span>
+              </button>
+            </div>
+
+            <a
+              href="https://t.me/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tap w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white mb-2"
+              style={{ background: "#229ED9" }}
+            >
+              <TelegramIcon size={16} /> Перейти в общий чат Telegram
+            </a>
+            <a
+              href="https://max.ru/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tap w-full rounded-xl py-2.5 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5 text-white mb-4"
+              style={{ background: "#000" }}
+            >
+              <MaxIcon size={16} /> Перейти в общий чат MAX
+            </a>
+
+            <button
+              onClick={() => setStep("pick")}
+              className="tap w-full rounded-2xl py-3 text-[14px] font-bold text-white"
+              style={{ background: ORANGE_GRADIENT, boxShadow: "0 6px 20px rgba(255,109,0,0.35)" }}
+            >
+              Я предупредил участников — продолжить
+            </button>
+            <button
+              onClick={close}
+              className="tap w-full mt-2 py-3 rounded-2xl text-[13px] font-semibold"
+              style={{ background: "#FAF6EF", color: "#1a1a1a", border: "1px solid #ede8df" }}
+            >
+              Отмена
+            </button>
+          </>
+        )}
+
+        {step === "pick" && (
+          <>
+            <div className="text-[17px] font-bold mb-1.5">Изменить расписание созвона</div>
+            <p className="text-[12.5px] text-muted-foreground mb-3">
+              Только московское время. Часовой пояс менять нельзя.
+            </p>
+
+            <div className="text-[12px] font-semibold uppercase mb-2" style={{ color: "#FF6D00", letterSpacing: 0.5 }}>
+              День недели
+            </div>
+            <div className="grid grid-cols-7 gap-1.5 mb-4">
+              {DAYS.map((d) => {
+                const active = draftDay === d;
+                return (
+                  <button
+                    key={d}
+                    onClick={() => setDraftDay(d)}
+                    className="tap rounded-lg py-2 text-[13px] font-bold"
+                    style={{
+                      background: active ? ORANGE_GRADIENT : "#FAF6EF",
+                      color: active ? "#fff" : "#1a1a1a",
+                      border: active ? "none" : "1px solid #ede8df",
+                    }}
+                  >
+                    {d}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="text-[12px] font-semibold uppercase mb-2" style={{ color: "#FF6D00", letterSpacing: 0.5 }}>
+              Время (МСК)
+            </div>
+            <div className="grid grid-cols-4 gap-1.5 mb-5 max-h-[220px] overflow-y-auto">
+              {HOURS.map((h) => {
+                const active = draftTime === h;
+                return (
+                  <button
+                    key={h}
+                    onClick={() => setDraftTime(h)}
+                    className="tap rounded-lg py-2 text-[12.5px] font-semibold"
+                    style={{
+                      background: active ? ORANGE_GRADIENT : "#FAF6EF",
+                      color: active ? "#fff" : "#1a1a1a",
+                      border: active ? "none" : "1px solid #ede8df",
+                    }}
+                  >
+                    {h}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              onClick={() => setStep("confirm")}
+              className="tap w-full rounded-2xl py-3 text-[14px] font-bold text-white"
+              style={{ background: ORANGE_GRADIENT, boxShadow: "0 6px 20px rgba(255,109,0,0.35)" }}
+            >
+              Продолжить
+            </button>
+            <button
+              onClick={close}
+              className="tap w-full mt-2 py-3 rounded-2xl text-[13px] font-semibold"
+              style={{ background: "#FAF6EF", color: "#1a1a1a", border: "1px solid #ede8df" }}
+            >
+              Отмена
+            </button>
+          </>
+        )}
+
+        {step === "confirm" && (
+          <>
+            <div className="text-[17px] font-bold mb-3">Подтвердите изменение</div>
+
+            <div className="flex items-stretch gap-2 mb-3">
+              <div
+                className="flex-1 rounded-2xl p-3 text-center"
+                style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}
+              >
+                <div className="text-[10.5px] uppercase font-bold mb-1" style={{ color: "#a59a85", letterSpacing: 0.5 }}>
+                  Было
+                </div>
+                <div className="text-[14px] font-bold">{currentDay === draftDay ? DAY_FULL[currentDay].split(" ")[1] : DAY_FULL[currentDay].split(" ").slice(1).join(" ")}</div>
+                <div className="text-[13px]" style={{ color: "#666" }}>{currentTime} МСК</div>
+              </div>
+              <div className="flex items-center text-[20px]" style={{ color: "#FF6D00" }}>→</div>
+              <div
+                className="flex-1 rounded-2xl p-3 text-center"
+                style={{ background: "#fff8ee", border: "1px solid #ffb300" }}
+              >
+                <div className="text-[10.5px] uppercase font-bold mb-1" style={{ color: "#FF6D00", letterSpacing: 0.5 }}>
+                  Будет
+                </div>
+                <div className="text-[14px] font-bold" style={{ color: "#FF6D00" }}>
+                  {DAY_FULL[draftDay].split(" ").slice(1).join(" ")}
+                </div>
+                <div className="text-[13px] font-semibold" style={{ color: "#FF6D00" }}>{draftTime} МСК</div>
+              </div>
+            </div>
+
+            <div
+              className="rounded-xl p-3 mb-4"
+              style={{ background: "#fff4e0", border: "1px solid #ffd591" }}
+            >
+              <p className="text-[13px] font-bold mb-1" style={{ color: "#a5450a" }}>
+                Внимание! Новое расписание будет изменено сразу у всех четырёх участников Четвёрки.
+              </p>
+              <p className="text-[12.5px]" style={{ color: "#6b3a10" }}>
+                Убедитесь, что все участники знают и согласны с новым расписанием.
+              </p>
+            </div>
+
+            <button
+              onClick={onConfirm}
+              className="tap w-full rounded-2xl py-3 text-[14px] font-bold text-white"
+              style={{ background: ORANGE_GRADIENT, boxShadow: "0 6px 20px rgba(255,109,0,0.35)" }}
+            >
+              Все предупреждены — изменить расписание
+            </button>
+            <button
+              onClick={close}
+              className="tap w-full mt-2 py-3 rounded-2xl text-[13px] font-semibold"
+              style={{ background: "#FAF6EF", color: "#1a1a1a", border: "1px solid #ede8df" }}
+            >
+              Отмена
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
 
 
