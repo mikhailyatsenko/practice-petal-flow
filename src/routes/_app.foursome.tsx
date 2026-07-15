@@ -1422,6 +1422,7 @@ function StepRow({ n, title, sub, active }: { n: number; title: string; sub: str
 // ───────────────────────── Screen 7: Has foursome ─────────────────────────
 
 function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void }) {
+  const navigate = useNavigate();
   const { cards } = Route.useSearch();
   const profiles = useFoursomeProfiles();
   const buddyCard = useBuddyCard();
