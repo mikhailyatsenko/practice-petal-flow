@@ -1420,7 +1420,41 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
 
   return (
     <div className="px-4 pb-6">
-      <PageHeader title="Мой Бадди" onBack={() => navigate({ to: "/community" })} />
+      <PageHeader
+        title="Мой Бадди"
+        onBack={() => navigate({ to: "/community" })}
+        right={
+          <LeaveMenu
+            menuItemLabel="Выйти из Бадди"
+            confirmTitle="Выйти из Бадди?"
+            confirmBody={
+              <>
+                <p>
+                  Ваша пара Бадди будет расформирована. Вы потеряете доступ к карточке Бадди, общей ссылке на созвон и другим совместным функциям.
+                </p>
+                <p
+                  className="mt-3 rounded-lg px-3 py-2.5 font-semibold"
+                  style={{ background: "#fff2f2", color: "#b02020", border: "1px solid #f3c4c4" }}
+                >
+                  Важно: если вы состоите в Четвёрке, она также будет полностью расформирована для всех четырёх участников.
+                </p>
+                <p className="mt-3">
+                  После выхода вам и другим участникам потребуется заново найти Бадди и сформировать новую Четвёрку.
+                </p>
+              </>
+            }
+            confirmButtonLabel="Выйти из Бадди"
+            onConfirm={() => {
+              try {
+                ["buddy-card", "telemost-meeting-link", "buddy-schedule", "foursome-chat"].forEach((k) =>
+                  window.localStorage.removeItem(k),
+                );
+              } catch { /* noop */ }
+              navigate({ to: "/buddy", search: {} });
+            }}
+          />
+        }
+      />
 
       {noLinkActive ? null : noLink ? (
         <div
