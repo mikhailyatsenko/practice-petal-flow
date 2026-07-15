@@ -105,9 +105,10 @@ export function CallReminderBanner() {
   if (is2h) {
     const remaining = startAt != null ? startAt - now : 0;
     const started = remaining <= 0;
+    const who = isFoursome ? "с Четвёркой" : "с Бадди";
     const title = started
-      ? "Созвон с Бадди начался"
-      : `До созвона с Бадди — ${formatHMS(remaining)}`;
+      ? `Созвон ${who} начался`
+      : `До созвона ${who} — ${formatHMS(remaining)}`;
 
     return wrapper(
       <button
@@ -120,7 +121,7 @@ export function CallReminderBanner() {
         <span className="relative h-10 w-10 shrink-0 rounded-full flex items-center justify-center"
           style={{ background: "rgba(255,109,0,0.10)" }}
         >
-          <BuddyIcon tone="orange" />
+          {isFoursome ? <FoursomeIcon tone="orange" /> : <BuddyIcon tone="orange" />}
         </span>
         <div className="relative min-w-0 flex-1">
           <p className="text-[14px] font-bold leading-tight text-slate-900 tabular-nums">
