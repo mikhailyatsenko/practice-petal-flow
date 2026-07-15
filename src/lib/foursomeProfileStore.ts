@@ -1,18 +1,11 @@
-// Хранилище анкет участников Четвёрки в localStorage.
-// Ключ — userId участника, значение — заполненная анкета.
+// Хранилище «Карточек участников» Четвёрки в localStorage.
+// Структура полностью совпадает с карточкой Бадди (BuddyCard).
+// Ключ — userId участника.
 
 import { useEffect, useState } from "react";
+import { EMPTY_BUDDY_CARD, isBuddyCardFilled, type BuddyCard } from "@/lib/buddyCardStore";
 
-export interface FoursomeProfile {
-  goal12?: string;      // Главная цель на 1-2 года
-  wishes?: string;      // Три желания
-  strengths?: string;   // Сильные стороны
-  blockers?: string;    // Что мешает достигать целей
-  support?: string;     // В чём нужна поддержка
-  offer?: string;       // Чем может быть полезен
-  notes?: string;       // Дополнительные заметки
-  filledAt?: number;
-}
+export type FoursomeProfile = BuddyCard;
 
 const KEY = "foursome-profiles";
 const EVT = "foursome-profiles-change";
@@ -39,25 +32,30 @@ function write(s: Store) {
   window.dispatchEvent(new CustomEvent(EVT));
 }
 
-export function getFoursomeProfile(userId: string): FoursomeProfile | null {
-  const p = read()[userId];
-  return p ?? null;
+function normalize(p: Partial<FoursomeProfile> | undefined): FoursomeProfile {
+  const src = p ?? {};
+  return {
+    goal: src.goal ?? "",
+    spheres: [src.spheres?.[0] ?? "", src.spheres?.[1] ?? "", src.spheres?.[2] ?? ""],
+    strengths: src.strengths ?? "",
+    blockers: src.blockers ?? "",
+    support: src.support ?? "",
+  };
+}
+
+export function getFoursomeProfile(userId: string): FoursomeProfile {
+  return normalize(read()[userId]);
 }
 
 export function saveFoursomeProfile(userId: string, profile: FoursomeProfile) {
   const s = read();
-  s[userId] = { ...profile, filledAt: Date.now() };
+  s[userId] = normalize(profile);
   write(s);
 }
 
 export function isProfileFilled(p: FoursomeProfile | null | undefined): boolean {
   if (!p) return false;
-  return Boolean(
-    (p.goal12 && p.goal12.trim()) ||
-      (p.wishes && p.wishes.trim()) ||
-      (p.strengths && p.strengths.trim()) ||
-      (p.support && p.support.trim())
-  );
+  return isBuddyCardFilled(normalize(p));
 }
 
 export function useFoursomeProfiles() {
@@ -74,3 +72,5 @@ export function useFoursomeProfiles() {
   }, []);
   return store;
 }
+
+export { EMPTY_BUDDY_CARD as EMPTY_FOURSOME_PROFILE };

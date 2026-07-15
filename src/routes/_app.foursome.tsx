@@ -1418,10 +1418,6 @@ function StepRow({ n, title, sub, active }: { n: number; title: string; sub: str
 
 function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void }) {
   const profiles = useFoursomeProfiles();
-  const others = [...data.pair1.members, ...data.pair2.members].filter((m) => m.userId !== "me");
-  const filledCount = others.filter((m) => isProfileFilled(profiles[m.userId])).length;
-  const totalOthers = others.length;
-  const allFilled = filledCount === totalOthers;
 
   const meetingLink = useTelemostLink();
   const chat = useFoursomeChat();
@@ -1457,7 +1453,7 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         </div>
       </div>
 
-      {/* Постоянная кнопка входа в комнату */}
+      {/* Постоянная кнопка входа в комнату — блик только в режиме «2 часа» */}
       {meetingLink && (
         <a
           href={meetingLink}
@@ -1471,23 +1467,27 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         >
           <Video className="h-4 w-4 relative z-10" />
           <span className="relative z-10">Перейти в комнату созвона</span>
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-0 z-0"
-            style={{
-              background:
-                "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0) 100%)",
-              transform: "translateX(-100%)",
-              animation: "room-shimmer-4 2.6s ease-in-out infinite",
-            }}
-          />
-          <style>{`
-            @keyframes room-shimmer-4 {
-              0% { transform: translateX(-100%); }
-              65% { transform: translateX(200%); }
-              100% { transform: translateX(200%); }
-            }
-          `}</style>
+          {show2h && (
+            <>
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-0 z-0"
+                style={{
+                  background:
+                    "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0) 100%)",
+                  transform: "translateX(-100%)",
+                  animation: "room-shimmer-4 2.6s ease-in-out infinite",
+                }}
+              />
+              <style>{`
+                @keyframes room-shimmer-4 {
+                  0% { transform: translateX(-100%); }
+                  65% { transform: translateX(200%); }
+                  100% { transform: translateX(200%); }
+                }
+              `}</style>
+            </>
+          )}
         </a>
       )}
 
@@ -1580,31 +1580,8 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         <div className="text-[12px] text-muted-foreground mt-1">Яндекс Телемост · 60 минут</div>
       </div>
 
-      {/* Прогресс анкет */}
-      <div
-        className="rounded-2xl p-3.5 mb-4 flex items-center gap-3"
-        style={{
-          background: allFilled ? "#f0fdf4" : "#f7f3ec",
-          border: `1px solid ${allFilled ? "#bbf7d0" : "#ede8df"}`,
-        }}
-      >
-        <div
-          className="h-10 w-10 rounded-xl flex items-center justify-center text-[20px] shrink-0"
-          style={{ background: "#fff" }}
-        >
-          📋
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="text-[13px] font-bold">
-            {allFilled ? "Все анкеты заполнены" : `Анкеты участников: ${filledCount} из ${totalOthers} заполнено`}
-          </div>
-          <div className="text-[11.5px] text-muted-foreground leading-snug">
-            {allFilled
-              ? "Отличная работа — теперь у вас есть карта каждого участника."
-              : "На первом созвоне заполните анкеты остальных участников."}
-          </div>
-        </div>
-      </div>
+
+
 
       {/* Foursome composition */}
       <Card className="p-4 mb-4">
@@ -1646,6 +1623,15 @@ function FoursomeMemberCard({ m, profileFilled }: { m: Member; profileFilled: bo
   const isMe = m.userId === "me";
   const hasTg = !!m.telegram;
   const hasMax = !!m.max;
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  const cardLabel = isMe
+    ? profileFilled
+      ? "Моя карточка"
+      : "Заполнить карточку"
+    : profileFilled
+      ? "Открыть карточку"
+      : "Карточка участника";
 
   return (
     <div
@@ -1670,56 +1656,99 @@ function FoursomeMemberCard({ m, profileFilled }: { m: Member; profileFilled: bo
           </div>
           <div className="text-[12px] text-muted-foreground truncate">{m.job}</div>
         </div>
-        <div className="flex items-center gap-1.5 shrink-0">
+        {!isMe && (hasTg || hasMax) && (
+          <div className="flex items-center gap-1 shrink-0 opacity-70">
+            {hasTg && <TelegramIcon size={16} />}
+            {hasMax && <MaxIcon size={16} />}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-2.5 flex items-center gap-2">
+        <Link
+          to="/foursome-profile/$userId"
+          params={{ userId: m.userId }}
+          className="tap flex-1 min-w-0 rounded-xl py-2 text-[12.5px] font-bold text-white inline-flex items-center justify-center gap-1.5"
+          style={{ background: ORANGE_GRADIENT }}
+        >
+          <FileText className="h-3.5 w-3.5" />
+          {cardLabel}
+        </Link>
+        {!isMe && (hasTg || hasMax) && (
+          <button
+            onClick={() => setSheetOpen(true)}
+            className="tap shrink-0 rounded-xl px-3.5 py-2 text-[12.5px] font-semibold inline-flex items-center justify-center gap-1.5"
+            style={{ background: "#fff", border: "1px solid #ede8df", color: "#1a1a1a" }}
+          >
+            <MessageCircle className="h-3.5 w-3.5" />
+            Написать
+          </button>
+        )}
+      </div>
+
+      {sheetOpen && (
+        <ContactSheet member={m} onClose={() => setSheetOpen(false)} />
+      )}
+    </div>
+  );
+}
+
+function ContactSheet({ member, onClose }: { member: Member; onClose: () => void }) {
+  const hasTg = !!member.telegram;
+  const hasMax = !!member.max;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center animate-fade-up"
+      style={{ background: "rgba(0,0,0,0.35)" }}
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-md bg-white rounded-t-3xl p-5 pb-6"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mx-auto mb-3 h-1 w-10 rounded-full" style={{ background: "#e5e0d5" }} />
+        <div className="text-[16px] font-bold text-center mb-1">Выберите способ связи</div>
+        <div className="text-[12px] text-muted-foreground text-center mb-4 truncate">
+          {fullName(member)}
+        </div>
+        <div className="flex flex-col gap-2">
           {hasTg && (
             <a
-              href={`https://t.me/${m.telegram}`}
+              href={`https://t.me/${member.telegram}`}
               target="_blank"
               rel="noreferrer"
-              className="tap h-9 w-9 rounded-full flex items-center justify-center bg-white"
-              style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}
-              aria-label="Telegram"
-              title={`Telegram · @${m.telegram}`}
+              className="tap flex items-center justify-center gap-2 py-3 rounded-xl text-white text-[14px] font-bold"
+              style={{ background: "#229ED9" }}
+              onClick={onClose}
             >
-              <TelegramIcon size={20} />
+              <TelegramIcon size={18} /> Написать в Telegram
             </a>
           )}
           {hasMax && (
             <a
-              href={m.max}
+              href={member.max}
               target="_blank"
               rel="noreferrer"
-              className="tap h-9 w-9 rounded-full flex items-center justify-center bg-white"
-              style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}
-              aria-label="MAX"
-              title="MAX"
+              className="tap flex items-center justify-center gap-2 py-3 rounded-xl text-white text-[14px] font-bold"
+              style={{ background: "linear-gradient(135deg, #2E7BFF, #7B4DFF)" }}
+              onClick={onClose}
             >
-              <MaxIcon size={20} />
+              <MaxIcon size={18} /> Написать в MAX
             </a>
           )}
+          <button
+            onClick={onClose}
+            className="tap mt-1 py-3 rounded-xl text-[13px] font-semibold"
+            style={{ background: "#FAF6EF", color: "#1a1a1a", border: "1px solid #ede8df" }}
+          >
+            Отмена
+          </button>
         </div>
       </div>
-
-      <Link
-        to="/foursome-profile/$userId"
-        params={{ userId: m.userId }}
-        className="tap mt-2.5 w-full rounded-xl py-2 text-[12.5px] font-semibold inline-flex items-center justify-center gap-1.5"
-        style={
-          profileFilled
-            ? { background: "#fff", color: "#166534", border: "1px solid #bbf7d0" }
-            : { background: ORANGE_GRADIENT, color: "#fff" }
-        }
-      >
-        <FileText className="h-3.5 w-3.5" />
-        {isMe
-          ? profileFilled
-            ? "Моя анкета — открыть"
-            : "Заполнить свою анкету"
-          : profileFilled
-            ? "Посмотреть анкету"
-            : "Заполнить анкету"}
-      </Link>
     </div>
   );
 }
+
+
 
