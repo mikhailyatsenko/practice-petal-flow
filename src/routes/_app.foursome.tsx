@@ -1146,7 +1146,7 @@ function Waiting({ to, onBack }: { to: FoursomeRequest; onBack: () => void }) {
           <div className="text-[56px] leading-none">🎉</div>
           <h2 className="mt-3 text-[18px] font-bold">Четвёрка собрана!</h2>
           <p className="mt-2 text-[14px] text-muted-foreground leading-snug max-w-[320px] mx-auto">
-            Ты подтвердил пару {accepted.members.map((m) => m.name).join(" и ")}. Согласуйте первый созвон в чате.
+            Ты подтвердил пару {accepted.members.map((m) => fullName(m)).join(" и ")}. Согласуйте первый созвон в чате.
           </p>
         </div>
       ) : (
