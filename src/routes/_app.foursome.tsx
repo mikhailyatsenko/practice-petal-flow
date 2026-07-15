@@ -1286,7 +1286,7 @@ function IncomingFoursomeCard({
           <div className="rounded-[12px] p-3 text-[13px] space-y-2" style={{ background: "#FAF6EF", lineHeight: 1.55 }}>
             {req.members.map((m) => (
               <p key={m.userId}>
-                <span className="font-semibold">{m.name}:</span> {m.bio}
+                <span className="font-semibold">{fullName(m)}:</span> {m.bio}
               </p>
             ))}
           </div>
