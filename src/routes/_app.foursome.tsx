@@ -1482,7 +1482,36 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
 
   return (
     <div className="px-4 pb-8">
-      <PageHeader title="Моя Четвёрка" onBack={onBack} />
+      <PageHeader
+        title="Моя Четвёрка"
+        onBack={onBack}
+        right={
+          <LeaveMenu
+            menuItemLabel="Выйти из Четвёрки"
+            confirmTitle="Выйти из Четвёрки?"
+            confirmBody={
+              <>
+                <p>
+                  Вы перестанете быть участником этой Четвёрки. Четвёрка будет расформирована, и все четыре участника потеряют доступ к общему чату, карточкам участников и запланированным созвонам.
+                </p>
+                <p
+                  className="mt-3 rounded-lg px-3 py-2.5 font-semibold"
+                  style={{ background: "#effaf1", color: "#1f7a3a", border: "1px solid #bfe6c8" }}
+                >
+                  Ваша пара Бадди при этом сохранится.
+                </p>
+              </>
+            }
+            confirmButtonLabel="Выйти из Четвёрки"
+            onConfirm={() => {
+              try {
+                window.localStorage.removeItem("foursome-chat");
+              } catch { /* noop */ }
+              navigate({ to: "/foursome", search: {} });
+            }}
+          />
+        }
+      />
 
       {/* Режим: завтра созвон — карточка напоминания в чат (вместо зелёного бонус-блока) */}
       {showTomorrow && (
