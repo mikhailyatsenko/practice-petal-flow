@@ -447,7 +447,7 @@ function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       >
         <div className="flex-1">
           <div className="text-[12px] text-muted-foreground">Твоя пара</div>
-          <div className="text-[14px] font-bold mt-0.5">Ты + {MY_BUDDY.name}</div>
+          <div className="text-[14px] font-bold mt-0.5">Ты + {fullName(MY_BUDDY)}</div>
         </div>
         <span
           className="text-[11px] font-bold text-white px-2.5 py-1 rounded-full"
