@@ -1435,6 +1435,16 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
   const remaining2h = startAt != null ? startAt - now : 0;
   const started2h = show2h && remaining2h <= 0;
 
+  const [schedule, setSchedule] = useState({ day: data.day, time: data.time });
+  const [editStep, setEditStep] = useState<null | "warn" | "pick" | "confirm">(null);
+  const [draftDay, setDraftDay] = useState(schedule.day);
+  const [draftTime, setDraftTime] = useState(schedule.time);
+  const openEdit = () => {
+    setDraftDay(schedule.day);
+    setDraftTime(schedule.time);
+    setEditStep("warn");
+  };
+
   const forceFull = cards === "full";
 
   // Три других участника (без "me")
