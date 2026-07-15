@@ -6,6 +6,7 @@ import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 import { FOURSOME_DEMO_MEMBERS, MY_BUDDY_MEMBER, ME_MEMBER, fullName } from "@/lib/foursomeDemo";
 import { useFoursomeProfiles, isProfileFilled } from "@/lib/foursomeProfileStore";
+import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
 import { useTelemostLink } from "@/lib/telemostLinkStore";
 import { useFoursomeChat } from "@/lib/foursomeChatStore";
 import { ackCallReminder, useCallReminder, formatHMS } from "@/lib/callReminderMode";
@@ -13,9 +14,13 @@ import { ackCallReminder, useCallReminder, formatHMS } from "@/lib/callReminderM
 
 
 export const Route = createFileRoute("/_app/foursome")({
-  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "locked" } => {
+  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "locked"; cards?: "empty" | "full" } => {
     const d = search.demo;
-    return d === "has" || d === "waiting" || d === "locked" ? { demo: d } : {};
+    const c = search.cards;
+    const out: { demo?: "has" | "waiting" | "locked"; cards?: "empty" | "full" } = {};
+    if (d === "has" || d === "waiting" || d === "locked") out.demo = d;
+    if (c === "empty" || c === "full") out.cards = c;
+    return out;
   },
   head: () => ({
     meta: [
@@ -1417,7 +1422,10 @@ function StepRow({ n, title, sub, active }: { n: number; title: string; sub: str
 // ───────────────────────── Screen 7: Has foursome ─────────────────────────
 
 function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void }) {
+  const { cards } = Route.useSearch();
   const profiles = useFoursomeProfiles();
+  const buddyCard = useBuddyCard();
+  const buddyFilled = isBuddyCardFilled(buddyCard);
 
   const meetingLink = useTelemostLink();
   const chat = useFoursomeChat();
@@ -1426,6 +1434,20 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
   const show2h = callMode === "foursome-2h";
   const remaining2h = startAt != null ? startAt - now : 0;
   const started2h = show2h && remaining2h <= 0;
+
+  const forceFull = cards === "full";
+
+  // Три других участника (без "me")
+  const others: Member[] = [
+    ...data.pair1.members.filter((m) => m.userId !== "me"),
+    ...data.pair2.members,
+  ];
+  const isMemberFilled = (m: Member): boolean => {
+    if (m.userId === "b1") return buddyFilled;
+    if (forceFull) return true;
+    return isProfileFilled(profiles[m.userId]);
+  };
+  const allOthersFilled = others.every(isMemberFilled);
 
   const [copied, setCopied] = useState(false);
   const reminderText = `📞 Напоминаю, завтра у нас созвон Четвёркой в ${data.time} МСК.\nКомната: ${meetingLink ?? "(ссылку добавим ближе к созвону)"}\nБудьте вовремя 🙌`;
@@ -1490,6 +1512,52 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
           )}
         </a>
       )}
+
+      {/* Заполнение карточек участников — блок скрывается когда все заполнены */}
+      {!allOthersFilled && (
+        <Card className="p-4 mb-4 animate-fade-up">
+          <div className="text-[12px] uppercase font-medium mb-3" style={{ letterSpacing: 0.5, color: "#FF6D00" }}>
+            Заполнение карточек участников
+          </div>
+          <div className="space-y-2">
+            {others.map((m) => {
+              const filled = isMemberFilled(m);
+              const to = m.userId === "b1" ? "/my-buddy-card" : "/foursome-profile/$userId";
+              const params = m.userId === "b1" ? undefined : { userId: m.userId };
+              return (
+                <Link
+                  key={m.userId}
+                  to={to}
+                  {...(params ? { params } : {})}
+                  className="tap flex items-center gap-3 rounded-xl px-2.5 py-2 -mx-1"
+                  style={{ background: filled ? "#f0fdf4" : "#FAF6EF", border: `1px solid ${filled ? "#bbf7d0" : "#ede8df"}` }}
+                >
+                  <div
+                    className="h-6 w-6 rounded-full flex items-center justify-center shrink-0"
+                    style={{
+                      background: filled ? "#16a34a" : "#fff",
+                      border: filled ? "none" : "1.5px solid #d5cebe",
+                    }}
+                  >
+                    {filled && <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />}
+                  </div>
+                  <div className="flex-1 min-w-0 text-[13.5px] font-semibold truncate">
+                    {fullName(m)}
+                  </div>
+                  <div
+                    className="text-[11.5px] font-bold shrink-0"
+                    style={{ color: filled ? "#16a34a" : "#a59a85" }}
+                  >
+                    {filled ? "Заполнена" : "Не заполнена"}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </Card>
+      )}
+
+
 
       {/* Режим: 2 часа до созвона — крупный таймер */}
       {show2h && (
@@ -1590,7 +1658,7 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         </div>
         <div className="space-y-3">
           {data.pair1.members.map((m) => (
-            <FoursomeMemberCard key={m.userId} m={m} profileFilled={isProfileFilled(profiles[m.userId])} />
+            <FoursomeMemberCard key={m.userId} m={m} profileFilled={isMemberFilled(m)} />
           ))}
         </div>
 
@@ -1601,7 +1669,7 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
         </div>
         <div className="space-y-3">
           {data.pair2.members.map((m) => (
-            <FoursomeMemberCard key={m.userId} m={m} profileFilled={isProfileFilled(profiles[m.userId])} />
+            <FoursomeMemberCard key={m.userId} m={m} profileFilled={isMemberFilled(m)} />
           ))}
         </div>
       </Card>
@@ -1625,13 +1693,8 @@ function FoursomeMemberCard({ m, profileFilled }: { m: Member; profileFilled: bo
   const hasMax = !!m.max;
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  const cardLabel = isMe
-    ? profileFilled
-      ? "Моя карточка"
-      : "Заполнить карточку"
-    : profileFilled
-      ? "Открыть карточку"
-      : "Карточка участника";
+  const isBuddy = m.userId === "b1";
+  const cardLabel = profileFilled ? "Открыть карточку" : "Карточка участника";
 
   return (
     <div
@@ -1664,27 +1727,40 @@ function FoursomeMemberCard({ m, profileFilled }: { m: Member; profileFilled: bo
         )}
       </div>
 
-      <div className="mt-2.5 flex items-center gap-2">
-        <Link
-          to="/foursome-profile/$userId"
-          params={{ userId: m.userId }}
-          className="tap flex-1 min-w-0 rounded-xl py-2 text-[12.5px] font-bold text-white inline-flex items-center justify-center gap-1.5"
-          style={{ background: ORANGE_GRADIENT }}
-        >
-          <FileText className="h-3.5 w-3.5" />
-          {cardLabel}
-        </Link>
-        {!isMe && (hasTg || hasMax) && (
-          <button
-            onClick={() => setSheetOpen(true)}
-            className="tap shrink-0 rounded-xl px-3.5 py-2 text-[12.5px] font-semibold inline-flex items-center justify-center gap-1.5"
-            style={{ background: "#fff", border: "1px solid #ede8df", color: "#1a1a1a" }}
-          >
-            <MessageCircle className="h-3.5 w-3.5" />
-            Написать
-          </button>
-        )}
-      </div>
+      {!isMe && (
+        <div className="mt-2.5 flex items-center gap-2">
+          {isBuddy ? (
+            <Link
+              to="/my-buddy-card"
+              className="tap flex-1 min-w-0 rounded-xl py-2 text-[12.5px] font-bold text-white inline-flex items-center justify-center gap-1.5"
+              style={{ background: ORANGE_GRADIENT }}
+            >
+              <FileText className="h-3.5 w-3.5" />
+              {cardLabel}
+            </Link>
+          ) : (
+            <Link
+              to="/foursome-profile/$userId"
+              params={{ userId: m.userId }}
+              className="tap flex-1 min-w-0 rounded-xl py-2 text-[12.5px] font-bold text-white inline-flex items-center justify-center gap-1.5"
+              style={{ background: ORANGE_GRADIENT }}
+            >
+              <FileText className="h-3.5 w-3.5" />
+              {cardLabel}
+            </Link>
+          )}
+          {(hasTg || hasMax) && (
+            <button
+              onClick={() => setSheetOpen(true)}
+              className="tap shrink-0 rounded-xl px-3.5 py-2 text-[12.5px] font-semibold inline-flex items-center justify-center gap-1.5"
+              style={{ background: "#fff", border: "1px solid #ede8df", color: "#1a1a1a" }}
+            >
+              <MessageCircle className="h-3.5 w-3.5" />
+              Написать
+            </button>
+          )}
+        </div>
+      )}
 
       {sheetOpen && (
         <ContactSheet member={m} onClose={() => setSheetOpen(false)} />

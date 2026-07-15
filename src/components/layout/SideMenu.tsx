@@ -190,12 +190,21 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
           </button>
           <Link
             to="/foursome"
-            search={{ demo: "has" }}
+            search={{ demo: "has", cards: "empty" }}
             onClick={() => onOpenChange(false)}
             className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
           >
             <UsersRound className="h-[18px] w-[18px]" strokeWidth={2} />
-            <span>Четвёрка — есть четвёрка</span>
+            <span>Четвёрка — карточки не заполнены</span>
+          </Link>
+          <Link
+            to="/foursome"
+            search={{ demo: "has", cards: "full" }}
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <UsersRound className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>Четвёрка — карточки заполнены</span>
           </Link>
           <button
             onClick={() => {
