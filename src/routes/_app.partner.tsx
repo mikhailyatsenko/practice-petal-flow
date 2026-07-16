@@ -567,7 +567,7 @@ function FriendRow({ friend }: { friend: Friend }) {
   );
 }
 
-type EarningType = "trial-start" | "continued" | "bonus" | "churn";
+type EarningType = "trial-start" | "continued" | "bonus" | "churn" | "tg-bot-start" | "max-bot-start";
 
 interface EarningEvent {
   type: EarningType;
@@ -575,6 +575,7 @@ interface EarningEvent {
   subtitle: string;
   dateISO: string;
   dateLabel: string;
+  rightLabel?: string;
 }
 
 const EARNINGS_HISTORY_RAW: EarningEvent[] = [
