@@ -347,6 +347,25 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             );
           })}
 
+          <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
+            Подарок за 4-й уровень
+          </div>
+          <button
+            onClick={() => {
+              // При включении сбрасываем факт активации, чтобы карточка/баннер снова появились.
+              if (!gift.mode) resetGift();
+              toggleGiftMode();
+            }}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+            style={{ color: gift.mode ? "#E53935" : "#22A557" }}
+          >
+            <Gift className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>
+              {gift.mode ? "Выключить: подарок за 4-й уровень" : "🎁 Подарок за переход на 4-й уровень"}
+            </span>
+          </button>
+
+
           <div className="my-2 border-t border-border" />
           <Link
             to="/settings"
