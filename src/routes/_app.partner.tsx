@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
-import { Copy, ArrowDown, ChevronDown, KeyRound, Gift, Zap, Trophy, Unlock, UserPlus, PlusCircle, MinusCircle, Wallet } from "lucide-react";
+import { Copy, ArrowDown, ChevronDown, KeyRound, Gift, Zap, Trophy, Unlock, CheckCircle2, MinusCircle } from "lucide-react";
 
 export const Route = createFileRoute("/_app/partner")({
   head: () => ({
@@ -22,7 +22,7 @@ function PossibilitiesScreen() {
     <div className="px-4">
       <div className="px-1 pt-2 pb-3">
         <h1 className="text-[22px] font-semibold leading-tight inline-flex items-center gap-1.5">
-          <KeyRound className="h-5 w-5" style={{ color: "#FF6D00" }} />
+          <span aria-hidden className="text-[20px] leading-none">🔑</span>
           Возможности
         </h1>
         <p className="mt-1.5 text-[13px] text-muted-foreground leading-snug">
@@ -432,14 +432,13 @@ function StepArrow() {
 
 // ============ Invited friends & earnings history ============
 
-type FriendStatus = "trial" | "active" | "churned";
+type FriendStatus = "trial" | "active";
 
 interface Friend {
   name: string;
   photo?: string;
   status: FriendStatus;
   joinedAt: string;
-  bonus?: number;
 }
 
 const INVITED_FRIENDS: Friend[] = [
@@ -454,21 +453,8 @@ const INVITED_FRIENDS: Friend[] = [
     photo: "https://randomuser.me/api/portraits/men/32.jpg",
     status: "active",
     joinedAt: "с 8 апреля 2026",
-    bonus: 1000,
-  },
-  {
-    name: "Мария Орлова",
-    photo: "https://randomuser.me/api/portraits/women/68.jpg",
-    status: "churned",
-    joinedAt: "с 3 апреля 2026",
   },
 ];
-
-const STATUS_META: Record<FriendStatus, { label: string; color: string; bg: string }> = {
-  trial: { label: "Пробный месяц", color: "#8a6d1f", bg: "#FFF3E0" },
-  active: { label: "Активный", color: "#22A557", bg: "#E7F7EC" },
-  churned: { label: "Не продолжил", color: "#8a8275", bg: "#EFEBE3" },
-};
 
 function initials(name: string): string {
   return name
@@ -480,8 +466,14 @@ function initials(name: string): string {
 }
 
 function FriendRow({ friend }: { friend: Friend }) {
-  const meta = STATUS_META[friend.status];
-  const statusLabel = friend.status === "churned" && friend.name.endsWith("а") ? "Не продолжила" : meta.label;
+  const isTrial = friend.status === "trial";
+  const badge = isTrial
+    ? { label: "Пробный месяц", color: "#FF6D00", bg: "#FFEBD6" }
+    : { label: "Активный", color: "#22A557", bg: "#E7F7EC" };
+  const right = isTrial
+    ? { iconColor: "#FF6D00", iconBg: "#FFEBD6", amount: "1 ₽", amountColor: "#1a1a1a", caption: "пробный" }
+    : { iconColor: "#22A557", iconBg: "#E7F7EC", amount: "+1 000 ₽", amountColor: "#22A557", caption: "начислено" };
+
   return (
     <div className="flex items-center gap-3">
       {friend.photo ? (
@@ -489,97 +481,121 @@ function FriendRow({ friend }: { friend: Friend }) {
           src={friend.photo}
           alt={friend.name}
           className="shrink-0 rounded-full object-cover"
-          style={{ width: 44, height: 44 }}
+          style={{ width: 48, height: 48 }}
         />
       ) : (
         <div
-          className="shrink-0 flex items-center justify-center rounded-full text-[13px] font-semibold"
-          style={{ width: 44, height: 44, background: "#F0EBE2", color: "#6b6356" }}
+          className="shrink-0 flex items-center justify-center rounded-full text-[14px] font-semibold"
+          style={{ width: 48, height: 48, background: "#F0EBE2", color: "#6b6356" }}
         >
           {initials(friend.name)}
         </div>
       )}
       <div className="min-w-0 flex-1">
-        <p className="text-[14px] font-medium leading-tight truncate" style={{ color: "#1a1a1a" }}>
+        <p className="text-[14.5px] font-semibold leading-tight truncate" style={{ color: "#1a1a1a" }}>
           {friend.name}
         </p>
-        <p className="mt-0.5 text-[12px] leading-snug truncate">
-          <span style={{ color: meta.color }}>{statusLabel}</span>
-          <span className="text-muted-foreground"> · {friend.joinedAt}</span>
-        </p>
+        <div className="mt-1 flex items-center gap-2 min-w-0">
+          <span
+            className="shrink-0 text-[11.5px] font-medium px-2 py-0.5 rounded-full"
+            style={{ background: badge.bg, color: badge.color }}
+          >
+            {badge.label}
+          </span>
+          <span className="text-[11.5px] text-muted-foreground truncate">{friend.joinedAt}</span>
+        </div>
       </div>
-      {friend.bonus ? (
-        <span
-          className="shrink-0 text-[13px] font-semibold px-2.5 py-1 rounded-full"
-          style={{ background: "#E7F7EC", color: "#22A557" }}
+      <div className="shrink-0 flex items-center gap-2">
+        <div
+          className="flex items-center justify-center"
+          style={{ width: 34, height: 34, borderRadius: 10, background: right.iconBg }}
         >
-          +{friend.bonus.toLocaleString("ru-RU")} ₽
-        </span>
-      ) : null}
+          <CheckCircle2 className="h-5 w-5" style={{ color: right.iconColor }} />
+        </div>
+        <div className="flex flex-col items-start leading-tight">
+          <span className="text-[13.5px] font-semibold" style={{ color: right.amountColor }}>
+            {right.amount}
+          </span>
+          <span className="text-[11px] text-muted-foreground">{right.caption}</span>
+        </div>
+      </div>
     </div>
   );
 }
 
-type EarningType = "trial-start" | "bonus" | "churn" | "spend";
+type EarningType = "trial-start" | "bonus" | "churn";
 
 interface EarningEvent {
   type: EarningType;
   title: string;
   subtitle: string;
-  amount: string;
-  amountColor?: string;
-  date: string;
+  dateISO: string;
+  dateLabel: string;
 }
 
-const EARNINGS_HISTORY: EarningEvent[] = [
+const EARNINGS_HISTORY_RAW: EarningEvent[] = [
+  // Анна: вступила → продолжила
   {
     type: "trial-start",
     title: "Анна Смирнова вступила в клуб",
     subtitle: "Оплатила пробный месяц за 1 ₽",
-    amount: "0 ₽",
-    date: "12 мая 2026, 14:20",
+    dateISO: "2026-05-12T14:20:00",
+    dateLabel: "12 мая 2026, 14:20",
   },
   {
     type: "bonus",
     title: "Анна Смирнова продолжила участие",
     subtitle: "Оплатила второй месяц клуба",
-    amount: "+1 000 ₽",
-    amountColor: "#22A557",
-    date: "12 июня 2026, 09:15",
+    dateISO: "2026-06-12T09:15:00",
+    dateLabel: "12 июня 2026, 09:15",
   },
+  // Иван: вступил → не продолжил
   {
     type: "trial-start",
     title: "Иван Петров вступил в клуб",
     subtitle: "Оплатил пробный месяц за 1 ₽",
-    amount: "0 ₽",
-    date: "8 апреля 2026, 18:42",
+    dateISO: "2026-04-08T18:42:00",
+    dateLabel: "8 апреля 2026, 18:42",
   },
   {
     type: "churn",
-    title: "Иван Петров не продлил участие",
+    title: "Иван Петров не продолжил участие",
     subtitle: "Пробный месяц завершён",
-    amount: "Без начисления",
-    date: "8 мая 2026, 00:05",
-  },
-  {
-    type: "bonus",
-    title: "Мария Орлова продолжила участие",
-    subtitle: "Оплатила второй месяц клуба",
-    amount: "+1 000 ₽",
-    amountColor: "#22A557",
-    date: "3 мая 2026, 11:30",
+    dateISO: "2026-05-08T00:05:00",
+    dateLabel: "8 мая 2026, 00:05",
   },
 ];
 
-const EARNING_ICONS: Record<EarningType, { icon: React.ReactNode; bg: string }> = {
-  "trial-start": { icon: <UserPlus className="h-4.5 w-4.5" style={{ color: "#FF6D00" }} />, bg: "#FFEBD6" },
-  bonus: { icon: <PlusCircle className="h-4.5 w-4.5" style={{ color: "#22A557" }} />, bg: "#E7F7EC" },
-  churn: { icon: <MinusCircle className="h-4.5 w-4.5" style={{ color: "#8a8275" }} />, bg: "#EFEBE3" },
-  spend: { icon: <Wallet className="h-4.5 w-4.5" style={{ color: "#FF6D00" }} />, bg: "#FFEBD6" },
+const EARNINGS_HISTORY: EarningEvent[] = [...EARNINGS_HISTORY_RAW].sort(
+  (a, b) => new Date(b.dateISO).getTime() - new Date(a.dateISO).getTime(),
+);
+
+const EARNING_META: Record<
+  EarningType,
+  { icon: React.ReactNode; bg: string; amount: string; amountColor: string }
+> = {
+  "trial-start": {
+    icon: <CheckCircle2 className="h-5 w-5" style={{ color: "#FF6D00" }} />,
+    bg: "#FFEBD6",
+    amount: "1 ₽",
+    amountColor: "#FF6D00",
+  },
+  bonus: {
+    icon: <CheckCircle2 className="h-5 w-5" style={{ color: "#22A557" }} />,
+    bg: "#E7F7EC",
+    amount: "+1 000 ₽",
+    amountColor: "#22A557",
+  },
+  churn: {
+    icon: <MinusCircle className="h-5 w-5" style={{ color: "#8a8275" }} />,
+    bg: "#EFEBE3",
+    amount: "Без начисления",
+    amountColor: "#8a8275",
+  },
 };
 
 function EarningRow({ event }: { event: EarningEvent }) {
-  const meta = EARNING_ICONS[event.type];
+  const meta = EARNING_META[event.type];
   return (
     <div className="flex items-start gap-3">
       <div
@@ -596,16 +612,17 @@ function EarningRow({ event }: { event: EarningEvent }) {
           {event.subtitle}
         </p>
         <p className="mt-0.5 text-[11px] text-muted-foreground/80 leading-snug">
-          {event.date}
+          {event.dateLabel}
         </p>
       </div>
       <span
         className="shrink-0 text-[12.5px] font-semibold whitespace-nowrap"
-        style={{ color: event.amountColor ?? "#8a8275" }}
+        style={{ color: meta.amountColor }}
       >
-        {event.amount}
+        {meta.amount}
       </span>
     </div>
   );
 }
+
 
