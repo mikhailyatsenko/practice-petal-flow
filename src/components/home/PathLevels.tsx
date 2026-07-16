@@ -3,6 +3,8 @@ import { Check, Circle } from "lucide-react";
 import { LevelTaskSheet, type LevelTaskContent } from "./LevelTaskSheet";
 import { usePreviewLevel, setPreviewLevel, type PreviewLevel } from "@/lib/previewLevel";
 import { useLevel1DoneMode, setLevel1DoneMode } from "@/lib/level1DoneMode";
+import { useLevel2DoneMode, setLevel2DoneMode } from "@/lib/level2DoneMode";
+
 
 interface LevelStep {
   id: string;
@@ -401,8 +403,13 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
 export function PathLevels() {
   const previewLevel = usePreviewLevel();
   const level1Done = useLevel1DoneMode();
+  const level2Done = useLevel2DoneMode();
   const [idx, setIdx] = useState(0);
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  if (level2Done) {
+    return <Level2DoneCard />;
+  }
 
   if (level1Done) {
     return <Level1DoneCard />;
@@ -837,4 +844,172 @@ function Level1DoneCard() {
     </article>
   );
 }
+
+function Level2DoneCard() {
+  const handleNext = () => {
+    setLevel2DoneMode(false);
+    setPreviewLevel(3);
+  };
+  return (
+    <article
+      className="rounded-2xl overflow-hidden animate-fade-up flex flex-col"
+      style={{
+        background: "linear-gradient(180deg, #DCF7E3 0%, #F1FBF3 55%, #FFFFFF 100%)",
+        border: "1px solid #B7E4C1",
+        boxShadow: "0 8px 24px -12px rgba(34,165,87,0.25)",
+        padding: "20px 18px 18px",
+      }}
+    >
+      <div className="flex items-center gap-4">
+        <div
+          className="shrink-0 flex items-center justify-center rounded-full"
+          style={{
+            width: 64,
+            height: 64,
+            background: "#CDEFD6",
+            fontSize: 34,
+            lineHeight: 1,
+          }}
+          aria-hidden
+        >
+          🎉
+        </div>
+        <div className="min-w-0">
+          <div
+            style={{
+              color: "#1E8E4A",
+              fontSize: 13,
+              fontWeight: 700,
+              letterSpacing: "0.02em",
+            }}
+          >
+            Поздравляем!
+          </div>
+          <div
+            style={{
+              marginTop: 2,
+              fontSize: 20,
+              fontWeight: 700,
+              color: "#0F2A18",
+              lineHeight: 1.2,
+            }}
+          >
+            Ты прошёл 2-й уровень
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3" style={{ marginTop: 16 }}>
+        <RewardCheck
+          emoji="⚙️"
+          title='Открыт «Маховик успеха»'
+          description="Теперь ты можешь активировать ежедневную серию и двигаться к следующему уровню."
+        />
+        <RewardCheck
+          emoji="⭐"
+          title="+2 очка в день за Бадди"
+          description="Дополнительные очки начисляются за выполнение условий Бадди."
+        />
+      </div>
+
+      <button
+        type="button"
+        onClick={handleNext}
+        className="tap relative overflow-hidden"
+        style={{
+          marginTop: 18,
+          marginLeft: 4,
+          marginRight: 4,
+          background: "linear-gradient(135deg, #1FA84F 0%, #22A557 50%, #2FBB63 100%)",
+          borderRadius: 14,
+          padding: "14px 18px",
+          color: "#fff",
+          fontWeight: 600,
+          fontSize: 15,
+          border: "none",
+          cursor: "pointer",
+          boxShadow: "0 6px 16px -6px rgba(31,168,79,0.55)",
+        }}
+      >
+        <span style={{ position: "relative", zIndex: 1 }}>Перейти к 3-му уровню</span>
+        <span
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: 0,
+            left: "-40%",
+            width: "40%",
+            height: "100%",
+            background:
+              "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 50%, transparent 100%)",
+            transform: "skewX(-20deg)",
+            animation: "level2-shine 2.4s linear infinite",
+          }}
+        />
+        <style>{`@keyframes level2-shine { 0% { left: -40%; } 60%, 100% { left: 120%; } } @keyframes level2-check-pop { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }`}</style>
+      </button>
+    </article>
+  );
+}
+
+function RewardCheck({
+  emoji,
+  title,
+  description,
+}: {
+  emoji: string;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div
+      style={{
+        background: "rgba(255,255,255,0.7)",
+        border: "1px solid #CDEFD6",
+        borderRadius: 12,
+        padding: "12px 14px",
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 10,
+      }}
+    >
+      <div
+        aria-hidden
+        style={{
+          flexShrink: 0,
+          width: 24,
+          height: 24,
+          borderRadius: "50%",
+          background: "#1FA84F",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: 1,
+          animation: "level2-check-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both",
+        }}
+      >
+        <Check size={15} color="#fff" strokeWidth={3} />
+      </div>
+      <div style={{ minWidth: 0 }}>
+        <div
+          style={{
+            fontSize: 14,
+            fontWeight: 600,
+            color: "#0F2A18",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
+          <span aria-hidden>{emoji}</span>
+          <span>{title}</span>
+        </div>
+        <div style={{ marginTop: 4, fontSize: 12, color: "#4B6B57", lineHeight: 1.4 }}>
+          {description}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
