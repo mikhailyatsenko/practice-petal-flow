@@ -68,6 +68,8 @@ function SectionsScreen() {
           variant="simple"
           unlockLevel={unlockLevelOf("sectionExtras")}
           icon="🛡️"
+          title="На пятом уровне"
+          description="На пятом уровне откроется страховка от пропуска и заморозка клуба"
           badge="Откроется на 5-м уровне"
         />
       )}
