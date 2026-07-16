@@ -67,6 +67,7 @@ function PossibilitiesScreen() {
 function PartnerTab() {
   const [howOpen, setHowOpen] = useState(false);
   const [howTab, setHowTab] = useState<"text" | "video">("text");
+  const [shareOpen, setShareOpen] = useState(false);
 
   return (
     <>
@@ -75,12 +76,14 @@ function PartnerTab() {
         <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Бонусы</p>
         <p className="mt-1 text-[24px] font-semibold">💰 0 ₽</p>
 
-        <button className="tap btn-pill-orange mt-3 w-full">
+        <button onClick={() => setShareOpen(true)} className="tap btn-pill-orange mt-3 w-full">
           <span className="inline-flex items-center justify-center gap-2">
             <Copy className="h-4 w-4" /> Скопировать партнёрскую ссылку
           </span>
         </button>
       </div>
+
+      <ShareLinkDrawer open={shareOpen} onOpenChange={setShareOpen} />
 
       {/* Short bonus description */}
       <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
