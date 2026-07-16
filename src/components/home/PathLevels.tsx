@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Check, Circle } from "lucide-react";
 import { LevelTaskSheet, type LevelTaskContent } from "./LevelTaskSheet";
-import { usePreviewLevel, type PreviewLevel } from "@/lib/previewLevel";
+import { usePreviewLevel, setPreviewLevel, type PreviewLevel } from "@/lib/previewLevel";
+import { useLevel1DoneMode, setLevel1DoneMode } from "@/lib/level1DoneMode";
 
 interface LevelStep {
   id: string;
