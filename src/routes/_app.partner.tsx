@@ -201,6 +201,13 @@ function PartnerTab() {
 
   return (
     <>
+      <div className="px-1 pb-1">
+        <h2 className="text-[20px] font-semibold leading-tight">Партнёрка</h2>
+        <p className="mt-1 text-[13px] text-muted-foreground leading-snug">
+          Пригласи друга — и клуб станет бесплатным.
+        </p>
+      </div>
+
       {/* Balance */}
       <div className="rounded-2xl bg-card hairline shadow-card p-4">
         <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Бонусы</p>
