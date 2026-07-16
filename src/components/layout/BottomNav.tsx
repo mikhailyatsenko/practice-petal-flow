@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutGrid, Users, Sparkles, Key, ListTree } from "lucide-react";
+import { LayoutGrid, Users, Sparkles, KeyRound, ListTree } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 interface Item {
@@ -14,7 +14,7 @@ const items: Item[] = [
   { to: "/community", label: "Комьюнити", icon: Users },
   { to: "/wishes",    label: "Желания",   icon: Sparkles, fab: true },
   { to: "/sections",  label: "Разделы",   icon: ListTree },
-  { to: "/partner",   label: "Возможности", icon: Key },
+  { to: "/partner",   label: "Возможности", icon: KeyRound },
 ];
 
 export function BottomNav() {
