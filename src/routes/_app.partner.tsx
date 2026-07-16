@@ -122,34 +122,21 @@ function PartnerTab() {
       <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
         <div className="flex items-center justify-between">
           <p className="text-[15px] font-semibold" style={{ color: "#1a1a1a" }}>Приглашённые друзья</p>
-          <span className="text-[12px] text-muted-foreground">{INVITED_FRIENDS.length} друга</span>
+          <span className="text-[12px] text-muted-foreground">{friendsCountLabel(INVITED_FRIENDS.length)}</span>
         </div>
-        <div className="mt-3 flex flex-col gap-3">
-          {INVITED_FRIENDS.slice(0, 3).map((f) => (
-            <FriendRow key={f.name} friend={f} />
+        <div className="mt-3 flex flex-col gap-3.5">
+          {INVITED_FRIENDS.map((f, i) => (
+            <div key={f.name}>
+              {i > 0 && <div className="h-px mb-3.5" style={{ background: "rgba(0,0,0,0.06)" }} />}
+              <FriendRow friend={f} />
+            </div>
           ))}
         </div>
-        {INVITED_FRIENDS.length > 3 && (
-          <button className="tap mt-3 w-full text-[13px] font-medium py-2 rounded-xl" style={{ color: "#FF6D00", background: "#FFF3E0" }}>
-            Смотреть всех друзей
-          </button>
-        )}
       </div>
 
       {/* Earnings history */}
-      <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
-        <p className="text-[15px] font-semibold" style={{ color: "#1a1a1a" }}>История начислений</p>
-        <div className="mt-3 flex flex-col gap-2.5">
-          {EARNINGS_HISTORY.slice(0, 5).map((e, i) => (
-            <EarningRow key={i} event={e} />
-          ))}
-        </div>
-        {EARNINGS_HISTORY.length > 5 && (
-          <button className="tap mt-3 w-full text-[13px] font-medium py-2 rounded-xl" style={{ color: "#FF6D00", background: "#FFF3E0" }}>
-            Смотреть всю историю
-          </button>
-        )}
-      </div>
+      <EarningsHistoryCard />
+
 
 
       {/* How it works */}
@@ -441,6 +428,22 @@ interface Friend {
   joinedAt: string;
 }
 
+function friendsCountLabel(n: number): string {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return `${n} друг`;
+  if ([2, 3, 4].includes(mod10) && ![12, 13, 14].includes(mod100)) return `${n} друга`;
+  return `${n} друзей`;
+}
+
+function eventsCountLabel(n: number): string {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return `${n} событие`;
+  if ([2, 3, 4].includes(mod10) && ![12, 13, 14].includes(mod100)) return `${n} события`;
+  return `${n} событий`;
+}
+
 const INVITED_FRIENDS: Friend[] = [
   {
     name: "Анна Смирнова",
@@ -471,8 +474,8 @@ function FriendRow({ friend }: { friend: Friend }) {
     ? { label: "Пробный месяц", color: "#FF6D00", bg: "#FFEBD6" }
     : { label: "Активный", color: "#22A557", bg: "#E7F7EC" };
   const right = isTrial
-    ? { iconColor: "#FF6D00", iconBg: "#FFEBD6", amount: "1 ₽", amountColor: "#1a1a1a", caption: "пробный" }
-    : { iconColor: "#22A557", iconBg: "#E7F7EC", amount: "+1 000 ₽", amountColor: "#22A557", caption: "начислено" };
+    ? { amount: "1 ₽", amountColor: "#FF6D00", caption: "пробный" }
+    : { amount: "+1 000 ₽", amountColor: "#22A557", caption: "начисляются каждое 1-е число" };
 
   return (
     <div className="flex items-center gap-3">
@@ -495,35 +498,30 @@ function FriendRow({ friend }: { friend: Friend }) {
         <p className="text-[14.5px] font-semibold leading-tight truncate" style={{ color: "#1a1a1a" }}>
           {friend.name}
         </p>
-        <div className="mt-1 flex items-center gap-2 min-w-0">
+        <div className="mt-1.5 flex items-center gap-2 min-w-0">
           <span
-            className="shrink-0 text-[11.5px] font-medium px-2 py-0.5 rounded-full"
+            className="inline-flex items-center gap-1 shrink-0 text-[11.5px] font-medium px-2 py-0.5 rounded-full"
             style={{ background: badge.bg, color: badge.color }}
           >
+            <CheckCircle2 className="h-3.5 w-3.5" />
             {badge.label}
           </span>
           <span className="text-[11.5px] text-muted-foreground truncate">{friend.joinedAt}</span>
         </div>
       </div>
-      <div className="shrink-0 flex items-center gap-2">
-        <div
-          className="flex items-center justify-center"
-          style={{ width: 34, height: 34, borderRadius: 10, background: right.iconBg }}
-        >
-          <CheckCircle2 className="h-5 w-5" style={{ color: right.iconColor }} />
-        </div>
-        <div className="flex flex-col items-start leading-tight">
-          <span className="text-[13.5px] font-semibold" style={{ color: right.amountColor }}>
-            {right.amount}
-          </span>
-          <span className="text-[11px] text-muted-foreground">{right.caption}</span>
-        </div>
+      <div className="shrink-0 flex flex-col items-end leading-tight max-w-[110px]">
+        <span className="text-[14px] font-semibold whitespace-nowrap" style={{ color: right.amountColor }}>
+          {right.amount}
+        </span>
+        <span className="mt-0.5 text-[11px] text-muted-foreground text-right leading-snug">
+          {right.caption}
+        </span>
       </div>
     </div>
   );
 }
 
-type EarningType = "trial-start" | "bonus" | "churn";
+type EarningType = "trial-start" | "continued" | "bonus" | "churn";
 
 interface EarningEvent {
   type: EarningType;
@@ -534,22 +532,20 @@ interface EarningEvent {
 }
 
 const EARNINGS_HISTORY_RAW: EarningEvent[] = [
-  // Анна: вступила → продолжила
-  {
-    type: "trial-start",
-    title: "Анна Смирнова вступила в клуб",
-    subtitle: "Оплатила пробный месяц за 1 ₽",
-    dateISO: "2026-05-12T14:20:00",
-    dateLabel: "12 мая 2026, 14:20",
-  },
   {
     type: "bonus",
-    title: "Анна Смирнова продолжила участие",
-    subtitle: "Оплатила второй месяц клуба",
-    dateISO: "2026-06-12T09:15:00",
-    dateLabel: "12 июня 2026, 09:15",
+    title: "Начислен бонус за Ивана Петрова",
+    subtitle: "За продолжение участия в клубе",
+    dateISO: "2026-06-01T00:00:00",
+    dateLabel: "1 июня 2026, 00:00",
   },
-  // Иван: вступил → не продолжил
+  {
+    type: "continued",
+    title: "Иван Петров продолжил участие",
+    subtitle: "Оплатил второй месяц клуба",
+    dateISO: "2026-05-08T18:42:00",
+    dateLabel: "8 мая 2026, 18:42",
+  },
   {
     type: "trial-start",
     title: "Иван Петров вступил в клуб",
@@ -559,10 +555,38 @@ const EARNINGS_HISTORY_RAW: EarningEvent[] = [
   },
   {
     type: "churn",
-    title: "Иван Петров не продолжил участие",
-    subtitle: "Пробный месяц завершён",
-    dateISO: "2026-05-08T00:05:00",
-    dateLabel: "8 мая 2026, 00:05",
+    title: "Мария Орлова не продлила участие",
+    subtitle: "Подписка завершена",
+    dateISO: "2026-04-05T10:15:00",
+    dateLabel: "5 апреля 2026, 10:15",
+  },
+  {
+    type: "trial-start",
+    title: "Анна Смирнова вступила в клуб",
+    subtitle: "Оплатила пробный месяц за 1 ₽",
+    dateISO: "2026-05-12T14:20:00",
+    dateLabel: "12 мая 2026, 14:20",
+  },
+  {
+    type: "trial-start",
+    title: "Мария Орлова вступила в клуб",
+    subtitle: "Оплатила пробный месяц за 1 ₽",
+    dateISO: "2026-03-05T12:00:00",
+    dateLabel: "5 марта 2026, 12:00",
+  },
+  {
+    type: "trial-start",
+    title: "Пётр Иванов вступил в клуб",
+    subtitle: "Оплатил пробный месяц за 1 ₽",
+    dateISO: "2026-02-14T09:30:00",
+    dateLabel: "14 февраля 2026, 09:30",
+  },
+  {
+    type: "churn",
+    title: "Пётр Иванов не продлил участие",
+    subtitle: "Подписка завершена",
+    dateISO: "2026-03-14T00:05:00",
+    dateLabel: "14 марта 2026, 00:05",
   },
 ];
 
@@ -579,6 +603,12 @@ const EARNING_META: Record<
     bg: "#FFEBD6",
     amount: "1 ₽",
     amountColor: "#FF6D00",
+  },
+  continued: {
+    icon: <CheckCircle2 className="h-5 w-5" style={{ color: "#22A557" }} />,
+    bg: "#E7F7EC",
+    amount: "1 000 ₽ начислятся 1-го числа",
+    amountColor: "#8a8275",
   },
   bonus: {
     icon: <CheckCircle2 className="h-5 w-5" style={{ color: "#22A557" }} />,
@@ -616,7 +646,7 @@ function EarningRow({ event }: { event: EarningEvent }) {
         </p>
       </div>
       <span
-        className="shrink-0 text-[12.5px] font-semibold whitespace-nowrap"
+        className="shrink-0 text-[12.5px] font-semibold whitespace-nowrap text-right max-w-[120px] leading-snug"
         style={{ color: meta.amountColor }}
       >
         {meta.amount}
@@ -624,5 +654,36 @@ function EarningRow({ event }: { event: EarningEvent }) {
     </div>
   );
 }
+
+function EarningsHistoryCard() {
+  const [expanded, setExpanded] = useState(false);
+  const initial = 5;
+  const hidden = Math.max(0, EARNINGS_HISTORY.length - initial);
+  const visible = expanded ? EARNINGS_HISTORY : EARNINGS_HISTORY.slice(0, initial);
+  return (
+    <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
+      <p className="text-[15px] font-semibold" style={{ color: "#1a1a1a" }}>История начислений</p>
+      <div className="mt-3 flex flex-col gap-3">
+        {visible.map((e, i) => (
+          <div key={i}>
+            {i > 0 && <div className="h-px mb-3" style={{ background: "rgba(0,0,0,0.06)" }} />}
+            <EarningRow event={e} />
+          </div>
+        ))}
+      </div>
+      {hidden > 0 && !expanded && (
+        <button
+          onClick={() => setExpanded(true)}
+          className="tap mt-3 w-full flex items-center justify-center gap-1.5 text-[13px] font-medium py-2.5 rounded-xl"
+          style={{ background: "#F5F0E6", color: "#1a1a1a" }}
+        >
+          Посмотреть ещё {eventsCountLabel(hidden)}
+          <ChevronDown className="h-4 w-4" />
+        </button>
+      )}
+    </div>
+  );
+}
+
 
 
