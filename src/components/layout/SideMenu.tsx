@@ -9,6 +9,7 @@ import { usePreviewLevel, togglePreviewLevel, type PreviewLevel } from "@/lib/pr
 import { useLevel4Gift, toggleGiftMode, resetGift } from "@/lib/level4Gift";
 import { useLevel1DoneMode, toggleLevel1DoneMode, setLevel1DoneMode } from "@/lib/level1DoneMode";
 import { useLevel2DoneMode, toggleLevel2DoneMode, setLevel2DoneMode } from "@/lib/level2DoneMode";
+import { useLevel3DoneMode, toggleLevel3DoneMode, setLevel3DoneMode } from "@/lib/level3DoneMode";
 import { setPreviewLevel } from "@/lib/previewLevel";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
