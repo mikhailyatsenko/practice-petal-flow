@@ -1135,3 +1135,20 @@ function ShareLinkDrawer({ open, onOpenChange }: { open: boolean; onOpenChange: 
     </Drawer>
   );
 }
+
+function formatActivationDate(iso: string): string {
+  try {
+    const d = new Date(iso);
+    const months = [
+      "января","февраля","марта","апреля","мая","июня",
+      "июля","августа","сентября","октября","ноября","декабря",
+    ];
+    const day = d.getDate();
+    const month = months[d.getMonth()];
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mm = String(d.getMinutes()).padStart(2, "0");
+    return `${day} ${month}, ${hh}:${mm}`;
+  } catch {
+    return "";
+  }
+}
