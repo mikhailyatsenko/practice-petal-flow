@@ -118,7 +118,10 @@ function PossibilitiesLocked({ currentLevel, unlockLevel }: { currentLevel: Prev
           Здесь ты сможешь вводить кодовые слова, открывать секретные разделы и узнать, как сделать участие в клубе бесплатным.
         </p>
 
+        <WhatsInsideBlock />
+
         <div className="mt-5">
+
           <div className="flex items-center justify-between text-[12px]">
             <span className="text-muted-foreground">Твой уровень</span>
             <span className="font-medium tabular-nums" style={{ color: "#FF6D00" }}>
