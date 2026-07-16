@@ -40,12 +40,12 @@ export function HowVideoCards({
   second,
 }: {
   first: VideoItem;
-  second: VideoItem;
+  second?: VideoItem;
 }) {
   return (
     <div className="space-y-3">
       <VideoCard {...first} />
-      <VideoCard {...second} />
+      {second && <VideoCard {...second} />}
     </div>
   );
 }
