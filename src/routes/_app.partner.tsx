@@ -615,6 +615,20 @@ const EARNINGS_HISTORY_RAW: EarningEvent[] = [
     dateLabel: "5 июня 2026, 14:20",
   },
   {
+    type: "tg-bot-start",
+    title: "Анна Смирнова запустила Telegram-бота",
+    subtitle: "Перешла по вашей партнёрской ссылке",
+    dateISO: "2026-06-05T14:10:00",
+    dateLabel: "5 июня 2026, 14:10",
+  },
+  {
+    type: "max-bot-start",
+    title: "Иван Петров запустил MAX-бота",
+    subtitle: "Перешёл по вашей партнёрской ссылке",
+    dateISO: "2026-04-04T18:25:00",
+    dateLabel: "4 июня 2026, 18:25",
+  },
+  {
     type: "trial-start",
     title: "Мария Орлова вступила в клуб",
     subtitle: "Оплатила пробный месяц за 1 ₽",
