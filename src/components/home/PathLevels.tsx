@@ -6,6 +6,7 @@ import { useLevel1DoneMode, setLevel1DoneMode } from "@/lib/level1DoneMode";
 import { useLevel2DoneMode, setLevel2DoneMode } from "@/lib/level2DoneMode";
 import { useLevel3DoneMode, setLevel3DoneMode } from "@/lib/level3DoneMode";
 import { useLevel4DoneMode, setLevel4DoneMode } from "@/lib/level4DoneMode";
+import { useLevel5WaitingMode, setLevel5WaitingMode } from "@/lib/level5WaitingMode";
 
 
 interface LevelStep {
