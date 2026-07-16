@@ -20,6 +20,8 @@ const items: Item[] = [
 
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const previewLevel = usePreviewLevel();
+  const possibilitiesLocked = !isFeatureUnlocked("possibilities", previewLevel);
 
   const handleIconPress = (e: React.MouseEvent<HTMLElement>) => {
     const target = e.currentTarget.querySelector<HTMLElement>("[data-nav-icon]");
