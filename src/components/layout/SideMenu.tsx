@@ -345,7 +345,6 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                     if (level2Done) setLevel2DoneMode(false);
                     if (level3Done) setLevel3DoneMode(false);
                     if (level4Done) setLevel4DoneMode(false);
-                      if (level5Waiting) setLevel5WaitingMode(false);
                     if (level5Waiting) setLevel5WaitingMode(false);
                     togglePreviewLevel(n);
                   }}
