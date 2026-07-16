@@ -1255,6 +1255,131 @@ function Level4DoneCard() {
   );
 }
 
+function Level5WaitingCard() {
+  return (
+    <article
+      className="rounded-2xl overflow-hidden animate-fade-up flex flex-col"
+      style={{
+        background: "linear-gradient(180deg, #EEF1FB 0%, #F6F5FE 55%, #FFFFFF 100%)",
+        border: "1px solid #D4D8EE",
+        boxShadow: "0 8px 24px -14px rgba(90,86,168,0.25)",
+        padding: "20px 18px 18px",
+      }}
+    >
+      <div className="flex items-center gap-4">
+        <div
+          className="shrink-0 flex items-center justify-center rounded-full"
+          style={{
+            width: 64,
+            height: 64,
+            background: "#E1E3F5",
+            fontSize: 30,
+            lineHeight: 1,
+          }}
+          aria-hidden
+        >
+          🚀
+        </div>
+        <div className="min-w-0">
+          <div
+            style={{
+              color: "#5A56A8",
+              fontSize: 13,
+              fontWeight: 700,
+              letterSpacing: "0.02em",
+            }}
+          >
+            Ты на текущем максимуме
+          </div>
+          <div
+            style={{
+              marginTop: 2,
+              fontSize: 20,
+              fontWeight: 700,
+              color: "#1B1A38",
+              lineHeight: 1.2,
+            }}
+          >
+            Ты прошёл все доступные уровни
+          </div>
+          <div
+            style={{
+              marginTop: 4,
+              fontSize: 13,
+              color: "#5A56A8",
+              fontWeight: 500,
+            }}
+          >
+            Продолжение откроется 1 сентября
+          </div>
+        </div>
+      </div>
 
+      <p
+        style={{
+          marginTop: 16,
+          fontSize: 13.5,
+          lineHeight: 1.5,
+          color: "#2B2A4A",
+        }}
+      >
+        На 5-м уровне начнётся новый формат обучения: ты будешь изучать материалы
+        и обсуждать их с искусственным интеллектом, чтобы глубже понимать и
+        применять знания.
+      </p>
 
+      <div
+        style={{
+          marginTop: 14,
+          background: "rgba(255,255,255,0.75)",
+          border: "1px solid #D4D8EE",
+          borderRadius: 12,
+          padding: "12px 14px",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 14,
+            fontWeight: 600,
+            color: "#1B1A38",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <span aria-hidden style={{ fontSize: 18 }}>📚</span>
+          <span>5-й уровень — База знаний с ИИ</span>
+        </div>
+        <div
+          style={{
+            marginTop: 6,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            background: "#E1E3F5",
+            color: "#5A56A8",
+            fontSize: 12,
+            fontWeight: 600,
+            padding: "4px 10px",
+            borderRadius: 999,
+          }}
+        >
+          <span aria-hidden>🗓️</span>
+          Откроется 1 сентября
+        </div>
+      </div>
+
+      <p
+        style={{
+          marginTop: 14,
+          fontSize: 12.5,
+          color: "#6C6A8A",
+          lineHeight: 1.45,
+        }}
+      >
+        Продолжай выполнять ежедневные практики — весь прогресс сохранится.
+      </p>
+    </article>
+  );
+}
 
