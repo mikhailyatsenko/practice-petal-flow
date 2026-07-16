@@ -683,6 +683,18 @@ const EARNING_META: Record<
     amount: "Без начисления",
     amountColor: "#8a8275",
   },
+  "tg-bot-start": {
+    icon: <TelegramIcon size={22} />,
+    bg: "#E3F2FD",
+    amount: "Telegram",
+    amountColor: "#229ED9",
+  },
+  "max-bot-start": {
+    icon: <MaxIcon size={22} />,
+    bg: "#EDE7F6",
+    amount: "MAX",
+    amountColor: "#7B4DFF",
+  },
 };
 
 function EarningRow({ event }: { event: EarningEvent }) {
