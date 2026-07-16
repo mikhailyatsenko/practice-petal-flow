@@ -368,12 +368,30 @@ function CodesTab() {
           <ChevronDown className="h-5 w-5 transition-transform" style={{ transform: howOpen ? "rotate(180deg)" : "none" }} />
         </button>
         {howOpen && (
-          <div className="mt-3 animate-fade-up bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
-            <p className="text-[13px] leading-relaxed text-foreground/85">
-              Получите кодовое слово на эфире, в задании или специальном сообщении клуба. Введите его в поле выше и нажмите «Активировать». За правильное кодовое слово вы можете получить дополнительные очки, бонус или доступ к секретному разделу.
-            </p>
+          <div className="mt-3 animate-fade-up bg-card hairline shadow-card p-4 space-y-4" style={{ borderRadius: 14 }}>
+            <div>
+              <div className="text-[12px] uppercase tracking-wide text-muted-foreground mb-2">Видео</div>
+              <div className="relative w-full overflow-hidden rounded-xl bg-black/5 hairline" style={{ aspectRatio: "16 / 9" }}>
+                <video
+                  controls
+                  playsInline
+                  preload="metadata"
+                  className="h-full w-full object-cover"
+                  poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=60"
+                >
+                  <source src="https://cdn.coverr.co/videos/coverr-typing-on-a-laptop-1584/1080p.mp4" type="video/mp4" />
+                </video>
+              </div>
+            </div>
+            <div>
+              <div className="text-[12px] uppercase tracking-wide text-muted-foreground mb-2">Текстовое описание</div>
+              <p className="text-[13px] leading-relaxed text-foreground/85">
+                Получите кодовое слово на эфире, в задании или специальном сообщении клуба. Введите его в поле выше и нажмите «Активировать». За правильное кодовое слово вы можете получить дополнительные очки, бонус или доступ к секретному разделу.
+              </p>
+            </div>
           </div>
         )}
+
       </section>
     </>
   );
