@@ -8,9 +8,11 @@ import { OnboardingGate } from "@/components/onboarding/OnboardingGate";
 import { BuddyRequestBanner } from "@/components/layout/BuddyRequestBanner";
 import { FoursomeRequestBanner } from "@/components/layout/FoursomeRequestBanner";
 import { CallReminderBanner } from "@/components/layout/CallReminderBanner";
+import { Level4GiftBanner } from "@/components/layout/Level4GiftBanner";
 import { useBuddyRequestMode } from "@/lib/buddyRequestMode";
 import { useFoursomeRequestMode } from "@/lib/foursomeRequestMode";
 import { useCallReminder } from "@/lib/callReminderMode";
+import { useLevel4GiftBannerVisible } from "@/lib/level4Gift";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
@@ -54,6 +56,7 @@ function AppLayout() {
   const buddyMode = useBuddyRequestMode();
   const foursomeMode = useFoursomeRequestMode();
   const { mode: callMode, ack: callAck } = useCallReminder();
+  const giftBannerOn = useLevel4GiftBannerVisible();
   const noLinkActive = callMode === "buddy-no-link" || callMode === "buddy-2h-no-link";
   const isTimed = callMode === "buddy-2h" || callMode === "buddy-2h-no-link" || callMode === "foursome-2h";
   const callBannerOn = !!callMode && (isTimed || noLinkActive || !callAck);
@@ -61,10 +64,12 @@ function AppLayout() {
   const buddyH = useBannerHeight("[data-buddy-request-banner]", buddyMode);
   const foursomeH = useBannerHeight("[data-foursome-request-banner]", foursomeMode);
   const callH = useBannerHeight("[data-call-reminder-banner]", callBannerOn, [callMode]);
+  const giftH = useBannerHeight("[data-level4-gift-banner]", giftBannerOn);
 
   const foursomeTop = buddyH;
   const callTop = buddyH + foursomeH;
-  const topPad = buddyH + foursomeH + callH;
+  const giftTop = buddyH + foursomeH + callH;
+  const topPad = buddyH + foursomeH + callH + giftH;
 
   return (
     <div className="mx-auto min-h-screen max-w-md bg-background">
@@ -89,6 +94,17 @@ function AppLayout() {
       >
         <CallReminderBanner />
       </div>
+      <div
+        style={
+          {
+            ["--level4-gift-top" as any]: `${giftTop}px`,
+            ["--level4-gift-pt" as any]: giftTop > 0 ? "8px" : "max(env(safe-area-inset-top), 8px)",
+          } as React.CSSProperties
+        }
+      >
+        <Level4GiftBanner />
+      </div>
+
 
 
       <div style={{ paddingTop: topPad }}>
