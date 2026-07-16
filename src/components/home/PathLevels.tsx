@@ -703,3 +703,115 @@ export function PathLevels() {
     </article>
   );
 }
+
+function Level1DoneCard() {
+  const handleNext = () => {
+    setLevel1DoneMode(false);
+    setPreviewLevel(2);
+  };
+  return (
+    <article
+      className="rounded-2xl overflow-hidden animate-fade-up flex flex-col"
+      style={{
+        background: "linear-gradient(180deg, #DCF7E3 0%, #F1FBF3 55%, #FFFFFF 100%)",
+        border: "1px solid #B7E4C1",
+        boxShadow: "0 8px 24px -12px rgba(34,165,87,0.25)",
+        padding: "20px 18px 18px",
+      }}
+    >
+      <div className="flex items-center gap-4">
+        <div
+          className="shrink-0 flex items-center justify-center rounded-full"
+          style={{
+            width: 64,
+            height: 64,
+            background: "#CDEFD6",
+            fontSize: 34,
+            lineHeight: 1,
+          }}
+          aria-hidden
+        >
+          🎉
+        </div>
+        <div className="min-w-0">
+          <div
+            style={{
+              color: "#1E8E4A",
+              fontSize: 13,
+              fontWeight: 700,
+              letterSpacing: "0.02em",
+            }}
+          >
+            Поздравляем!
+          </div>
+          <div
+            style={{
+              marginTop: 2,
+              fontSize: 20,
+              fontWeight: 700,
+              color: "#0F2A18",
+              lineHeight: 1.2,
+            }}
+          >
+            Ты прошёл 1-й уровень
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          marginTop: 16,
+          background: "rgba(255,255,255,0.7)",
+          border: "1px solid #CDEFD6",
+          borderRadius: 12,
+          padding: "12px 14px",
+        }}
+      >
+        <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2A18" }}>
+          👥 Открыт раздел «Бадди»
+        </div>
+        <div style={{ marginTop: 4, fontSize: 12, color: "#4B6B57", lineHeight: 1.4 }}>
+          Теперь ты можешь найти своего Бадди и перейти к следующему этапу.
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={handleNext}
+        className="tap relative overflow-hidden"
+        style={{
+          marginTop: 18,
+          marginLeft: 4,
+          marginRight: 4,
+          background: "linear-gradient(135deg, #1FA84F 0%, #22A557 50%, #2FBB63 100%)",
+          borderRadius: 14,
+          padding: "14px 18px",
+          color: "#fff",
+          fontWeight: 600,
+          fontSize: 15,
+          border: "none",
+          cursor: "pointer",
+          boxShadow: "0 6px 16px -6px rgba(31,168,79,0.55)",
+        }}
+      >
+        <span style={{ position: "relative", zIndex: 1 }}>Перейти к 2-му уровню</span>
+        <span
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: 0,
+            left: "-40%",
+            width: "40%",
+            height: "100%",
+            background:
+              "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 50%, transparent 100%)",
+            transform: "skewX(-20deg)",
+            animation: "level1-shine 2.4s linear infinite",
+          }}
+        />
+        <style>{`@keyframes level1-shine { 0% { left: -40%; } 60%, 100% { left: 120%; } }`}</style>
+      </button>
+    </article>
+  );
+}
+
