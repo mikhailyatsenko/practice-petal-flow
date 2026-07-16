@@ -1146,7 +1146,7 @@ function Level3DoneCard() {
 function Level4DoneCard() {
   const handleNext = () => {
     setLevel4DoneMode(false);
-    setPreviewLevel(5);
+    setLevel5WaitingMode(true);
   };
   return (
     <article
