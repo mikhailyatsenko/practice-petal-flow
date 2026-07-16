@@ -8,6 +8,7 @@ interface SectionsLockedPreviewProps {
   description?: string;
   badge?: string;
   variant?: "showcase" | "simple";
+  icon?: string;
 }
 
 export function SectionsLockedPreview({
