@@ -36,15 +36,6 @@ function SectionsScreen() {
 
   const open = (key: string) => setSectionKey(key);
 
-  if (!catalogOpen && !extrasOpen) {
-    return (
-      <div className="px-4">
-        <SectionHeader emoji="🧩" title="Разделы магазина" subtitle="Открывай дополнительные разделы за очки" />
-        <SectionsLockedPreview unlockLevel={unlockLevelOf("sectionExtras")} />
-      </div>
-    );
-  }
-
   const confirmPurchase = () => {
     if (!confirm) return;
     if (confirm.kind === "section") {
@@ -53,7 +44,6 @@ function SectionsScreen() {
       setSectionKey(null);
       navigate({ to: route });
     } else {
-      // extras (insurance / freeze) — no navigation, just close
       setConfirm(null);
       setExtra(null);
     }
@@ -63,21 +53,25 @@ function SectionsScreen() {
     <div className="px-4">
       <SectionHeader emoji="🧩" title="Разделы магазина" subtitle="Открывай дополнительные разделы за очки" />
 
-      {extrasOpen && (
+      <h3 className="text-[15px] font-semibold mb-2 mt-1">🛡 Защита прогресса</h3>
+      {extrasOpen ? (
         <SubItemList
           items={[
            { emoji: "🔰", title: "Страховка от пропуска",    subtitle: "Защита от обнуления",          price: "50 ⭐",  locked: false, onClick: () => setExtra("insurance") },
            { emoji: "❄️", title: "Заморозка клуба",          subtitle: "Поставить клуб на паузу",     price: "300 ⭐", locked: false, onClick: () => setExtra("freeze") },
           ]}
         />
+      ) : (
+        <SectionsLockedPreview
+          variant="simple"
+          unlockLevel={unlockLevelOf("sectionExtras")}
+          title="Защита прогресса"
+          description="Страховка от пропуска и заморозка клуба откроются на 5-м уровне."
+          badge="Откроется на 5-м уровне"
+        />
       )}
 
-      <div className="my-5 flex items-center gap-3">
-        <div className="h-px flex-1 bg-border" />
-        <span className="text-[11px] uppercase tracking-wider text-muted-foreground">Разделы</span>
-        <div className="h-px flex-1 bg-border" />
-      </div>
-
+      <h3 className="text-[15px] font-semibold mb-2 mt-6">Другие разделы магазина</h3>
       {catalogOpen ? (
         <SubItemList
           items={[
@@ -93,7 +87,12 @@ function SectionsScreen() {
           ]}
         />
       ) : (
-        <SectionsLockedPreview unlockLevel={unlockLevelOf("sections")} />
+        <SectionsLockedPreview
+          unlockLevel={unlockLevelOf("sections")}
+          title="Другие разделы магазина откроются на 6-м уровне"
+          description="Продолжай повышать уровень, чтобы получить доступ к другим разделам магазина."
+          badge="Откроются на 6-м уровне"
+        />
       )}
 
 
