@@ -19,7 +19,14 @@ export const Route = createFileRoute("/_app/partner")({
 type Tab = "partner" | "codes";
 
 function PossibilitiesScreen() {
+  const previewLevel = usePreviewLevel();
+  const unlocked = isFeatureUnlocked("possibilities", previewLevel);
   const [tab, setTab] = useState<Tab>("partner");
+
+  if (!unlocked) {
+    return <PossibilitiesLocked currentLevel={previewLevel ?? 1} unlockLevel={unlockLevelOf("possibilities")} />;
+  }
+
 
   return (
     <div className="px-4">
