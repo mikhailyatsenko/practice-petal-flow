@@ -1324,9 +1324,9 @@ function Level5WaitingCard() {
             gap: 8,
           }}
         >
-          <span aria-hidden style={{ fontSize: 18, lineHeight: 1.2 }}>📚</span>
+          <span aria-hidden style={{ fontSize: 18, lineHeight: 1.2 }}>🚀</span>
           <span style={{ lineHeight: 1.35 }}>
-            Изучай материалы и обсуждай их с искусственным интеллектом, чтобы глубже понимать и применять знания.
+            Используй это время, чтобы закрепить привычки и создать прочную основу для дальнейшего развития.
           </span>
         </div>
       </div>
