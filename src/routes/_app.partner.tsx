@@ -118,15 +118,39 @@ function PartnerTab() {
         </div>
       </div>
 
-      <h2 className="mt-5 px-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
-        Разделы
-      </h2>
-      <SubItemList
-        items={[
-          { emoji: "👫", title: "Приглашённые друзья", subtitle: "Список тех, кто пришёл по твоей ссылке" },
-          { emoji: "📜", title: "История начислений", subtitle: "Все партнёрские бонусы за период" },
-        ]}
-      />
+      {/* Invited friends */}
+      <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
+        <div className="flex items-center justify-between">
+          <p className="text-[15px] font-semibold" style={{ color: "#1a1a1a" }}>Приглашённые друзья</p>
+          <span className="text-[12px] text-muted-foreground">{INVITED_FRIENDS.length} друга</span>
+        </div>
+        <div className="mt-3 flex flex-col gap-3">
+          {INVITED_FRIENDS.slice(0, 3).map((f) => (
+            <FriendRow key={f.name} friend={f} />
+          ))}
+        </div>
+        {INVITED_FRIENDS.length > 3 && (
+          <button className="tap mt-3 w-full text-[13px] font-medium py-2 rounded-xl" style={{ color: "#FF6D00", background: "#FFF3E0" }}>
+            Смотреть всех друзей
+          </button>
+        )}
+      </div>
+
+      {/* Earnings history */}
+      <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
+        <p className="text-[15px] font-semibold" style={{ color: "#1a1a1a" }}>История начислений</p>
+        <div className="mt-3 flex flex-col gap-2.5">
+          {EARNINGS_HISTORY.slice(0, 5).map((e, i) => (
+            <EarningRow key={i} event={e} />
+          ))}
+        </div>
+        {EARNINGS_HISTORY.length > 5 && (
+          <button className="tap mt-3 w-full text-[13px] font-medium py-2 rounded-xl" style={{ color: "#FF6D00", background: "#FFF3E0" }}>
+            Смотреть всю историю
+          </button>
+        )}
+      </div>
+
 
       {/* How it works */}
       <section className="mt-6">
