@@ -8,9 +8,11 @@ import { OnboardingGate } from "@/components/onboarding/OnboardingGate";
 import { BuddyRequestBanner } from "@/components/layout/BuddyRequestBanner";
 import { FoursomeRequestBanner } from "@/components/layout/FoursomeRequestBanner";
 import { CallReminderBanner } from "@/components/layout/CallReminderBanner";
+import { Level4GiftBanner } from "@/components/layout/Level4GiftBanner";
 import { useBuddyRequestMode } from "@/lib/buddyRequestMode";
 import { useFoursomeRequestMode } from "@/lib/foursomeRequestMode";
 import { useCallReminder } from "@/lib/callReminderMode";
+import { useLevel4GiftBannerVisible } from "@/lib/level4Gift";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
