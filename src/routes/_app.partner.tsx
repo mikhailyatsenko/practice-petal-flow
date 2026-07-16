@@ -72,6 +72,74 @@ function PossibilitiesScreen() {
   );
 }
 
+function PossibilitiesLocked({ currentLevel, unlockLevel }: { currentLevel: PreviewLevel; unlockLevel: PreviewLevel }) {
+  const pct = Math.min(100, Math.round((currentLevel / unlockLevel) * 100));
+  return (
+    <div className="px-4">
+      <div className="px-1 pt-2 pb-3">
+        <h1 className="text-[22px] font-semibold leading-tight inline-flex items-center gap-1.5">
+          <span aria-hidden className="text-[20px] leading-none">🔑</span>
+          Возможности
+        </h1>
+        <p className="mt-1.5 text-[13px] text-muted-foreground leading-snug">
+          Дополнительные функции и бонусы клуба
+        </p>
+      </div>
+
+      <div
+        className="mx-auto bg-card"
+        style={{
+          borderRadius: 20,
+          boxShadow: "0 2px 12px rgba(0,0,0,0.07)",
+          padding: "24px 20px",
+        }}
+      >
+        <div className="flex justify-center">
+          <div
+            className="flex items-center justify-center"
+            style={{
+              width: 64,
+              height: 64,
+              borderRadius: "50%",
+              background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+              boxShadow: "0 6px 18px rgba(255,109,0,0.35)",
+              fontSize: 28,
+              fontFamily: '"Apple Color Emoji","Segoe UI Emoji",sans-serif',
+            }}
+          >
+            🔒
+          </div>
+        </div>
+
+        <p className="text-center mt-4 text-[16px] font-semibold leading-tight">
+          Раздел откроется на {unlockLevel}-м уровне
+        </p>
+        <p className="text-center mt-2 text-[13px] text-muted-foreground leading-snug">
+          Здесь ты сможешь вводить кодовые слова, открывать секретные разделы и узнать, как сделать участие в клубе бесплатным.
+        </p>
+
+        <div className="mt-5">
+          <div className="flex items-center justify-between text-[12px]">
+            <span className="text-muted-foreground">Твой уровень</span>
+            <span className="font-medium tabular-nums" style={{ color: "#FF6D00" }}>
+              {currentLevel} из {unlockLevel}
+            </span>
+          </div>
+          <div className="mt-1.5 h-2 w-full rounded-full" style={{ background: "#f0ebe0" }}>
+            <div
+              className="h-full rounded-full transition-all"
+              style={{ width: `${pct}%`, background: "linear-gradient(90deg, #FFB300, #FF6D00)" }}
+            />
+          </div>
+          <p className="mt-3 text-center text-[12px] text-muted-foreground">
+            Достигни {unlockLevel}-го уровня, чтобы открыть раздел.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function PartnerTab() {
   const [howOpen, setHowOpen] = useState(false);
   const [howTab, setHowTab] = useState<"text" | "video">("text");
