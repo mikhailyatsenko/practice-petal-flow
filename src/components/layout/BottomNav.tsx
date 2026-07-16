@@ -14,7 +14,7 @@ const items: Item[] = [
   { to: "/community", label: "Комьюнити", icon: Users },
   { to: "/wishes",    label: "Желания",   icon: Sparkles, fab: true },
   { to: "/sections",  label: "Разделы",   icon: ListTree },
-  { to: "/partner",   label: "Партнёрка", icon: Share2 },
+  { to: "/partner",   label: "Возможности", icon: Sparkles },
 ];
 
 export function BottomNav() {
