@@ -400,8 +400,14 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
 
 export function PathLevels() {
   const previewLevel = usePreviewLevel();
+  const level1Done = useLevel1DoneMode();
   const [idx, setIdx] = useState(0);
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  if (level1Done) {
+    return <Level1DoneCard />;
+  }
+
 
   const lvl = previewLevel != null
     ? { ...PREVIEW_LEVELS[previewLevel], task: LEVELS[previewLevel - 1].task, reward: LEVELS[previewLevel - 1].reward }
