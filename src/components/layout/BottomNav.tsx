@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutGrid, Users, Sparkles, KeyRound, ListTree } from "lucide-react";
+import { LayoutGrid, Users, Sparkles, KeyRound, ListTree, Lock } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { isFeatureUnlocked, usePreviewLevel } from "@/lib/previewLevel";
 
 interface Item {
   to: string;
@@ -19,6 +20,8 @@ const items: Item[] = [
 
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const previewLevel = usePreviewLevel();
+  const possibilitiesLocked = !isFeatureUnlocked("possibilities", previewLevel);
 
   const handleIconPress = (e: React.MouseEvent<HTMLElement>) => {
     const target = e.currentTarget.querySelector<HTMLElement>("[data-nav-icon]");
@@ -58,6 +61,7 @@ export function BottomNav() {
             );
           }
 
+          const showLock = it.to === "/partner" && possibilitiesLocked;
           return (
             <Link
               key={it.to}
@@ -65,12 +69,29 @@ export function BottomNav() {
               onClick={handleIconPress}
               className="tap flex flex-col items-center gap-1 py-1"
             >
-              <Icon
-                data-nav-icon
-                style={{ transition: "transform 0.15s ease" }}
-                className={"h-[22px] w-[22px] " + (active ? "text-primary" : "text-muted-foreground")}
-                strokeWidth={active ? 2.4 : 2}
-              />
+              <span className="relative">
+                <Icon
+                  data-nav-icon
+                  style={{ transition: "transform 0.15s ease" }}
+                  className={"h-[22px] w-[22px] " + (active ? "text-primary" : "text-muted-foreground")}
+                  strokeWidth={active ? 2.4 : 2}
+                />
+                {showLock && (
+                  <span
+                    className="absolute flex items-center justify-center bg-card"
+                    style={{
+                      right: -5,
+                      top: -4,
+                      width: 12,
+                      height: 12,
+                      borderRadius: "50%",
+                      boxShadow: "0 0 0 1.5px var(--card, #fff)",
+                    }}
+                  >
+                    <Lock className="h-[9px] w-[9px] text-muted-foreground" strokeWidth={2.8} />
+                  </span>
+                )}
+              </span>
               <span className={"text-[10.5px] " + (active ? "text-primary font-medium" : "text-muted-foreground")}>
                 {it.label}
               </span>

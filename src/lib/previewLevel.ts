@@ -53,15 +53,15 @@ export function usePreviewLevel(): PreviewLevel | null {
 
 // Открыт ли раздел на текущем уровне предпросмотра.
 // Если предпросмотр не активен — всё открыто (обычное поведение приложения).
-export type Feature = "flywheel" | "buddy" | "foursome" | "library" | "sections";
+export type Feature = "flywheel" | "buddy" | "foursome" | "library" | "sections" | "possibilities";
 
 const UNLOCKS: Record<PreviewLevel, Feature[]> = {
   1: [],
   2: ["buddy"],
   3: ["buddy", "flywheel"],
-  4: ["buddy", "flywheel", "foursome"],
-  5: ["buddy", "flywheel", "foursome", "library"],
-  6: ["buddy", "flywheel", "foursome", "library", "sections"],
+  4: ["buddy", "flywheel", "foursome", "possibilities"],
+  5: ["buddy", "flywheel", "foursome", "library", "possibilities"],
+  6: ["buddy", "flywheel", "foursome", "library", "sections", "possibilities"],
 };
 
 export function isFeatureUnlocked(feature: Feature, level: PreviewLevel | null): boolean {
