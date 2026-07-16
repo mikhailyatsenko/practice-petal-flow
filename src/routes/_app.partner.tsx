@@ -564,8 +564,8 @@ const EARNINGS_HISTORY_RAW: EarningEvent[] = [
     type: "trial-start",
     title: "Анна Смирнова вступила в клуб",
     subtitle: "Оплатила пробный месяц за 1 ₽",
-    dateISO: "2026-05-12T14:20:00",
-    dateLabel: "12 мая 2026, 14:20",
+    dateISO: "2026-06-05T14:20:00",
+    dateLabel: "5 июня 2026, 14:20",
   },
   {
     type: "trial-start",
