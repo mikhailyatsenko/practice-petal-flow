@@ -716,18 +716,19 @@ function Level1DoneCard() {
         background: "linear-gradient(180deg, #DCF7E3 0%, #F1FBF3 55%, #FFFFFF 100%)",
         border: "1px solid #B7E4C1",
         boxShadow: "0 8px 24px -12px rgba(34,165,87,0.25)",
-        padding: "20px 18px 18px",
+        padding: "22px 18px 18px",
       }}
     >
       <div className="flex items-center gap-4">
         <div
           className="shrink-0 flex items-center justify-center rounded-full"
           style={{
-            width: 64,
-            height: 64,
-            background: "#CDEFD6",
-            fontSize: 34,
+            width: 74,
+            height: 74,
+            background: "#D3F9DE",
+            fontSize: 38,
             lineHeight: 1,
+            boxShadow: "inset 0 0 0 1px rgba(34,165,87,0.10)",
           }}
           aria-hidden
         >
@@ -736,8 +737,8 @@ function Level1DoneCard() {
         <div className="min-w-0">
           <div
             style={{
-              color: "#1E8E4A",
-              fontSize: 13,
+              color: "#16A34A",
+              fontSize: 14,
               fontWeight: 700,
               letterSpacing: "0.02em",
             }}
@@ -747,9 +748,9 @@ function Level1DoneCard() {
           <div
             style={{
               marginTop: 2,
-              fontSize: 20,
+              fontSize: 21,
               fontWeight: 700,
-              color: "#0F2A18",
+              color: "#111827",
               lineHeight: 1.2,
             }}
           >
@@ -758,20 +759,28 @@ function Level1DoneCard() {
         </div>
       </div>
 
-      <div
-        style={{
-          marginTop: 16,
-          background: "rgba(255,255,255,0.7)",
-          border: "1px solid #CDEFD6",
-          borderRadius: 12,
-          padding: "12px 14px",
-        }}
-      >
-        <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2A18" }}>
-          👥 Открыт раздел «Бадди»
+      <div className="mt-5 flex items-start gap-3">
+        <div
+          className="shrink-0 flex items-center justify-center rounded-full"
+          style={{
+            width: 44,
+            height: 44,
+            background: "rgba(255,255,255,0.85)",
+            fontSize: 24,
+            lineHeight: 1,
+            boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+          }}
+          aria-hidden
+        >
+          👥
         </div>
-        <div style={{ marginTop: 4, fontSize: 12, color: "#4B6B57", lineHeight: 1.4 }}>
-          Теперь ты можешь найти своего Бадди и перейти к следующему этапу.
+        <div className="min-w-0 pt-0.5">
+          <div style={{ fontSize: 15, fontWeight: 600, color: "#0F2A18" }}>
+            Открыт раздел «Бадди»
+          </div>
+          <div style={{ marginTop: 3, fontSize: 13, color: "#4B6B57", lineHeight: 1.45 }}>
+            Теперь ты можешь найти своего Бадди и перейти к следующему этапу.
+          </div>
         </div>
       </div>
 
@@ -780,10 +789,10 @@ function Level1DoneCard() {
         onClick={handleNext}
         className="tap relative overflow-hidden"
         style={{
-          marginTop: 18,
+          marginTop: 20,
           marginLeft: 4,
           marginRight: 4,
-          background: "linear-gradient(135deg, #1FA84F 0%, #22A557 50%, #2FBB63 100%)",
+          background: "linear-gradient(90deg, #86EFAC 0%, #4ADE80 40%, #16A34A 100%)",
           borderRadius: 14,
           padding: "14px 18px",
           color: "#fff",
@@ -791,7 +800,7 @@ function Level1DoneCard() {
           fontSize: 15,
           border: "none",
           cursor: "pointer",
-          boxShadow: "0 6px 16px -6px rgba(31,168,79,0.55)",
+          boxShadow: "0 6px 18px -5px rgba(22,163,74,0.55)",
         }}
       >
         <span style={{ position: "relative", zIndex: 1 }}>Перейти к 2-му уровню</span>
