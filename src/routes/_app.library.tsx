@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SectionHeader, SubItemList } from "@/components/section/SubItemList";
 import { LibraryLockedPreview } from "@/components/section/LibraryLockedPreview";
 import { isFeatureUnlocked, unlockLevelOf, usePreviewLevel } from "@/lib/previewLevel";
+import { useLevel5WaitingMode } from "@/lib/level5WaitingMode";
 
 export const Route = createFileRoute("/_app/library")({
   head: () => ({
@@ -15,7 +16,8 @@ export const Route = createFileRoute("/_app/library")({
 
 function LibraryScreen() {
   const previewLevel = usePreviewLevel();
-  const open = isFeatureUnlocked("library", previewLevel);
+  const waiting = useLevel5WaitingMode();
+  const open = isFeatureUnlocked("library", previewLevel) && !waiting;
 
   return (
     <div className="px-4">
