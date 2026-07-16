@@ -406,21 +406,13 @@ function CodesTab() {
             )}
 
             {howTab === "video" && (
-              <div className="space-y-3">
-                <HowVideoCards
-                  first={{
-                    title: "ВИДЕО",
-                    duration: "1:20",
-                    caption: "В этом видео показано, где получать кодовые слова, как вводить их в приложении и какие награды можно открыть после активации.",
-                  }}
-                />
-                <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
-                  <p className="text-[12px] uppercase tracking-wide text-muted-foreground mb-2">Текстовое описание</p>
-                  <p className="text-[13px] leading-relaxed text-foreground/85">
-                    Получите кодовое слово на эфире, в задании или специальном сообщении клуба. Введите его в поле выше и нажмите «Активировать». За правильное кодовое слово вы можете получить дополнительные очки, бонус или доступ к секретному разделу.
-                  </p>
-                </div>
-              </div>
+              <HowVideoCards
+                first={{
+                  title: "ВИДЕО",
+                  duration: "1:20",
+                  caption: "В этом видео показано, где получать кодовые слова, как вводить их в приложении и какие награды можно открыть после активации.",
+                }}
+              />
             )}
           </div>
         )}
