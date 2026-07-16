@@ -111,7 +111,7 @@ export function SectionsLockedPreview({
       )}
 
       <div className={`text-center ${variant === "showcase" ? "mt-5" : ""}`}>
-        {variant === "simple" && icon ? (
+        {variant === "simple" && icon && (
           <div
             className="flex items-center justify-center"
             style={{
@@ -121,15 +121,24 @@ export function SectionsLockedPreview({
           >
             {icon}
           </div>
-        ) : (
-          <>
-            <p style={{ fontSize: 15, fontWeight: 700, color: "#1a1a1a", lineHeight: 1.3 }}>
-              {title}
-            </p>
-            <p style={{ fontSize: 13, color: "#8a8a8a", lineHeight: 1.5, marginTop: 6 }}>
-              {desc}
-            </p>
-          </>
+        )}
+        {title && (
+          <p
+            style={{
+              fontSize: 15,
+              fontWeight: 700,
+              color: "#1a1a1a",
+              lineHeight: 1.3,
+              marginTop: variant === "simple" && icon ? 10 : 0,
+            }}
+          >
+            {title}
+          </p>
+        )}
+        {desc && (
+          <p style={{ fontSize: 13, color: "#8a8a8a", lineHeight: 1.5, marginTop: 6 }}>
+            {desc}
+          </p>
         )}
       </div>
 
