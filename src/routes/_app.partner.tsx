@@ -625,8 +625,8 @@ const EARNINGS_HISTORY_RAW: EarningEvent[] = [
     type: "max-bot-start",
     title: "Иван Петров запустил MAX-бота",
     subtitle: "Перешёл по вашей партнёрской ссылке",
-    dateISO: "2026-06-04T18:25:00",
-    dateLabel: "4 июня 2026, 18:25",
+    dateISO: "2026-04-06T18:25:00",
+    dateLabel: "6 апреля 2026, 18:25",
   },
   {
     type: "trial-start",
@@ -637,14 +637,14 @@ const EARNINGS_HISTORY_RAW: EarningEvent[] = [
   },
   {
     type: "trial-start",
-    title: "Пётр Иванов вступил в клуб",
+    title: "Фёдор Смирнов вступил в клуб",
     subtitle: "Оплатил пробный месяц за 1 ₽",
     dateISO: "2026-02-14T09:30:00",
     dateLabel: "14 февраля 2026, 09:30",
   },
   {
     type: "churn",
-    title: "Пётр Иванов не продлил участие",
+    title: "Ольга Кузнецова не продлила участие",
     subtitle: "Подписка завершена",
     dateISO: "2026-03-14T00:05:00",
     dateLabel: "14 марта 2026, 00:05",
