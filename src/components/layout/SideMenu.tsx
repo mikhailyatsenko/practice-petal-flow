@@ -7,6 +7,8 @@ import { useFoursomeRequestMode, toggleFoursomeRequestMode } from "@/lib/foursom
 import { useCallReminder, toggleCallReminderMode } from "@/lib/callReminderMode";
 import { usePreviewLevel, togglePreviewLevel, type PreviewLevel } from "@/lib/previewLevel";
 import { useLevel4Gift, toggleGiftMode, resetGift } from "@/lib/level4Gift";
+import { useLevel1DoneMode, toggleLevel1DoneMode, setLevel1DoneMode } from "@/lib/level1DoneMode";
+import { setPreviewLevel } from "@/lib/previewLevel";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 interface SideMenuProps {
