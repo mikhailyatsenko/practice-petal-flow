@@ -336,7 +336,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             Демо-уровни
           </div>
           {([1, 2, 3, 4, 5, 6] as PreviewLevel[]).map((n) => {
-            const active = previewLevel === n && !level1Done && !level2Done && !level3Done && !level4Done;
+            const active = previewLevel === n && !level1Done && !level2Done && !level3Done && !level4Done && !level5Waiting;
             return (
               <div key={n}>
                 <button
@@ -345,6 +345,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                     if (level2Done) setLevel2DoneMode(false);
                     if (level3Done) setLevel3DoneMode(false);
                     if (level4Done) setLevel4DoneMode(false);
+                    if (level5Waiting) setLevel5WaitingMode(false);
                     togglePreviewLevel(n);
                   }}
                   className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
