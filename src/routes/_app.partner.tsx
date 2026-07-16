@@ -646,7 +646,7 @@ function EarningRow({ event }: { event: EarningEvent }) {
         </p>
       </div>
       <span
-        className="shrink-0 text-[12.5px] font-semibold whitespace-nowrap text-right max-w-[120px] leading-snug"
+        className="shrink-0 text-[12.5px] font-semibold text-right leading-snug max-w-[110px]"
         style={{ color: meta.amountColor }}
       >
         {meta.amount}
