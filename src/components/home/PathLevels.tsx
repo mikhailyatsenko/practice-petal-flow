@@ -339,7 +339,8 @@ const PREVIEW_LEVELS: Record<PreviewLevel, Level> = {
     emoji: "👥",
     gradient: "linear-gradient(135deg, #0F6E56, #1D9E75)",
     steps: [
-      { id: "s1", label: "Соединиться в четвёрку", done: false },
+      { id: "s1", label: "Создать Четвёрку", done: false },
+      { id: "s2", label: "Заполнить карточки участников второй пары", done: false },
     ],
     reward: [
       "Открывается Библиотека знаний",
