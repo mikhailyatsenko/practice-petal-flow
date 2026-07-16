@@ -411,8 +411,13 @@ export function PathLevels() {
   const level2Done = useLevel2DoneMode();
   const level3Done = useLevel3DoneMode();
   const level4Done = useLevel4DoneMode();
+  const level5Waiting = useLevel5WaitingMode();
   const [idx, setIdx] = useState(0);
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  if (level5Waiting) {
+    return <Level5WaitingCard />;
+  }
 
   if (level4Done) {
     return <Level4DoneCard />;
