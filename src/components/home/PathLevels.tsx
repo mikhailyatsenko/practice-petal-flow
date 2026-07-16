@@ -765,13 +765,35 @@ function Level1DoneCard() {
           border: "1px solid #CDEFD6",
           borderRadius: 12,
           padding: "12px 14px",
+          display: "flex",
+          alignItems: "flex-start",
+          gap: 10,
         }}
       >
-        <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2A18" }}>
-          👥 Открыт раздел «Бадди»
+        <div
+          aria-hidden
+          style={{
+            flexShrink: 0,
+            width: 24,
+            height: 24,
+            borderRadius: "50%",
+            background: "#1FA84F",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 1,
+            animation: "level1-check-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both",
+          }}
+        >
+          <Check size={15} color="#fff" strokeWidth={3} />
         </div>
-        <div style={{ marginTop: 4, fontSize: 12, color: "#4B6B57", lineHeight: 1.4 }}>
-          Теперь ты можешь найти своего Бадди и перейти к следующему этапу.
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2A18" }}>
+            Открыт раздел «Бадди»
+          </div>
+          <div style={{ marginTop: 4, fontSize: 12, color: "#4B6B57", lineHeight: 1.4 }}>
+            Теперь ты можешь найти своего Бадди и перейти к следующему этапу.
+          </div>
         </div>
       </div>
 
@@ -809,7 +831,7 @@ function Level1DoneCard() {
             animation: "level1-shine 2.4s linear infinite",
           }}
         />
-        <style>{`@keyframes level1-shine { 0% { left: -40%; } 60%, 100% { left: 120%; } }`}</style>
+        <style>{`@keyframes level1-shine { 0% { left: -40%; } 60%, 100% { left: 120%; } } @keyframes level1-check-pop { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }`}</style>
       </button>
     </article>
   );
