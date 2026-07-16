@@ -9,6 +9,7 @@ import { usePreviewLevel, togglePreviewLevel, type PreviewLevel } from "@/lib/pr
 import { useLevel4Gift, toggleGiftMode, resetGift } from "@/lib/level4Gift";
 import { useLevel1DoneMode, toggleLevel1DoneMode, setLevel1DoneMode } from "@/lib/level1DoneMode";
 import { useLevel2DoneMode, toggleLevel2DoneMode, setLevel2DoneMode } from "@/lib/level2DoneMode";
+import { useLevel3DoneMode, toggleLevel3DoneMode, setLevel3DoneMode } from "@/lib/level3DoneMode";
 import { setPreviewLevel } from "@/lib/previewLevel";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
@@ -26,6 +27,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
   const gift = useLevel4Gift();
   const level1Done = useLevel1DoneMode();
   const level2Done = useLevel2DoneMode();
+  const level3Done = useLevel3DoneMode();
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-[300px] sm:w-[320px] bg-background p-0 overflow-y-auto" data-version="v2">
@@ -330,13 +332,14 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             Демо-уровни
           </div>
           {([1, 2, 3, 4, 5, 6] as PreviewLevel[]).map((n) => {
-            const active = previewLevel === n && !level1Done && !level2Done;
+            const active = previewLevel === n && !level1Done && !level2Done && !level3Done;
             return (
               <div key={n}>
                 <button
                   onClick={() => {
                     if (level1Done) setLevel1DoneMode(false);
                     if (level2Done) setLevel2DoneMode(false);
+                    if (level3Done) setLevel3DoneMode(false);
                     togglePreviewLevel(n);
                   }}
                   className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
@@ -355,6 +358,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                   <button
                     onClick={() => {
                       if (level2Done) setLevel2DoneMode(false);
+                      if (level3Done) setLevel3DoneMode(false);
                       if (!level1Done) {
                         setPreviewLevel(1);
                         setLevel1DoneMode(true);
@@ -379,6 +383,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                   <button
                     onClick={() => {
                       if (level1Done) setLevel1DoneMode(false);
+                      if (level3Done) setLevel3DoneMode(false);
                       if (!level2Done) {
                         setPreviewLevel(2);
                         setLevel2DoneMode(true);
@@ -396,6 +401,31 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                     )}
                     <span>
                       {level2Done ? "Выключить: 2-й уровень пройден" : "2-й уровень пройден"}
+                    </span>
+                  </button>
+                )}
+                {n === 3 && (
+                  <button
+                    onClick={() => {
+                      if (level1Done) setLevel1DoneMode(false);
+                      if (level2Done) setLevel2DoneMode(false);
+                      if (!level3Done) {
+                        setPreviewLevel(3);
+                        setLevel3DoneMode(true);
+                      } else {
+                        toggleLevel3DoneMode();
+                      }
+                    }}
+                    className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+                    style={{ color: level3Done ? "#E53935" : "#22A557" }}
+                  >
+                    {level3Done ? (
+                      <BellOff className="h-[18px] w-[18px]" strokeWidth={2} />
+                    ) : (
+                      <CheckCircle2 className="h-[18px] w-[18px]" strokeWidth={2} />
+                    )}
+                    <span>
+                      {level3Done ? "Выключить: 3-й уровень пройден" : "3-й уровень пройден"}
                     </span>
                   </button>
                 )}
