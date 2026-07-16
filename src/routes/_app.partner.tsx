@@ -190,7 +190,13 @@ function PartnerTab() {
                 <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
                   <p className="text-[14px] font-semibold mb-2">🧮 Как считается начисление</p>
                   <p className="text-[13px] leading-relaxed text-foreground/85">
-                    Тебе начисляется ровно та сумма, которую заплатил друг. Если друг только начал и платит 1 ₽ за первый месяц — ты получаешь 1 бонусный ₽. Когда он переходит на регулярную оплату 1 000 ₽ в месяц — ты получаешь 1 000 бонусов с каждой его оплаты.
+                    Первый месяц приглашённого друга — пробный, он оплачивает его за 1 ₽. За пробный месяц бонусы не начисляются.
+                  </p>
+                  <p className="text-[13px] leading-relaxed text-foreground/85 mt-2">
+                    Если друг остаётся в клубе и оплачивает второй месяц, он становится активным участником. После этого каждое 1-е число тебе начисляется 1 000 бонусных рублей за этого друга.
+                  </p>
+                  <p className="text-[13px] leading-relaxed text-foreground/85 mt-2">
+                    Начисления продолжаются каждый месяц, пока друг остаётся в клубе и оплачивает участие.
                   </p>
                 </div>
                 <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
@@ -202,29 +208,45 @@ function PartnerTab() {
                 <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
                   <p className="text-[12px] uppercase tracking-wider text-muted-foreground mb-2">Схема</p>
                   <div className="flex flex-col gap-2">
-                    <BonusStep variant="orange" title="Друг платит" line1="1 ₽ — первый месяц" line2="1 000 ₽ — каждый следующий" />
+                    <BonusStep variant="orange" title="Друг вступает в клуб" line1="1 ₽ — пробный месяц" line2="За пробный месяц бонусы не начисляются." />
                     <StepArrow />
-                    <BonusStep variant="green" title="Тебе начисляется" line1="1 бонусный ₽ — в первый месяц" line2="1 000 бонусов ₽ — с каждой оплаты" />
+                    <BonusStep variant="green" title="Друг продолжает участие" line1="Со второго месяца друг оплачивает обычную стоимость клуба" line2="и становится активным участником." />
                     <StepArrow />
-                    <BonusStep variant="blue" title="Ты не платишь" line1="когда наступает твой день оплаты" line2="списываются бонусные рубли" />
+                    <BonusStep variant="blue" title="Тебе начисляется" line1="+1 000 бонусных рублей каждое 1-е число," line2="пока друг остаётся активным участником клуба." />
+                    <StepArrow />
+                    <BonusStep variant="purple" title="Бонусы оплачивают твой клуб" line1="В день твоей оплаты накопленные бонусные рубли" line2="автоматически списываются в счёт участия в клубе." />
                   </div>
                 </div>
                 <div className="bg-card hairline shadow-card p-4" style={{ borderRadius: 14 }}>
                   <p className="text-[14px] font-semibold mb-2">📊 Пример</p>
                   <p className="text-[13px] leading-relaxed text-foreground/85">
-                    Ты пригласил 2 друзей. Оба перешли на регулярную оплату 1 000 ₽/мес. За месяц тебе начислится 2 000 бонусов. Когда наступит твой день оплаты — система спишет 1 000 бонусов вместо денег, а 1 000 останутся на следующий месяц. Так твоё участие становится полностью бесплатным.
+                    Ты пригласил двух друзей.
+                  </p>
+                  <p className="text-[13px] leading-relaxed text-foreground/85 mt-2">
+                    Первый месяц каждый из них оплатил за 1 ₽ — в этот период бонусы ещё не начисляются.
+                  </p>
+                  <p className="text-[13px] leading-relaxed text-foreground/85 mt-2">
+                    Со второго месяца оба друга продолжили участие и стали активными участниками. Теперь каждое 1-е число тебе начисляется по 1 000 бонусных рублей за каждого:
+                  </p>
+                  <p className="text-[13px] leading-relaxed text-foreground/85 mt-2 font-semibold">
+                    2 друга × 1 000 ₽ = 2 000 бонусных рублей в месяц.
+                  </p>
+                  <p className="text-[13px] leading-relaxed text-foreground/85 mt-2">
+                    Когда наступает день твоей оплаты, накопленные бонусы автоматически списываются в счёт клуба. Если бонусов достаточно, участие становится для тебя бесплатным. Остаток сохраняется на балансе.
                   </p>
                 </div>
                 <div className="hairline shadow-card p-4" style={{ borderRadius: 14, background: "#FFF8EC" }}>
-                  <p className="text-[14px] font-semibold mb-2">🚀 А что если я приведу больше одного друга?</p>
+                  <p className="text-[14px] font-semibold mb-2">🚀 Чем больше активных друзей — тем больше бонусов</p>
                   <p className="text-[13px] leading-relaxed text-foreground/85">
-                    Тогда бонусы начнут копиться быстрее. За каждого друга и за каждую его оплату тебе начисляется отдельная сумма — и всё это складывается на одном балансе.
+                    За каждого активного друга тебе начисляется 1 000 бонусных рублей каждое 1-е число.
                   </p>
                   <p className="text-[13px] leading-relaxed text-foreground/85 mt-2">
-                    Например, привёл 3 друзей — за месяц получаешь 3 000 бонусов. Привёл 10 друзей — уже 10 000 бонусов в месяц. Этими бонусами ты сможешь оплачивать клуб в будущем — иногда на месяцы вперёд, без единого рубля из своего кармана.
+                    1 друг — 1 000 бонусов в месяц<br />
+                    3 друга — 3 000 бонусов в месяц<br />
+                    10 друзей — 10 000 бонусов в месяц
                   </p>
                   <p className="text-[13px] leading-relaxed text-foreground/85 mt-2">
-                    Чем больше друзей в клубе — тем дольше твоё участие остаётся бесплатным.
+                    Бонусы накапливаются и автоматически используются для оплаты клуба. Чем больше друзей продолжают участие, тем дольше ты можешь оплачивать клуб бонусами.
                   </p>
                 </div>
               </div>
