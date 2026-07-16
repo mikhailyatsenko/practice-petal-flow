@@ -345,6 +345,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                     if (level2Done) setLevel2DoneMode(false);
                     if (level3Done) setLevel3DoneMode(false);
                     if (level4Done) setLevel4DoneMode(false);
+                      if (level5Waiting) setLevel5WaitingMode(false);
                     if (level5Waiting) setLevel5WaitingMode(false);
                     togglePreviewLevel(n);
                   }}
@@ -366,6 +367,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                       if (level2Done) setLevel2DoneMode(false);
                       if (level3Done) setLevel3DoneMode(false);
                       if (level4Done) setLevel4DoneMode(false);
+                      if (level5Waiting) setLevel5WaitingMode(false);
                       if (!level1Done) {
                         setPreviewLevel(1);
                         setLevel1DoneMode(true);
@@ -392,6 +394,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                       if (level1Done) setLevel1DoneMode(false);
                       if (level3Done) setLevel3DoneMode(false);
                       if (level4Done) setLevel4DoneMode(false);
+                      if (level5Waiting) setLevel5WaitingMode(false);
                       if (!level2Done) {
                         setPreviewLevel(2);
                         setLevel2DoneMode(true);
@@ -418,6 +421,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                       if (level1Done) setLevel1DoneMode(false);
                       if (level2Done) setLevel2DoneMode(false);
                       if (level4Done) setLevel4DoneMode(false);
+                      if (level5Waiting) setLevel5WaitingMode(false);
                       if (!level3Done) {
                         setPreviewLevel(3);
                         setLevel3DoneMode(true);
