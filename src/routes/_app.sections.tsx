@@ -67,8 +67,7 @@ function SectionsScreen() {
         <SectionsLockedPreview
           variant="simple"
           unlockLevel={unlockLevelOf("sectionExtras")}
-          title="Защита прогресса"
-          description="Страховка от пропуска и заморозка клуба откроются на 5-м уровне."
+          icon="🛡️"
           badge="Откроется на 5-м уровне"
         />
       )}
