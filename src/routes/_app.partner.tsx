@@ -21,8 +21,9 @@ function PossibilitiesScreen() {
   return (
     <div className="px-4">
       <div className="px-1 pt-2 pb-3">
-        <h1 className="text-[22px] font-semibold leading-tight">
-          <span className="mr-1.5">✨</span>Возможности
+        <h1 className="text-[22px] font-semibold leading-tight inline-flex items-center gap-1.5">
+          <KeyRound className="h-5 w-5" style={{ color: "#FF6D00" }} />
+          Возможности
         </h1>
         <p className="mt-1.5 text-[13px] text-muted-foreground leading-snug">
           Доступ к дополнительным функциям и бонусам клуба.
