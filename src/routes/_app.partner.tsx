@@ -122,34 +122,21 @@ function PartnerTab() {
       <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
         <div className="flex items-center justify-between">
           <p className="text-[15px] font-semibold" style={{ color: "#1a1a1a" }}>Приглашённые друзья</p>
-          <span className="text-[12px] text-muted-foreground">{INVITED_FRIENDS.length} друга</span>
+          <span className="text-[12px] text-muted-foreground">{friendsCountLabel(INVITED_FRIENDS.length)}</span>
         </div>
-        <div className="mt-3 flex flex-col gap-3">
-          {INVITED_FRIENDS.slice(0, 3).map((f) => (
-            <FriendRow key={f.name} friend={f} />
+        <div className="mt-3 flex flex-col gap-3.5">
+          {INVITED_FRIENDS.map((f, i) => (
+            <div key={f.name}>
+              {i > 0 && <div className="h-px mb-3.5" style={{ background: "rgba(0,0,0,0.06)" }} />}
+              <FriendRow friend={f} />
+            </div>
           ))}
         </div>
-        {INVITED_FRIENDS.length > 3 && (
-          <button className="tap mt-3 w-full text-[13px] font-medium py-2 rounded-xl" style={{ color: "#FF6D00", background: "#FFF3E0" }}>
-            Смотреть всех друзей
-          </button>
-        )}
       </div>
 
       {/* Earnings history */}
-      <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
-        <p className="text-[15px] font-semibold" style={{ color: "#1a1a1a" }}>История начислений</p>
-        <div className="mt-3 flex flex-col gap-2.5">
-          {EARNINGS_HISTORY.slice(0, 5).map((e, i) => (
-            <EarningRow key={i} event={e} />
-          ))}
-        </div>
-        {EARNINGS_HISTORY.length > 5 && (
-          <button className="tap mt-3 w-full text-[13px] font-medium py-2 rounded-xl" style={{ color: "#FF6D00", background: "#FFF3E0" }}>
-            Смотреть всю историю
-          </button>
-        )}
-      </div>
+      <EarningsHistoryCard />
+
 
 
       {/* How it works */}
