@@ -405,8 +405,13 @@ export function PathLevels() {
   const previewLevel = usePreviewLevel();
   const level1Done = useLevel1DoneMode();
   const level2Done = useLevel2DoneMode();
+  const level3Done = useLevel3DoneMode();
   const [idx, setIdx] = useState(0);
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  if (level3Done) {
+    return <Level3DoneCard />;
+  }
 
   if (level2Done) {
     return <Level2DoneCard />;
