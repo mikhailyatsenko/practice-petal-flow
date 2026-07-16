@@ -64,19 +64,12 @@ function SectionsScreen() {
       <SectionHeader emoji="🧩" title="Разделы магазина" subtitle="Открывай дополнительные разделы за очки" />
 
       {extrasOpen && (
-        <>
-          <div className="mb-2 flex items-center gap-3">
-            <div className="h-px flex-1 bg-border" />
-            <span className="text-[11px] uppercase tracking-wider text-muted-foreground">Доп. функции</span>
-            <div className="h-px flex-1 bg-border" />
-          </div>
-          <SubItemList
-            items={[
-             { emoji: "🔰", title: "Страховка от пропуска",    subtitle: "Защита от обнуления",          price: "50 ⭐",  locked: false, onClick: () => setExtra("insurance") },
-             { emoji: "❄️", title: "Заморозка клуба",          subtitle: "Поставить клуб на паузу",     price: "300 ⭐", locked: false, onClick: () => setExtra("freeze") },
-            ]}
-          />
-        </>
+        <SubItemList
+          items={[
+           { emoji: "🔰", title: "Страховка от пропуска",    subtitle: "Защита от обнуления",          price: "50 ⭐",  locked: false, onClick: () => setExtra("insurance") },
+           { emoji: "❄️", title: "Заморозка клуба",          subtitle: "Поставить клуб на паузу",     price: "300 ⭐", locked: false, onClick: () => setExtra("freeze") },
+          ]}
+        />
       )}
 
       <div className="my-5 flex items-center gap-3">
