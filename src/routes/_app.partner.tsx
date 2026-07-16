@@ -372,7 +372,7 @@ function HistoryRow({
           {title}
         </p>
         <p className="mt-0.5 text-[12px] text-muted-foreground leading-snug">
-          {reward} · {date}
+          <span style={{ color: "#22A557" }}>{reward}</span> · {date}
         </p>
       </div>
     </div>
