@@ -6,6 +6,7 @@ import { useBuddyRequestMode, toggleBuddyRequestMode } from "@/lib/buddyRequestM
 import { useFoursomeRequestMode, toggleFoursomeRequestMode } from "@/lib/foursomeRequestMode";
 import { useCallReminder, toggleCallReminderMode } from "@/lib/callReminderMode";
 import { usePreviewLevel, togglePreviewLevel, type PreviewLevel } from "@/lib/previewLevel";
+import { useLevel4Gift, toggleGiftMode, resetGift } from "@/lib/level4Gift";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 interface SideMenuProps {
