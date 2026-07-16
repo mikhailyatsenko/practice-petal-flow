@@ -7,6 +7,7 @@ import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { SECTION_INFO, type SectionInfo } from "@/lib/sectionInfo";
 import { SectionsLockedPreview } from "@/components/section/SectionsLockedPreview";
 import { isFeatureUnlocked, unlockLevelOf, usePreviewLevel } from "@/lib/previewLevel";
+import { useLevel5WaitingMode } from "@/lib/level5WaitingMode";
 
 export const Route = createFileRoute("/_app/sections")({
   head: () => ({
@@ -28,7 +29,8 @@ type Confirm =
 function SectionsScreen() {
   const navigate = useNavigate();
   const previewLevel = usePreviewLevel();
-  const catalogOpen = isFeatureUnlocked("sections", previewLevel);
+  const waiting = useLevel5WaitingMode();
+  const catalogOpen = isFeatureUnlocked("sections", previewLevel) && !waiting;
   const extrasOpen = isFeatureUnlocked("sectionExtras", previewLevel);
   const [extra, setExtra] = useState<ExtraKey>(null);
   const [sectionKey, setSectionKey] = useState<string | null>(null);
