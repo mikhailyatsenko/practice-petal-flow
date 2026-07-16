@@ -1199,9 +1199,9 @@ function Level4DoneCard() {
 
       <div className="flex flex-col gap-3" style={{ marginTop: 16 }}>
         <RewardCheck
-          emoji="📚"
-          title="Открывается Библиотека знаний"
-          description="Тебе доступны книги, материалы и ИИ-тесты для следующего уровня."
+          emoji="🔰"
+          title="Открывается Страховка от пропуска"
+          description="Разовая защита от обнуления прогресса — покупай в разделе «Разделы»."
         />
         <RewardCheck
           emoji="🔰"
