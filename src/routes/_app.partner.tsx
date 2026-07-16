@@ -760,3 +760,101 @@ function EarningsHistoryCard() {
 
 
 
+
+// ============ Share partner link drawer ============
+
+const PARTNER_CODE = "u_a1b2c3";
+const TG_LINK = `https://t.me/moya_zhizn_bot?start=${PARTNER_CODE}`;
+const MAX_LINK = `https://max.ru/moya_zhizn_bot?start=${PARTNER_CODE}`;
+
+function ShareLinkDrawer({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
+  const [copied, setCopied] = useState<null | "tg" | "max">(null);
+
+  const copy = async (which: "tg" | "max") => {
+    const link = which === "tg" ? TG_LINK : MAX_LINK;
+    try {
+      await navigator.clipboard.writeText(link);
+    } catch {
+      /* noop */
+    }
+    setCopied(which);
+    setTimeout(() => {
+      setCopied(null);
+      onOpenChange(false);
+    }, 1200);
+  };
+
+  return (
+    <Drawer
+      open={open}
+      onOpenChange={(v) => {
+        onOpenChange(v);
+        if (!v) setCopied(null);
+      }}
+    >
+      <DrawerContent className="px-5 pb-6 pt-2 max-w-md mx-auto">
+        <div className="mx-auto mt-1 h-1 w-10 rounded-full bg-black/10" />
+        <div className="mt-3 text-center">
+          <p className="text-[17px] font-semibold" style={{ color: "#1a1a1a" }}>
+            Куда вы хотите пригласить друга?
+          </p>
+          <p className="mt-1 text-[13px] text-muted-foreground leading-snug">
+            Выберите мессенджер — мы скопируем нужную партнёрскую ссылку.
+          </p>
+        </div>
+
+        <div className="mt-5 flex flex-col gap-2.5">
+          <button
+            onClick={() => copy("tg")}
+            className="tap w-full rounded-2xl py-3.5 text-[15px] font-medium text-white inline-flex items-center justify-center gap-2"
+            style={{
+              background:
+                copied === "tg"
+                  ? "linear-gradient(135deg, #22c55e, #16a34a)"
+                  : "linear-gradient(135deg, #2AABEE, #229ED9)",
+              boxShadow: "0 8px 22px rgba(34, 158, 217, 0.30)",
+            }}
+          >
+            {copied === "tg" ? (
+              <>
+                <Check className="h-5 w-5" /> Ссылка Telegram скопирована
+              </>
+            ) : (
+              <>
+                <Send className="h-5 w-5" /> Скопировать ссылку Telegram
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={() => copy("max")}
+            className="tap w-full rounded-2xl py-3.5 text-[15px] font-medium text-white inline-flex items-center justify-center gap-2"
+            style={{
+              background:
+                copied === "max"
+                  ? "linear-gradient(135deg, #22c55e, #16a34a)"
+                  : "linear-gradient(135deg, #7B4DFF, #E24BE6)",
+              boxShadow: "0 8px 22px rgba(123, 77, 255, 0.30)",
+            }}
+          >
+            {copied === "max" ? (
+              <>
+                <Check className="h-5 w-5" /> Ссылка MAX скопирована
+              </>
+            ) : (
+              <>
+                <MaxIcon size={20} className="rounded-md" /> Скопировать ссылку MAX
+              </>
+            )}
+          </button>
+        </div>
+
+        <DrawerClose asChild>
+          <button className="tap mt-4 w-full py-3 text-[14px] font-medium text-muted-foreground">
+            Отмена
+          </button>
+        </DrawerClose>
+      </DrawerContent>
+    </Drawer>
+  );
+}
