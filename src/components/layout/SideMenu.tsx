@@ -358,6 +358,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                   <button
                     onClick={() => {
                       if (level2Done) setLevel2DoneMode(false);
+                      if (level3Done) setLevel3DoneMode(false);
                       if (!level1Done) {
                         setPreviewLevel(1);
                         setLevel1DoneMode(true);
@@ -382,6 +383,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                   <button
                     onClick={() => {
                       if (level1Done) setLevel1DoneMode(false);
+                      if (level3Done) setLevel3DoneMode(false);
                       if (!level2Done) {
                         setPreviewLevel(2);
                         setLevel2DoneMode(true);
@@ -399,6 +401,31 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                     )}
                     <span>
                       {level2Done ? "Выключить: 2-й уровень пройден" : "2-й уровень пройден"}
+                    </span>
+                  </button>
+                )}
+                {n === 3 && (
+                  <button
+                    onClick={() => {
+                      if (level1Done) setLevel1DoneMode(false);
+                      if (level2Done) setLevel2DoneMode(false);
+                      if (!level3Done) {
+                        setPreviewLevel(3);
+                        setLevel3DoneMode(true);
+                      } else {
+                        toggleLevel3DoneMode();
+                      }
+                    }}
+                    className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+                    style={{ color: level3Done ? "#E53935" : "#22A557" }}
+                  >
+                    {level3Done ? (
+                      <BellOff className="h-[18px] w-[18px]" strokeWidth={2} />
+                    ) : (
+                      <CheckCircle2 className="h-[18px] w-[18px]" strokeWidth={2} />
+                    )}
+                    <span>
+                      {level3Done ? "Выключить: 3-й уровень пройден" : "3-й уровень пройден"}
                     </span>
                   </button>
                 )}
