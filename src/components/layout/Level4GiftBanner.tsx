@@ -11,7 +11,11 @@ export function Level4GiftBanner() {
       to="/partner"
       search={{ tab: "codes" }}
       data-level4-gift-banner
-      className="fixed top-0 left-1/2 -translate-x-1/2 z-[60] w-full max-w-md px-3 pt-[max(env(safe-area-inset-top),8px)] pb-2 block"
+      className="fixed left-1/2 -translate-x-1/2 z-[60] w-full max-w-md px-3 pb-2 block"
+      style={{
+        top: "var(--level4-gift-top, 0px)",
+        paddingTop: "var(--level4-gift-pt, max(env(safe-area-inset-top), 8px))",
+      }}
       aria-label="Заберите подарок за переход на 4-й уровень"
     >
       <div
