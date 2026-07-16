@@ -28,18 +28,19 @@ type Confirm =
 function SectionsScreen() {
   const navigate = useNavigate();
   const previewLevel = usePreviewLevel();
-  const sectionsOpen = isFeatureUnlocked("sections", previewLevel);
+  const catalogOpen = isFeatureUnlocked("sections", previewLevel);
+  const extrasOpen = isFeatureUnlocked("sectionExtras", previewLevel);
   const [extra, setExtra] = useState<ExtraKey>(null);
   const [sectionKey, setSectionKey] = useState<string | null>(null);
   const [confirm, setConfirm] = useState<Confirm>(null);
 
   const open = (key: string) => setSectionKey(key);
 
-  if (!sectionsOpen) {
+  if (!catalogOpen && !extrasOpen) {
     return (
       <div className="px-4">
         <SectionHeader emoji="🧩" title="Разделы магазина" subtitle="Открывай дополнительные разделы за очки" />
-        <SectionsLockedPreview unlockLevel={unlockLevelOf("sections")} />
+        <SectionsLockedPreview unlockLevel={unlockLevelOf("sectionExtras")} />
       </div>
     );
   }
@@ -62,32 +63,46 @@ function SectionsScreen() {
     <div className="px-4">
       <SectionHeader emoji="🧩" title="Разделы магазина" subtitle="Открывай дополнительные разделы за очки" />
 
-      <SubItemList
-        items={[
-          { emoji: "💪", title: "Привычки",                subtitle: "Отслеживание любых привычек", price: "300 ⭐", locked: true, onClick: () => open("habits") },
-          { emoji: "👑", title: "Качества характера",      subtitle: "Развитие 100+ качеств",       price: "300 ⭐", locked: true, onClick: () => open("qualities") },
-          { emoji: "🧠", title: "Потребности",                                                       price: "300 ⭐", locked: true, onClick: () => open("needs") },
-          { emoji: "💡", title: "Ценности",                                                          price: "300 ⭐", locked: true, onClick: () => open("values") },
-          { emoji: "🤝", title: "Самоулучшение",            subtitle: "30 вопросов для рефлексии",    price: "300 ⭐", locked: true, onClick: () => open("self-improve") },
-          { emoji: "🙏", title: "Дневник благодарности",                                              price: "300 ⭐", locked: true, onClick: () => open("gratitude") },
-          { emoji: "🧭", title: "Дневник решений",                                                    price: "300 ⭐", locked: true, onClick: () => open("decisions") },
-          { emoji: "📝", title: "Дневник ошибок",                                                     price: "300 ⭐", locked: true, onClick: () => open("mistakes") },
-          { emoji: "⚖️", title: "Дневник ответственности",                                            price: "300 ⭐", locked: true, onClick: () => open("responsibility") },
-        ]}
-      />
+      {extrasOpen && (
+        <>
+          <div className="mb-2 flex items-center gap-3">
+            <div className="h-px flex-1 bg-border" />
+            <span className="text-[11px] uppercase tracking-wider text-muted-foreground">Доп. функции</span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+          <SubItemList
+            items={[
+             { emoji: "🔰", title: "Страховка от пропуска",    subtitle: "Защита от обнуления",          price: "50 ⭐",  locked: false, onClick: () => setExtra("insurance") },
+             { emoji: "❄️", title: "Заморозка клуба",          subtitle: "Поставить клуб на паузу",     price: "300 ⭐", locked: false, onClick: () => setExtra("freeze") },
+            ]}
+          />
+        </>
+      )}
 
       <div className="my-5 flex items-center gap-3">
         <div className="h-px flex-1 bg-border" />
-        <span className="text-[11px] uppercase tracking-wider text-muted-foreground">Доп. функции</span>
+        <span className="text-[11px] uppercase tracking-wider text-muted-foreground">Разделы</span>
         <div className="h-px flex-1 bg-border" />
       </div>
 
-      <SubItemList
-        items={[
-         { emoji: "🔰", title: "Страховка от пропуска",    subtitle: "Защита от обнуления",          price: "50 ⭐",  locked: false, onClick: () => setExtra("insurance") },
-         { emoji: "❄️", title: "Заморозка клуба",          subtitle: "Поставить клуб на паузу",     price: "300 ⭐", locked: false, onClick: () => setExtra("freeze") },
-        ]}
-      />
+      {catalogOpen ? (
+        <SubItemList
+          items={[
+            { emoji: "💪", title: "Привычки",                subtitle: "Отслеживание любых привычек", price: "300 ⭐", locked: true, onClick: () => open("habits") },
+            { emoji: "👑", title: "Качества характера",      subtitle: "Развитие 100+ качеств",       price: "300 ⭐", locked: true, onClick: () => open("qualities") },
+            { emoji: "🧠", title: "Потребности",                                                       price: "300 ⭐", locked: true, onClick: () => open("needs") },
+            { emoji: "💡", title: "Ценности",                                                          price: "300 ⭐", locked: true, onClick: () => open("values") },
+            { emoji: "🤝", title: "Самоулучшение",            subtitle: "30 вопросов для рефлексии",    price: "300 ⭐", locked: true, onClick: () => open("self-improve") },
+            { emoji: "🙏", title: "Дневник благодарности",                                              price: "300 ⭐", locked: true, onClick: () => open("gratitude") },
+            { emoji: "🧭", title: "Дневник решений",                                                    price: "300 ⭐", locked: true, onClick: () => open("decisions") },
+            { emoji: "📝", title: "Дневник ошибок",                                                     price: "300 ⭐", locked: true, onClick: () => open("mistakes") },
+            { emoji: "⚖️", title: "Дневник ответственности",                                            price: "300 ⭐", locked: true, onClick: () => open("responsibility") },
+          ]}
+        />
+      ) : (
+        <SectionsLockedPreview unlockLevel={unlockLevelOf("sections")} />
+      )}
+
 
       <Dialog open={extra !== null} onOpenChange={(o) => !o && setExtra(null)}>
         <DialogContent className="w-[calc(100vw-24px)] max-w-md max-h-[85vh] overflow-y-auto p-5">
