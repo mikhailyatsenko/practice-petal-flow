@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutGrid, Users, Gift, ListTree } from "lucide-react";
+import { LayoutGrid, Users, Sparkles, Gift, ListTree } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 interface Item {
