@@ -788,8 +788,9 @@ function Level1DoneCard() {
           <Check size={15} color="#fff" strokeWidth={3} />
         </div>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2A18" }}>
-            Открыт раздел «Бадди»
+          <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2A18", display: "flex", alignItems: "center", gap: 6 }}>
+            <span aria-hidden>👥</span>
+            <span>Открыт раздел «Бадди»</span>
           </div>
           <div style={{ marginTop: 4, fontSize: 12, color: "#4B6B57", lineHeight: 1.4 }}>
             Теперь ты можешь найти своего Бадди и перейти к следующему этапу.
