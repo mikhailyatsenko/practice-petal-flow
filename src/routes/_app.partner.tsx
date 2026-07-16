@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
-import { Copy, ArrowDown, ChevronDown, KeyRound, Gift, Zap, Trophy, Unlock, CheckCircle2, MinusCircle } from "lucide-react";
+import { Copy, ArrowDown, ChevronDown, KeyRound, Gift, Zap, Trophy, Unlock, CheckCircle2, MinusCircle, Check, Send } from "lucide-react";
+import { Drawer, DrawerContent, DrawerClose } from "@/components/ui/drawer";
+import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
 export const Route = createFileRoute("/_app/partner")({
   head: () => ({
