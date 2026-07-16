@@ -412,12 +412,13 @@ function HistoryRow({
   );
 }
 
-type BonusVariant = "orange" | "green" | "blue";
+type BonusVariant = "orange" | "green" | "blue" | "purple";
 
 const VARIANT_STYLES: Record<BonusVariant, { bg: string; border: string; title: string }> = {
   orange: { bg: "bg-primary/10", border: "border-primary/25", title: "text-primary" },
   green: { bg: "bg-success/10", border: "border-success/25", title: "text-success-dark" },
   blue: { bg: "bg-[oklch(0.92_0.04_220)]", border: "border-[oklch(0.75_0.08_220)]/30", title: "text-[oklch(0.45_0.12_220)]" },
+  purple: { bg: "bg-[oklch(0.92_0.05_300)]", border: "border-[oklch(0.75_0.10_300)]/30", title: "text-[oklch(0.45_0.15_300)]" },
 };
 
 function BonusStep({ title, line1, line2, variant }: { title: string; line1: string; line2: string; variant: BonusVariant }) {
