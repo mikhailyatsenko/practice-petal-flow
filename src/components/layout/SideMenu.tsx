@@ -11,6 +11,7 @@ import { useLevel1DoneMode, toggleLevel1DoneMode, setLevel1DoneMode } from "@/li
 import { useLevel2DoneMode, toggleLevel2DoneMode, setLevel2DoneMode } from "@/lib/level2DoneMode";
 import { useLevel3DoneMode, toggleLevel3DoneMode, setLevel3DoneMode } from "@/lib/level3DoneMode";
 import { useLevel4DoneMode, toggleLevel4DoneMode, setLevel4DoneMode } from "@/lib/level4DoneMode";
+import { useLevel5WaitingMode, toggleLevel5WaitingMode, setLevel5WaitingMode } from "@/lib/level5WaitingMode";
 import { setPreviewLevel } from "@/lib/previewLevel";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
@@ -30,6 +31,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
   const level2Done = useLevel2DoneMode();
   const level3Done = useLevel3DoneMode();
   const level4Done = useLevel4DoneMode();
+  const level5Waiting = useLevel5WaitingMode();
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-[300px] sm:w-[320px] bg-background p-0 overflow-y-auto" data-version="v2">
@@ -334,7 +336,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             Демо-уровни
           </div>
           {([1, 2, 3, 4, 5, 6] as PreviewLevel[]).map((n) => {
-            const active = previewLevel === n && !level1Done && !level2Done && !level3Done && !level4Done;
+            const active = previewLevel === n && !level1Done && !level2Done && !level3Done && !level4Done && !level5Waiting;
             return (
               <div key={n}>
                 <button
@@ -343,6 +345,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                     if (level2Done) setLevel2DoneMode(false);
                     if (level3Done) setLevel3DoneMode(false);
                     if (level4Done) setLevel4DoneMode(false);
+                    if (level5Waiting) setLevel5WaitingMode(false);
                     togglePreviewLevel(n);
                   }}
                   className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
@@ -363,6 +366,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                       if (level2Done) setLevel2DoneMode(false);
                       if (level3Done) setLevel3DoneMode(false);
                       if (level4Done) setLevel4DoneMode(false);
+                      if (level5Waiting) setLevel5WaitingMode(false);
                       if (!level1Done) {
                         setPreviewLevel(1);
                         setLevel1DoneMode(true);
@@ -389,6 +393,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                       if (level1Done) setLevel1DoneMode(false);
                       if (level3Done) setLevel3DoneMode(false);
                       if (level4Done) setLevel4DoneMode(false);
+                      if (level5Waiting) setLevel5WaitingMode(false);
                       if (!level2Done) {
                         setPreviewLevel(2);
                         setLevel2DoneMode(true);
@@ -415,6 +420,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                       if (level1Done) setLevel1DoneMode(false);
                       if (level2Done) setLevel2DoneMode(false);
                       if (level4Done) setLevel4DoneMode(false);
+                      if (level5Waiting) setLevel5WaitingMode(false);
                       if (!level3Done) {
                         setPreviewLevel(3);
                         setLevel3DoneMode(true);
@@ -482,6 +488,30 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
               {gift.mode ? "Выключить: подарок за 4-й уровень" : "🎁 Подарок за переход на 4-й уровень"}
             </span>
           </button>
+
+          <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
+            Ожидание 5-го уровня
+          </div>
+          <button
+            onClick={() => {
+              if (!level5Waiting) {
+                if (level1Done) setLevel1DoneMode(false);
+                if (level2Done) setLevel2DoneMode(false);
+                if (level3Done) setLevel3DoneMode(false);
+                if (level4Done) setLevel4DoneMode(false);
+              }
+              toggleLevel5WaitingMode();
+            }}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+            style={{ color: level5Waiting ? "#E53935" : "#5A56A8" }}
+          >
+            <CalendarClock className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>
+              {level5Waiting ? "Выключить: 5-й уровень — до 1 сентября" : "🚀 5-й уровень — до 1 сентября"}
+            </span>
+          </button>
+
+
 
 
           <div className="my-2 border-t border-border" />
