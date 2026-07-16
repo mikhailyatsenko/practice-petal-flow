@@ -10,6 +10,7 @@ import { useLevel4Gift, toggleGiftMode, resetGift } from "@/lib/level4Gift";
 import { useLevel1DoneMode, toggleLevel1DoneMode, setLevel1DoneMode } from "@/lib/level1DoneMode";
 import { useLevel2DoneMode, toggleLevel2DoneMode, setLevel2DoneMode } from "@/lib/level2DoneMode";
 import { useLevel3DoneMode, toggleLevel3DoneMode, setLevel3DoneMode } from "@/lib/level3DoneMode";
+import { useLevel4DoneMode, toggleLevel4DoneMode, setLevel4DoneMode } from "@/lib/level4DoneMode";
 import { setPreviewLevel } from "@/lib/previewLevel";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
@@ -28,6 +29,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
   const level1Done = useLevel1DoneMode();
   const level2Done = useLevel2DoneMode();
   const level3Done = useLevel3DoneMode();
+  const level4Done = useLevel4DoneMode();
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-[300px] sm:w-[320px] bg-background p-0 overflow-y-auto" data-version="v2">
@@ -332,7 +334,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             Демо-уровни
           </div>
           {([1, 2, 3, 4, 5, 6] as PreviewLevel[]).map((n) => {
-            const active = previewLevel === n && !level1Done && !level2Done && !level3Done;
+            const active = previewLevel === n && !level1Done && !level2Done && !level3Done && !level4Done;
             return (
               <div key={n}>
                 <button
@@ -340,6 +342,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                     if (level1Done) setLevel1DoneMode(false);
                     if (level2Done) setLevel2DoneMode(false);
                     if (level3Done) setLevel3DoneMode(false);
+                    if (level4Done) setLevel4DoneMode(false);
                     togglePreviewLevel(n);
                   }}
                   className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
@@ -359,6 +362,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                     onClick={() => {
                       if (level2Done) setLevel2DoneMode(false);
                       if (level3Done) setLevel3DoneMode(false);
+                      if (level4Done) setLevel4DoneMode(false);
                       if (!level1Done) {
                         setPreviewLevel(1);
                         setLevel1DoneMode(true);
@@ -384,6 +388,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                     onClick={() => {
                       if (level1Done) setLevel1DoneMode(false);
                       if (level3Done) setLevel3DoneMode(false);
+                      if (level4Done) setLevel4DoneMode(false);
                       if (!level2Done) {
                         setPreviewLevel(2);
                         setLevel2DoneMode(true);
@@ -409,6 +414,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                     onClick={() => {
                       if (level1Done) setLevel1DoneMode(false);
                       if (level2Done) setLevel2DoneMode(false);
+                      if (level4Done) setLevel4DoneMode(false);
                       if (!level3Done) {
                         setPreviewLevel(3);
                         setLevel3DoneMode(true);
@@ -426,6 +432,32 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
                     )}
                     <span>
                       {level3Done ? "Выключить: 3-й уровень пройден" : "3-й уровень пройден"}
+                    </span>
+                  </button>
+                )}
+                {n === 4 && (
+                  <button
+                    onClick={() => {
+                      if (level1Done) setLevel1DoneMode(false);
+                      if (level2Done) setLevel2DoneMode(false);
+                      if (level3Done) setLevel3DoneMode(false);
+                      if (!level4Done) {
+                        setPreviewLevel(4);
+                        setLevel4DoneMode(true);
+                      } else {
+                        toggleLevel4DoneMode();
+                      }
+                    }}
+                    className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+                    style={{ color: level4Done ? "#E53935" : "#22A557" }}
+                  >
+                    {level4Done ? (
+                      <BellOff className="h-[18px] w-[18px]" strokeWidth={2} />
+                    ) : (
+                      <CheckCircle2 className="h-[18px] w-[18px]" strokeWidth={2} />
+                    )}
+                    <span>
+                      {level4Done ? "Выключить: 4-й уровень пройден" : "4-й уровень пройден"}
                     </span>
                   </button>
                 )}

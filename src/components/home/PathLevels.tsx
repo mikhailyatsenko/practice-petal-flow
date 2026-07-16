@@ -5,6 +5,7 @@ import { usePreviewLevel, setPreviewLevel, type PreviewLevel } from "@/lib/previ
 import { useLevel1DoneMode, setLevel1DoneMode } from "@/lib/level1DoneMode";
 import { useLevel2DoneMode, setLevel2DoneMode } from "@/lib/level2DoneMode";
 import { useLevel3DoneMode, setLevel3DoneMode } from "@/lib/level3DoneMode";
+import { useLevel4DoneMode, setLevel4DoneMode } from "@/lib/level4DoneMode";
 
 
 interface LevelStep {
@@ -406,8 +407,13 @@ export function PathLevels() {
   const level1Done = useLevel1DoneMode();
   const level2Done = useLevel2DoneMode();
   const level3Done = useLevel3DoneMode();
+  const level4Done = useLevel4DoneMode();
   const [idx, setIdx] = useState(0);
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  if (level4Done) {
+    return <Level4DoneCard />;
+  }
 
   if (level3Done) {
     return <Level3DoneCard />;
@@ -1128,6 +1134,113 @@ function Level3DoneCard() {
     </article>
   );
 }
+
+function Level4DoneCard() {
+  const handleNext = () => {
+    setLevel4DoneMode(false);
+    setPreviewLevel(5);
+  };
+  return (
+    <article
+      className="rounded-2xl overflow-hidden animate-fade-up flex flex-col"
+      style={{
+        background: "linear-gradient(180deg, #DCF7E3 0%, #F1FBF3 55%, #FFFFFF 100%)",
+        border: "1px solid #B7E4C1",
+        boxShadow: "0 8px 24px -12px rgba(34,165,87,0.25)",
+        padding: "20px 18px 18px",
+      }}
+    >
+      <div className="flex items-center gap-4">
+        <div
+          className="shrink-0 flex items-center justify-center rounded-full"
+          style={{
+            width: 64,
+            height: 64,
+            background: "#CDEFD6",
+            fontSize: 34,
+            lineHeight: 1,
+          }}
+          aria-hidden
+        >
+          🎉
+        </div>
+        <div className="min-w-0">
+          <div
+            style={{
+              color: "#1E8E4A",
+              fontSize: 13,
+              fontWeight: 700,
+              letterSpacing: "0.02em",
+            }}
+          >
+            Поздравляем!
+          </div>
+          <div
+            style={{
+              marginTop: 2,
+              fontSize: 20,
+              fontWeight: 700,
+              color: "#0F2A18",
+              lineHeight: 1.2,
+            }}
+          >
+            Ты прошёл 4-й уровень
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3" style={{ marginTop: 16 }}>
+        <RewardCheck
+          emoji="📚"
+          title="Открывается Библиотека знаний"
+          description="Тебе доступны книги, материалы и ИИ-тесты для следующего уровня."
+        />
+        <RewardCheck
+          emoji="⭐"
+          title="+2 очка в день за Четвёрку"
+          description="Дополнительные очки начисляются за выполнение условий Четвёрки."
+        />
+      </div>
+
+      <button
+        type="button"
+        onClick={handleNext}
+        className="tap relative overflow-hidden"
+        style={{
+          marginTop: 18,
+          marginLeft: 4,
+          marginRight: 4,
+          background: "linear-gradient(135deg, #1FA84F 0%, #22A557 50%, #2FBB63 100%)",
+          borderRadius: 14,
+          padding: "14px 18px",
+          color: "#fff",
+          fontWeight: 600,
+          fontSize: 15,
+          border: "none",
+          cursor: "pointer",
+          boxShadow: "0 6px 16px -6px rgba(31,168,79,0.55)",
+        }}
+      >
+        <span style={{ position: "relative", zIndex: 1 }}>Перейти к 5-му уровню</span>
+        <span
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: 0,
+            left: "-40%",
+            width: "40%",
+            height: "100%",
+            background:
+              "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 50%, transparent 100%)",
+            transform: "skewX(-20deg)",
+            animation: "level2-shine 2.4s linear infinite",
+          }}
+        />
+      </button>
+    </article>
+  );
+}
+
 
 
 
