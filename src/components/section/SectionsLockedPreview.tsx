@@ -17,6 +17,7 @@ export function SectionsLockedPreview({
   description,
   badge,
   variant = "showcase",
+  icon,
 }: SectionsLockedPreviewProps) {
   const desc = description ?? `Дополнительные разделы клуба откроются на ${unlockLevel} уровне`;
   const badgeText = badge ?? `Откроется на уровне ${unlockLevel}`;
