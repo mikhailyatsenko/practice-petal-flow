@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutGrid, Users, Sparkles, KeyRound, ListTree } from "lucide-react";
+import { LayoutGrid, Users, Sparkles, KeyRound, ListTree, Lock } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { isFeatureUnlocked, usePreviewLevel } from "@/lib/previewLevel";
 
 interface Item {
   to: string;
