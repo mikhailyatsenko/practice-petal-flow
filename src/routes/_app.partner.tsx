@@ -708,7 +708,7 @@ function EarningsHistoryCard() {
   const visible = expanded ? EARNINGS_HISTORY : EARNINGS_HISTORY.slice(0, initial);
   return (
     <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
-      <p className="text-[15px] font-semibold" style={{ color: "#1a1a1a" }}>История начислений</p>
+      <p className="text-[15px] font-semibold" style={{ color: "#1a1a1a" }}>История партнёрки</p>
       <div className="mt-3 flex flex-col gap-3">
         {visible.map((e, i) => (
           <div key={i}>
