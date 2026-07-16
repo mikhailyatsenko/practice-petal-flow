@@ -428,4 +428,183 @@ function StepArrow() {
       <ArrowDown className="h-4 w-4 text-muted-foreground" />
     </div>
   );
+
+// ============ Invited friends & earnings history ============
+
+type FriendStatus = "trial" | "active" | "churned";
+
+interface Friend {
+  name: string;
+  photo?: string;
+  status: FriendStatus;
+  joinedAt: string;
+  bonus?: number;
 }
+
+const INVITED_FRIENDS: Friend[] = [
+  {
+    name: "Анна Смирнова",
+    photo: "https://randomuser.me/api/portraits/women/44.jpg",
+    status: "trial",
+    joinedAt: "с 12 мая 2026",
+  },
+  {
+    name: "Иван Петров",
+    photo: "https://randomuser.me/api/portraits/men/32.jpg",
+    status: "active",
+    joinedAt: "с 8 апреля 2026",
+    bonus: 1000,
+  },
+  {
+    name: "Мария Орлова",
+    photo: "https://randomuser.me/api/portraits/women/68.jpg",
+    status: "churned",
+    joinedAt: "с 3 апреля 2026",
+  },
+];
+
+const STATUS_META: Record<FriendStatus, { label: string; color: string; bg: string }> = {
+  trial: { label: "Пробный месяц", color: "#8a6d1f", bg: "#FFF3E0" },
+  active: { label: "Активный", color: "#22A557", bg: "#E7F7EC" },
+  churned: { label: "Не продолжил", color: "#8a8275", bg: "#EFEBE3" },
+};
+
+function initials(name: string): string {
+  return name
+    .split(" ")
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
+function FriendRow({ friend }: { friend: Friend }) {
+  const meta = STATUS_META[friend.status];
+  const statusLabel = friend.status === "churned" && friend.name.endsWith("а") ? "Не продолжила" : meta.label;
+  return (
+    <div className="flex items-center gap-3">
+      {friend.photo ? (
+        <img
+          src={friend.photo}
+          alt={friend.name}
+          className="shrink-0 rounded-full object-cover"
+          style={{ width: 44, height: 44 }}
+        />
+      ) : (
+        <div
+          className="shrink-0 flex items-center justify-center rounded-full text-[13px] font-semibold"
+          style={{ width: 44, height: 44, background: "#F0EBE2", color: "#6b6356" }}
+        >
+          {initials(friend.name)}
+        </div>
+      )}
+      <div className="min-w-0 flex-1">
+        <p className="text-[14px] font-medium leading-tight truncate" style={{ color: "#1a1a1a" }}>
+          {friend.name}
+        </p>
+        <p className="mt-0.5 text-[12px] leading-snug truncate">
+          <span style={{ color: meta.color }}>{statusLabel}</span>
+          <span className="text-muted-foreground"> · {friend.joinedAt}</span>
+        </p>
+      </div>
+      {friend.bonus ? (
+        <span
+          className="shrink-0 text-[13px] font-semibold px-2.5 py-1 rounded-full"
+          style={{ background: "#E7F7EC", color: "#22A557" }}
+        >
+          +{friend.bonus.toLocaleString("ru-RU")} ₽
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
+type EarningType = "trial-start" | "bonus" | "churn" | "spend";
+
+interface EarningEvent {
+  type: EarningType;
+  title: string;
+  subtitle: string;
+  amount: string;
+  amountColor?: string;
+  date: string;
+}
+
+const EARNINGS_HISTORY: EarningEvent[] = [
+  {
+    type: "trial-start",
+    title: "Анна Смирнова вступила в клуб",
+    subtitle: "Оплатила пробный месяц за 1 ₽",
+    amount: "0 ₽",
+    date: "12 мая 2026, 14:20",
+  },
+  {
+    type: "bonus",
+    title: "Анна Смирнова продолжила участие",
+    subtitle: "Оплатила второй месяц клуба",
+    amount: "+1 000 ₽",
+    amountColor: "#22A557",
+    date: "12 июня 2026, 09:15",
+  },
+  {
+    type: "trial-start",
+    title: "Иван Петров вступил в клуб",
+    subtitle: "Оплатил пробный месяц за 1 ₽",
+    amount: "0 ₽",
+    date: "8 апреля 2026, 18:42",
+  },
+  {
+    type: "churn",
+    title: "Иван Петров не продлил участие",
+    subtitle: "Пробный месяц завершён",
+    amount: "Без начисления",
+    date: "8 мая 2026, 00:05",
+  },
+  {
+    type: "bonus",
+    title: "Мария Орлова продолжила участие",
+    subtitle: "Оплатила второй месяц клуба",
+    amount: "+1 000 ₽",
+    amountColor: "#22A557",
+    date: "3 мая 2026, 11:30",
+  },
+];
+
+const EARNING_ICONS: Record<EarningType, { icon: React.ReactNode; bg: string }> = {
+  "trial-start": { icon: <UserPlus className="h-4.5 w-4.5" style={{ color: "#FF6D00" }} />, bg: "#FFEBD6" },
+  bonus: { icon: <PlusCircle className="h-4.5 w-4.5" style={{ color: "#22A557" }} />, bg: "#E7F7EC" },
+  churn: { icon: <MinusCircle className="h-4.5 w-4.5" style={{ color: "#8a8275" }} />, bg: "#EFEBE3" },
+  spend: { icon: <Wallet className="h-4.5 w-4.5" style={{ color: "#FF6D00" }} />, bg: "#FFEBD6" },
+};
+
+function EarningRow({ event }: { event: EarningEvent }) {
+  const meta = EARNING_ICONS[event.type];
+  return (
+    <div className="flex items-start gap-3">
+      <div
+        className="shrink-0 flex items-center justify-center mt-0.5"
+        style={{ width: 36, height: 36, borderRadius: 10, background: meta.bg }}
+      >
+        {meta.icon}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-[13.5px] font-medium leading-tight" style={{ color: "#1a1a1a" }}>
+          {event.title}
+        </p>
+        <p className="mt-0.5 text-[12px] text-muted-foreground leading-snug">
+          {event.subtitle}
+        </p>
+        <p className="mt-0.5 text-[11px] text-muted-foreground/80 leading-snug">
+          {event.date}
+        </p>
+      </div>
+      <span
+        className="shrink-0 text-[12.5px] font-semibold whitespace-nowrap"
+        style={{ color: event.amountColor ?? "#8a8275" }}
+      >
+        {event.amount}
+      </span>
+    </div>
+  );
+}
+
