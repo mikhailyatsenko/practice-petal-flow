@@ -284,7 +284,7 @@ function CodesTab() {
               Где брать кодовые слова?
             </p>
             <p className="mt-1 text-[13px] leading-snug" style={{ color: "#1a1a1a" }}>
-              Кодовые слова мы даём на эфирах, в заданиях и в специальных сообщениях клуба.
+              Кодовые слова можно получить во время эфиров и мероприятий, при выполнении заданий и в специальных сообщениях клуба.
             </p>
           </div>
         </div>
@@ -295,24 +295,31 @@ function CodesTab() {
         <p className="text-[11px] uppercase tracking-wider text-muted-foreground">История активаций</p>
         <div className="mt-3 flex flex-col gap-2.5">
           <HistoryRow
-            icon={<Star className="h-4.5 w-4.5" style={{ color: "#FFB300" }} />}
-            iconBg="#FFF3E0"
-            title="Доступ к материалам эфира"
-            reward="+50 очков"
-            date="12 мая, 20:15"
-          />
-          <HistoryRow
             icon={<Zap className="h-4.5 w-4.5" style={{ color: "#FF6D00" }} />}
             iconBg="#FFEBD6"
             title="Бонус за эфир"
             reward="+10 очков"
+            date="12 мая, 20:15"
+          />
+          <HistoryRow
+            icon={<Trophy className="h-4.5 w-4.5" style={{ color: "#FFB300" }} />}
+            iconBg="#FFF3E0"
+            title="Прохождение уровня"
+            reward="+50 очков"
+            date="10 мая, 18:30"
+          />
+          <HistoryRow
+            icon={<Unlock className="h-4.5 w-4.5" style={{ color: "#22A557" }} />}
+            iconBg="#E7F7EC"
+            title="Секретный раздел «Сила привычек»"
+            reward="Раздел открыт"
             date="8 мая, 19:30"
           />
           <HistoryRow
             icon={<Gift className="h-4.5 w-4.5" style={{ color: "#22A557" }} />}
             iconBg="#E7F7EC"
-            title="Секретный раздел «Финансовая свобода»"
-            reward="Раздел открыт"
+            title="Подарок от клуба"
+            reward="+20 очков"
             date="5 мая, 18:45"
           />
         </div>
