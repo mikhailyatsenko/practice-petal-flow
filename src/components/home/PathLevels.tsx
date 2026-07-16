@@ -4,6 +4,7 @@ import { LevelTaskSheet, type LevelTaskContent } from "./LevelTaskSheet";
 import { usePreviewLevel, setPreviewLevel, type PreviewLevel } from "@/lib/previewLevel";
 import { useLevel1DoneMode, setLevel1DoneMode } from "@/lib/level1DoneMode";
 import { useLevel2DoneMode, setLevel2DoneMode } from "@/lib/level2DoneMode";
+import { useLevel3DoneMode, setLevel3DoneMode } from "@/lib/level3DoneMode";
 
 
 interface LevelStep {
