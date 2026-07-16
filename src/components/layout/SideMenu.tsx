@@ -1,5 +1,5 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, RotateCcw, CalendarPlus, Bell, BellOff, Sparkles, Crown, ShieldCheck, Globe, Video, CalendarClock } from "lucide-react";
+import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound, RotateCcw, CalendarPlus, Bell, BellOff, Sparkles, Crown, ShieldCheck, Globe, Video, CalendarClock, Gift } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { resetAllPractices, advanceToNextDay } from "@/lib/practicesStore";
 import { useBuddyRequestMode, toggleBuddyRequestMode } from "@/lib/buddyRequestMode";
