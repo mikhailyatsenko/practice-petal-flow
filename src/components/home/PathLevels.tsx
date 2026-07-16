@@ -1278,7 +1278,7 @@ function Level5WaitingCard() {
           }}
           aria-hidden
         >
-          🚀
+          📚
         </div>
         <div className="min-w-0">
           <div
@@ -1289,7 +1289,7 @@ function Level5WaitingCard() {
               letterSpacing: "0.02em",
             }}
           >
-            Ты на текущем максимуме
+            5-й уровень — обучение с ИИ
           </div>
           <div
             style={{
@@ -1300,33 +1300,10 @@ function Level5WaitingCard() {
               lineHeight: 1.2,
             }}
           >
-            Ты прошёл все доступные уровни
-          </div>
-          <div
-            style={{
-              marginTop: 4,
-              fontSize: 13,
-              color: "#5A56A8",
-              fontWeight: 500,
-            }}
-          >
-            Продолжение откроется 1 сентября
+            Следующий этап откроется 1 сентября
           </div>
         </div>
       </div>
-
-      <p
-        style={{
-          marginTop: 16,
-          fontSize: 13.5,
-          lineHeight: 1.5,
-          color: "#2B2A4A",
-        }}
-      >
-        На 5-м уровне начнётся новый формат обучения: ты будешь изучать материалы
-        и обсуждать их с искусственным интеллектом, чтобы глубже понимать и
-        применять знания.
-      </p>
 
       <div
         style={{
@@ -1343,29 +1320,14 @@ function Level5WaitingCard() {
             fontWeight: 600,
             color: "#1B1A38",
             display: "flex",
-            alignItems: "center",
+            alignItems: "flex-start",
             gap: 8,
           }}
         >
-          <span aria-hidden style={{ fontSize: 18 }}>📚</span>
-          <span>5-й уровень — База знаний с ИИ</span>
-        </div>
-        <div
-          style={{
-            marginTop: 6,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            background: "#E1E3F5",
-            color: "#5A56A8",
-            fontSize: 12,
-            fontWeight: 600,
-            padding: "4px 10px",
-            borderRadius: 999,
-          }}
-        >
-          <span aria-hidden>🗓️</span>
-          Откроется 1 сентября
+          <span aria-hidden style={{ fontSize: 18, lineHeight: 1.2 }}>📚</span>
+          <span style={{ lineHeight: 1.35 }}>
+            Изучай материалы и обсуждай их с искусственным интеллектом, чтобы глубже понимать и применять знания.
+          </span>
         </div>
       </div>
 
@@ -1377,7 +1339,7 @@ function Level5WaitingCard() {
           lineHeight: 1.45,
         }}
       >
-        Продолжай выполнять ежедневные практики — весь прогресс сохранится.
+        Продолжай выполнять ежедневные практики — прогресс сохранится.
       </p>
     </article>
   );
