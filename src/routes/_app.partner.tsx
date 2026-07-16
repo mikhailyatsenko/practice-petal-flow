@@ -132,6 +132,10 @@ function PossibilitiesLocked({ currentLevel, unlockLevel }: { currentLevel: Prev
           </div>
         </div>
 
+        <h2 className="mt-5 text-center text-[17px] font-semibold text-foreground">
+          Раздел откроется на {unlockLevel}-м уровне
+        </h2>
+
         <WhatsInsideBlock />
 
         <div className="mt-5">
