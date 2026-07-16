@@ -489,6 +489,30 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             </span>
           </button>
 
+          <div className="px-3 pt-3 pb-1 text-[11px] uppercase text-muted-foreground/70" style={{ letterSpacing: 0.5 }}>
+            Ожидание 5-го уровня
+          </div>
+          <button
+            onClick={() => {
+              if (!level5Waiting) {
+                if (level1Done) setLevel1DoneMode(false);
+                if (level2Done) setLevel2DoneMode(false);
+                if (level3Done) setLevel3DoneMode(false);
+                if (level4Done) setLevel4DoneMode(false);
+              }
+              toggleLevel5WaitingMode();
+            }}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+            style={{ color: level5Waiting ? "#E53935" : "#5A56A8" }}
+          >
+            <CalendarClock className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>
+              {level5Waiting ? "Выключить: 5-й уровень — до 1 сентября" : "🚀 5-й уровень — до 1 сентября"}
+            </span>
+          </button>
+
+
+
 
           <div className="my-2 border-t border-border" />
           <Link
