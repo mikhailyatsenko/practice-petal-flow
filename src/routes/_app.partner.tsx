@@ -4,6 +4,7 @@ import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { Copy, ArrowDown, ChevronDown, KeyRound, Gift, Zap, Trophy, Unlock, CheckCircle2, MinusCircle, Check, Send } from "lucide-react";
 import { Drawer, DrawerContent, DrawerClose } from "@/components/ui/drawer";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
+import { isFeatureUnlocked, unlockLevelOf, usePreviewLevel, type PreviewLevel } from "@/lib/previewLevel";
 
 export const Route = createFileRoute("/_app/partner")({
   head: () => ({
