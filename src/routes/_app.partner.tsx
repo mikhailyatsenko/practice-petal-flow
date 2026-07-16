@@ -118,7 +118,10 @@ function PossibilitiesLocked({ currentLevel, unlockLevel }: { currentLevel: Prev
           Здесь ты сможешь вводить кодовые слова, открывать секретные разделы и узнать, как сделать участие в клубе бесплатным.
         </p>
 
+        <WhatsInsideBlock />
+
         <div className="mt-5">
+
           <div className="flex items-center justify-between text-[12px]">
             <span className="text-muted-foreground">Твой уровень</span>
             <span className="font-medium tabular-nums" style={{ color: "#FF6D00" }}>
@@ -140,7 +143,40 @@ function PossibilitiesLocked({ currentLevel, unlockLevel }: { currentLevel: Prev
   );
 }
 
+function WhatsInsideBlock() {
+  const rows = [
+    { icon: "🔑", title: "Кодовые слова с эфиров и заданий", desc: "Получай ключи и открывай новые возможности." },
+    { icon: "🎁", title: "Секретные разделы", desc: "Материалы и функции, недоступные другим участникам." },
+    { icon: "⚡", title: "Бонусы и награды", desc: "Дополнительные очки, привилегии и подарки." },
+    { icon: "🔥", title: "Возможность сделать клуб бесплатным", desc: "Откроется на 4-м уровне." },
+  ];
+
+  return (
+    <div className="mt-5 bg-card hairline shadow-card p-4" style={{ borderRadius: 16 }}>
+      <p className="text-[13px] font-semibold mb-3" style={{ color: "#1a1a1a" }}>
+        Что тебя ждёт внутри:
+      </p>
+      <div className="flex flex-col gap-3">
+        {rows.map((r) => (
+          <div key={r.title} className="flex items-start gap-3">
+            <span className="text-[18px] leading-none shrink-0">{r.icon}</span>
+            <div>
+              <p className="text-[13px] font-medium" style={{ color: "#1a1a1a" }}>
+                {r.title}
+              </p>
+              <p className="text-[12px] text-muted-foreground leading-snug">
+                {r.desc}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function PartnerTab() {
+
   const [howOpen, setHowOpen] = useState(false);
   const [howTab, setHowTab] = useState<"text" | "video">("text");
   const [shareOpen, setShareOpen] = useState(false);
