@@ -407,9 +407,94 @@ function CodesTab() {
   const [code, setCode] = useState("");
   const [howOpen, setHowOpen] = useState(false);
   const [howTab, setHowTab] = useState<"text" | "video">("text");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const gift = useLevel4Gift();
+
+  const showGiftCard = gift.mode && !gift.activated;
+
+  const activationDate = gift.activatedAt
+    ? formatActivationDate(gift.activatedAt)
+    : null;
+
+  const handleActivate = () => {
+    const entered = code.trim().toUpperCase();
+    setErrorMsg(null);
+    if (!entered) return;
+    if (entered === LEVEL4_GIFT_CODE) {
+      if (gift.activated) {
+        setErrorMsg("Это кодовое слово уже было активировано.");
+        return;
+      }
+      activateGift();
+      setSuccessOpen(true);
+      setCode("");
+      return;
+    }
+    setErrorMsg("Кодовое слово не распознано.");
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(LEVEL4_GIFT_CODE);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* noop */
+    }
+  };
 
   return (
     <>
+      {showGiftCard && (
+        <div
+          className="mb-3 rounded-2xl hairline shadow-card p-4"
+          style={{ background: "linear-gradient(180deg, #E7F7EC, #F1FAF3)" }}
+        >
+          <p className="text-[15px] font-semibold leading-tight" style={{ color: "#1a1a1a" }}>
+            🎉 Подарок за переход на 4-й уровень
+          </p>
+          <p className="mt-1.5 text-[13px] leading-snug" style={{ color: "#1a1a1a" }}>
+            Вы завершили 3-й уровень и открыли раздел «Возможности».
+            <br />
+            Мы дарим вам 50 бонусных очков.
+          </p>
+
+          <p className="mt-3 text-[13px] leading-snug" style={{ color: "#1a1a1a" }}>
+            Чтобы потренироваться активировать кодовые слова, введите в поле ниже слово:
+          </p>
+
+          <div
+            className="mt-3 rounded-xl px-4 py-3 text-center"
+            style={{
+              background: "#fff",
+              border: "1.5px dashed #22A557",
+            }}
+          >
+            <p
+              className="text-[22px] font-bold tracking-wider"
+              style={{ color: "#22A557", letterSpacing: "0.12em" }}
+            >
+              {LEVEL4_GIFT_CODE}
+            </p>
+          </div>
+
+          <button
+            onClick={handleCopy}
+            className="tap mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium"
+            style={{ background: "#fff", color: "#22A557", border: "1px solid #22A557" }}
+          >
+            {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+            {copied ? "Скопировано" : "Скопировать кодовое слово"}
+          </button>
+
+          <p className="mt-3 text-[12px] text-muted-foreground leading-snug">
+            После активации вам начислятся 50 бонусных очков.
+          </p>
+        </div>
+      )}
+
       {/* Main card: input + where-to-get */}
       <div className="rounded-2xl bg-card hairline shadow-card p-4">
         <div className="flex items-start gap-3">
@@ -432,12 +517,23 @@ function CodesTab() {
         <input
           type="text"
           value={code}
-          onChange={(e) => setCode(e.target.value)}
+          onChange={(e) => {
+            setCode(e.target.value);
+            if (errorMsg) setErrorMsg(null);
+          }}
           placeholder="Введите кодовое слово"
           className="mt-3 w-full rounded-xl bg-secondary/60 px-4 py-3 text-[14px] outline-none focus:ring-2 focus:ring-primary/40"
         />
 
-        <button className="tap btn-pill-orange mt-3 w-full">Активировать</button>
+        {errorMsg && (
+          <p className="mt-2 text-[12px]" style={{ color: "#E53935" }}>
+            {errorMsg}
+          </p>
+        )}
+
+        <button onClick={handleActivate} className="tap btn-pill-orange mt-3 w-full">
+          Активировать
+        </button>
 
         <div className="my-4 h-px" style={{ background: "rgba(0,0,0,0.06)" }} />
 
@@ -466,6 +562,15 @@ function CodesTab() {
       <div className="mt-3 rounded-2xl bg-card hairline shadow-card p-4">
         <p className="text-[11px] uppercase tracking-wider text-muted-foreground">История активаций</p>
         <div className="mt-3 flex flex-col gap-2.5">
+          {gift.activated && (
+            <HistoryRow
+              icon={<Sparkles className="h-4.5 w-4.5" style={{ color: "#22A557" }} />}
+              iconBg="#E7F7EC"
+              title="Подарок за переход на 4-й уровень"
+              reward="+50 очков"
+              date={activationDate ?? ""}
+            />
+          )}
           <HistoryRow
             icon={<Zap className="h-4.5 w-4.5" style={{ color: "#FF6D00" }} />}
             iconBg="#FFEBD6"
@@ -496,6 +601,26 @@ function CodesTab() {
           />
         </div>
       </div>
+
+      <Dialog open={successOpen} onOpenChange={setSuccessOpen}>
+        <DialogContent className="max-w-[340px]">
+          <DialogHeader>
+            <DialogTitle className="text-center">Кодовое слово активировано</DialogTitle>
+            <DialogDescription className="text-center">
+              Вам начислено 50 бонусных очков за переход на 4-й уровень.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <button
+              onClick={() => setSuccessOpen(false)}
+              className="tap btn-pill-orange w-full"
+            >
+              Отлично
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
 
       {/* How it works */}
       <section className="mt-6">
