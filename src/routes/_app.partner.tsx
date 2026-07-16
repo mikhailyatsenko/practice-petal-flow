@@ -273,6 +273,7 @@ function PartnerTab() {
 function CodesTab() {
   const [code, setCode] = useState("");
   const [howOpen, setHowOpen] = useState(false);
+  const [howTab, setHowTab] = useState<"text" | "video">("text");
 
   return (
     <>
