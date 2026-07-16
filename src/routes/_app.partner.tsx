@@ -644,7 +644,7 @@ const EARNINGS_HISTORY_RAW: EarningEvent[] = [
   },
   {
     type: "churn",
-    title: "Ольга Кузнецова не продлила участие",
+    title: "Фёдор Смирнов не продлил участие",
     subtitle: "Подписка завершена",
     dateISO: "2026-03-14T00:05:00",
     dateLabel: "14 марта 2026, 00:05",
