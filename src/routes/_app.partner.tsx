@@ -132,13 +132,6 @@ function PossibilitiesLocked({ currentLevel, unlockLevel }: { currentLevel: Prev
           </div>
         </div>
 
-        <p className="text-center mt-4 text-[16px] font-semibold leading-tight">
-          Раздел откроется на {unlockLevel}-м уровне
-        </p>
-        <p className="text-center mt-2 text-[13px] text-muted-foreground leading-snug">
-          Здесь ты сможешь вводить кодовые слова, открывать секретные разделы и узнать, как сделать участие в клубе бесплатным.
-        </p>
-
         <WhatsInsideBlock />
 
         <div className="mt-5">
