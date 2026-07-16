@@ -1,10 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
-import { Copy, ArrowDown, ChevronDown, KeyRound, Gift, Zap, Trophy, Unlock, CheckCircle2, MinusCircle, Check, Send } from "lucide-react";
+import { Copy, ArrowDown, ChevronDown, KeyRound, Gift, Zap, Trophy, Unlock, CheckCircle2, MinusCircle, Check, Send, Sparkles } from "lucide-react";
 import { Drawer, DrawerContent, DrawerClose } from "@/components/ui/drawer";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 import { isFeatureUnlocked, unlockLevelOf, usePreviewLevel, type PreviewLevel } from "@/lib/previewLevel";
+import {
+  LEVEL4_GIFT_CODE,
+  activateGift,
+  useLevel4Gift,
+} from "@/lib/level4Gift";
+
+type PartnerSearch = { tab?: "partner" | "codes" };
 
 export const Route = createFileRoute("/_app/partner")({
   head: () => ({
@@ -13,6 +21,10 @@ export const Route = createFileRoute("/_app/partner")({
       { name: "description", content: "Доступ к дополнительным функциям и бонусам клуба." },
     ],
   }),
+  validateSearch: (search: Record<string, unknown>): PartnerSearch => {
+    const t = search.tab;
+    return { tab: t === "codes" || t === "partner" ? t : undefined };
+  },
   component: PossibilitiesScreen,
 });
 
@@ -20,12 +32,21 @@ type Tab = "partner" | "codes";
 
 function PossibilitiesScreen() {
   const previewLevel = usePreviewLevel();
-  const unlocked = isFeatureUnlocked("possibilities", previewLevel);
-  const [tab, setTab] = useState<Tab>("partner");
+  const gift = useLevel4Gift();
+  // Демо-режим "подарок за 4-й уровень" считает пользователя перешедшим на 4-й уровень,
+  // поэтому раздел «Возможности» всегда открыт.
+  const unlocked = gift.mode ? true : isFeatureUnlocked("possibilities", previewLevel);
+  const search = Route.useSearch();
+  const [tab, setTab] = useState<Tab>(search.tab ?? "partner");
+  useEffect(() => {
+    if (search.tab) setTab(search.tab);
+  }, [search.tab]);
 
   if (!unlocked) {
     return <PossibilitiesLocked currentLevel={previewLevel ?? 1} unlockLevel={unlockLevelOf("possibilities")} />;
   }
+
+
 
 
   return (
