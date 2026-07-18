@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Check, X, Send, Pencil, ClipboardList, Video, Copy, Phone, Link } from "lucide-react";
 import { BackButton } from "@/components/layout/BackButton";
+import { pluralAge } from "@/lib/agePlural";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
 import { setTelemostLink, useTelemostLink } from "@/lib/telemostLinkStore";
