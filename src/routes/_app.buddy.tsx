@@ -869,6 +869,11 @@ function ConfirmSheet({
   onClose: () => void;
   onConfirm: () => void;
 }) {
+  const [job, setJob] = useState("");
+  const [bio, setBio] = useState("");
+  const [extra, setExtra] = useState("");
+  const valid = job.trim().length > 1 && bio.trim().length > 20;
+
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center">
       {/* Backdrop */}
@@ -879,7 +884,7 @@ function ConfirmSheet({
       />
       {/* Sheet */}
       <div
-        className="relative w-full max-w-md bg-card rounded-t-[24px] p-5 pb-7 animate-fade-up"
+        className="relative w-full max-w-md bg-card rounded-t-[24px] p-5 pb-7 animate-fade-up max-h-[92vh] overflow-y-auto"
         style={{ animationDuration: "260ms", boxShadow: "0 -10px 40px rgba(0,0,0,0.18)" }}
       >
         <div className="mx-auto mb-4" style={{ width: 40, height: 4, borderRadius: 2, background: "#ede8df" }} />
@@ -891,45 +896,71 @@ function ConfirmSheet({
           >
             {req.avatar}
           </div>
-          <h3 className="mt-3 text-[18px] font-bold">{req.name}</h3>
-          <p className="text-[13px] text-muted-foreground mt-0.5">
-            {req.job} · {req.day} в {req.time}
+          <h3 className="mt-3 text-[18px] font-bold">Запрос для {req.name}</h3>
+          <p className="text-[13px] text-muted-foreground mt-0.5 leading-snug px-2">
+            Расскажи о себе — {req.name} примет решение на основе твоей анкеты
           </p>
         </div>
 
-        <div
-          className="mt-4 rounded-xl p-3 text-[13px]"
-          style={{ background: "#FAF6EF", lineHeight: 1.5 }}
-        >
-          {req.bio}
+        <div className="mt-4 space-y-4">
+          <div>
+            <h4 className="text-[13px] font-semibold mb-1.5">Вид деятельности</h4>
+            <input
+              value={job}
+              onChange={(e) => setJob(e.target.value)}
+              placeholder="Например: Предприниматель, маркетолог..."
+              className="w-full bg-card rounded-xl px-3.5 py-2.5 text-[14px] outline-none transition-colors"
+              style={{ border: `1px solid ${job ? "#FF6D00" : "#ede8df"}` }}
+            />
+          </div>
+
+          <div>
+            <h4 className="text-[13px] font-semibold">Расскажи о себе</h4>
+            <p className="text-[12px] text-muted-foreground mt-0.5 mb-1.5">
+              Кто ты, чем живёшь, какие у тебя цели
+            </p>
+            <div className="relative">
+              <textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                placeholder="Например: Развиваю онлайн-школу, хочу выйти на 500к/мес."
+                className="w-full bg-card rounded-xl px-3.5 py-2.5 pb-6 text-[14px] outline-none transition-colors resize-none"
+                style={{ minHeight: 100, border: `1px solid ${bio ? "#FF6D00" : "#ede8df"}` }}
+              />
+              <span className="absolute right-3 bottom-2 text-[11px] text-muted-foreground">
+                {bio.length} символов
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-[13px] font-semibold">Дополнительные комментарии</h4>
+            <p className="text-[12px] text-muted-foreground mt-0.5 mb-1.5">
+              Необязательно — запасные слоты, важные моменты
+            </p>
+            <textarea
+              value={extra}
+              onChange={(e) => setExtra(e.target.value)}
+              placeholder="Например: могу также по вторникам вечером."
+              className="w-full bg-card rounded-xl px-3.5 py-2.5 text-[14px] outline-none transition-colors resize-none"
+              style={{ minHeight: 70, border: `1px solid ${extra ? "#FF6D00" : "#ede8df"}` }}
+            />
+          </div>
         </div>
 
-        {req.extra && (
-          <div
-            className="mt-2 rounded-xl p-3 text-[13px]"
-            style={{ background: "#fff8ee", border: "1px solid #ffe0a3", lineHeight: 1.5 }}
-          >
-            <div className="text-[11px] font-bold uppercase mb-1" style={{ color: "#FF6D00", letterSpacing: 0.4 }}>
-              💬 Доп. комментарии
-            </div>
-            <p className="text-foreground/85">{req.extra}</p>
-          </div>
-        )}
-
-        <p className="text-[13px] text-muted-foreground text-center mt-4 leading-snug">
-          Отправить запрос на партнёрство? {req.name} получит уведомление и сможет принять или отклонить.
-        </p>
-
-        <div className="mt-4 space-y-2">
+        <div className="mt-5 space-y-2">
           <button
-            onClick={onConfirm}
-            className="tap w-full rounded-2xl py-3.5 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
+            onClick={() => valid && onConfirm()}
+            disabled={!valid}
+            className="tap w-full rounded-2xl py-3.5 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2 transition-all"
             style={{
               background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-              boxShadow: "0 6px 20px rgba(255,109,0,0.40)",
+              boxShadow: valid ? "0 6px 20px rgba(255,109,0,0.40)" : "none",
+              opacity: valid ? 1 : 0.45,
+              cursor: valid ? "pointer" : "not-allowed",
             }}
           >
-            <Check className="h-4 w-4" /> Подтвердить отправку запроса
+            <Check className="h-4 w-4" /> Отправить запрос
           </button>
           {req.channels.includes("tg") && (
             <button
