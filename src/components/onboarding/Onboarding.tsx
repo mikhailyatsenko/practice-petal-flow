@@ -191,6 +191,19 @@ export function Onboarding({ onComplete, onClose }: OnboardingProps) {
               </p>
             </div>
 
+            <div className="mt-4 bg-card hairline rounded-2xl shadow-card p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Cake className="h-[18px] w-[18px] text-primary" strokeWidth={2} />
+                <p className="text-[14px] font-medium">Дата рождения</p>
+              </div>
+              <BirthdayWheel value={birthday} onChange={setBirthdayState} />
+              <p className="mt-3 text-[11px] text-muted-foreground">
+                Покрути барабаны, чтобы выбрать день, месяц и год
+              </p>
+            </div>
+
+
+
             <button
               onClick={handleSaveTz}
               className="tap mt-5 w-full rounded-2xl py-3.5 text-[15px] font-medium text-white"
