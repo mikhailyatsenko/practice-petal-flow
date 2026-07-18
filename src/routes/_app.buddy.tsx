@@ -1042,6 +1042,7 @@ const INCOMING_REQUESTS: BuddyRequest[] = [
   {
     id: "in1",
     name: "Сергей",
+    age: 36,
     avatar: "🧗",
     job: "Основатель стартапа",
     day: "Ср",
@@ -1053,6 +1054,7 @@ const INCOMING_REQUESTS: BuddyRequest[] = [
   {
     id: "in2",
     name: "Ольга",
+    age: 31,
     avatar: "🌿",
     job: "Психолог · частная практика",
     day: "Ср",
