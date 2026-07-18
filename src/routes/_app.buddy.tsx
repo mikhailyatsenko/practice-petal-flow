@@ -1023,6 +1023,8 @@ function ConfirmSheet({
             <X className="h-4 w-4" /> Отмена
           </button>
         </div>
+        </>
+        )}
       </div>
     </div>
   );
