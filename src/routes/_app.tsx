@@ -110,6 +110,17 @@ function AppLayout() {
       >
         <Level4GiftBanner />
       </div>
+      <div
+        style={
+          {
+            ["--level-done-top" as any]: `${levelDoneTop}px`,
+            ["--level-done-pt" as any]: levelDoneTop > 0 ? "8px" : "max(env(safe-area-inset-top), 8px)",
+          } as React.CSSProperties
+        }
+      >
+        <LevelDoneBanner />
+      </div>
+
 
 
 
