@@ -928,6 +928,28 @@ function ConfirmSheet({
             >
               <Send className="h-4 w-4" /> Отправить запрос
             </button>
+            {req.channels.includes("tg") && (
+              <button
+                className="tap w-full rounded-2xl py-3 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
+                style={{
+                  background: "linear-gradient(135deg, #2AABEE, #229ED9)",
+                  boxShadow: "0 4px 14px rgba(34,158,217,0.30)",
+                }}
+              >
+                <TelegramIcon size={16} /> Написать в Telegram
+              </button>
+            )}
+            {req.channels.includes("max") && (
+              <button
+                className="tap w-full rounded-2xl py-3 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
+                style={{
+                  background: "linear-gradient(135deg, #2E7BFF, #7B4DFF)",
+                  boxShadow: "0 4px 14px rgba(123,77,255,0.30)",
+                }}
+              >
+                <MaxIcon size={16} /> Написать в MAX
+              </button>
+            )}
             <button
               onClick={onClose}
               className="tap w-full rounded-2xl py-3 text-[14px] font-medium inline-flex items-center justify-center gap-2"
@@ -935,6 +957,7 @@ function ConfirmSheet({
             >
               <X className="h-4 w-4" /> Отмена
             </button>
+
           </div>
         ) : (
         <>
