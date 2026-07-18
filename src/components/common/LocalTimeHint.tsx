@@ -13,9 +13,9 @@ interface Props {
  */
 export function LocalTimeHint({ time, className = "", align = "right" }: Props) {
   const tz = useTimezone();
-  if (isMoscowTz(tz)) return null;
-  const local = mskToLocal(time, tz);
+  const local = isMoscowTz(tz) ? time : mskToLocal(time, tz);
   if (!local) return null;
+
   const alignCls =
     align === "right" ? "text-right" : align === "center" ? "text-center" : "text-left";
   return (
