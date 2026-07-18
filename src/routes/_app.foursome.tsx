@@ -6,6 +6,7 @@ import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 import { LeaveMenu } from "@/components/layout/LeaveMenu";
 import { FOURSOME_DEMO_MEMBERS, MY_BUDDY_MEMBER, ME_MEMBER, fullName } from "@/lib/foursomeDemo";
+import { pluralAge } from "@/lib/agePlural";
 import { useFoursomeProfiles, isProfileFilled } from "@/lib/foursomeProfileStore";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
 import { useTelemostLink } from "@/lib/telemostLinkStore";
@@ -258,6 +259,7 @@ function MemberRow({ m, withMessage, isRepresentative }: { m: Member; withMessag
         </div>
         <div className="text-[12px] text-muted-foreground truncate">
           {m.job}
+          {m.age ? ` · ${pluralAge(m.age)}` : ""}
           {m.username ? ` · @${m.username}` : ""}
         </div>
       </div>
