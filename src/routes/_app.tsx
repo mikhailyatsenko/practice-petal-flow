@@ -9,10 +9,12 @@ import { BuddyRequestBanner } from "@/components/layout/BuddyRequestBanner";
 import { FoursomeRequestBanner } from "@/components/layout/FoursomeRequestBanner";
 import { CallReminderBanner } from "@/components/layout/CallReminderBanner";
 import { Level4GiftBanner } from "@/components/layout/Level4GiftBanner";
+import { LevelDoneBanner, useLevelDoneBannerVisible } from "@/components/layout/LevelDoneBanner";
 import { useBuddyRequestMode } from "@/lib/buddyRequestMode";
 import { useFoursomeRequestMode } from "@/lib/foursomeRequestMode";
 import { useCallReminder } from "@/lib/callReminderMode";
 import { useLevel4GiftBannerVisible } from "@/lib/level4Gift";
+
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
@@ -57,6 +59,7 @@ function AppLayout() {
   const foursomeMode = useFoursomeRequestMode();
   const { mode: callMode, ack: callAck } = useCallReminder();
   const giftBannerOn = useLevel4GiftBannerVisible();
+  const levelDoneOn = useLevelDoneBannerVisible();
   const noLinkActive = callMode === "buddy-no-link" || callMode === "buddy-2h-no-link";
   const isTimed = callMode === "buddy-2h" || callMode === "buddy-2h-no-link" || callMode === "foursome-2h";
   const callBannerOn = !!callMode && (isTimed || noLinkActive || !callAck);
@@ -65,11 +68,14 @@ function AppLayout() {
   const foursomeH = useBannerHeight("[data-foursome-request-banner]", foursomeMode);
   const callH = useBannerHeight("[data-call-reminder-banner]", callBannerOn, [callMode]);
   const giftH = useBannerHeight("[data-level4-gift-banner]", giftBannerOn);
+  const levelDoneH = useBannerHeight("[data-level-done-banner]", levelDoneOn);
 
   const foursomeTop = buddyH;
   const callTop = buddyH + foursomeH;
   const giftTop = buddyH + foursomeH + callH;
-  const topPad = buddyH + foursomeH + callH + giftH;
+  const levelDoneTop = buddyH + foursomeH + callH + giftH;
+  const topPad = buddyH + foursomeH + callH + giftH + levelDoneH;
+
 
   return (
     <div className="mx-auto min-h-screen max-w-md bg-background">
@@ -104,6 +110,17 @@ function AppLayout() {
       >
         <Level4GiftBanner />
       </div>
+      <div
+        style={
+          {
+            ["--level-done-top" as any]: `${levelDoneTop}px`,
+            ["--level-done-pt" as any]: levelDoneTop > 0 ? "8px" : "max(env(safe-area-inset-top), 8px)",
+          } as React.CSSProperties
+        }
+      >
+        <LevelDoneBanner />
+      </div>
+
 
 
 
