@@ -982,13 +982,13 @@ function BrowseRequests({
                 className="text-[11px] font-bold px-2.5 py-1 rounded-full"
                 style={{ background: "#fff3e0", color: "#FF6D00" }}
               >
-                📅 {DAY_FULL[req.day]}
+                🕐 {req.time} МСК
               </span>
               <span
                 className="text-[11px] font-bold px-2.5 py-1 rounded-full"
                 style={{ background: "#fff3e0", color: "#FF6D00" }}
               >
-                🕐 {req.time} МСК
+                📅 {DAY_FULL[req.day]}
               </span>
             </div>
             <LocalTimeHint time={req.time} align="left" className="mb-3" />
