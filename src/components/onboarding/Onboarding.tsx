@@ -32,6 +32,7 @@ export function Onboarding({ onComplete, onClose }: OnboardingProps) {
 
   const handleSaveTz = () => {
     setTimezone(tz);
+    setBirthday(birthday);
     onComplete();
   };
 
