@@ -873,6 +873,7 @@ function ConfirmSheet({
   onClose: () => void;
   onConfirm: () => void;
 }) {
+  const [step, setStep] = useState<"intro" | "form">("intro");
   const [job, setJob] = useState("");
   const [bio, setBio] = useState("");
   const [extra, setExtra] = useState("");
@@ -902,9 +903,35 @@ function ConfirmSheet({
           </div>
           <h3 className="mt-3 text-[18px] font-bold">Запрос для {req.name}</h3>
           <p className="text-[13px] text-muted-foreground mt-0.5 leading-snug px-2">
-            Расскажи о себе — {req.name} примет решение на основе твоей анкеты
+            {step === "intro"
+              ? `Отправить ${req.name} запрос на созвон ${req.day} в ${req.time}?`
+              : `Расскажи о себе — ${req.name} примет решение на основе твоей анкеты`}
           </p>
         </div>
+
+        {step === "intro" ? (
+          <div className="mt-5 space-y-2">
+            <button
+              onClick={() => setStep("form")}
+              className="tap w-full rounded-2xl py-3.5 text-[14px] font-bold text-white inline-flex items-center justify-center gap-2"
+              style={{
+                background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                boxShadow: "0 6px 20px rgba(255,109,0,0.40)",
+              }}
+            >
+              <Send className="h-4 w-4" /> Отправить запрос
+            </button>
+            <button
+              onClick={onClose}
+              className="tap w-full rounded-2xl py-3 text-[14px] font-medium inline-flex items-center justify-center gap-2"
+              style={{ background: "transparent", border: "1px solid #ede8df", color: "var(--muted-foreground)" }}
+            >
+              <X className="h-4 w-4" /> Отмена
+            </button>
+          </div>
+        ) : (
+        <>
+
 
         <div className="mt-4 space-y-4">
           <div>
