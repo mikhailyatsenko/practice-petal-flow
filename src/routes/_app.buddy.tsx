@@ -41,6 +41,7 @@ export const Route = createFileRoute("/_app/buddy")({
 interface BuddyRequest {
   id: string;
   name: string;
+  age: number;
   avatar: string;
   job: string;
   day: string;
@@ -68,6 +69,7 @@ const DEMO_REQUESTS: BuddyRequest[] = [
   {
     id: "1",
     name: "Анна",
+    age: 29,
     avatar: "🌸",
     job: "Маркетолог",
     day: "Ср",
@@ -79,6 +81,7 @@ const DEMO_REQUESTS: BuddyRequest[] = [
   {
     id: "2",
     name: "Дмитрий",
+    age: 34,
     avatar: "🎯",
     job: "Предприниматель",
     day: "Пт",
@@ -90,6 +93,7 @@ const DEMO_REQUESTS: BuddyRequest[] = [
   {
     id: "3",
     name: "Мария",
+    age: 41,
     avatar: "✨",
     job: "Коуч",
     day: "Вт",
@@ -101,6 +105,7 @@ const DEMO_REQUESTS: BuddyRequest[] = [
   {
     id: "4",
     name: "Игорь",
+    age: 27,
     avatar: "🚀",
     job: "Фрилансер · дизайн",
     day: "Сб",
@@ -115,6 +120,7 @@ const DEMO_REQUESTS: BuddyRequest[] = [
 const DEMO_BUDDY: BuddyRequest = {
   id: "b1",
   name: "Алексей",
+  age: 32,
   avatar: "🧑‍💻",
   job: "Продакт-менеджер",
   day: "Чт",
