@@ -1272,13 +1272,22 @@ function IncomingFoursomeCard({
     <div className="bg-card hairline shadow-card rounded-2xl overflow-hidden animate-fade-up">
       {/* Шапка: дата/время созвона */}
       <div
-        className="px-4 py-3 flex items-center gap-2"
+        className="px-4 py-3"
         style={{ background: "linear-gradient(135deg, #fff8ee, #ffeacc)", borderBottom: "1px solid #ffe0a3" }}
       >
-        <Calendar className="h-4 w-4" style={{ color: "#FF6D00" }} />
-        <span className="text-[13px] font-bold" style={{ color: "#b45309" }}>
-          {DAY_FULL[req.day] ?? req.day} · {req.time}
-        </span>
+        <div className="flex items-center gap-2">
+          <Calendar className="h-4 w-4 shrink-0" style={{ color: "#FF6D00" }} />
+          <span className="text-[13px] font-bold flex-1 min-w-0 truncate" style={{ color: "#b45309" }}>
+            {DAY_FULL[req.day] ?? req.day}
+          </span>
+          <span
+            className="text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0"
+            style={{ background: "#fff", color: "#FF6D00", border: "1px solid #ffd7a3" }}
+          >
+            🕐 {req.time} МСК
+          </span>
+        </div>
+        <LocalTimeHint time={req.time} align="right" className="mt-1.5" />
       </div>
 
       <div className="p-4">
