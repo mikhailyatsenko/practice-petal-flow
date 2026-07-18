@@ -1190,10 +1190,10 @@ function Waiting({ to, onBack }: { to: FoursomeRequest; onBack: () => void }) {
         <div className="flex flex-col gap-1 pt-2 mt-2 border-t border-border/50">
           <div className="flex flex-wrap gap-2">
             <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
-              📅 {DAY_FULL[to.day]}
+              🕐 {to.time} МСК
             </span>
             <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
-              🕐 {to.time} МСК
+              📅 {DAY_FULL[to.day]}
             </span>
             <span className="text-[11px] font-bold px-2.5 py-1 rounded-full ml-auto" style={{ background: "#fff8dc", color: "#b45309" }}>
               Ожидание
