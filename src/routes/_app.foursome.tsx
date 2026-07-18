@@ -1267,6 +1267,8 @@ function IncomingFoursomeCard({
   };
   const totalConfirmed = confirmed.length;
   const allButMe = totalConfirmed === 3;
+  const [contactOpen, setContactOpen] = useState(false);
+
 
   return (
     <div className="bg-card hairline shadow-card rounded-2xl overflow-hidden animate-fade-up">
@@ -1353,15 +1355,44 @@ function IncomingFoursomeCard({
           </button>
         </div>
 
-        <a
-          href="https://t.me/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="tap mt-2 w-full rounded-xl py-3 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5"
-          style={{ background: "#FAF6EF", color: "#FF6D00", border: "1px solid #ede8df" }}
-        >
-          <Send className="h-4 w-4" /> Написать в мессенджере
-        </a>
+        {!contactOpen ? (
+          <button
+            onClick={() => setContactOpen(true)}
+            className="tap mt-2 w-full rounded-xl py-3 text-[13px] font-semibold inline-flex items-center justify-center gap-1.5"
+            style={{ background: "#FAF6EF", color: "#FF6D00", border: "1px solid #ede8df" }}
+          >
+            <Send className="h-4 w-4" /> Написать представителю пары
+          </button>
+        ) : (
+          <div className="mt-2 space-y-2">
+            <a
+              href="https://t.me/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tap w-full rounded-xl py-3 text-[13px] font-bold text-white inline-flex items-center justify-center gap-2"
+              style={{ background: "linear-gradient(135deg, #2AABEE, #229ED9)", boxShadow: "0 4px 14px rgba(34,158,217,0.30)" }}
+            >
+              <TelegramIcon size={16} /> Написать в Telegram
+            </a>
+            <a
+              href="https://max.ru/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tap w-full rounded-xl py-3 text-[13px] font-bold text-white inline-flex items-center justify-center gap-2"
+              style={{ background: "linear-gradient(135deg, #2E7BFF, #7B4DFF)", boxShadow: "0 4px 14px rgba(123,77,255,0.30)" }}
+            >
+              <MaxIcon size={16} /> Написать в MAX
+            </a>
+            <button
+              onClick={() => setContactOpen(false)}
+              className="tap w-full rounded-xl py-2.5 text-[12px] font-medium"
+              style={{ background: "transparent", border: "1px solid #ede8df", color: "var(--muted-foreground)" }}
+            >
+              Отмена
+            </button>
+          </div>
+        )}
+
       </div>
     </div>
   );
