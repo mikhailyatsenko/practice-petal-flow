@@ -6,6 +6,7 @@ import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 import { LeaveMenu } from "@/components/layout/LeaveMenu";
 import { FOURSOME_DEMO_MEMBERS, MY_BUDDY_MEMBER, ME_MEMBER, fullName } from "@/lib/foursomeDemo";
+import { pluralAge } from "@/lib/agePlural";
 import { useFoursomeProfiles, isProfileFilled } from "@/lib/foursomeProfileStore";
 import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
 import { useTelemostLink } from "@/lib/telemostLinkStore";
@@ -41,6 +42,7 @@ interface Member {
   lastName?: string;
   avatar: string;
   job: string;
+  age?: number;
   username?: string;
   bio?: string;
   telegram?: string; // username без @
@@ -93,8 +95,8 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f1",
     members: [
-      { userId: "u1", name: "Анна", lastName: "Петрова", avatar: "🌸", job: "Маркетолог", telegram: "anna_mkt", max: "https://max.ru/anna.mkt", bio: "Запускаю свой бренд косметики, цель — выйти на стабильные 300к/мес. Ищу системность и поддержку." },
-      { userId: "u2", name: "Ольга", lastName: "Ковалёва", avatar: "🌿", job: "Психолог", bio: "Веду частную практику и онлайн-курс. Хочу окружение, где растут и не сливаются с целей." },
+      { userId: "u1", name: "Анна", lastName: "Петрова", age: 29, avatar: "🌸", job: "Маркетолог", telegram: "anna_mkt", max: "https://max.ru/anna.mkt", bio: "Запускаю свой бренд косметики, цель — выйти на стабильные 300к/мес. Ищу системность и поддержку." },
+      { userId: "u2", name: "Ольга", lastName: "Ковалёва", age: 31, avatar: "🌿", job: "Психолог", bio: "Веду частную практику и онлайн-курс. Хочу окружение, где растут и не сливаются с целей." },
     ],
     representativeId: "u1",
     chatMessenger: "telegram",
@@ -105,8 +107,8 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f2",
     members: [
-      { userId: "u3", name: "Дмитрий", lastName: "Соколов", avatar: "🎯", job: "Предприниматель", max: "https://max.ru/dmitry.biz", bio: "Развиваю IT-агентство, цель года — 1М/мес. Ценю чёткие задачи и дисциплину." },
-      { userId: "u4", name: "Сергей", lastName: "Волков", avatar: "🚀", job: "Основатель стартапа", bio: "Делаю SaaS для малого бизнеса. Хочу окружение людей, которые тоже строят и не боятся больших целей." },
+      { userId: "u3", name: "Дмитрий", lastName: "Соколов", age: 34, avatar: "🎯", job: "Предприниматель", max: "https://max.ru/dmitry.biz", bio: "Развиваю IT-агентство, цель года — 1М/мес. Ценю чёткие задачи и дисциплину." },
+      { userId: "u4", name: "Сергей", lastName: "Волков", age: 38, avatar: "🚀", job: "Основатель стартапа", bio: "Делаю SaaS для малого бизнеса. Хочу окружение людей, которые тоже строят и не боятся больших целей." },
     ],
     representativeId: "u3",
     chatMessenger: "max",
@@ -117,8 +119,8 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   {
     id: "f3",
     members: [
-      { userId: "u5", name: "Мария", lastName: "Новикова", avatar: "✨", job: "Коуч", telegram: "maria_coach", max: "https://max.ru/maria.coach", bio: "Расту в личном бренде, веду программу для женщин. Ищу длинную дистанцию и честную обратную связь." },
-      { userId: "u6", name: "Ирина", lastName: "Белова", avatar: "🌷", job: "HR-директор", bio: "Перехожу из найма в консалтинг. Нужна команда, которая держит в фокусе и помогает не откладывать." },
+      { userId: "u5", name: "Мария", lastName: "Новикова", age: 41, avatar: "✨", job: "Коуч", telegram: "maria_coach", max: "https://max.ru/maria.coach", bio: "Расту в личном бренде, веду программу для женщин. Ищу длинную дистанцию и честную обратную связь." },
+      { userId: "u6", name: "Ирина", lastName: "Белова", age: 37, avatar: "🌷", job: "HR-директор", bio: "Перехожу из найма в консалтинг. Нужна команда, которая держит в фокусе и помогает не откладывать." },
     ],
     representativeId: "u5",
     chatMessenger: "telegram",
@@ -257,6 +259,7 @@ function MemberRow({ m, withMessage, isRepresentative }: { m: Member; withMessag
         </div>
         <div className="text-[12px] text-muted-foreground truncate">
           {m.job}
+          {m.age ? ` · ${pluralAge(m.age)}` : ""}
           {m.username ? ` · @${m.username}` : ""}
         </div>
       </div>

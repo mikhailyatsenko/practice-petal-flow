@@ -7,6 +7,7 @@ export interface FoursomeMember {
   lastName?: string;
   avatar: string;
   job: string;
+  age?: number;
   telegram?: string; // username без @
   max?: string;      // ссылка на профиль
 }
@@ -24,6 +25,7 @@ export const MY_BUDDY_MEMBER: FoursomeMember = {
   lastName: "Иванов",
   avatar: "🧑‍💻",
   job: "Продакт-менеджер",
+  age: 32,
   telegram: "alexey_ivanov",
   max: "https://max.ru/alexey.ivanov",
 };
@@ -37,6 +39,7 @@ export const FOURSOME_DEMO_MEMBERS: FoursomeMember[] = [
     lastName: "Смирнова",
     avatar: "🦋",
     job: "Архитектор",
+    age: 35,
     telegram: "elena_arc",
     max: "https://max.ru/elena.arc",
   },
@@ -46,6 +49,7 @@ export const FOURSOME_DEMO_MEMBERS: FoursomeMember[] = [
     lastName: "Морозов",
     avatar: "🎸",
     job: "Музыкант · продюсер",
+    age: 30,
     telegram: "pavel_m",
   },
 ];
