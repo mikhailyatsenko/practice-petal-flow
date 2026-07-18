@@ -809,7 +809,7 @@ function RequestCard({ req, onSend }: { req: BuddyRequest; onSend: () => void })
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="text-[15px] font-bold leading-tight">{req.name}</h3>
-          <p className="text-[12px] text-muted-foreground mt-0.5">{req.job}</p>
+          <p className="text-[12px] text-muted-foreground mt-0.5">{req.job} · {pluralAge(req.age)}</p>
         </div>
         <div className="flex flex-col items-end gap-1 shrink-0">
           <div className="flex flex-wrap gap-1.5 justify-end">
@@ -1113,7 +1113,7 @@ function Waiting({ to, onBack }: { to: BuddyRequest; onBack: () => void }) {
           <div className="min-w-0 flex-1">
             <h3 className="text-[15px] font-bold leading-tight">{to.name}</h3>
             <p className="text-[12px] text-muted-foreground mt-0.5">
-              {to.job} · {to.day} {to.time} МСК
+              {to.job} · {pluralAge(to.age)} · {to.day} {to.time} МСК
             </p>
             <LocalTimeHint time={to.time} align="left" className="mt-0.5" />
           </div>
@@ -1192,7 +1192,7 @@ function IncomingRequestCard({
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="text-[15px] font-bold leading-tight">{req.name}</h3>
-          <p className="text-[12px] text-muted-foreground mt-0.5">{req.job}</p>
+          <p className="text-[12px] text-muted-foreground mt-0.5">{req.job} · {pluralAge(req.age)}</p>
         </div>
         <div className="flex flex-col items-end gap-1 shrink-0">
           <span
@@ -1772,7 +1772,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
           <div className="min-w-0 flex-1">
             <h3 className="text-[16px] font-bold leading-tight">{buddy.name}</h3>
             <p className="text-[12px] text-muted-foreground mt-0.5">
-              {buddy.job} · @{buddy.name.toLowerCase()}
+              {buddy.job} · {pluralAge(buddy.age)} · @{buddy.name.toLowerCase()}
             </p>
             <div className="mt-1 flex items-center gap-2 flex-wrap">
               <p className="text-[12px] font-bold" style={{ color: "#FF6D00" }}>
