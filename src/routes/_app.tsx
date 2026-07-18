@@ -59,6 +59,7 @@ function AppLayout() {
   const foursomeMode = useFoursomeRequestMode();
   const { mode: callMode, ack: callAck } = useCallReminder();
   const giftBannerOn = useLevel4GiftBannerVisible();
+  const levelDoneOn = useLevelDoneBannerVisible();
   const noLinkActive = callMode === "buddy-no-link" || callMode === "buddy-2h-no-link";
   const isTimed = callMode === "buddy-2h" || callMode === "buddy-2h-no-link" || callMode === "foursome-2h";
   const callBannerOn = !!callMode && (isTimed || noLinkActive || !callAck);
@@ -67,11 +68,14 @@ function AppLayout() {
   const foursomeH = useBannerHeight("[data-foursome-request-banner]", foursomeMode);
   const callH = useBannerHeight("[data-call-reminder-banner]", callBannerOn, [callMode]);
   const giftH = useBannerHeight("[data-level4-gift-banner]", giftBannerOn);
+  const levelDoneH = useBannerHeight("[data-level-done-banner]", levelDoneOn);
 
   const foursomeTop = buddyH;
   const callTop = buddyH + foursomeH;
   const giftTop = buddyH + foursomeH + callH;
-  const topPad = buddyH + foursomeH + callH + giftH;
+  const levelDoneTop = buddyH + foursomeH + callH + giftH;
+  const topPad = buddyH + foursomeH + callH + giftH + levelDoneH;
+
 
   return (
     <div className="mx-auto min-h-screen max-w-md bg-background">
