@@ -21,18 +21,19 @@ export function LocalTimeHint({ time, className = "", align = "right" }: Props) 
   return (
     <div className={`flex ${justifyCls} ${className}`}>
       <span
-        className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold leading-none"
+        className="inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-bold leading-none shrink-0"
         style={{
-          background: "#fff3e0",
-          color: "#FF6D00",
-          border: "1px solid #ffd9a8",
+          background: "#EAF2FB",
+          color: "#2F6BB8",
+          border: "1px solid #cfe0f4",
         }}
       >
         <span aria-hidden>🕒</span>
         {local}
-        <span className="opacity-75 font-medium">по вашему</span>
+        <span className="font-semibold opacity-80">по вашему</span>
       </span>
     </div>
   );
 }
+
 
