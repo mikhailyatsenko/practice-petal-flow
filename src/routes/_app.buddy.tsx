@@ -1075,8 +1075,9 @@ function Waiting({ to, onBack }: { to: BuddyRequest; onBack: () => void }) {
           <div className="min-w-0 flex-1">
             <h3 className="text-[15px] font-bold leading-tight">{to.name}</h3>
             <p className="text-[12px] text-muted-foreground mt-0.5">
-              {to.job} · {to.day} {to.time}
+              {to.job} · {to.day} {to.time} МСК
             </p>
+            <LocalTimeHint time={to.time} align="left" className="mt-0.5" />
           </div>
           <span
             className="text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0"
@@ -1155,12 +1156,15 @@ function IncomingRequestCard({
           <h3 className="text-[15px] font-bold leading-tight">{req.name}</h3>
           <p className="text-[12px] text-muted-foreground mt-0.5">{req.job}</p>
         </div>
-        <span
-          className="text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0"
-          style={{ background: "#fff3e0", color: "#FF6D00" }}
-        >
-          {req.day} · {req.time}
-        </span>
+        <div className="flex flex-col items-end gap-1 shrink-0">
+          <span
+            className="text-[11px] font-bold px-2.5 py-1 rounded-full"
+            style={{ background: "#fff3e0", color: "#FF6D00" }}
+          >
+            {req.day} · {req.time} МСК
+          </span>
+          <LocalTimeHint time={req.time} />
+        </div>
       </div>
 
       <div
