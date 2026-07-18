@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Clock, Play, Sparkles, X } from "lucide-react";
+import { Cake, Clock, Play, Sparkles, X } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TIMEZONES, getTimezone, setTimezone } from "@/lib/timezoneStore";
+import { getBirthday, setBirthday, type Birthday } from "@/lib/birthdayStore";
+import { BirthdayWheel } from "@/components/onboarding/BirthdayWheel";
 
 interface OnboardingProps {
   onComplete: () => void;
@@ -15,6 +17,9 @@ export function Onboarding({ onComplete, onClose }: OnboardingProps) {
   const [error, setError] = useState(false);
   const [step, setStep] = useState<"code" | "tz">("code");
   const [tz, setTz] = useState<string>(() => getTimezone());
+  const [birthday, setBirthdayState] = useState<Birthday>(
+    () => getBirthday() ?? { day: 15, month: 6, year: 1995 },
+  );
 
   const handleSubmit = () => {
     if (code.trim().toLowerCase() === CODE_WORD) {
@@ -27,6 +32,7 @@ export function Onboarding({ onComplete, onClose }: OnboardingProps) {
 
   const handleSaveTz = () => {
     setTimezone(tz);
+    setBirthday(birthday);
     onComplete();
   };
 
@@ -184,6 +190,19 @@ export function Onboarding({ onComplete, onClose }: OnboardingProps) {
                 Позже можно изменить в разделе «Настройки»
               </p>
             </div>
+
+            <div className="mt-4 bg-card hairline rounded-2xl shadow-card p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Cake className="h-[18px] w-[18px] text-primary" strokeWidth={2} />
+                <p className="text-[14px] font-medium">Дата рождения</p>
+              </div>
+              <BirthdayWheel value={birthday} onChange={setBirthdayState} />
+              <p className="mt-3 text-[11px] text-muted-foreground">
+                Покрути барабаны, чтобы выбрать день, месяц и год
+              </p>
+            </div>
+
+
 
             <button
               onClick={handleSaveTz}
