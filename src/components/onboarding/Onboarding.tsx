@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Clock, Play, Sparkles, X } from "lucide-react";
+import { Cake, Clock, Play, Sparkles, X } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TIMEZONES, getTimezone, setTimezone } from "@/lib/timezoneStore";
+import { getBirthday, setBirthday, type Birthday } from "@/lib/birthdayStore";
+import { BirthdayWheel } from "@/components/onboarding/BirthdayWheel";
 
 interface OnboardingProps {
   onComplete: () => void;
@@ -15,6 +17,9 @@ export function Onboarding({ onComplete, onClose }: OnboardingProps) {
   const [error, setError] = useState(false);
   const [step, setStep] = useState<"code" | "tz">("code");
   const [tz, setTz] = useState<string>(() => getTimezone());
+  const [birthday, setBirthdayState] = useState<Birthday>(
+    () => getBirthday() ?? { day: 15, month: 6, year: 1995 },
+  );
 
   const handleSubmit = () => {
     if (code.trim().toLowerCase() === CODE_WORD) {
