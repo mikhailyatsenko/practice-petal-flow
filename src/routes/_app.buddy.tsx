@@ -813,12 +813,6 @@ function RequestCard({ req, onSend }: { req: BuddyRequest; onSend: () => void })
         </div>
         <div className="flex flex-col items-end gap-1 shrink-0">
           <div className="flex flex-wrap gap-1.5 justify-end">
-            <span
-              className="text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0 inline-flex items-center"
-              style={{ background: "#fff3e0", color: "#FF6D00" }}
-            >
-              {req.day} · {req.time} МСК
-            </span>
             {req.channels.map((ch) => {
               const Icon = ch === "tg" ? TelegramIcon : MaxIcon;
               const label = ch === "tg" ? "Telegram" : "MAX";
@@ -833,6 +827,12 @@ function RequestCard({ req, onSend }: { req: BuddyRequest; onSend: () => void })
                 </span>
               );
             })}
+            <span
+              className="text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0 inline-flex items-center"
+              style={{ background: "#fff3e0", color: "#FF6D00" }}
+            >
+              {req.day} · {req.time} МСК
+            </span>
           </div>
           <LocalTimeHint time={req.time} />
         </div>
