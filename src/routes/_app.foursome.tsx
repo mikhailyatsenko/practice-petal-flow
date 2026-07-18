@@ -11,6 +11,7 @@ import { useBuddyCard, isBuddyCardFilled } from "@/lib/buddyCardStore";
 import { useTelemostLink } from "@/lib/telemostLinkStore";
 import { useFoursomeChat } from "@/lib/foursomeChatStore";
 import { ackCallReminder, useCallReminder, formatHMS } from "@/lib/callReminderMode";
+import { LocalTimeHint } from "@/components/common/LocalTimeHint";
 
 
 
@@ -973,7 +974,7 @@ function BrowseRequests({
               })}
             </div>
 
-            <div className="flex flex-wrap gap-2 mb-3">
+            <div className="flex flex-wrap gap-2 mb-1">
               <span
                 className="text-[11px] font-bold px-2.5 py-1 rounded-full"
                 style={{ background: "#fff3e0", color: "#FF6D00" }}
@@ -987,6 +988,7 @@ function BrowseRequests({
                 🕐 {req.time} МСК
               </span>
             </div>
+            <LocalTimeHint time={req.time} align="left" className="mb-3" />
 
             <ChatBadge messenger={req.chatMessenger} />
 
@@ -1057,19 +1059,22 @@ function ConfirmSheet({
           {req.members.map((m) => (
             <MemberRow key={m.userId} m={m} isRepresentative={m.userId === req.representativeId} />
           ))}
-          <div className="flex flex-wrap gap-2 pt-1">
-            <span
-              className="text-[11px] font-bold px-2.5 py-1 rounded-full"
-              style={{ background: "#fff3e0", color: "#FF6D00" }}
-            >
-              📅 {DAY_FULL[req.day]}
-            </span>
-            <span
-              className="text-[11px] font-bold px-2.5 py-1 rounded-full"
-              style={{ background: "#fff3e0", color: "#FF6D00" }}
-            >
-              🕐 {req.time} МСК
-            </span>
+          <div className="flex flex-col gap-1 pt-1">
+            <div className="flex flex-wrap gap-2">
+              <span
+                className="text-[11px] font-bold px-2.5 py-1 rounded-full"
+                style={{ background: "#fff3e0", color: "#FF6D00" }}
+              >
+                📅 {DAY_FULL[req.day]}
+              </span>
+              <span
+                className="text-[11px] font-bold px-2.5 py-1 rounded-full"
+                style={{ background: "#fff3e0", color: "#FF6D00" }}
+              >
+                🕐 {req.time} МСК
+              </span>
+            </div>
+            <LocalTimeHint time={req.time} align="left" />
           </div>
         </div>
 
@@ -1179,16 +1184,19 @@ function Waiting({ to, onBack }: { to: FoursomeRequest; onBack: () => void }) {
             <MemberRow key={m.userId} m={m} />
           ))}
         </div>
-        <div className="flex flex-wrap gap-2 pt-2 mt-2 border-t border-border/50">
-          <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
-            📅 {DAY_FULL[to.day]}
-          </span>
-          <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
-            🕐 {to.time} МСК
-          </span>
-          <span className="text-[11px] font-bold px-2.5 py-1 rounded-full ml-auto" style={{ background: "#fff8dc", color: "#b45309" }}>
-            Ожидание
-          </span>
+        <div className="flex flex-col gap-1 pt-2 mt-2 border-t border-border/50">
+          <div className="flex flex-wrap gap-2">
+            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
+              📅 {DAY_FULL[to.day]}
+            </span>
+            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
+              🕐 {to.time} МСК
+            </span>
+            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full ml-auto" style={{ background: "#fff8dc", color: "#b45309" }}>
+              Ожидание
+            </span>
+          </div>
+          <LocalTimeHint time={to.time} align="left" />
         </div>
       </Card>
 
