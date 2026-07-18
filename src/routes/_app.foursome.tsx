@@ -1267,6 +1267,8 @@ function IncomingFoursomeCard({
   };
   const totalConfirmed = confirmed.length;
   const allButMe = totalConfirmed === 3;
+  const [contactOpen, setContactOpen] = useState(false);
+
 
   return (
     <div className="bg-card hairline shadow-card rounded-2xl overflow-hidden animate-fade-up">
