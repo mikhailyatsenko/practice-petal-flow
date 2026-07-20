@@ -22,6 +22,7 @@ import { Route as AppSectionsRouteImport } from './routes/_app.sections'
 import { Route as AppResponsibilityRouteImport } from './routes/_app.responsibility'
 import { Route as AppQualitiesRouteImport } from './routes/_app.qualities'
 import { Route as AppPartnerRouteImport } from './routes/_app.partner'
+import { Route as AppNotificationsRouteImport } from './routes/_app.notifications'
 import { Route as AppNeedsRouteImport } from './routes/_app.needs'
 import { Route as AppMyBuddyCardRouteImport } from './routes/_app.my-buddy-card'
 import { Route as AppMistakesRouteImport } from './routes/_app.mistakes'
@@ -108,6 +109,11 @@ const AppQualitiesRoute = AppQualitiesRouteImport.update({
 const AppPartnerRoute = AppPartnerRouteImport.update({
   id: '/partner',
   path: '/partner',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNotificationsRoute = AppNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => AppRoute,
 } as any)
 const AppNeedsRoute = AppNeedsRouteImport.update({
@@ -243,6 +249,7 @@ export interface FileRoutesByFullPath {
   '/mistakes': typeof AppMistakesRoute
   '/my-buddy-card': typeof AppMyBuddyCardRoute
   '/needs': typeof AppNeedsRoute
+  '/notifications': typeof AppNotificationsRoute
   '/partner': typeof AppPartnerRoute
   '/qualities': typeof AppQualitiesRoute
   '/responsibility': typeof AppResponsibilityRoute
@@ -279,6 +286,7 @@ export interface FileRoutesByTo {
   '/mistakes': typeof AppMistakesRoute
   '/my-buddy-card': typeof AppMyBuddyCardRoute
   '/needs': typeof AppNeedsRoute
+  '/notifications': typeof AppNotificationsRoute
   '/partner': typeof AppPartnerRoute
   '/qualities': typeof AppQualitiesRoute
   '/responsibility': typeof AppResponsibilityRoute
@@ -318,6 +326,7 @@ export interface FileRoutesById {
   '/_app/mistakes': typeof AppMistakesRoute
   '/_app/my-buddy-card': typeof AppMyBuddyCardRoute
   '/_app/needs': typeof AppNeedsRoute
+  '/_app/notifications': typeof AppNotificationsRoute
   '/_app/partner': typeof AppPartnerRoute
   '/_app/qualities': typeof AppQualitiesRoute
   '/_app/responsibility': typeof AppResponsibilityRoute
@@ -358,6 +367,7 @@ export interface FileRouteTypes {
     | '/mistakes'
     | '/my-buddy-card'
     | '/needs'
+    | '/notifications'
     | '/partner'
     | '/qualities'
     | '/responsibility'
@@ -394,6 +404,7 @@ export interface FileRouteTypes {
     | '/mistakes'
     | '/my-buddy-card'
     | '/needs'
+    | '/notifications'
     | '/partner'
     | '/qualities'
     | '/responsibility'
@@ -432,6 +443,7 @@ export interface FileRouteTypes {
     | '/_app/mistakes'
     | '/_app/my-buddy-card'
     | '/_app/needs'
+    | '/_app/notifications'
     | '/_app/partner'
     | '/_app/qualities'
     | '/_app/responsibility'
@@ -552,6 +564,13 @@ declare module '@tanstack/react-router' {
       path: '/partner'
       fullPath: '/partner'
       preLoaderRoute: typeof AppPartnerRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/notifications': {
+      id: '/_app/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AppNotificationsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/needs': {
@@ -731,6 +750,7 @@ interface AppRouteChildren {
   AppMistakesRoute: typeof AppMistakesRoute
   AppMyBuddyCardRoute: typeof AppMyBuddyCardRoute
   AppNeedsRoute: typeof AppNeedsRoute
+  AppNotificationsRoute: typeof AppNotificationsRoute
   AppPartnerRoute: typeof AppPartnerRoute
   AppQualitiesRoute: typeof AppQualitiesRoute
   AppResponsibilityRoute: typeof AppResponsibilityRoute
@@ -767,6 +787,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppMistakesRoute: AppMistakesRoute,
   AppMyBuddyCardRoute: AppMyBuddyCardRoute,
   AppNeedsRoute: AppNeedsRoute,
+  AppNotificationsRoute: AppNotificationsRoute,
   AppPartnerRoute: AppPartnerRoute,
   AppQualitiesRoute: AppQualitiesRoute,
   AppResponsibilityRoute: AppResponsibilityRoute,
