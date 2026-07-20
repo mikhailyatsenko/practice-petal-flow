@@ -26,6 +26,7 @@ interface SideMenuProps {
 export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps) {
   const buddyMode = useBuddyRequestMode();
   const buddyFound = useBuddyFoundMode();
+  const foursomeCreated = useFoursomeCreatedMode();
   const foursomeMode = useFoursomeRequestMode();
   const { mode: callMode } = useCallReminder();
   const previewLevel = usePreviewLevel();
