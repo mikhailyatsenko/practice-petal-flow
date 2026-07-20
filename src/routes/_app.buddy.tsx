@@ -388,7 +388,11 @@ function NoBuddy({
 
       {/* Ожидание — переход в карточку запросов */}
       <button
-        onClick={() => onNavigate({ name: "waiting", outgoing: DEMO_REQUESTS.slice(0, 2) })}
+        onClick={() => onNavigate({ name: "waiting", outgoing: [
+          makeWaitingItem(DEMO_REQUESTS[0], 23.5),
+          { req: DEMO_REQUESTS[1], status: "expired" },
+          { req: DEMO_REQUESTS[2], status: "declined" },
+        ] })}
         className="tap mt-3 w-full rounded-2xl px-3.5 py-3 flex items-center gap-3 text-left animate-fade-up"
         style={{
           background: "linear-gradient(135deg, #fff8ee, #fff3e0)",
