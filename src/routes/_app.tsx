@@ -9,7 +9,9 @@ import { BuddyRequestBanner } from "@/components/layout/BuddyRequestBanner";
 import { FoursomeRequestBanner } from "@/components/layout/FoursomeRequestBanner";
 import { CallReminderBanner } from "@/components/layout/CallReminderBanner";
 import { BuddyFoundBanner } from "@/components/layout/BuddyFoundBanner";
+import { FoursomeCreatedBanner } from "@/components/layout/FoursomeCreatedBanner";
 import { useBuddyFoundMode } from "@/lib/buddyFoundMode";
+import { useFoursomeCreatedMode } from "@/lib/foursomeCreatedMode";
 import { Level4GiftBanner } from "@/components/layout/Level4GiftBanner";
 import { LevelDoneBanner, useLevelDoneBannerVisible } from "@/components/layout/LevelDoneBanner";
 import { useBuddyRequestMode } from "@/lib/buddyRequestMode";
@@ -67,16 +69,20 @@ function AppLayout() {
   const callBannerOn = !!callMode && (isTimed || noLinkActive || !callAck);
   const buddyFoundOn = useBuddyFoundMode();
 
+  const foursomeCreatedOn = useFoursomeCreatedMode();
+
   const buddyH = useBannerHeight("[data-buddy-request-banner]", buddyMode);
   const foursomeH = useBannerHeight("[data-foursome-request-banner]", foursomeMode);
   const buddyFoundH = useBannerHeight("[data-buddy-found-banner]", buddyFoundOn);
+  const foursomeCreatedH = useBannerHeight("[data-foursome-created-banner]", foursomeCreatedOn);
   const callH = useBannerHeight("[data-call-reminder-banner]", callBannerOn, [callMode]);
   const giftH = useBannerHeight("[data-level4-gift-banner]", giftBannerOn);
   const levelDoneH = useBannerHeight("[data-level-done-banner]", levelDoneOn);
 
   const foursomeTop = buddyH;
   const buddyFoundTop = buddyH + foursomeH;
-  const callTop = buddyH + foursomeH + buddyFoundH;
+  const foursomeCreatedTop = buddyFoundTop + buddyFoundH;
+  const callTop = foursomeCreatedTop + foursomeCreatedH;
   const giftTop = callTop + callH;
   const levelDoneTop = giftTop + giftH;
   const topPad = levelDoneTop + levelDoneH;
@@ -104,6 +110,16 @@ function AppLayout() {
         }
       >
         <BuddyFoundBanner />
+      </div>
+      <div
+        style={
+          {
+            ["--foursome-created-top" as any]: `${foursomeCreatedTop}px`,
+            ["--foursome-created-pt" as any]: foursomeCreatedTop > 0 ? "8px" : "max(env(safe-area-inset-top), 8px)",
+          } as React.CSSProperties
+        }
+      >
+        <FoursomeCreatedBanner />
       </div>
       <div
         style={

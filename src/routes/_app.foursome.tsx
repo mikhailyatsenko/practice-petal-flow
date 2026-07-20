@@ -563,16 +563,12 @@ function NoFoursome({
       {/* Два способа */}
       <SectionLabel>Два способа найти Четвёрку</SectionLabel>
       <div className="space-y-2.5 mb-4">
-        {myOwn ? (
-          <MyOwnFoursomeSummary req={myOwn} onEdit={onEditMyRequest} onDelete={onDeleteMyRequest} />
-        ) : (
-          <ActionCard
-            emoji="✍️"
-            title="Оставить заявку"
-            subtitle="Опишите пару — вас найдут"
-            onClick={() => onNavigate({ name: "create_request" })}
-          />
-        )}
+        <ActionCard
+          emoji="✍️"
+          title="Оставить заявку"
+          subtitle={myOwn ? "Заявка создана" : "Опишите пару — вас найдут"}
+          onClick={() => onNavigate({ name: "create_request" })}
+        />
         <ActionCard
           emoji="🔍"
           title="Выбрать из заявок"
@@ -884,6 +880,7 @@ function CreateRequest({
   onDelete?: () => void;
 }) {
   const navigate = useNavigate();
+  const [editMode, setEditMode] = useState(!initial);
   const [day, setDay] = useState<string | null>(initial?.day ?? null);
   const [time, setTime] = useState<string | null>(initial?.time ?? null);
   const [extra, setExtra] = useState(initial?.extra ?? "");
@@ -895,15 +892,82 @@ function CreateRequest({
     if (!valid || !day || !time || !messenger) return;
     setMyFoursomeRequest({ day, time, extra: extra.trim(), messenger });
     if (editing) {
-      onBack();
+      setEditMode(false);
     } else {
       navigate({ to: "/foursome-chat", search: { messenger } });
     }
   };
 
+  if (editing && !editMode && initial) {
+    const myReq = buildMyFoursomeRequest(initial);
+    return (
+      <div className="px-4 pb-8">
+        <PageHeader title="Ваша заявка" onBack={onBack} />
+        <p className="text-[13px] text-muted-foreground -mt-2 mb-4 px-1">
+          Так вашу заявку видят другие пары
+        </p>
+        <Card className="p-3.5">
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <span className="text-[18px] font-bold text-muted-foreground">Ваша заявка</span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setEditMode(true)}
+                className="tap rounded-md py-1 px-2 text-[11px] font-medium inline-flex items-center gap-1"
+                style={{ background: "#fff", color: "#FF6D00", border: "1px solid #ffd8a8" }}
+              >
+                <Pencil className="h-3 w-3" /> Редактировать
+              </button>
+              {onDelete && (
+                <button
+                  onClick={onDelete}
+                  className="tap rounded-md py-1 px-2 text-[11px] font-medium inline-flex items-center gap-1"
+                  style={{ background: "#fff", color: "#dc2626", border: "1px solid #fecaca" }}
+                >
+                  <X className="h-3 w-3" /> Удалить
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="space-y-2 mb-3">
+            {myReq.members.map((m) => (
+              <MemberRow key={m.userId} m={m} isRepresentative={m.userId === myReq.representativeId} />
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-2 mb-1">
+            <span
+              className="text-[11px] font-bold px-2.5 py-1 rounded-full"
+              style={{ background: "#fff3e0", color: "#FF6D00" }}
+            >
+              🕐 {myReq.time} МСК
+            </span>
+            <span
+              className="text-[11px] font-bold px-2.5 py-1 rounded-full"
+              style={{ background: "#fff3e0", color: "#FF6D00" }}
+            >
+              📅 {DAY_FULL[myReq.day]}
+            </span>
+          </div>
+          <LocalTimeHint time={myReq.time} align="left" className="mb-3" />
+          <ChatBadge messenger={myReq.chatMessenger} />
+          {myReq.extra && (
+            <div
+              className="mt-1 rounded-xl p-3 text-[13px]"
+              style={{ background: "#fff8ee", border: "1px solid #ffe0a3", lineHeight: 1.5 }}
+            >
+              <div className="text-[11px] font-bold uppercase mb-1" style={{ color: "#FF6D00", letterSpacing: 0.4 }}>
+                💬 Доп. комментарии
+              </div>
+              <p className="text-foreground/85">{myReq.extra}</p>
+            </div>
+          )}
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="px-4 pb-8">
-      <PageHeader title={editing ? "Ваша заявка" : "Оставить заявку"} onBack={onBack} />
+      <PageHeader title={editing ? "Ваша заявка" : "Оставить заявку"} onBack={editing ? () => setEditMode(false) : onBack} />
       <p className="text-[13px] text-foreground mb-4 px-1">
         {editing
           ? "Отредактируйте параметры или удалите заявку"
@@ -1103,8 +1167,24 @@ function BrowseRequests({
             className="p-4"
           >
             {mine && (
-              <div className="mb-3 text-center">
+              <div className="mb-3 flex items-center justify-between gap-2">
                 <span className="text-[18px] font-bold text-muted-foreground">Ваша заявка</span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={onEditMyRequest}
+                    className="tap rounded-md py-1 px-2 text-[11px] font-medium inline-flex items-center gap-1"
+                    style={{ background: "#fff", color: "#FF6D00", border: "1px solid #ffd8a8" }}
+                  >
+                    <Pencil className="h-3 w-3" /> Редактировать
+                  </button>
+                  <button
+                    onClick={onDeleteMyRequest}
+                    className="tap rounded-md py-1 px-2 text-[11px] font-medium inline-flex items-center gap-1"
+                    style={{ background: "#fff", color: "#dc2626", border: "1px solid #fecaca" }}
+                  >
+                    <X className="h-3 w-3" /> Удалить
+                  </button>
+                </div>
               </div>
             )}
             <div className="space-y-2 mb-3">
@@ -1176,24 +1256,7 @@ function BrowseRequests({
               </div>
             )}
 
-            {mine ? (
-              <div className="flex justify-end gap-1.5">
-                <button
-                  onClick={onEditMyRequest}
-                  className="tap rounded-md py-1 px-2 text-[11px] font-medium inline-flex items-center gap-1"
-                  style={{ background: "#fff", color: "#FF6D00", border: "1px solid #ffd8a8" }}
-                >
-                  <Pencil className="h-3 w-3" /> Редактировать
-                </button>
-                <button
-                  onClick={onDeleteMyRequest}
-                  className="tap rounded-md py-1 px-2 text-[11px] font-medium inline-flex items-center gap-1"
-                  style={{ background: "#fff", color: "#dc2626", border: "1px solid #fecaca" }}
-                >
-                  <X className="h-3 w-3" /> Удалить
-                </button>
-              </div>
-            ) : (
+            {mine ? null : (
               <button
                 onClick={() => setConfirming(req)}
                 className="tap w-full py-2.5 rounded-xl text-white text-[13px] font-bold"

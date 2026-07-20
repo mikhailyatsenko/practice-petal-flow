@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { resetAllPractices, advanceToNextDay } from "@/lib/practicesStore";
 import { useBuddyRequestMode, toggleBuddyRequestMode } from "@/lib/buddyRequestMode";
 import { useBuddyFoundMode, toggleBuddyFoundMode } from "@/lib/buddyFoundMode";
+import { useFoursomeCreatedMode, toggleFoursomeCreatedMode } from "@/lib/foursomeCreatedMode";
 import { useFoursomeRequestMode, toggleFoursomeRequestMode } from "@/lib/foursomeRequestMode";
 import { useCallReminder, toggleCallReminderMode } from "@/lib/callReminderMode";
 import { usePreviewLevel, togglePreviewLevel, type PreviewLevel } from "@/lib/previewLevel";
@@ -25,6 +26,7 @@ interface SideMenuProps {
 export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps) {
   const buddyMode = useBuddyRequestMode();
   const buddyFound = useBuddyFoundMode();
+  const foursomeCreated = useFoursomeCreatedMode();
   const foursomeMode = useFoursomeRequestMode();
   const { mode: callMode } = useCallReminder();
   const previewLevel = usePreviewLevel();
@@ -228,6 +230,22 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             )}
             <span>
               {buddyFound ? "Выключить режим „Бадди найден“" : "Включить режим „Бадди найден“"}
+            </span>
+          </button>
+          <button
+            onClick={() => {
+              toggleFoursomeCreatedMode();
+            }}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+            style={{ color: foursomeCreated ? "#E53935" : "#FF6D00" }}
+          >
+            {foursomeCreated ? (
+              <BellOff className="h-[18px] w-[18px]" strokeWidth={2} />
+            ) : (
+              <UsersRound className="h-[18px] w-[18px]" strokeWidth={2} />
+            )}
+            <span>
+              {foursomeCreated ? "Выключить режим „Четвёрка создана“" : "Включить режим „Четвёрка создана“"}
             </span>
           </button>
           <Link
