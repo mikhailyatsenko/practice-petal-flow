@@ -19,6 +19,11 @@ import {
   clearMyFoursomeRequest,
   type MyFoursomeRequestData,
 } from "@/lib/myFoursomeRequestStore";
+import {
+  useFoursomePrelimCall,
+  setFoursomePrelimCall,
+  formatPrelimCall,
+} from "@/lib/foursomePrelimCallStore";
 
 
 
@@ -2114,7 +2119,9 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
           <div className="text-[12px] uppercase font-medium mb-3" style={{ letterSpacing: 0.5, color: "#FF6D00" }}>
             Заполнение карточек участников
           </div>
+          <PrelimCallBlock />
           <div className="space-y-2">
+
             {others.map((m) => {
               const filled = isMemberFilled(m);
               const to = m.userId === "b1" ? "/my-buddy-card" : "/foursome-profile/$userId";
@@ -2191,6 +2198,122 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
     </div>
   );
 }
+
+function PrelimCallBlock() {
+  const value = useFoursomePrelimCall();
+  const formatted = formatPrelimCall(value);
+  const [editing, setEditing] = useState(false);
+  const [draftDate, setDraftDate] = useState<string>(value.date ?? "");
+  const [draftTime, setDraftTime] = useState<string>(value.time ?? "");
+
+  const open = () => {
+    setDraftDate(value.date ?? "");
+    setDraftTime(value.time ?? "");
+    setEditing(true);
+  };
+  const save = () => {
+    if (!draftDate || !draftTime) return;
+    setFoursomePrelimCall({ date: draftDate, time: draftTime });
+    setEditing(false);
+  };
+
+  return (
+    <div className="mb-4">
+      <p className="text-[13px] leading-snug mb-2" style={{ color: "#2b2419" }}>
+        Чтобы заполнить карточки друг друга, вам нужно предварительно созвониться всей четвёркой и познакомиться.
+      </p>
+      <p className="text-[12.5px] leading-snug mb-3 text-muted-foreground">
+        Это отдельный внеплановый созвон — не тот ежемесячный, что уже согласован у четвёрки. Постарайтесь договориться и созвониться в течение ближайшей недели.
+      </p>
+
+      <div className="text-[12px] uppercase font-medium mb-2" style={{ letterSpacing: 0.5, color: "#FF6D00" }}>
+        Предварительный созвон
+      </div>
+
+      {!editing && !formatted && (
+        <button
+          onClick={open}
+          className="tap w-full rounded-xl px-3 py-2.5 text-left text-[13px] font-semibold flex items-center gap-2"
+          style={{ background: "#FAF6EF", border: "1px dashed #d5cebe", color: "#a59a85" }}
+        >
+          <Calendar className="h-4 w-4" style={{ color: "#FF6D00" }} />
+          Не назначено · нажмите, чтобы указать
+        </button>
+      )}
+
+      {!editing && formatted && (
+        <div
+          className="rounded-xl px-3 py-2.5 flex items-center gap-2"
+          style={{ background: "#f0fdf4", border: "1px solid #bbf7d0" }}
+        >
+          <Calendar className="h-4 w-4 shrink-0" style={{ color: "#16a34a" }} />
+          <div className="flex-1 min-w-0 text-[13.5px] font-semibold" style={{ color: "#0f5132" }}>
+            {formatted}
+          </div>
+          <button
+            onClick={open}
+            className="tap shrink-0 rounded-lg px-2.5 py-1 text-[11.5px] font-semibold"
+            style={{ background: "#fff", color: "#FF6D00", border: "1px solid #FF6D00" }}
+          >
+            Изменить
+          </button>
+        </div>
+      )}
+
+      {editing && (
+        <div
+          className="rounded-xl p-3"
+          style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}
+        >
+          <div className="grid grid-cols-2 gap-2 mb-2.5">
+            <label className="block">
+              <span className="block text-[11px] font-semibold uppercase mb-1" style={{ color: "#FF6D00", letterSpacing: 0.5 }}>
+                Дата
+              </span>
+              <input
+                type="date"
+                value={draftDate}
+                onChange={(e) => setDraftDate(e.target.value)}
+                className="w-full rounded-lg px-2.5 py-2 text-[13.5px] font-semibold bg-white"
+                style={{ border: "1px solid #ede8df", color: "#1a1a1a" }}
+              />
+            </label>
+            <label className="block">
+              <span className="block text-[11px] font-semibold uppercase mb-1" style={{ color: "#FF6D00", letterSpacing: 0.5 }}>
+                Время (МСК)
+              </span>
+              <input
+                type="time"
+                value={draftTime}
+                onChange={(e) => setDraftTime(e.target.value)}
+                className="w-full rounded-lg px-2.5 py-2 text-[13.5px] font-semibold bg-white"
+                style={{ border: "1px solid #ede8df", color: "#1a1a1a" }}
+              />
+            </label>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={save}
+              disabled={!draftDate || !draftTime}
+              className="tap flex-1 rounded-xl py-2 text-[13px] font-bold text-white disabled:opacity-50"
+              style={{ background: ORANGE_GRADIENT, boxShadow: "0 6px 20px rgba(255,109,0,0.35)" }}
+            >
+              Сохранить
+            </button>
+            <button
+              onClick={() => setEditing(false)}
+              className="tap rounded-xl px-4 py-2 text-[13px] font-semibold"
+              style={{ background: "#fff", color: "#1a1a1a", border: "1px solid #ede8df" }}
+            >
+              Отмена
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 
 function FoursomeMemberCard({ m, profileFilled }: { m: Member; profileFilled: boolean }) {
   const isMe = m.userId === "me";
