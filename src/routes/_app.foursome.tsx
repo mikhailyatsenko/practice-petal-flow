@@ -959,12 +959,8 @@ function BrowseRequests({
             className="p-4"
           >
             {mine && (
-              <div
-                className="mb-3 flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-bold text-white"
-                style={{ background: ORANGE_GRADIENT }}
-              >
-                <span>⭐</span>
-                <span>Это ваша заявка</span>
+              <div className="mb-3 text-center">
+                <span className="text-[18px] font-bold text-muted-foreground">Ваша заявка</span>
               </div>
             )}
             <div className="space-y-2 mb-3">
@@ -1041,7 +1037,7 @@ function BrowseRequests({
                 className="w-full py-2.5 rounded-xl text-[13px] font-semibold text-center"
                 style={{ background: "#f3f4f6", color: "#6b7280" }}
               >
-                Это ваша заявка
+                Ваша заявка
               </div>
             ) : (
               <button
