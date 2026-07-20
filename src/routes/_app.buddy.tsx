@@ -669,25 +669,36 @@ function Chip({
 function CreateRequest({
   onBack,
   onSubmit,
+  initial,
+  onDelete,
 }: {
   onBack: () => void;
-  onSubmit: () => void;
+  onSubmit: (data: MyBuddyRequestData) => void;
+  initial?: MyBuddyRequestData | null;
+  onDelete?: () => void;
 }) {
-  const [day, setDay] = useState<string | null>(null);
-  const [time, setTime] = useState<string | null>(null);
-  const [job, setJob] = useState("");
-  const [bio, setBio] = useState("");
-  const [extra, setExtra] = useState("");
-  const [channel, setChannel] = useState<"tg" | "max" | null>(null);
+  const [day, setDay] = useState<string | null>(initial?.day ?? null);
+  const [time, setTime] = useState<string | null>(initial?.time ?? null);
+  const [job, setJob] = useState(initial?.job ?? "");
+  const [bio, setBio] = useState(initial?.bio ?? "");
+  const [extra, setExtra] = useState(initial?.extra ?? "");
+  const [channel, setChannel] = useState<"tg" | "max" | null>(initial?.channel ?? null);
 
+  const editing = !!initial;
   const valid = !!day && !!time && job.trim().length > 1 && bio.trim().length > 20 && !!channel;
 
+  const handleSubmit = () => {
+    if (!valid || !day || !time || !channel) return;
+    onSubmit({ day, time, job: job.trim(), bio: bio.trim(), extra: extra.trim(), channel });
+  };
 
   return (
     <div className="px-4 pb-8">
-      <PageHeader title="Оставить заявку" onBack={onBack} />
+      <PageHeader title={editing ? "Твоя заявка" : "Оставить заявку"} onBack={onBack} />
       <p className="text-[13px] text-muted-foreground -mt-2 mb-4 px-1">
-        Заполни анкету — другие участники смогут найти тебя
+        {editing
+          ? "Отредактируй анкету или удали заявку"
+          : "Заполни анкету — другие участники смогут найти тебя"}
       </p>
 
       <div className="space-y-5">
@@ -797,9 +808,8 @@ function CreateRequest({
         </div>
 
         <button
-
           disabled={!valid}
-          onClick={() => valid && onSubmit()}
+          onClick={handleSubmit}
           className="w-full rounded-2xl py-3.5 text-[14px] font-bold text-white transition-all"
           style={{
             background: "linear-gradient(135deg, #FFB300, #FF6D00)",
@@ -808,12 +818,77 @@ function CreateRequest({
             boxShadow: valid ? "0 6px 20px rgba(255,109,0,0.40)" : "none",
           }}
         >
-          Опубликовать заявку
+          {editing ? "Сохранить изменения" : "Опубликовать заявку"}
+        </button>
+
+        {editing && onDelete && (
+          <button
+            onClick={onDelete}
+            className="tap w-full rounded-2xl py-3 text-[14px] font-bold transition-all"
+            style={{
+              background: "#fff",
+              color: "#dc2626",
+              border: "1px solid #fecaca",
+            }}
+          >
+            Удалить заявку
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ───────────────────────── Own request summary (main screen) ─────────────────────────
+
+function MyOwnRequestSummary({
+  req,
+  onEdit,
+  onDelete,
+}: {
+  req: BuddyRequest;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <div className="bg-card hairline shadow-card rounded-2xl p-3.5 animate-fade-up">
+      <div className="flex items-center gap-2 mb-2">
+        <span
+          className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full"
+          style={{ background: "#fff3e0", color: "#FF6D00", letterSpacing: 0.4 }}
+        >
+          Твоя заявка
+        </span>
+        <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
+          {req.day} · {req.time} МСК
+        </span>
+      </div>
+      <p className="text-[13px] leading-snug line-clamp-2" style={{ color: "#3a352d" }}>
+        {req.bio}
+      </p>
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <button
+          onClick={onEdit}
+          className="tap rounded-xl py-2.5 text-[13px] font-bold text-white inline-flex items-center justify-center gap-1.5"
+          style={{
+            background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+            boxShadow: "0 4px 14px rgba(255,109,0,0.30)",
+          }}
+        >
+          <Pencil className="h-4 w-4" /> Редактировать
+        </button>
+        <button
+          onClick={onDelete}
+          className="tap rounded-xl py-2.5 text-[13px] font-bold inline-flex items-center justify-center gap-1.5"
+          style={{ background: "#fff", color: "#dc2626", border: "1px solid #fecaca" }}
+        >
+          <X className="h-4 w-4" /> Удалить
         </button>
       </div>
     </div>
   );
 }
+
 
 
 // ───────────────────────── Screen 4: Browse requests ─────────────────────────
