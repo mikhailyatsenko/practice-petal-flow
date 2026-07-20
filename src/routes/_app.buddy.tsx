@@ -275,7 +275,7 @@ function BuddyScreen() {
               variant: screen.variant === "max" ? "max" : "tg-no-username",
             })
           }
-          onDone={() => setScreen({ name: "waiting", outgoing: [DEMO_REQUESTS[0]] })}
+          onDone={() => setScreen({ name: "waiting", outgoing: [makeWaitingItem(DEMO_REQUESTS[0])] })}
         />
       );
     case "browse_requests":
