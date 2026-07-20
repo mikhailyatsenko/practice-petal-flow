@@ -2228,8 +2228,8 @@ function PrelimCallBlock() {
       <p className="text-[13px] leading-snug mb-2" style={{ color: "#2b2419" }}>
         Чтобы заполнить карточки друг друга, вам нужно предварительно созвониться всей четвёркой и познакомиться.
       </p>
-      <p className="text-[12.5px] leading-snug mb-3 text-muted-foreground">
-        Это отдельный внеплановый созвон — не тот ежемесячный, что уже согласован у четвёрки. Постарайтесь договориться и созвониться в течение ближайшей недели.
+      <p className="text-[12.5px] leading-snug mb-3" style={{ color: "#2b2419" }}>
+        ⚡ Это отдельный внеплановый созвон. Постарайтесь договориться и созвониться в течение ближайшей недели.
       </p>
 
       <div className="text-[12px] uppercase font-medium mb-2" style={{ letterSpacing: 0.5, color: "#FF6D00" }}>
@@ -2239,11 +2239,14 @@ function PrelimCallBlock() {
       {!editing && !formatted && (
         <button
           onClick={open}
-          className="tap w-full rounded-xl px-3 py-2.5 text-left text-[13px] font-semibold flex items-center gap-2"
-          style={{ background: "#FAF6EF", border: "1px dashed #d5cebe", color: "#a59a85" }}
+          className="tap w-full rounded-xl px-4 py-3 text-[13px] font-semibold flex items-center gap-2 justify-between"
+          style={{ background: "#fff", border: "1.5px solid #FF6D00", color: "#FF6D00" }}
         >
-          <Calendar className="h-4 w-4" style={{ color: "#FF6D00" }} />
-          Не назначено · нажмите, чтобы указать
+          <span className="flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
+            Не назначено
+          </span>
+          <span className="text-[11px] font-medium opacity-80">Нажмите, чтобы указать</span>
         </button>
       )}
 
