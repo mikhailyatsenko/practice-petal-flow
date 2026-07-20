@@ -62,7 +62,7 @@ function NotificationsPage() {
                 "rounded-2xl px-4 py-3 " +
                 (isUnread
                   ? "bg-white shadow-card border-2"
-                  : "bg-muted/40 hairline")
+                  : "bg-card hairline shadow-card")
               }
               style={
                 isUnread
@@ -72,8 +72,8 @@ function NotificationsPage() {
             >
               <p
                 className={
-                  "text-[14px] leading-snug " +
-                  (isUnread ? "text-foreground font-medium" : "text-muted-foreground")
+                  "text-[14px] leading-snug text-foreground " +
+                  (isUnread ? "font-medium" : "")
                 }
               >
                 {n.text}
@@ -81,12 +81,13 @@ function NotificationsPage() {
               <p
                 className={
                   "mt-1 text-[11.5px] " +
-                  (isUnread ? "text-[#FF6D00] font-medium" : "text-muted-foreground/70")
+                  (isUnread ? "text-[#FF6D00] font-medium" : "text-muted-foreground")
                 }
               >
                 {formatNotificationDate(n.date)}
               </p>
             </div>
+
           );
         })}
 
