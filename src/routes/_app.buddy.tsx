@@ -896,9 +896,15 @@ function MyOwnRequestSummary({
 function BrowseRequests({
   onBack,
   onConfirm,
+  myOwn,
+  onEditMyRequest,
+  onDeleteMyRequest,
 }: {
   onBack: () => void;
   onConfirm: (req: BuddyRequest) => void;
+  myOwn: BuddyRequest | null;
+  onEditMyRequest: () => void;
+  onDeleteMyRequest: () => void;
 }) {
   const [selected, setSelected] = useState<BuddyRequest | null>(null);
 
@@ -910,11 +916,20 @@ function BrowseRequests({
       </p>
 
       <div className="space-y-3">
-        <RequestCard req={MY_OWN_REQUEST} onSend={() => {}} mine />
+        {myOwn && (
+          <RequestCard
+            req={myOwn}
+            onSend={() => {}}
+            mine
+            onEdit={onEditMyRequest}
+            onDelete={onDeleteMyRequest}
+          />
+        )}
         {DEMO_REQUESTS.map((r) => (
           <RequestCard key={r.id} req={r} onSend={() => setSelected(r)} />
         ))}
       </div>
+
 
       {selected && (
         <ConfirmSheet
