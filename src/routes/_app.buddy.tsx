@@ -60,6 +60,13 @@ interface BuddyRequest {
   channels: ("tg" | "max")[];
 }
 
+type OutgoingStatus = "waiting" | "expired" | "declined";
+interface OutgoingItem {
+  req: BuddyRequest;
+  status: OutgoingStatus;
+  expiresAt?: number; // ms epoch, для waiting
+}
+
 type Screen =
   | { name: "no_buddy" }
   | { name: "instructions" }
@@ -67,8 +74,15 @@ type Screen =
   | { name: "contact_step"; variant?: "max" | "tg-no-username" }
   | { name: "start_bot"; variant: "max" | "tg" }
   | { name: "browse_requests" }
-  | { name: "waiting"; outgoing: BuddyRequest[] }
+  | { name: "waiting"; outgoing: OutgoingItem[] }
   | { name: "has_buddy" };
+
+const H24 = 24 * 60 * 60 * 1000;
+const makeWaitingItem = (req: BuddyRequest, hoursLeft = 24): OutgoingItem => ({
+  req,
+  status: "waiting",
+  expiresAt: Date.now() + hoursLeft * 60 * 60 * 1000,
+});
 
 
 const DAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
@@ -162,7 +176,11 @@ function BuddyScreen() {
     demo === "has" || demo === "has-no-link"
       ? { name: "has_buddy" }
       : demo === "waiting"
-        ? { name: "waiting", outgoing: DEMO_REQUESTS.slice(0, 2) }
+        ? { name: "waiting", outgoing: [
+            makeWaitingItem(DEMO_REQUESTS[0], 23.5),
+            { req: DEMO_REQUESTS[1], status: "expired" },
+            { req: DEMO_REQUESTS[2], status: "declined" },
+          ] }
         : demo === "create-tg-no-username" || demo === "create-max"
           ? { name: "contact_step" }
           : demo === "start-max-bot"
@@ -242,7 +260,7 @@ function BuddyScreen() {
         <ContactStep
           variant={v}
           onBack={() => setScreen({ name: "no_buddy" })}
-          onDone={() => setScreen({ name: "waiting", outgoing: [DEMO_REQUESTS[0]] })}
+          onDone={() => setScreen({ name: "waiting", outgoing: [makeWaitingItem(DEMO_REQUESTS[0])] })}
         />
       );
     }
@@ -257,14 +275,14 @@ function BuddyScreen() {
               variant: screen.variant === "max" ? "max" : "tg-no-username",
             })
           }
-          onDone={() => setScreen({ name: "waiting", outgoing: [DEMO_REQUESTS[0]] })}
+          onDone={() => setScreen({ name: "waiting", outgoing: [makeWaitingItem(DEMO_REQUESTS[0])] })}
         />
       );
     case "browse_requests":
       return (
         <BrowseRequests
           onBack={() => setScreen({ name: "no_buddy" })}
-          onConfirm={(req) => setScreen({ name: "waiting", outgoing: [req] })}
+          onConfirm={(req) => setScreen({ name: "waiting", outgoing: [makeWaitingItem(req)] })}
           myOwn={myOwn}
           onEditMyRequest={() => setScreen({ name: "create_request" })}
           onDeleteMyRequest={handleDeleteMyRequest}
@@ -370,7 +388,11 @@ function NoBuddy({
 
       {/* Ожидание — переход в карточку запросов */}
       <button
-        onClick={() => onNavigate({ name: "waiting", outgoing: DEMO_REQUESTS.slice(0, 2) })}
+        onClick={() => onNavigate({ name: "waiting", outgoing: [
+          makeWaitingItem(DEMO_REQUESTS[0], 23.5),
+          { req: DEMO_REQUESTS[1], status: "expired" },
+          { req: DEMO_REQUESTS[2], status: "declined" },
+        ] })}
         className="tap mt-3 w-full rounded-2xl px-3.5 py-3 flex items-center gap-3 text-left animate-fade-up"
         style={{
           background: "linear-gradient(135deg, #fff8ee, #fff3e0)",
@@ -974,7 +996,52 @@ function BrowseRequests({
   );
 }
 
-function RequestCard({ req, onSend, mine, pending, onEdit, onDelete }: { req: BuddyRequest; onSend: () => void; mine?: boolean; pending?: boolean; onEdit?: () => void; onDelete?: () => void }) {
+function PendingStatusPill({ status, expiresAt }: { status: OutgoingStatus; expiresAt?: number }) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (status !== "waiting") return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [status]);
+
+  if (status === "expired") {
+    return (
+      <div
+        className="mt-3 w-full rounded-xl py-2.5 px-3 text-[13px] font-bold text-center inline-flex items-center justify-center gap-1.5"
+        style={{ background: "#fee2e2", color: "#b91c1c" }}
+      >
+        <span aria-hidden>⌛</span> Заявка аннулирована · 24 ч истекли
+      </div>
+    );
+  }
+  if (status === "declined") {
+    return (
+      <div
+        className="mt-3 w-full rounded-xl py-2.5 px-3 text-[13px] font-bold text-center inline-flex items-center justify-center gap-1.5"
+        style={{ background: "#f3f4f6", color: "#4b5563" }}
+      >
+        <span aria-hidden>✕</span> Участник не принял заявку
+      </div>
+    );
+  }
+
+  const msLeft = Math.max(0, (expiresAt ?? now) - now);
+  const totalSec = Math.floor(msLeft / 1000);
+  const hh = String(Math.floor(totalSec / 3600)).padStart(2, "0");
+  const mm = String(Math.floor((totalSec % 3600) / 60)).padStart(2, "0");
+  const ss = String(totalSec % 60).padStart(2, "0");
+
+  return (
+    <div
+      className="mt-3 w-full rounded-xl py-2.5 px-3 text-[13px] font-bold text-center inline-flex items-center justify-center gap-1.5"
+      style={{ background: "#fff8dc", color: "#b45309" }}
+    >
+      <span aria-hidden>🕐</span> Ожидание ответа · до аннулирования {hh}:{mm}:{ss}
+    </div>
+  );
+}
+
+function RequestCard({ req, onSend, mine, pending, pendingStatus = "waiting", pendingExpiresAt, onEdit, onDelete }: { req: BuddyRequest; onSend: () => void; mine?: boolean; pending?: boolean; pendingStatus?: OutgoingStatus; pendingExpiresAt?: number; onEdit?: () => void; onDelete?: () => void }) {
   return (
     <div className="bg-card shadow-card rounded-2xl p-3.5 animate-fade-up">
       {mine && (
@@ -1057,13 +1124,7 @@ function RequestCard({ req, onSend, mine, pending, onEdit, onDelete }: { req: Bu
       )}
 
       {mine ? null : pending ? (
-
-        <div
-          className="mt-3 w-full rounded-xl py-2.5 text-[13px] font-bold text-center inline-flex items-center justify-center gap-1.5"
-          style={{ background: "#fff8dc", color: "#b45309" }}
-        >
-          <span aria-hidden>🕐</span> Ожидание ответа
-        </div>
+        <PendingStatusPill status={pendingStatus} expiresAt={pendingExpiresAt} />
       ) : (
         <button
           onClick={onSend}
@@ -1298,7 +1359,7 @@ const INCOMING_REQUESTS: BuddyRequest[] = [
   },
 ];
 
-function Waiting({ outgoing, onBack }: { outgoing: BuddyRequest[]; onBack: () => void }) {
+function Waiting({ outgoing, onBack }: { outgoing: OutgoingItem[]; onBack: () => void }) {
   const [incoming, setIncoming] = useState<BuddyRequest[]>(INCOMING_REQUESTS);
   const [accepted, setAccepted] = useState<BuddyRequest | null>(null);
   const [tab, setTab] = useState<"incoming" | "outgoing">(
@@ -1398,8 +1459,15 @@ function Waiting({ outgoing, onBack }: { outgoing: BuddyRequest[]; onBack: () =>
                   : "Ты отправил запрос на эту заявку. Ждём ответа — действий пока не требуется."}
               </p>
               <div className="space-y-3">
-                {outgoing.map((r) => (
-                  <RequestCard key={r.id} req={r} onSend={() => {}} pending />
+                {outgoing.map((o) => (
+                  <RequestCard
+                    key={o.req.id}
+                    req={o.req}
+                    onSend={() => {}}
+                    pending
+                    pendingStatus={o.status}
+                    pendingExpiresAt={o.expiresAt}
+                  />
                 ))}
               </div>
             </div>
