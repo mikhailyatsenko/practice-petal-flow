@@ -3,6 +3,7 @@ import { Settings, LifeBuoy, LogOut, CheckCircle2, PlayCircle, Users, UsersRound
 import { Link } from "@tanstack/react-router";
 import { resetAllPractices, advanceToNextDay } from "@/lib/practicesStore";
 import { useBuddyRequestMode, toggleBuddyRequestMode } from "@/lib/buddyRequestMode";
+import { useBuddyFoundMode, toggleBuddyFoundMode } from "@/lib/buddyFoundMode";
 import { useFoursomeRequestMode, toggleFoursomeRequestMode } from "@/lib/foursomeRequestMode";
 import { useCallReminder, toggleCallReminderMode } from "@/lib/callReminderMode";
 import { usePreviewLevel, togglePreviewLevel, type PreviewLevel } from "@/lib/previewLevel";
@@ -23,6 +24,7 @@ interface SideMenuProps {
 
 export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps) {
   const buddyMode = useBuddyRequestMode();
+  const buddyFound = useBuddyFoundMode();
   const foursomeMode = useFoursomeRequestMode();
   const { mode: callMode } = useCallReminder();
   const previewLevel = usePreviewLevel();
