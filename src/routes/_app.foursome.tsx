@@ -1167,8 +1167,24 @@ function BrowseRequests({
             className="p-4"
           >
             {mine && (
-              <div className="mb-3 text-center">
+              <div className="mb-3 flex items-center justify-between gap-2">
                 <span className="text-[18px] font-bold text-muted-foreground">Ваша заявка</span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={onEditMyRequest}
+                    className="tap rounded-md py-1 px-2 text-[11px] font-medium inline-flex items-center gap-1"
+                    style={{ background: "#fff", color: "#FF6D00", border: "1px solid #ffd8a8" }}
+                  >
+                    <Pencil className="h-3 w-3" /> Редактировать
+                  </button>
+                  <button
+                    onClick={onDeleteMyRequest}
+                    className="tap rounded-md py-1 px-2 text-[11px] font-medium inline-flex items-center gap-1"
+                    style={{ background: "#fff", color: "#dc2626", border: "1px solid #fecaca" }}
+                  >
+                    <X className="h-3 w-3" /> Удалить
+                  </button>
+                </div>
               </div>
             )}
             <div className="space-y-2 mb-3">
