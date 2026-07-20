@@ -232,6 +232,22 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
               {buddyFound ? "Выключить режим „Бадди найден“" : "Включить режим „Бадди найден“"}
             </span>
           </button>
+          <button
+            onClick={() => {
+              toggleFoursomeCreatedMode();
+            }}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+            style={{ color: foursomeCreated ? "#E53935" : "#FF6D00" }}
+          >
+            {foursomeCreated ? (
+              <BellOff className="h-[18px] w-[18px]" strokeWidth={2} />
+            ) : (
+              <UsersRound className="h-[18px] w-[18px]" strokeWidth={2} />
+            )}
+            <span>
+              {foursomeCreated ? "Выключить режим „Четвёрка создана“" : "Включить режим „Четвёрка создана“"}
+            </span>
+          </button>
           <Link
             to="/foursome"
             search={{ demo: "has", cards: "empty" }}
