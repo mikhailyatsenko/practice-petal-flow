@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { BackButton } from "@/components/layout/BackButton";
+import { useBellMode } from "@/lib/bellMode";
 import {
   useNotifications,
   markNotificationsSeen,
