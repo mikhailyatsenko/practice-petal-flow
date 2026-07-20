@@ -123,18 +123,21 @@ const DEMO_REQUESTS: BuddyRequest[] = [
   },
 ];
 
-// Твоя собственная заявка — показываем первой в списке (демо)
-const MY_OWN_REQUEST: BuddyRequest = {
-  id: "me",
-  name: "Ты",
-  age: 28,
-  avatar: "🙂",
-  job: "Твоя анкета",
-  day: "Чт",
-  time: "20:00",
-  bio: "Моя заявка на поиск Бадди для еженедельных созвонов.",
-  channels: ["tg"],
-};
+// Собираем «свою заявку» из сохранённых данных пользователя
+function buildMyRequest(data: MyBuddyRequestData): BuddyRequest {
+  return {
+    id: "me",
+    name: "Ты",
+    age: 28,
+    avatar: "🙂",
+    job: data.job || "Твоя анкета",
+    day: data.day,
+    time: data.time,
+    bio: data.bio,
+    extra: data.extra || undefined,
+    channels: [data.channel],
+  };
+}
 
 // Демо-бадди (Экран 6)
 const DEMO_BUDDY: BuddyRequest = {
