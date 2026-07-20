@@ -2073,7 +2073,7 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
               className="text-[12px] uppercase font-medium mb-1"
               style={{ letterSpacing: 0.5, color: "#FF6D00" }}
             >
-              Следующий созвон
+              Созвоны
             </div>
             <div className="text-[16px] font-bold" style={{ color: "#FF6D00" }}>
               📅 {DAY_FULL[schedule.day]} · {schedule.time} МСК
