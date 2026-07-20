@@ -114,6 +114,16 @@ function AppLayout() {
       <div
         style={
           {
+            ["--foursome-created-top" as any]: `${foursomeCreatedTop}px`,
+            ["--foursome-created-pt" as any]: foursomeCreatedTop > 0 ? "8px" : "max(env(safe-area-inset-top), 8px)",
+          } as React.CSSProperties
+        }
+      >
+        <FoursomeCreatedBanner />
+      </div>
+      <div
+        style={
+          {
             ["--call-reminder-top" as any]: `${callTop}px`,
             ["--call-reminder-pt" as any]: callTop > 0 ? "8px" : "max(env(safe-area-inset-top), 8px)",
           } as React.CSSProperties
