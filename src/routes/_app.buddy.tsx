@@ -777,6 +777,7 @@ function BrowseRequests({
       </p>
 
       <div className="space-y-3">
+        <RequestCard req={MY_OWN_REQUEST} onSend={() => {}} mine />
         {DEMO_REQUESTS.map((r) => (
           <RequestCard key={r.id} req={r} onSend={() => setSelected(r)} />
         ))}
