@@ -260,7 +260,7 @@ function BuddyScreen() {
         <ContactStep
           variant={v}
           onBack={() => setScreen({ name: "no_buddy" })}
-          onDone={() => setScreen({ name: "waiting", outgoing: [DEMO_REQUESTS[0]] })}
+          onDone={() => setScreen({ name: "waiting", outgoing: [makeWaitingItem(DEMO_REQUESTS[0])] })}
         />
       );
     }
