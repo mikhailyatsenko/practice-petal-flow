@@ -184,20 +184,38 @@ function BuddyScreen() {
   const contactVariant: ContactVariant =
     demo === "create-max" ? "max" : demo === "create-tg-no-username" ? "tg-no-username" : "none";
 
+  const myRequestData = useMyBuddyRequest();
+  const myOwn = myRequestData ? buildMyRequest(myRequestData) : null;
+
+  const handleDeleteMyRequest = () => {
+    clearMyBuddyRequest();
+    setScreen({ name: "no_buddy" });
+  };
+
   switch (screen.name) {
     case "no_buddy":
-      return <NoBuddy onNavigate={setScreen} />;
+      return (
+        <NoBuddy
+          onNavigate={setScreen}
+          myOwn={myOwn}
+          onEditMyRequest={() => setScreen({ name: "create_request" })}
+          onDeleteMyRequest={handleDeleteMyRequest}
+        />
+      );
     case "instructions":
       return <Instructions onBack={() => setScreen({ name: "no_buddy" })} />;
     case "create_request":
       return (
         <CreateRequest
+          initial={myRequestData}
           onBack={() => setScreen({ name: "no_buddy" })}
-          onSubmit={() => {
+          onDelete={myRequestData ? handleDeleteMyRequest : undefined}
+          onSubmit={(data) => {
+            setMyBuddyRequest(data);
             if (contactVariant !== "none") {
               setScreen({ name: "contact_step" });
             } else {
-              setScreen({ name: "waiting", to: DEMO_REQUESTS[0] });
+              setScreen({ name: "no_buddy" });
             }
           }}
         />
@@ -232,6 +250,9 @@ function BuddyScreen() {
         <BrowseRequests
           onBack={() => setScreen({ name: "no_buddy" })}
           onConfirm={(req) => setScreen({ name: "waiting", to: req })}
+          myOwn={myOwn}
+          onEditMyRequest={() => setScreen({ name: "create_request" })}
+          onDeleteMyRequest={handleDeleteMyRequest}
         />
       );
     case "waiting":
