@@ -1182,6 +1182,9 @@ const INCOMING_FOURSOME_REQUESTS: Array<{
 function Waiting({ to, onBack }: { to: FoursomeRequest; onBack: () => void }) {
   const [incoming, setIncoming] = useState(INCOMING_FOURSOME_REQUESTS);
   const [accepted, setAccepted] = useState<FoursomeRequest | null>(null);
+  const [tab, setTab] = useState<"incoming" | "outgoing">(
+    INCOMING_FOURSOME_REQUESTS.length > 0 ? "incoming" : "outgoing",
+  );
 
   const decline = (id: string) => setIncoming((prev) => prev.filter((x) => x.req.id !== id));
   const accept = (req: FoursomeRequest) => {
@@ -1202,71 +1205,101 @@ function Waiting({ to, onBack }: { to: FoursomeRequest; onBack: () => void }) {
           </p>
         </div>
       ) : (
-        <div className="text-center pt-4 pb-5 animate-fade-up">
-          <div className="text-[56px] leading-none">⏳</div>
-          <h2 className="mt-3 text-[18px] font-bold">Сейчас твоя очередь ответить</h2>
-          <p className="mt-2 text-[14px] text-muted-foreground leading-snug max-w-[320px] mx-auto">
-            На твою заявку откликнулись {incoming.length} пары. Подтверди подходящую — четвёрка соберётся сразу после твоего ответа.
-          </p>
-        </div>
-      )}
-
-      {/* Твоя заявка */}
-      <h3 className="mt-2 px-1 text-[11px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
-        Твоя заявка
-      </h3>
-      <Card className="p-3.5">
-        <div className="space-y-2">
-          {to.members.map((m) => (
-            <MemberRow key={m.userId} m={m} />
-          ))}
-        </div>
-        <div className="flex flex-col gap-1 pt-2 mt-2 border-t border-border/50">
-          <div className="flex flex-wrap gap-2">
-            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
-              🕐 {to.time} МСК
-            </span>
-            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
-              📅 {DAY_FULL[to.day]}
-            </span>
-            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full ml-auto" style={{ background: "#fff8dc", color: "#b45309" }}>
-              Ожидание
-            </span>
-          </div>
-          <LocalTimeHint time={to.time} align="left" />
-        </div>
-      </Card>
-
-      {/* Входящие заявки */}
-      {incoming.length > 0 && (
         <>
-          <div className="mt-5 flex items-center justify-between px-1 mb-2">
-            <h3 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-              Запросы на твою заявку
-            </h3>
-            <span
-              className="text-[11px] font-bold text-white px-2.5 py-0.5 rounded-full"
-              style={{ background: ORANGE_GRADIENT }}
+          {/* Segmented tabs */}
+          <div
+            className="mt-2 grid grid-cols-2 p-1 rounded-2xl"
+            style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}
+          >
+            <button
+              onClick={() => setTab("incoming")}
+              className="tap relative rounded-xl py-2 text-[12px] font-bold inline-flex items-center justify-center gap-1.5 transition-all"
+              style={
+                tab === "incoming"
+                  ? { background: "#fff", color: "#FF6D00", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }
+                  : { background: "transparent", color: "#a59a85" }
+              }
             >
-              {incoming.length}
-            </span>
+              Отклики на вашу заявку
+              {incoming.length > 0 && (
+                <span
+                  className="text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full min-w-[18px] text-center"
+                  style={{ background: ORANGE_GRADIENT }}
+                >
+                  {incoming.length}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setTab("outgoing")}
+              className="tap rounded-xl py-2 text-[12px] font-bold transition-all"
+              style={
+                tab === "outgoing"
+                  ? { background: "#fff", color: "#FF6D00", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }
+                  : { background: "transparent", color: "#a59a85" }
+              }
+            >
+              Ваш запрос
+            </button>
           </div>
-          <p className="px-1 text-[12px] text-muted-foreground mb-3 leading-snug">
-            Эти пары хотят встать с вами в четвёрку. Подтверди подходящую или отклони.
-          </p>
 
-          <div className="space-y-3">
-            {incoming.map((item) => (
-              <IncomingFoursomeCard
-                key={item.req.id}
-                req={item.req}
-                confirmed={item.confirmed}
-                note={item.note}
-                onAccept={() => accept(item.req)}
-                onDecline={() => decline(item.req.id)}
-              />
-            ))}
-          </div>
+          {tab === "incoming" ? (
+            <div className="mt-4">
+              {incoming.length > 0 ? (
+                <>
+                  <p className="px-1 text-[12px] text-muted-foreground mb-3 leading-snug">
+                    Эти пары хотят встать с вами в четвёрку. Подтверди подходящую или отклони.
+                  </p>
+                  <div className="space-y-3">
+                    {incoming.map((item) => (
+                      <IncomingFoursomeCard
+                        key={item.req.id}
+                        req={item.req}
+                        confirmed={item.confirmed}
+                        note={item.note}
+                        onAccept={() => accept(item.req)}
+                        onDecline={() => decline(item.req.id)}
+                      />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-10 text-[13px] text-muted-foreground">
+                  Пока нет откликов на вашу заявку.
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="mt-4">
+              <p className="px-1 text-[12px] text-muted-foreground mb-3 leading-snug">
+                Вы отправили запрос этой паре. Ждём ответа — действий пока не требуется.
+              </p>
+              <Card className="p-3.5">
+                <div className="space-y-2">
+                  {to.members.map((m) => (
+                    <MemberRow key={m.userId} m={m} />
+                  ))}
+                </div>
+                <div className="flex flex-col gap-2 pt-2 mt-2 border-t border-border/50">
+                  <div className="flex flex-wrap gap-2">
+                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
+                      🕐 {to.time} МСК
+                    </span>
+                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
+                      📅 {DAY_FULL[to.day]}
+                    </span>
+                  </div>
+                  <LocalTimeHint time={to.time} align="left" />
+                  <div
+                    className="inline-flex items-center gap-1.5 text-[12px] font-bold px-3 py-1.5 rounded-full w-fit"
+                    style={{ background: "#fff8dc", color: "#b45309" }}
+                  >
+                    <span aria-hidden>🕐</span> Ожидание ответа
+                  </div>
+                </div>
+              </Card>
+            </div>
+          )}
         </>
       )}
 

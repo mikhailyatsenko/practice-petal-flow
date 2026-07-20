@@ -1120,6 +1120,9 @@ const INCOMING_REQUESTS: BuddyRequest[] = [
 function Waiting({ to, onBack }: { to: BuddyRequest; onBack: () => void }) {
   const [incoming, setIncoming] = useState<BuddyRequest[]>(INCOMING_REQUESTS);
   const [accepted, setAccepted] = useState<BuddyRequest | null>(null);
+  const [tab, setTab] = useState<"incoming" | "outgoing">(
+    INCOMING_REQUESTS.length > 0 ? "incoming" : "outgoing",
+  );
 
   const decline = (id: string) => setIncoming((prev) => prev.filter((r) => r.id !== id));
   const accept = (req: BuddyRequest) => {
@@ -1140,71 +1143,98 @@ function Waiting({ to, onBack }: { to: BuddyRequest; onBack: () => void }) {
           </p>
         </div>
       ) : (
-        <div className="text-center pt-4 pb-5 animate-fade-up">
-          <div className="text-[56px] leading-none">⏳</div>
-          <h2 className="mt-3 text-[18px] font-bold">Твоя заявка опубликована</h2>
-          <p className="mt-2 text-[14px] text-muted-foreground leading-snug max-w-[320px] mx-auto">
-            Ждём отклика от {to.name}. Также сюда приходят запросы от других участников, которым подходит твоя заявка.
-          </p>
-        </div>
-      )}
-
-      {/* Outgoing request */}
-      <h3 className="mt-2 px-1 text-[11px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
-        Твой запрос
-      </h3>
-      <div className="bg-card hairline shadow-card rounded-2xl p-3.5 animate-fade-up">
-        <div className="flex items-center gap-3">
-          <div
-            className="h-12 w-12 shrink-0 rounded-[14px] flex items-center justify-center text-[24px]"
-            style={{ background: "#FAF6EF" }}
-          >
-            {to.avatar}
-          </div>
-          <div className="min-w-0 flex-1">
-            <h3 className="text-[15px] font-bold leading-tight">{to.name}</h3>
-            <p className="text-[12px] text-muted-foreground mt-0.5">
-              {to.job} · {pluralAge(to.age)} · {to.day} {to.time} МСК
-            </p>
-            <LocalTimeHint time={to.time} align="left" className="mt-0.5" />
-          </div>
-          <span
-            className="text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0"
-            style={{ background: "#fff8dc", color: "#b45309" }}
-          >
-            Ожидание
-          </span>
-        </div>
-      </div>
-
-      {/* Incoming requests */}
-      {incoming.length > 0 && (
         <>
-          <div className="mt-5 flex items-center justify-between px-1 mb-2">
-            <h3 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-              Запросы на твою заявку
-            </h3>
-            <span
-              className="text-[11px] font-bold text-white px-2.5 py-0.5 rounded-full"
-              style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+          {/* Segmented tabs */}
+          <div
+            className="mt-2 grid grid-cols-2 p-1 rounded-2xl"
+            style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}
+          >
+            <button
+              onClick={() => setTab("incoming")}
+              className="tap relative rounded-xl py-2 text-[12px] font-bold inline-flex items-center justify-center gap-1.5 transition-all"
+              style={
+                tab === "incoming"
+                  ? { background: "#fff", color: "#FF6D00", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }
+                  : { background: "transparent", color: "#a59a85" }
+              }
             >
-              {incoming.length}
-            </span>
+              Отклики на твою заявку
+              {incoming.length > 0 && (
+                <span
+                  className="text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full min-w-[18px] text-center"
+                  style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+                >
+                  {incoming.length}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setTab("outgoing")}
+              className="tap rounded-xl py-2 text-[12px] font-bold transition-all"
+              style={
+                tab === "outgoing"
+                  ? { background: "#fff", color: "#FF6D00", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }
+                  : { background: "transparent", color: "#a59a85" }
+              }
+            >
+              Твой запрос
+            </button>
           </div>
-          <p className="px-1 text-[12px] text-muted-foreground mb-3 leading-snug">
-            Эти участники хотят стать твоим бадди. Подтверди подходящего или отклони.
-          </p>
 
-          <div className="space-y-3">
-            {incoming.map((r) => (
-              <IncomingRequestCard
-                key={r.id}
-                req={r}
-                onAccept={() => accept(r)}
-                onDecline={() => decline(r.id)}
-              />
-            ))}
-          </div>
+          {tab === "incoming" ? (
+            <div className="mt-4">
+              {incoming.length > 0 ? (
+                <>
+                  <p className="px-1 text-[12px] text-muted-foreground mb-3 leading-snug">
+                    Эти участники хотят стать твоим бадди. Подтверди подходящего или отклони.
+                  </p>
+                  <div className="space-y-3">
+                    {incoming.map((r) => (
+                      <IncomingRequestCard
+                        key={r.id}
+                        req={r}
+                        onAccept={() => accept(r)}
+                        onDecline={() => decline(r.id)}
+                      />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-10 text-[13px] text-muted-foreground">
+                  Пока нет откликов на твою заявку.
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="mt-4">
+              <p className="px-1 text-[12px] text-muted-foreground mb-3 leading-snug">
+                Ты отправил запрос на эту заявку. Ждём ответа — действий пока не требуется.
+              </p>
+              <div className="bg-card hairline shadow-card rounded-2xl p-3.5 animate-fade-up">
+                <div className="flex items-center gap-3">
+                  <div
+                    className="h-12 w-12 shrink-0 rounded-[14px] flex items-center justify-center text-[24px]"
+                    style={{ background: "#FAF6EF" }}
+                  >
+                    {to.avatar}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-[15px] font-bold leading-tight">{to.name}</h3>
+                    <p className="text-[12px] text-muted-foreground mt-0.5">
+                      {to.job} · {pluralAge(to.age)} · {to.day} {to.time} МСК
+                    </p>
+                    <LocalTimeHint time={to.time} align="left" className="mt-0.5" />
+                  </div>
+                </div>
+                <div
+                  className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-bold px-3 py-1.5 rounded-full"
+                  style={{ background: "#fff8dc", color: "#b45309" }}
+                >
+                  <span aria-hidden>🕐</span> Ожидание ответа
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
 
