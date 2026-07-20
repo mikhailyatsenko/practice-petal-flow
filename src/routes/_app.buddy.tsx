@@ -815,12 +815,8 @@ function RequestCard({ req, onSend, mine }: { req: BuddyRequest; onSend: () => v
   return (
     <div className="bg-card shadow-card rounded-2xl p-3.5 animate-fade-up">
       {mine && (
-        <div
-          className="mb-3 flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-bold text-white"
-          style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
-        >
-          <span>⭐</span>
-          <span>Это твоя заявка</span>
+        <div className="mb-3 text-center">
+          <span className="text-[18px] font-bold text-muted-foreground">Твоя заявка</span>
         </div>
       )}
       <div className="flex items-start gap-3">
