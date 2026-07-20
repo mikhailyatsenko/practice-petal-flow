@@ -1012,11 +1012,24 @@ function RequestCard({ req, onSend, mine, pending, onEdit, onDelete }: { req: Bu
       )}
 
       {mine ? (
-        <div
-          className="mt-3 w-full rounded-xl py-2.5 text-[13px] font-semibold text-center"
-          style={{ background: "#f3f4f6", color: "#6b7280" }}
-        >
-          Это твоя заявка
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <button
+            onClick={onEdit}
+            className="tap rounded-xl py-2.5 text-[13px] font-bold text-white inline-flex items-center justify-center gap-1.5"
+            style={{
+              background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+              boxShadow: "0 4px 14px rgba(255,109,0,0.30)",
+            }}
+          >
+            <Pencil className="h-4 w-4" /> Редактировать
+          </button>
+          <button
+            onClick={onDelete}
+            className="tap rounded-xl py-2.5 text-[13px] font-bold inline-flex items-center justify-center gap-1.5"
+            style={{ background: "#fff", color: "#dc2626", border: "1px solid #fecaca" }}
+          >
+            <X className="h-4 w-4" /> Удалить
+          </button>
         </div>
       ) : pending ? (
         <div
