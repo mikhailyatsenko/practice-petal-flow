@@ -1208,23 +1208,27 @@ function Waiting({ to, onBack }: { to: FoursomeRequest; onBack: () => void }) {
         <>
           {/* Segmented tabs */}
           <div
-            className="mt-2 grid grid-cols-2 p-1 rounded-2xl"
-            style={{ background: "#FAF6EF", border: "1px solid #ede8df" }}
+            className="mt-2 grid grid-cols-2 gap-1.5 p-1.5 rounded-2xl"
+            style={{ background: "#F1E9DA", border: "1px solid #e2d6bc" }}
           >
             <button
               onClick={() => setTab("incoming")}
-              className="tap relative rounded-xl py-2 text-[12px] font-bold inline-flex items-center justify-center gap-1.5 transition-all"
+              className="tap relative rounded-xl py-2.5 text-[12px] font-bold inline-flex items-center justify-center gap-1.5 transition-all leading-tight text-center"
               style={
                 tab === "incoming"
-                  ? { background: "#fff", color: "#FF6D00", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }
-                  : { background: "transparent", color: "#a59a85" }
+                  ? { background: ORANGE_GRADIENT, color: "#fff", boxShadow: "0 4px 14px rgba(255,109,0,0.35)" }
+                  : { background: "transparent", color: "#7a6b52" }
               }
             >
               Отклики на вашу заявку
               {incoming.length > 0 && (
                 <span
-                  className="text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full min-w-[18px] text-center"
-                  style={{ background: ORANGE_GRADIENT }}
+                  className="text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center"
+                  style={
+                    tab === "incoming"
+                      ? { background: "#fff", color: "#FF6D00" }
+                      : { background: ORANGE_GRADIENT, color: "#fff" }
+                  }
                 >
                   {incoming.length}
                 </span>
@@ -1232,14 +1236,14 @@ function Waiting({ to, onBack }: { to: FoursomeRequest; onBack: () => void }) {
             </button>
             <button
               onClick={() => setTab("outgoing")}
-              className="tap rounded-xl py-2 text-[12px] font-bold transition-all"
+              className="tap rounded-xl py-2.5 text-[12px] font-bold transition-all leading-tight text-center"
               style={
                 tab === "outgoing"
-                  ? { background: "#fff", color: "#FF6D00", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }
-                  : { background: "transparent", color: "#a59a85" }
+                  ? { background: ORANGE_GRADIENT, color: "#fff", boxShadow: "0 4px 14px rgba(255,109,0,0.35)" }
+                  : { background: "transparent", color: "#7a6b52" }
               }
             >
-              Ваш запрос
+              Ваш запрос другой паре
             </button>
           </div>
 
