@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo } from "react";
+import { useRouter } from "@tanstack/react-router";
 import { BackButton } from "@/components/layout/BackButton";
 import {
   useNotifications,
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/_app/notifications")({
 });
 
 function NotificationsPage() {
+  const router = useRouter();
   const { items, lastSeen } = useNotifications();
 
   // Считаем "непрочитанные" на момент захода на экран — фиксируем один раз,
@@ -41,7 +43,7 @@ function NotificationsPage() {
 
   return (
     <div className="px-4 pt-2 pb-6">
-      <BackButton />
+      <BackButton onClick={() => router.history.back()} />
       <h1 className="mt-2 text-[22px] font-semibold leading-tight">История уведомлений</h1>
       <p className="mt-1 text-[13px] text-muted-foreground">
         Новые — с оранжевой рамкой. Прошедшие — обычные.
