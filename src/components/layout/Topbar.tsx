@@ -35,18 +35,24 @@ export function Topbar({ onMenu, stickyTop = 0 }: TopbarProps) {
           <Link
             to="/notifications"
             aria-label="История уведомлений"
-            className="tap relative h-9 w-9 rounded-full bg-card hairline shadow-card flex items-center justify-center"
+            className={
+              "tap relative h-9 w-9 rounded-full flex items-center justify-center " +
+              (unread > 0 ? "bg-card hairline shadow-card" : "")
+            }
           >
             <Bell
-              className={"h-[18px] w-[18px] " + (bellOn && unread > 0 ? "text-[#FF6D00]" : "text-muted-foreground")}
+              className={
+                "h-[18px] w-[18px] " +
+                (unread > 0 ? "text-[#FF6D00]" : "text-muted-foreground/50")
+              }
               strokeWidth={2.2}
               style={
-                bellOn && unread > 0
+                unread > 0
                   ? { animation: "topbar-bell-shake 2.4s ease-in-out infinite" }
-                  : undefined
+                  : { opacity: 0.45 }
               }
             />
-            {bellOn && unread > 0 && (
+            {unread > 0 && (
               <span
                 aria-hidden
                 className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] rounded-full text-[10px] font-bold text-white flex items-center justify-center px-1"
