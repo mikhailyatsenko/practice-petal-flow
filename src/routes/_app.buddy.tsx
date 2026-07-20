@@ -881,7 +881,7 @@ function RequestCard({ req, onSend, mine }: { req: BuddyRequest; onSend: () => v
           className="mt-3 w-full rounded-xl py-2.5 text-[13px] font-semibold text-center"
           style={{ background: "#f3f4f6", color: "#6b7280" }}
         >
-          Твоя заявка
+          Это твоя заявка
         </div>
       ) : (
         <button
