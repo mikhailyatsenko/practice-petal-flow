@@ -1251,6 +1251,7 @@ function IncomingRequestCard({
   onAccept: () => void;
   onDecline: () => void;
 }) {
+  const [contactOpen, setContactOpen] = useState(false);
   return (
     <div className="bg-card hairline shadow-card rounded-2xl p-3.5 animate-fade-up">
       <div className="flex items-start gap-3">
