@@ -1079,13 +1079,7 @@ function RequestCard({ req, onSend, mine, pending, pendingStatus = "waiting", pe
       )}
 
       {mine ? null : pending ? (
-
-        <div
-          className="mt-3 w-full rounded-xl py-2.5 text-[13px] font-bold text-center inline-flex items-center justify-center gap-1.5"
-          style={{ background: "#fff8dc", color: "#b45309" }}
-        >
-          <span aria-hidden>🕐</span> Ожидание ответа
-        </div>
+        <PendingStatusPill status={pendingStatus} expiresAt={pendingExpiresAt} />
       ) : (
         <button
           onClick={onSend}
