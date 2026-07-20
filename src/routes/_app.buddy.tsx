@@ -19,7 +19,7 @@ import {
 } from "@/lib/myBuddyRequestStore";
 
 export const Route = createFileRoute("/_app/buddy")({
-  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "has-no-link" | "waiting" | "create-tg-no-username" | "create-max" | "start-max-bot" | "start-tg-bot" } => {
+  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "has-no-link" | "waiting" | "create-tg-no-username" | "create-max" | "start-max-bot" | "start-tg-bot" | "edit-my-request" } => {
     const d = search.demo;
     if (
       d === "has" ||
@@ -28,12 +28,14 @@ export const Route = createFileRoute("/_app/buddy")({
       d === "create-tg-no-username" ||
       d === "create-max" ||
       d === "start-max-bot" ||
-      d === "start-tg-bot"
+      d === "start-tg-bot" ||
+      d === "edit-my-request"
     ) {
       return { demo: d };
     }
     return {};
   },
+
   head: () => ({
     meta: [
       { title: "Бадди — Клуб «Моя жизнь»" },
@@ -167,11 +169,23 @@ function BuddyScreen() {
             ? { name: "start_bot", variant: "max" }
             : demo === "start-tg-bot"
               ? { name: "start_bot", variant: "tg" }
-              : { name: "no_buddy" };
+              : demo === "edit-my-request"
+                ? { name: "create_request" }
+                : { name: "no_buddy" };
 
   const [screen, setScreen] = useState<Screen>(initial);
   const lastDemo = useRef(demo);
   useEffect(() => {
+    if (demo === "edit-my-request" && !window.localStorage.getItem("my-buddy-request")) {
+      setMyBuddyRequest({
+        day: "Ср",
+        time: "19:00",
+        job: "Продакт-менеджер",
+        bio: "Развиваю продукт в финтехе. Хочу партнёра, с которым будем держать друг друга в фокусе.",
+        extra: "Кроме среды могу во вторник вечером (19:00–21:00 МСК).",
+        channel: "tg",
+      });
+    }
     if (lastDemo.current !== demo) {
       lastDemo.current = demo;
       setScreen(initial);
@@ -180,6 +194,7 @@ function BuddyScreen() {
         setTelemostLink("https://telemost.yandex.ru/j/demo-buddy-room");
       }
   }, [demo]);
+
 
   const contactVariant: ContactVariant =
     demo === "create-max" ? "max" : demo === "create-tg-no-username" ? "tg-no-username" : "none";
