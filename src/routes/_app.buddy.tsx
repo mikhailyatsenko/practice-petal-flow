@@ -814,6 +814,15 @@ function BrowseRequests({
 function RequestCard({ req, onSend, mine }: { req: BuddyRequest; onSend: () => void; mine?: boolean }) {
   return (
     <div className="bg-card shadow-card rounded-2xl p-3.5 animate-fade-up">
+      {mine && (
+        <div
+          className="mb-3 flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-bold text-white"
+          style={{ background: "linear-gradient(135deg, #FFB300, #FF6D00)" }}
+        >
+          <span>⭐</span>
+          <span>Это твоя заявка</span>
+        </div>
+      )}
       <div className="flex items-start gap-3">
         <div
           className="h-12 w-12 shrink-0 rounded-[14px] flex items-center justify-center text-[24px]"
