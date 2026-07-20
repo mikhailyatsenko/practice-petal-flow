@@ -489,7 +489,17 @@ function BenefitRow({ icon, title, sub }: { icon: React.ReactNode; title: string
 
 // ───────────────────────── Screen 2: No foursome ─────────────────────────
 
-function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+function NoFoursome({
+  onNavigate,
+  myOwn,
+  onEditMyRequest,
+  onDeleteMyRequest,
+}: {
+  onNavigate: (s: Screen) => void;
+  myOwn: FoursomeRequest | null;
+  onEditMyRequest: () => void;
+  onDeleteMyRequest: () => void;
+}) {
   const navigate = useNavigate();
   const [howOpen, setHowOpen] = useState(false);
   const [howTab, setHowTab] = useState<"text" | "video">("text");
@@ -537,6 +547,29 @@ function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           <div className="text-[12px] text-muted-foreground">Пока твоя пара состоит в Четвёрке</div>
         </div>
       </div>
+
+      {/* Два способа */}
+      <SectionLabel>Два способа найти Четвёрку</SectionLabel>
+      <div className="space-y-2.5 mb-4">
+        {myOwn ? (
+          <MyOwnFoursomeSummary req={myOwn} onEdit={onEditMyRequest} onDelete={onDeleteMyRequest} />
+        ) : (
+          <ActionCard
+            emoji="✍️"
+            title="Оставить заявку"
+            subtitle="Опишите пару — вас найдут"
+            onClick={() => onNavigate({ name: "create_request" })}
+          />
+        )}
+        <ActionCard
+          emoji="🔍"
+          title="Выбрать из заявок"
+          subtitle="Просмотри заявки других пар"
+          badge={String(DEMO_REQUESTS.length)}
+          onClick={() => onNavigate({ name: "browse_requests" })}
+        />
+      </div>
+
 
       {/* Два способа */}
       <SectionLabel>Два способа найти Четвёрку</SectionLabel>
