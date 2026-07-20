@@ -996,7 +996,7 @@ function BrowseRequests({
   );
 }
 
-function RequestCard({ req, onSend, mine, pending, onEdit, onDelete }: { req: BuddyRequest; onSend: () => void; mine?: boolean; pending?: boolean; onEdit?: () => void; onDelete?: () => void }) {
+function RequestCard({ req, onSend, mine, pending, pendingStatus = "waiting", pendingExpiresAt, onEdit, onDelete }: { req: BuddyRequest; onSend: () => void; mine?: boolean; pending?: boolean; pendingStatus?: OutgoingStatus; pendingExpiresAt?: number; onEdit?: () => void; onDelete?: () => void }) {
   return (
     <div className="bg-card shadow-card rounded-2xl p-3.5 animate-fade-up">
       {mine && (
