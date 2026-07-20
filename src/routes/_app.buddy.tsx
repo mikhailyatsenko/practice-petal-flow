@@ -290,7 +290,17 @@ function PageHeader({ title, onBack, badge, right }: { title: string; onBack: ()
 
 // ───────────────────────── Screen 1: No buddy ─────────────────────────
 
-function NoBuddy({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+function NoBuddy({
+  onNavigate,
+  myOwn,
+  onEditMyRequest,
+  onDeleteMyRequest,
+}: {
+  onNavigate: (s: Screen) => void;
+  myOwn: BuddyRequest | null;
+  onEditMyRequest: () => void;
+  onDeleteMyRequest: () => void;
+}) {
   const navigate = useNavigate();
   const [howOpen, setHowOpen] = useState(false);
   const [howTab, setHowTab] = useState<"text" | "video">("text");
@@ -327,12 +337,16 @@ function NoBuddy({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         Два способа найти Бадди
       </h3>
       <div className="space-y-2">
-        <ActionCard
-          emoji="✍️"
-          title="Оставить заявку"
-          subtitle="Расскажи о себе, и тебя найдут"
-          onClick={() => onNavigate({ name: "create_request" })}
-        />
+        {myOwn ? (
+          <MyOwnRequestSummary req={myOwn} onEdit={onEditMyRequest} onDelete={onDeleteMyRequest} />
+        ) : (
+          <ActionCard
+            emoji="✍️"
+            title="Оставить заявку"
+            subtitle="Расскажи о себе, и тебя найдут"
+            onClick={() => onNavigate({ name: "create_request" })}
+          />
+        )}
         <ActionCard
           emoji="🔍"
           title="Выбрать из заявок"
@@ -341,6 +355,7 @@ function NoBuddy({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           rightBadge={String(DEMO_REQUESTS.length)}
         />
       </div>
+
 
       {/* Ожидание — переход в карточку запросов */}
       <button
