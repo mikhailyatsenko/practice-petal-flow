@@ -32,39 +32,41 @@ export function Topbar({ onMenu, stickyTop = 0 }: TopbarProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          {bellOn && (
-            <Link
-              to="/notifications"
-              aria-label="История уведомлений"
-              className="tap relative h-9 w-9 rounded-full bg-card hairline shadow-card flex items-center justify-center"
-            >
-              <Bell
-                className="h-[18px] w-[18px] text-[#FF6D00]"
-                strokeWidth={2.2}
-                style={{ animation: "topbar-bell-shake 2.4s ease-in-out infinite" }}
-              />
-              {unread > 0 && (
-                <span
-                  aria-hidden
-                  className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] rounded-full text-[10px] font-bold text-white flex items-center justify-center px-1"
-                  style={{ background: "#E53935", boxShadow: "0 0 0 2px hsl(var(--background))" }}
-                >
-                  {unread}
-                </span>
-              )}
-              <style>{`
-                @keyframes topbar-bell-shake {
-                  0%, 60%, 100% { transform: rotate(0deg); }
-                  65% { transform: rotate(-14deg); }
-                  70% { transform: rotate(12deg); }
-                  75% { transform: rotate(-8deg); }
-                  80% { transform: rotate(6deg); }
-                  85% { transform: rotate(-3deg); }
-                  90% { transform: rotate(1deg); }
-                }
-              `}</style>
-            </Link>
-          )}
+          <Link
+            to="/notifications"
+            aria-label="История уведомлений"
+            className="tap relative h-9 w-9 rounded-full bg-card hairline shadow-card flex items-center justify-center"
+          >
+            <Bell
+              className={"h-[18px] w-[18px] " + (bellOn && unread > 0 ? "text-[#FF6D00]" : "text-muted-foreground")}
+              strokeWidth={2.2}
+              style={
+                bellOn && unread > 0
+                  ? { animation: "topbar-bell-shake 2.4s ease-in-out infinite" }
+                  : undefined
+              }
+            />
+            {bellOn && unread > 0 && (
+              <span
+                aria-hidden
+                className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] rounded-full text-[10px] font-bold text-white flex items-center justify-center px-1"
+                style={{ background: "#E53935", boxShadow: "0 0 0 2px hsl(var(--background))" }}
+              >
+                {unread}
+              </span>
+            )}
+            <style>{`
+              @keyframes topbar-bell-shake {
+                0%, 60%, 100% { transform: rotate(0deg); }
+                65% { transform: rotate(-14deg); }
+                70% { transform: rotate(12deg); }
+                75% { transform: rotate(-8deg); }
+                80% { transform: rotate(6deg); }
+                85% { transform: rotate(-3deg); }
+                90% { transform: rotate(1deg); }
+              }
+            `}</style>
+          </Link>
 
           <Link
             to="/library"

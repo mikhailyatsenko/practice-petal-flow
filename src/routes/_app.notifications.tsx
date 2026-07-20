@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { BackButton } from "@/components/layout/BackButton";
+import { useBellMode } from "@/lib/bellMode";
 import {
   useNotifications,
   markNotificationsSeen,
@@ -20,12 +21,14 @@ export const Route = createFileRoute("/_app/notifications")({
 
 function NotificationsPage() {
   const router = useRouter();
+  const bellOn = useBellMode();
   const { items, lastSeen } = useNotifications();
 
   // Считаем "непрочитанные" на момент захода на экран — фиксируем один раз,
-  // чтобы подсветка не пропадала прямо во время просмотра. Со следующего
-  // визита эти же уведомления уже будут "прошедшими".
+  // чтобы подсветка не пропадала прямо во время просмотра. Если режим
+  // колокольчика выключен — подсветки нет вообще (всё как "прошедшее").
   const unreadIds = useMemo(() => {
+    if (!bellOn) return new Set<string>();
     return new Set(
       items.filter((n) => new Date(n.date).getTime() > lastSeen).map((n) => n.id),
     );
