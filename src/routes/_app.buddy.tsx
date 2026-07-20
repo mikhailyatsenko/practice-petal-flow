@@ -883,6 +883,13 @@ function RequestCard({ req, onSend, mine, pending }: { req: BuddyRequest; onSend
         >
           Это твоя заявка
         </div>
+      ) : pending ? (
+        <div
+          className="mt-3 w-full rounded-xl py-2.5 text-[13px] font-bold text-center inline-flex items-center justify-center gap-1.5"
+          style={{ background: "#fff8dc", color: "#b45309" }}
+        >
+          <span aria-hidden>🕐</span> Ожидание ответа
+        </div>
       ) : (
         <button
           onClick={onSend}
