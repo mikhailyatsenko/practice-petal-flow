@@ -2119,7 +2119,9 @@ function HasFoursome({ data, onBack }: { data: FoursomeData; onBack: () => void 
           <div className="text-[12px] uppercase font-medium mb-3" style={{ letterSpacing: 0.5, color: "#FF6D00" }}>
             Заполнение карточек участников
           </div>
+          <PrelimCallBlock />
           <div className="space-y-2">
+
             {others.map((m) => {
               const filled = isMemberFilled(m);
               const to = m.userId === "b1" ? "/my-buddy-card" : "/foursome-profile/$userId";
