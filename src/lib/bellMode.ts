@@ -1,5 +1,7 @@
 // Дев-режим "Колокольчик уведомлений" — показывает иконку колокольчика в шапке.
 import { useEffect, useState } from "react";
+import { markNotificationsSeen, resetNotificationsSeen } from "@/lib/notificationsStore";
+
 
 const KEY = "bell-mode";
 const EVT = "bell-mode-change";
