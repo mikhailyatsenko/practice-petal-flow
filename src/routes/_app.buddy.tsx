@@ -117,6 +117,19 @@ const DEMO_REQUESTS: BuddyRequest[] = [
   },
 ];
 
+// Твоя собственная заявка — показываем первой в списке (демо)
+const MY_OWN_REQUEST: BuddyRequest = {
+  id: "me",
+  name: "Ты",
+  age: 28,
+  avatar: "🙂",
+  job: "Твоя анкета",
+  day: "Чт",
+  time: "20:00",
+  bio: "Так твоя заявка выглядит для других участников клуба. Они видят её в общем списке и могут отправить тебе запрос на созвон.",
+  channels: ["tg"],
+};
+
 // Демо-бадди (Экран 6)
 const DEMO_BUDDY: BuddyRequest = {
   id: "b1",
@@ -777,6 +790,7 @@ function BrowseRequests({
       </p>
 
       <div className="space-y-3">
+        <RequestCard req={MY_OWN_REQUEST} onSend={() => {}} mine />
         {DEMO_REQUESTS.map((r) => (
           <RequestCard key={r.id} req={r} onSend={() => setSelected(r)} />
         ))}
@@ -797,13 +811,28 @@ function BrowseRequests({
   );
 }
 
-function RequestCard({ req, onSend }: { req: BuddyRequest; onSend: () => void }) {
+function RequestCard({ req, onSend, mine }: { req: BuddyRequest; onSend: () => void; mine?: boolean }) {
   return (
-    <div className="bg-card hairline shadow-card rounded-2xl p-3.5 animate-fade-up">
+    <div
+      className="bg-card shadow-card rounded-2xl p-3.5 animate-fade-up"
+      style={
+        mine
+          ? { border: "2px solid #22c55e", background: "#f0fdf4" }
+          : undefined
+      }
+    >
+      {mine && (
+        <div
+          className="text-[11px] font-bold uppercase mb-2 inline-flex items-center gap-1 px-2 py-1 rounded-full"
+          style={{ background: "#dcfce7", color: "#166534", letterSpacing: 0.4 }}
+        >
+          ⭐ Твоя заявка · так её видят другие
+        </div>
+      )}
       <div className="flex items-start gap-3">
         <div
           className="h-12 w-12 shrink-0 rounded-[14px] flex items-center justify-center text-[24px]"
-          style={{ background: "#FAF6EF" }}
+          style={{ background: mine ? "#dcfce7" : "#FAF6EF" }}
         >
           {req.avatar}
         </div>
@@ -840,7 +869,7 @@ function RequestCard({ req, onSend }: { req: BuddyRequest; onSend: () => void })
 
       <div
         className="mt-3 rounded-[10px] p-3 text-[13px]"
-        style={{ background: "#FAF6EF", lineHeight: 1.5 }}
+        style={{ background: mine ? "#ffffff" : "#FAF6EF", lineHeight: 1.5 }}
       >
         {req.bio}
       </div>
@@ -857,16 +886,25 @@ function RequestCard({ req, onSend }: { req: BuddyRequest; onSend: () => void })
         </div>
       )}
 
-      <button
-        onClick={onSend}
-        className="tap mt-3 w-full rounded-xl py-2.5 text-[13px] font-bold text-white"
-        style={{
-          background: "linear-gradient(135deg, #FFB300, #FF6D00)",
-          boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
-        }}
-      >
-        Отправить запрос
-      </button>
+      {mine ? (
+        <div
+          className="mt-3 w-full rounded-xl py-2.5 text-[13px] font-semibold text-center"
+          style={{ background: "#dcfce7", color: "#166534" }}
+        >
+          Это твоя заявка
+        </div>
+      ) : (
+        <button
+          onClick={onSend}
+          className="tap mt-3 w-full rounded-xl py-2.5 text-[13px] font-bold text-white"
+          style={{
+            background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+            boxShadow: "0 4px 14px rgba(255,109,0,0.35)",
+          }}
+        >
+          Отправить запрос
+        </button>
+      )}
     </div>
   );
 }

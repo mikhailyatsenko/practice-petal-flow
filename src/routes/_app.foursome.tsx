@@ -130,6 +130,20 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   },
 ];
 
+// Собственная заявка твоей пары — показываем первой в списке (демо)
+const MY_OWN_FOURSOME_REQUEST: FoursomeRequest = {
+  id: "me-pair",
+  members: [
+    { ...ME_MEMBER, bio: "Так ваша заявка выглядит для других пар. Они видят её в общем списке." },
+    { ...MY_BUDDY_MEMBER, username: MY_BUDDY_MEMBER.telegram, bio: "Мой бадди — вместе ищем ещё одну пару для Четвёрки." },
+  ],
+  representativeId: ME_MEMBER.userId,
+  chatMessenger: "telegram",
+  day: "Чт",
+  time: "20:00",
+  extra: "Готовы созваниваться в первый четверг месяца. Ждём отклики от других пар клуба.",
+};
+
 const DEMO_FOURSOME: FoursomeData = {
   pair1: { members: [ME, MY_BUDDY] },
   pair2: {
@@ -937,8 +951,22 @@ function BrowseRequests({
       </p>
 
       <div className="space-y-3">
-        {DEMO_REQUESTS.map((req) => (
-          <Card key={req.id} className="p-4">
+        {[MY_OWN_FOURSOME_REQUEST, ...DEMO_REQUESTS].map((req) => {
+          const mine = req.id === MY_OWN_FOURSOME_REQUEST.id;
+          return (
+          <Card
+            key={req.id}
+            className="p-4"
+            style={mine ? { border: "2px solid #22c55e", background: "#f0fdf4" } : undefined}
+          >
+            {mine && (
+              <div
+                className="text-[11px] font-bold uppercase mb-3 inline-flex items-center gap-1 px-2 py-1 rounded-full"
+                style={{ background: "#dcfce7", color: "#166534", letterSpacing: 0.4 }}
+              >
+                ⭐ Ваша заявка · так её видят другие пары
+              </div>
+            )}
             <div className="space-y-2 mb-3">
               {req.members.map((m) => {
                 const isRep = m.userId === req.representativeId;
@@ -946,7 +974,7 @@ function BrowseRequests({
                   <div
                     key={m.userId}
                     className="rounded-xl p-2.5"
-                    style={{ background: "#FAF6EF" }}
+                    style={{ background: mine ? "#ffffff" : "#FAF6EF" }}
                   >
                     <div className="flex items-center gap-2">
                       <div className="h-9 w-9 rounded-lg bg-white flex items-center justify-center text-[18px] shrink-0">
@@ -1008,15 +1036,25 @@ function BrowseRequests({
               </div>
             )}
 
-            <button
-              onClick={() => setConfirming(req)}
-              className="tap w-full py-2.5 rounded-xl text-white text-[13px] font-bold"
-              style={{ background: ORANGE_GRADIENT }}
-            >
-              Отправить запрос
-            </button>
+            {mine ? (
+              <div
+                className="w-full py-2.5 rounded-xl text-[13px] font-semibold text-center"
+                style={{ background: "#dcfce7", color: "#166534" }}
+              >
+                Это ваша заявка
+              </div>
+            ) : (
+              <button
+                onClick={() => setConfirming(req)}
+                className="tap w-full py-2.5 rounded-xl text-white text-[13px] font-bold"
+                style={{ background: ORANGE_GRADIENT }}
+              >
+                Отправить запрос
+              </button>
+            )}
           </Card>
-        ))}
+          );
+        })}
       </div>
 
       {confirming && (
