@@ -137,19 +137,22 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   },
 ];
 
-// Собственная заявка твоей пары — показываем первой в списке (демо)
-const MY_OWN_FOURSOME_REQUEST: FoursomeRequest = {
-  id: "me-pair",
-  members: [
-    { ...ME_MEMBER, bio: "Моя пара ищет ещё одну пару для Четвёрки." },
-    { ...MY_BUDDY_MEMBER, username: MY_BUDDY_MEMBER.telegram, bio: "Мой бадди — вместе ищем ещё одну пару для Четвёрки." },
-  ],
-  representativeId: ME_MEMBER.userId,
-  chatMessenger: "telegram",
-  day: "Чт",
-  time: "20:00",
-  extra: "Готовы созваниваться в первый четверг месяца. Ждём отклики от других пар клуба.",
-};
+// Собственная заявка твоей пары — собирается из сохранённых данных пользователя
+function buildMyFoursomeRequest(data: MyFoursomeRequestData): FoursomeRequest {
+  return {
+    id: "me-pair",
+    members: [
+      { ...ME_MEMBER, bio: "Моя пара ищет ещё одну пару для Четвёрки." },
+      { ...MY_BUDDY_MEMBER, username: MY_BUDDY_MEMBER.telegram, bio: "Мой бадди — вместе ищем ещё одну пару для Четвёрки." },
+    ],
+    representativeId: ME_MEMBER.userId,
+    chatMessenger: data.messenger,
+    day: data.day,
+    time: data.time,
+    extra: data.extra || undefined,
+  };
+}
+
 
 const DEMO_FOURSOME: FoursomeData = {
   pair1: { members: [ME, MY_BUDDY] },
