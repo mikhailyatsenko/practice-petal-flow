@@ -1064,11 +1064,18 @@ function MyOwnFoursomeSummary({
 function BrowseRequests({
   onBack,
   onConfirm,
+  myOwn,
+  onEditMyRequest,
+  onDeleteMyRequest,
 }: {
   onBack: () => void;
   onConfirm: (req: FoursomeRequest) => void;
+  myOwn: FoursomeRequest | null;
+  onEditMyRequest: () => void;
+  onDeleteMyRequest: () => void;
 }) {
   const [confirming, setConfirming] = useState<FoursomeRequest | null>(null);
+  const list: FoursomeRequest[] = myOwn ? [myOwn, ...DEMO_REQUESTS] : [...DEMO_REQUESTS];
 
   return (
     <div className="px-4 pb-8">
@@ -1078,8 +1085,9 @@ function BrowseRequests({
       </p>
 
       <div className="space-y-3">
-        {[MY_OWN_FOURSOME_REQUEST, ...DEMO_REQUESTS].map((req) => {
-          const mine = req.id === MY_OWN_FOURSOME_REQUEST.id;
+        {list.map((req) => {
+          const mine = myOwn ? req.id === myOwn.id : false;
+
           return (
           <Card
             key={req.id}
