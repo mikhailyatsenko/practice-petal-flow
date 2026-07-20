@@ -688,6 +688,7 @@ function CreateRequest({
   initial?: MyBuddyRequestData | null;
   onDelete?: () => void;
 }) {
+  const [editMode, setEditMode] = useState(!initial);
   const [day, setDay] = useState<string | null>(initial?.day ?? null);
   const [time, setTime] = useState<string | null>(initial?.time ?? null);
   const [job, setJob] = useState(initial?.job ?? "");
@@ -702,6 +703,25 @@ function CreateRequest({
     if (!valid || !day || !time || !channel) return;
     onSubmit({ day, time, job: job.trim(), bio: bio.trim(), extra: extra.trim(), channel });
   };
+
+  if (editing && !editMode && initial) {
+    const myReq = buildMyRequest(initial);
+    return (
+      <div className="px-4 pb-8">
+        <PageHeader title="Твоя заявка" onBack={onBack} />
+        <p className="text-[13px] text-muted-foreground -mt-2 mb-4 px-1">
+          Так твою заявку видят другие участники
+        </p>
+        <RequestCard
+          req={myReq}
+          onSend={() => {}}
+          mine
+          onEdit={() => setEditMode(true)}
+          onDelete={onDelete}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 pb-8">
