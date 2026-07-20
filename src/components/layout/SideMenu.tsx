@@ -15,6 +15,7 @@ import { useLevel2DoneMode, toggleLevel2DoneMode, setLevel2DoneMode } from "@/li
 import { useLevel3DoneMode, toggleLevel3DoneMode, setLevel3DoneMode } from "@/lib/level3DoneMode";
 import { useLevel4DoneMode, toggleLevel4DoneMode, setLevel4DoneMode } from "@/lib/level4DoneMode";
 import { useLevel5WaitingMode, toggleLevel5WaitingMode, setLevel5WaitingMode } from "@/lib/level5WaitingMode";
+import { useTripleBannerMode, toggleTripleBannerMode } from "@/lib/tripleBannerMode";
 import { setPreviewLevel } from "@/lib/previewLevel";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
