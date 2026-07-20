@@ -1807,6 +1807,20 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
         }
       />
 
+      <div
+        className="rounded-2xl p-4 mb-3 animate-fade-up bg-card hairline shadow-card"
+      >
+        <p className="text-[15px] font-bold leading-tight" style={{ color: "#1a0e00" }}>
+          Ваш созвон — {schedule.day}, {schedule.time} {schedule.timezone}, каждую неделю
+        </p>
+        {noLink ? (
+          <p className="text-[13px] mt-2 leading-snug" style={{ color: "#7a4a1e" }}>
+            <span style={{ color: "#FF6D00", fontWeight: 700 }}>Важно:</span>{" "}
+            заранее до созвона создайте ссылку — нажмите «Создать ссылку на созвоны» ниже.
+          </p>
+        ) : null}
+      </div>
+
       {noLinkActive ? null : noLink ? (
         <div
           className="rounded-2xl p-4 animate-fade-up hairline"

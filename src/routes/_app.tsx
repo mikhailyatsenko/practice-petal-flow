@@ -8,6 +8,8 @@ import { OnboardingGate } from "@/components/onboarding/OnboardingGate";
 import { BuddyRequestBanner } from "@/components/layout/BuddyRequestBanner";
 import { FoursomeRequestBanner } from "@/components/layout/FoursomeRequestBanner";
 import { CallReminderBanner } from "@/components/layout/CallReminderBanner";
+import { BuddyFoundBanner } from "@/components/layout/BuddyFoundBanner";
+import { useBuddyFoundMode } from "@/lib/buddyFoundMode";
 import { Level4GiftBanner } from "@/components/layout/Level4GiftBanner";
 import { LevelDoneBanner, useLevelDoneBannerVisible } from "@/components/layout/LevelDoneBanner";
 import { useBuddyRequestMode } from "@/lib/buddyRequestMode";
@@ -63,18 +65,21 @@ function AppLayout() {
   const noLinkActive = callMode === "buddy-no-link" || callMode === "buddy-2h-no-link";
   const isTimed = callMode === "buddy-2h" || callMode === "buddy-2h-no-link" || callMode === "foursome-2h";
   const callBannerOn = !!callMode && (isTimed || noLinkActive || !callAck);
+  const buddyFoundOn = useBuddyFoundMode();
 
   const buddyH = useBannerHeight("[data-buddy-request-banner]", buddyMode);
   const foursomeH = useBannerHeight("[data-foursome-request-banner]", foursomeMode);
+  const buddyFoundH = useBannerHeight("[data-buddy-found-banner]", buddyFoundOn);
   const callH = useBannerHeight("[data-call-reminder-banner]", callBannerOn, [callMode]);
   const giftH = useBannerHeight("[data-level4-gift-banner]", giftBannerOn);
   const levelDoneH = useBannerHeight("[data-level-done-banner]", levelDoneOn);
 
   const foursomeTop = buddyH;
-  const callTop = buddyH + foursomeH;
-  const giftTop = buddyH + foursomeH + callH;
-  const levelDoneTop = buddyH + foursomeH + callH + giftH;
-  const topPad = buddyH + foursomeH + callH + giftH + levelDoneH;
+  const buddyFoundTop = buddyH + foursomeH;
+  const callTop = buddyH + foursomeH + buddyFoundH;
+  const giftTop = callTop + callH;
+  const levelDoneTop = giftTop + giftH;
+  const topPad = levelDoneTop + levelDoneH;
 
 
   return (
@@ -89,6 +94,16 @@ function AppLayout() {
         }
       >
         <FoursomeRequestBanner />
+      </div>
+      <div
+        style={
+          {
+            ["--buddy-found-top" as any]: `${buddyFoundTop}px`,
+            ["--buddy-found-pt" as any]: buddyFoundTop > 0 ? "8px" : "max(env(safe-area-inset-top), 8px)",
+          } as React.CSSProperties
+        }
+      >
+        <BuddyFoundBanner />
       </div>
       <div
         style={
