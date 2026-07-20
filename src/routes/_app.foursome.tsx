@@ -1274,28 +1274,74 @@ function Waiting({ to, onBack }: { to: FoursomeRequest; onBack: () => void }) {
               <p className="px-1 text-[12px] text-muted-foreground mb-3 leading-snug">
                 Вы отправили запрос этой паре. Ждём ответа — действий пока не требуется.
               </p>
-              <Card className="p-3.5">
-                <div className="space-y-2">
-                  {to.members.map((m) => (
-                    <MemberRow key={m.userId} m={m} />
-                  ))}
+              <Card className="p-4">
+                <div className="space-y-2 mb-3">
+                  {to.members.map((m) => {
+                    const isRep = m.userId === to.representativeId;
+                    return (
+                      <div
+                        key={m.userId}
+                        className="rounded-xl p-2.5"
+                        style={{ background: "#FAF6EF" }}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="h-9 w-9 rounded-lg bg-white flex items-center justify-center text-[18px] shrink-0">
+                            {m.avatar}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-[13px] font-semibold truncate flex items-center gap-1.5">
+                              {fullName(m)}
+                              {isRep && (
+                                <span
+                                  className="text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
+                                  style={{ background: "#fff3e0", color: "#FF6D00" }}
+                                >
+                                  Представитель
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[11px] text-muted-foreground truncate">{m.job}</div>
+                          </div>
+                        </div>
+                        {m.bio && (
+                          <p className="text-[12px] text-foreground/80 mt-2" style={{ lineHeight: 1.5 }}>
+                            {m.bio}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="flex flex-col gap-2 pt-2 mt-2 border-t border-border/50">
-                  <div className="flex flex-wrap gap-2">
-                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
-                      🕐 {to.time} МСК
-                    </span>
-                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
-                      📅 {DAY_FULL[to.day]}
-                    </span>
-                  </div>
-                  <LocalTimeHint time={to.time} align="left" />
+
+                <div className="flex flex-wrap gap-2 mb-1">
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
+                    🕐 {to.time} МСК
+                  </span>
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
+                    📅 {DAY_FULL[to.day]}
+                  </span>
+                </div>
+                <LocalTimeHint time={to.time} align="left" className="mb-3" />
+
+                <ChatBadge messenger={to.chatMessenger} />
+
+                {to.extra && (
                   <div
-                    className="inline-flex items-center gap-1.5 text-[12px] font-bold px-3 py-1.5 rounded-full w-fit"
-                    style={{ background: "#fff8dc", color: "#b45309" }}
+                    className="mb-3 mt-3 rounded-xl p-3 text-[13px]"
+                    style={{ background: "#fff8ee", border: "1px solid #ffe0a3", lineHeight: 1.5 }}
                   >
-                    <span aria-hidden>🕐</span> Ожидание ответа
+                    <div className="text-[11px] font-bold uppercase mb-1" style={{ color: "#FF6D00", letterSpacing: 0.4 }}>
+                      💬 Доп. комментарии
+                    </div>
+                    <p className="text-foreground/85">{to.extra}</p>
                   </div>
+                )}
+
+                <div
+                  className="w-full py-2.5 rounded-xl text-[13px] font-bold text-center inline-flex items-center justify-center gap-1.5"
+                  style={{ background: "#fff8dc", color: "#b45309" }}
+                >
+                  <span aria-hidden>🕐</span> Ожидание ответа
                 </div>
               </Card>
             </div>
