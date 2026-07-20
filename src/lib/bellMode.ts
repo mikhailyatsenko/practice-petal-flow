@@ -18,13 +18,21 @@ export function getBellMode(): boolean {
 export function setBellMode(on: boolean) {
   if (typeof window === "undefined") return;
   try {
-    if (on) window.localStorage.setItem(KEY, "1");
-    else window.localStorage.removeItem(KEY);
+    if (on) {
+      window.localStorage.setItem(KEY, "1");
+      // Сброс "последнего просмотра", чтобы все демо-уведомления снова были новыми.
+      resetNotificationsSeen();
+    } else {
+      window.localStorage.removeItem(KEY);
+      // Гасим счётчик — иконка становится серой без бейджа.
+      markNotificationsSeen();
+    }
   } catch {
     /* noop */
   }
   window.dispatchEvent(new CustomEvent(EVT));
 }
+
 
 export function toggleBellMode() {
   setBellMode(!getBellMode());
