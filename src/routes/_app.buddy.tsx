@@ -813,26 +813,11 @@ function BrowseRequests({
 
 function RequestCard({ req, onSend, mine }: { req: BuddyRequest; onSend: () => void; mine?: boolean }) {
   return (
-    <div
-      className="bg-card shadow-card rounded-2xl p-3.5 animate-fade-up"
-      style={
-        mine
-          ? { border: "2px solid #22c55e", background: "#f0fdf4" }
-          : undefined
-      }
-    >
-      {mine && (
-        <div
-          className="text-[11px] font-bold uppercase mb-2 inline-flex items-center gap-1 px-2 py-1 rounded-full"
-          style={{ background: "#dcfce7", color: "#166534", letterSpacing: 0.4 }}
-        >
-          ⭐ Твоя заявка · так её видят другие
-        </div>
-      )}
+    <div className="bg-card shadow-card rounded-2xl p-3.5 animate-fade-up">
       <div className="flex items-start gap-3">
         <div
           className="h-12 w-12 shrink-0 rounded-[14px] flex items-center justify-center text-[24px]"
-          style={{ background: mine ? "#dcfce7" : "#FAF6EF" }}
+          style={{ background: "#FAF6EF" }}
         >
           {req.avatar}
         </div>
@@ -869,7 +854,7 @@ function RequestCard({ req, onSend, mine }: { req: BuddyRequest; onSend: () => v
 
       <div
         className="mt-3 rounded-[10px] p-3 text-[13px]"
-        style={{ background: mine ? "#ffffff" : "#FAF6EF", lineHeight: 1.5 }}
+        style={{ background: "#FAF6EF", lineHeight: 1.5 }}
       >
         {req.bio}
       </div>
@@ -889,7 +874,7 @@ function RequestCard({ req, onSend, mine }: { req: BuddyRequest; onSend: () => v
       {mine ? (
         <div
           className="mt-3 w-full rounded-xl py-2.5 text-[13px] font-semibold text-center"
-          style={{ background: "#dcfce7", color: "#166534" }}
+          style={{ background: "#f3f4f6", color: "#6b7280" }}
         >
           Это твоя заявка
         </div>
