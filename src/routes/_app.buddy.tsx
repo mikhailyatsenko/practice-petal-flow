@@ -1420,8 +1420,15 @@ function Waiting({ outgoing, onBack }: { outgoing: OutgoingItem[]; onBack: () =>
                   : "Ты отправил запрос на эту заявку. Ждём ответа — действий пока не требуется."}
               </p>
               <div className="space-y-3">
-                {outgoing.map((r) => (
-                  <RequestCard key={r.id} req={r} onSend={() => {}} pending />
+                {outgoing.map((o) => (
+                  <RequestCard
+                    key={o.req.id}
+                    req={o.req}
+                    onSend={() => {}}
+                    pending
+                    pendingStatus={o.status}
+                    pendingExpiresAt={o.expiresAt}
+                  />
                 ))}
               </div>
             </div>
