@@ -978,10 +978,27 @@ function RequestCard({ req, onSend, mine, pending, onEdit, onDelete }: { req: Bu
   return (
     <div className="bg-card shadow-card rounded-2xl p-3.5 animate-fade-up">
       {mine && (
-        <div className="mb-3 text-center">
+        <div className="mb-3 flex items-center justify-between gap-2">
           <span className="text-[18px] font-bold text-muted-foreground">Твоя заявка</span>
+          <div className="flex gap-2">
+            <button
+              onClick={onEdit}
+              className="tap rounded-full py-2 px-3.5 text-[13px] font-semibold inline-flex items-center gap-1.5"
+              style={{ background: "#fff", color: "#FF6D00", border: "1.5px solid #ffd8a8" }}
+            >
+              <Pencil className="h-4 w-4" /> Редактировать
+            </button>
+            <button
+              onClick={onDelete}
+              className="tap rounded-full py-2 px-3.5 text-[13px] font-semibold inline-flex items-center gap-1.5"
+              style={{ background: "#fff", color: "#dc2626", border: "1.5px solid #fecaca" }}
+            >
+              <Trash2 className="h-4 w-4" /> Удалить
+            </button>
+          </div>
         </div>
       )}
+
       <div className="flex items-start gap-3">
         <div
           className="h-12 w-12 shrink-0 rounded-[14px] flex items-center justify-center text-[24px]"
