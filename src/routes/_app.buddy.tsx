@@ -176,7 +176,11 @@ function BuddyScreen() {
     demo === "has" || demo === "has-no-link"
       ? { name: "has_buddy" }
       : demo === "waiting"
-        ? { name: "waiting", outgoing: DEMO_REQUESTS.slice(0, 2) }
+        ? { name: "waiting", outgoing: [
+            makeWaitingItem(DEMO_REQUESTS[0], 23.5),
+            { req: DEMO_REQUESTS[1], status: "expired" },
+            { req: DEMO_REQUESTS[2], status: "declined" },
+          ] }
         : demo === "create-tg-no-username" || demo === "create-max"
           ? { name: "contact_step" }
           : demo === "start-max-bot"
