@@ -996,6 +996,51 @@ function BrowseRequests({
   );
 }
 
+function PendingStatusPill({ status, expiresAt }: { status: OutgoingStatus; expiresAt?: number }) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (status !== "waiting") return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [status]);
+
+  if (status === "expired") {
+    return (
+      <div
+        className="mt-3 w-full rounded-xl py-2.5 px-3 text-[13px] font-bold text-center inline-flex items-center justify-center gap-1.5"
+        style={{ background: "#fee2e2", color: "#b91c1c" }}
+      >
+        <span aria-hidden>⌛</span> Заявка аннулирована · 24 ч истекли
+      </div>
+    );
+  }
+  if (status === "declined") {
+    return (
+      <div
+        className="mt-3 w-full rounded-xl py-2.5 px-3 text-[13px] font-bold text-center inline-flex items-center justify-center gap-1.5"
+        style={{ background: "#f3f4f6", color: "#4b5563" }}
+      >
+        <span aria-hidden>✕</span> Участник не принял заявку
+      </div>
+    );
+  }
+
+  const msLeft = Math.max(0, (expiresAt ?? now) - now);
+  const totalSec = Math.floor(msLeft / 1000);
+  const hh = String(Math.floor(totalSec / 3600)).padStart(2, "0");
+  const mm = String(Math.floor((totalSec % 3600) / 60)).padStart(2, "0");
+  const ss = String(totalSec % 60).padStart(2, "0");
+
+  return (
+    <div
+      className="mt-3 w-full rounded-xl py-2.5 px-3 text-[13px] font-bold text-center inline-flex items-center justify-center gap-1.5"
+      style={{ background: "#fff8dc", color: "#b45309" }}
+    >
+      <span aria-hidden>🕐</span> Ожидание ответа · до аннулирования {hh}:{mm}:{ss}
+    </div>
+  );
+}
+
 function RequestCard({ req, onSend, mine, pending, pendingStatus = "waiting", pendingExpiresAt, onEdit, onDelete }: { req: BuddyRequest; onSend: () => void; mine?: boolean; pending?: boolean; pendingStatus?: OutgoingStatus; pendingExpiresAt?: number; onEdit?: () => void; onDelete?: () => void }) {
   return (
     <div className="bg-card shadow-card rounded-2xl p-3.5 animate-fade-up">
