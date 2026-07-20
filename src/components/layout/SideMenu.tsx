@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { resetAllPractices, advanceToNextDay } from "@/lib/practicesStore";
 import { useBuddyRequestMode, toggleBuddyRequestMode } from "@/lib/buddyRequestMode";
 import { useBuddyFoundMode, toggleBuddyFoundMode } from "@/lib/buddyFoundMode";
+import { useBellMode, toggleBellMode } from "@/lib/bellMode";
 import { useFoursomeCreatedMode, toggleFoursomeCreatedMode } from "@/lib/foursomeCreatedMode";
 import { useFoursomeRequestMode, toggleFoursomeRequestMode } from "@/lib/foursomeRequestMode";
 import { useCallReminder, toggleCallReminderMode } from "@/lib/callReminderMode";
@@ -26,6 +27,7 @@ interface SideMenuProps {
 export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps) {
   const buddyMode = useBuddyRequestMode();
   const buddyFound = useBuddyFoundMode();
+  const bellOn = useBellMode();
   const foursomeCreated = useFoursomeCreatedMode();
   const foursomeMode = useFoursomeRequestMode();
   const { mode: callMode } = useCallReminder();
@@ -214,6 +216,22 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             )}
             <span>
               {buddyMode ? "Выключить режим запроса бадди" : "Включить режим запроса бадди"}
+            </span>
+          </button>
+          <button
+            onClick={() => {
+              toggleBellMode();
+            }}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+            style={{ color: bellOn ? "#E53935" : "#FF6D00" }}
+          >
+            {bellOn ? (
+              <BellOff className="h-[18px] w-[18px]" strokeWidth={2} />
+            ) : (
+              <Bell className="h-[18px] w-[18px]" strokeWidth={2} />
+            )}
+            <span>
+              {bellOn ? "Выключить режим колокольчика" : "Включить режим колокольчика"}
             </span>
           </button>
           <button
