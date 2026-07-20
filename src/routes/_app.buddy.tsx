@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Check, X, Send, Pencil, ClipboardList, Video, Copy, Phone, Link } from "lucide-react";
+import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Check, X, Send, Pencil, Trash2, ClipboardList, Video, Copy, Phone, Link } from "lucide-react";
 import { BackButton } from "@/components/layout/BackButton";
 import { pluralAge } from "@/lib/agePlural";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
@@ -978,10 +978,27 @@ function RequestCard({ req, onSend, mine, pending, onEdit, onDelete }: { req: Bu
   return (
     <div className="bg-card shadow-card rounded-2xl p-3.5 animate-fade-up">
       {mine && (
-        <div className="mb-3 text-center">
+        <div className="mb-3 flex items-center justify-between gap-2">
           <span className="text-[18px] font-bold text-muted-foreground">Твоя заявка</span>
+          <div className="flex gap-2">
+            <button
+              onClick={onEdit}
+              className="tap rounded-full py-2 px-3.5 text-[13px] font-semibold inline-flex items-center gap-1.5"
+              style={{ background: "#fff", color: "#FF6D00", border: "1.5px solid #ffd8a8" }}
+            >
+              <Pencil className="h-4 w-4" /> Редактировать
+            </button>
+            <button
+              onClick={onDelete}
+              className="tap rounded-full py-2 px-3.5 text-[13px] font-semibold inline-flex items-center gap-1.5"
+              style={{ background: "#fff", color: "#dc2626", border: "1.5px solid #fecaca" }}
+            >
+              <Trash2 className="h-4 w-4" /> Удалить
+            </button>
+          </div>
         </div>
       )}
+
       <div className="flex items-start gap-3">
         <div
           className="h-12 w-12 shrink-0 rounded-[14px] flex items-center justify-center text-[24px]"
@@ -1039,24 +1056,8 @@ function RequestCard({ req, onSend, mine, pending, onEdit, onDelete }: { req: Bu
         </div>
       )}
 
-      {mine ? (
-        <div className="mt-3 flex justify-end gap-2">
-          <button
-            onClick={onEdit}
-            className="tap rounded-lg py-1.5 px-3 text-[12px] font-medium inline-flex items-center gap-1.5"
-            style={{ background: "#fff", color: "#FF6D00", border: "1px solid #ffd8a8" }}
-          >
-            <Pencil className="h-3.5 w-3.5" /> Редактировать
-          </button>
-          <button
-            onClick={onDelete}
-            className="tap rounded-lg py-1.5 px-3 text-[12px] font-medium inline-flex items-center gap-1.5"
-            style={{ background: "#fff", color: "#dc2626", border: "1px solid #fecaca" }}
-          >
-            <X className="h-3.5 w-3.5" /> Удалить
-          </button>
-        </div>
-      ) : pending ? (
+      {mine ? null : pending ? (
+
         <div
           className="mt-3 w-full rounded-xl py-2.5 text-[13px] font-bold text-center inline-flex items-center justify-center gap-1.5"
           style={{ background: "#fff8dc", color: "#b45309" }}
