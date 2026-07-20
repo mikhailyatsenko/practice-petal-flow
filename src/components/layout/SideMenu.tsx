@@ -39,6 +39,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
   const level3Done = useLevel3DoneMode();
   const level4Done = useLevel4DoneMode();
   const level5Waiting = useLevel5WaitingMode();
+  const tripleBanner = useTripleBannerMode();
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-[300px] sm:w-[320px] bg-background p-0 overflow-y-auto" data-version="v2">
