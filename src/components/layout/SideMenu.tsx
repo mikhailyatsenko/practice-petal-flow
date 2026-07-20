@@ -159,6 +159,17 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
           </Link>
 
           <Link
+            to="/buddy"
+            search={{ demo: "edit-my-request" }}
+            onClick={() => onOpenChange(false)}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
+          >
+            <Pencil className="h-[18px] w-[18px]" strokeWidth={2} />
+            <span>Бадди — моя заявка (редактирование)</span>
+          </Link>
+
+
+          <Link
             to="/telemost-link"
             onClick={() => onOpenChange(false)}
             className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] text-foreground"
