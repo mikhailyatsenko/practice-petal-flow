@@ -85,7 +85,7 @@ type Screen =
   | { name: "instructions"; from: "locked" | "no_foursome" }
   | { name: "create_request" }
   | { name: "browse_requests" }
-  | { name: "waiting"; to: FoursomeRequest }
+  | { name: "waiting"; outgoing: FoursomeRequest[] }
   | { name: "has_foursome" };
 
 const DAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
@@ -180,7 +180,7 @@ function FoursomeScreen() {
     demo === "has"
       ? { name: "has_foursome" }
       : demo === "waiting"
-        ? { name: "waiting", to: DEMO_REQUESTS[0] }
+        ? { name: "waiting", outgoing: DEMO_REQUESTS.slice(0, 2) }
         : demo === "locked"
           ? { name: "locked" }
           : demo === "edit-my-request"
@@ -237,14 +237,14 @@ function FoursomeScreen() {
       return (
         <BrowseRequests
           onBack={() => setScreen({ name: "no_foursome" })}
-          onConfirm={(req) => setScreen({ name: "waiting", to: req })}
+          onConfirm={(req) => setScreen({ name: "waiting", outgoing: [req] })}
           myOwn={myOwn}
           onEditMyRequest={() => setScreen({ name: "create_request" })}
           onDeleteMyRequest={handleDeleteMyRequest}
         />
       );
     case "waiting":
-      return <Waiting to={screen.to} onBack={() => setScreen({ name: "no_foursome" })} />;
+      return <Waiting outgoing={screen.outgoing} onBack={() => setScreen({ name: "no_foursome" })} />;
     case "has_foursome":
       return <HasFoursome onBack={() => setScreen({ name: "no_foursome" })} data={DEMO_FOURSOME} />;
   }
@@ -588,7 +588,7 @@ function NoFoursome({
 
       {/* Ожидание — переход к откликам */}
       <button
-        onClick={() => onNavigate({ name: "waiting", to: DEMO_REQUESTS[0] })}
+        onClick={() => onNavigate({ name: "waiting", outgoing: DEMO_REQUESTS.slice(0, 2) })}
         className="tap mb-4 w-full rounded-2xl px-3.5 py-3 flex items-center gap-3 text-left animate-fade-up"
         style={{
           background: "linear-gradient(135deg, #fff7ed, #ffedd5)",
@@ -1401,7 +1401,7 @@ const INCOMING_FOURSOME_REQUESTS: Array<{
   },
 ];
 
-function Waiting({ to, onBack }: { to: FoursomeRequest; onBack: () => void }) {
+function Waiting({ outgoing, onBack }: { outgoing: FoursomeRequest[]; onBack: () => void }) {
   const [incoming, setIncoming] = useState(INCOMING_FOURSOME_REQUESTS);
   const [accepted, setAccepted] = useState<FoursomeRequest | null>(null);
   const [tab, setTab] = useState<"incoming" | "outgoing">(
@@ -1498,78 +1498,84 @@ function Waiting({ to, onBack }: { to: FoursomeRequest; onBack: () => void }) {
           ) : (
             <div className="mt-4">
               <p className="px-1 text-[12px] text-muted-foreground mb-3 leading-snug">
-                Вы отправили запрос этой паре. Ждём ответа — действий пока не требуется.
+                {outgoing.length > 1
+                  ? `Вы отправили запросы (${outgoing.length}) этим парам. Ждём ответа — действий пока не требуется.`
+                  : "Вы отправили запрос этой паре. Ждём ответа — действий пока не требуется."}
               </p>
-              <Card className="p-4">
-                <div className="space-y-2 mb-3">
-                  {to.members.map((m) => {
-                    const isRep = m.userId === to.representativeId;
-                    return (
-                      <div
-                        key={m.userId}
-                        className="rounded-xl p-2.5"
-                        style={{ background: "#FAF6EF" }}
-                      >
-                        <div className="flex items-center gap-2">
-                          <div className="h-9 w-9 rounded-lg bg-white flex items-center justify-center text-[18px] shrink-0">
-                            {m.avatar}
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <div className="text-[13px] font-semibold truncate flex items-center gap-1.5">
-                              {fullName(m)}
-                              {isRep && (
-                                <span
-                                  className="text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
-                                  style={{ background: "#fff3e0", color: "#FF6D00" }}
-                                >
-                                  Представитель
-                                </span>
-                              )}
+              <div className="space-y-3">
+                {outgoing.map((to) => (
+                  <Card key={to.id} className="p-4">
+                    <div className="space-y-2 mb-3">
+                      {to.members.map((m) => {
+                        const isRep = m.userId === to.representativeId;
+                        return (
+                          <div
+                            key={m.userId}
+                            className="rounded-xl p-2.5"
+                            style={{ background: "#FAF6EF" }}
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className="h-9 w-9 rounded-lg bg-white flex items-center justify-center text-[18px] shrink-0">
+                                {m.avatar}
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <div className="text-[13px] font-semibold truncate flex items-center gap-1.5">
+                                  {fullName(m)}
+                                  {isRep && (
+                                    <span
+                                      className="text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
+                                      style={{ background: "#fff3e0", color: "#FF6D00" }}
+                                    >
+                                      Представитель
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-[11px] text-muted-foreground truncate">{m.job}</div>
+                              </div>
                             </div>
-                            <div className="text-[11px] text-muted-foreground truncate">{m.job}</div>
+                            {m.bio && (
+                              <p className="text-[12px] text-foreground/80 mt-2" style={{ lineHeight: 1.5 }}>
+                                {m.bio}
+                              </p>
+                            )}
                           </div>
-                        </div>
-                        {m.bio && (
-                          <p className="text-[12px] text-foreground/80 mt-2" style={{ lineHeight: 1.5 }}>
-                            {m.bio}
-                          </p>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <div className="flex flex-wrap gap-2 mb-1">
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
-                    🕐 {to.time} МСК
-                  </span>
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
-                    📅 {DAY_FULL[to.day]}
-                  </span>
-                </div>
-                <LocalTimeHint time={to.time} align="left" className="mb-3" />
-
-                <ChatBadge messenger={to.chatMessenger} />
-
-                {to.extra && (
-                  <div
-                    className="mb-3 mt-3 rounded-xl p-3 text-[13px]"
-                    style={{ background: "#fff8ee", border: "1px solid #ffe0a3", lineHeight: 1.5 }}
-                  >
-                    <div className="text-[11px] font-bold uppercase mb-1" style={{ color: "#FF6D00", letterSpacing: 0.4 }}>
-                      💬 Доп. комментарии
+                        );
+                      })}
                     </div>
-                    <p className="text-foreground/85">{to.extra}</p>
-                  </div>
-                )}
 
-                <div
-                  className="w-full py-2.5 rounded-xl text-[13px] font-bold text-center inline-flex items-center justify-center gap-1.5"
-                  style={{ background: "#fff8dc", color: "#b45309" }}
-                >
-                  <span aria-hidden>🕐</span> Ожидание ответа
-                </div>
-              </Card>
+                    <div className="flex flex-wrap gap-2 mb-1">
+                      <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
+                        🕐 {to.time} МСК
+                      </span>
+                      <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
+                        📅 {DAY_FULL[to.day]}
+                      </span>
+                    </div>
+                    <LocalTimeHint time={to.time} align="left" className="mb-3" />
+
+                    <ChatBadge messenger={to.chatMessenger} />
+
+                    {to.extra && (
+                      <div
+                        className="mb-3 mt-3 rounded-xl p-3 text-[13px]"
+                        style={{ background: "#fff8ee", border: "1px solid #ffe0a3", lineHeight: 1.5 }}
+                      >
+                        <div className="text-[11px] font-bold uppercase mb-1" style={{ color: "#FF6D00", letterSpacing: 0.4 }}>
+                          💬 Доп. комментарии
+                        </div>
+                        <p className="text-foreground/85">{to.extra}</p>
+                      </div>
+                    )}
+
+                    <div
+                      className="w-full py-2.5 rounded-xl text-[13px] font-bold text-center inline-flex items-center justify-center gap-1.5"
+                      style={{ background: "#fff8dc", color: "#b45309" }}
+                    >
+                      <span aria-hidden>🕐</span> Ожидание ответа
+                    </div>
+                  </Card>
+                ))}
+              </div>
             </div>
           )}
         </>

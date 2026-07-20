@@ -67,7 +67,7 @@ type Screen =
   | { name: "contact_step"; variant?: "max" | "tg-no-username" }
   | { name: "start_bot"; variant: "max" | "tg" }
   | { name: "browse_requests" }
-  | { name: "waiting"; to: BuddyRequest }
+  | { name: "waiting"; outgoing: BuddyRequest[] }
   | { name: "has_buddy" };
 
 
@@ -162,7 +162,7 @@ function BuddyScreen() {
     demo === "has" || demo === "has-no-link"
       ? { name: "has_buddy" }
       : demo === "waiting"
-        ? { name: "waiting", to: DEMO_REQUESTS[0] }
+        ? { name: "waiting", outgoing: DEMO_REQUESTS.slice(0, 2) }
         : demo === "create-tg-no-username" || demo === "create-max"
           ? { name: "contact_step" }
           : demo === "start-max-bot"
@@ -242,7 +242,7 @@ function BuddyScreen() {
         <ContactStep
           variant={v}
           onBack={() => setScreen({ name: "no_buddy" })}
-          onDone={() => setScreen({ name: "waiting", to: DEMO_REQUESTS[0] })}
+          onDone={() => setScreen({ name: "waiting", outgoing: [DEMO_REQUESTS[0]] })}
         />
       );
     }
@@ -257,21 +257,21 @@ function BuddyScreen() {
               variant: screen.variant === "max" ? "max" : "tg-no-username",
             })
           }
-          onDone={() => setScreen({ name: "waiting", to: DEMO_REQUESTS[0] })}
+          onDone={() => setScreen({ name: "waiting", outgoing: [DEMO_REQUESTS[0]] })}
         />
       );
     case "browse_requests":
       return (
         <BrowseRequests
           onBack={() => setScreen({ name: "no_buddy" })}
-          onConfirm={(req) => setScreen({ name: "waiting", to: req })}
+          onConfirm={(req) => setScreen({ name: "waiting", outgoing: [req] })}
           myOwn={myOwn}
           onEditMyRequest={() => setScreen({ name: "create_request" })}
           onDeleteMyRequest={handleDeleteMyRequest}
         />
       );
     case "waiting":
-      return <Waiting to={screen.to} onBack={() => setScreen({ name: "no_buddy" })} />;
+      return <Waiting outgoing={screen.outgoing} onBack={() => setScreen({ name: "no_buddy" })} />;
     case "has_buddy":
       return <HasBuddy onBack={() => setScreen({ name: "no_buddy" })} buddy={DEMO_BUDDY} noLink={demo === "has-no-link"} />;
   }
@@ -370,7 +370,7 @@ function NoBuddy({
 
       {/* Ожидание — переход в карточку запросов */}
       <button
-        onClick={() => onNavigate({ name: "waiting", to: DEMO_REQUESTS[0] })}
+        onClick={() => onNavigate({ name: "waiting", outgoing: DEMO_REQUESTS.slice(0, 2) })}
         className="tap mt-3 w-full rounded-2xl px-3.5 py-3 flex items-center gap-3 text-left animate-fade-up"
         style={{
           background: "linear-gradient(135deg, #fff8ee, #fff3e0)",
@@ -1298,7 +1298,7 @@ const INCOMING_REQUESTS: BuddyRequest[] = [
   },
 ];
 
-function Waiting({ to, onBack }: { to: BuddyRequest; onBack: () => void }) {
+function Waiting({ outgoing, onBack }: { outgoing: BuddyRequest[]; onBack: () => void }) {
   const [incoming, setIncoming] = useState<BuddyRequest[]>(INCOMING_REQUESTS);
   const [accepted, setAccepted] = useState<BuddyRequest | null>(null);
   const [tab, setTab] = useState<"incoming" | "outgoing">(
@@ -1393,9 +1393,15 @@ function Waiting({ to, onBack }: { to: BuddyRequest; onBack: () => void }) {
           ) : (
             <div className="mt-4">
               <p className="px-1 text-[12px] text-muted-foreground mb-3 leading-snug">
-                Ты отправил запрос на эту заявку. Ждём ответа — действий пока не требуется.
+                {outgoing.length > 1
+                  ? `Ты отправил запросы (${outgoing.length}) на эти заявки. Ждём ответа — действий пока не требуется.`
+                  : "Ты отправил запрос на эту заявку. Ждём ответа — действий пока не требуется."}
               </p>
-              <RequestCard req={to} onSend={() => {}} pending />
+              <div className="space-y-3">
+                {outgoing.map((r) => (
+                  <RequestCard key={r.id} req={r} onSend={() => {}} pending />
+                ))}
+              </div>
             </div>
           )}
         </>
