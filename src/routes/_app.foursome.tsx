@@ -178,15 +178,26 @@ function FoursomeScreen() {
         ? { name: "waiting", to: DEMO_REQUESTS[0] }
         : demo === "locked"
           ? { name: "locked" }
-          : { name: "no_foursome" };
+          : demo === "edit-my-request"
+            ? { name: "create_request" }
+            : { name: "no_foursome" };
   const [screen, setScreen] = useState<Screen>(initial);
   const lastDemo = useRef(demo);
   useEffect(() => {
+    if (demo === "edit-my-request" && !window.localStorage.getItem("my-foursome-request")) {
+      setMyFoursomeRequest({
+        day: "Вт",
+        time: "19:00",
+        extra: "Если первый вторник не подойдёт — готовы перенести на первую среду (19:00–21:00 МСК).",
+        messenger: "telegram",
+      });
+    }
     if (lastDemo.current !== demo) {
       lastDemo.current = demo;
       setScreen(initial);
     }
   }, [demo]);
+
 
   const myRequestData = useMyFoursomeRequest();
   const myOwn = myRequestData ? buildMyFoursomeRequest(myRequestData) : null;
