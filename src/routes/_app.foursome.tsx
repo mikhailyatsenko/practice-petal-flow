@@ -862,19 +862,40 @@ const INSTRUCTION_CARDS: { emoji: string; title: string; text: string; important
 
 // ───────────────────────── Screen 4: Create request ─────────────────────────
 
-function CreateRequest({ onBack }: { onBack: () => void }) {
+function CreateRequest({
+  onBack,
+  initial,
+  onDelete,
+}: {
+  onBack: () => void;
+  initial?: MyFoursomeRequestData | null;
+  onDelete?: () => void;
+}) {
   const navigate = useNavigate();
-  const [day, setDay] = useState<string | null>(null);
-  const [time, setTime] = useState<string | null>(null);
-  const [extra, setExtra] = useState("");
-  const [messenger, setMessenger] = useState<"telegram" | "max" | null>(null);
+  const [day, setDay] = useState<string | null>(initial?.day ?? null);
+  const [time, setTime] = useState<string | null>(initial?.time ?? null);
+  const [extra, setExtra] = useState(initial?.extra ?? "");
+  const [messenger, setMessenger] = useState<"telegram" | "max" | null>(initial?.messenger ?? null);
   const valid = !!day && !!time && !!messenger;
+  const editing = !!initial;
+
+  const handleSubmit = () => {
+    if (!valid || !day || !time || !messenger) return;
+    setMyFoursomeRequest({ day, time, extra: extra.trim(), messenger });
+    if (editing) {
+      onBack();
+    } else {
+      navigate({ to: "/foursome-chat", search: { messenger } });
+    }
+  };
 
   return (
     <div className="px-4 pb-8">
-      <PageHeader title="Оставить заявку" onBack={onBack} />
+      <PageHeader title={editing ? "Ваша заявка" : "Оставить заявку"} onBack={onBack} />
       <p className="text-[13px] text-foreground mb-4 px-1">
-        Заявка подаётся от имени вашей пары. Другие пары увидят её в списке.
+        {editing
+          ? "Отредактируйте параметры или удалите заявку"
+          : "Заявка подаётся от имени вашей пары. Другие пары увидят её в списке."}
       </p>
 
       <div
@@ -960,10 +981,7 @@ function CreateRequest({ onBack }: { onBack: () => void }) {
 
       <button
         disabled={!valid}
-        onClick={() =>
-          messenger &&
-          navigate({ to: "/foursome-chat", search: { messenger } })
-        }
+        onClick={handleSubmit}
         className="tap w-full py-3.5 rounded-2xl text-white text-[14px] font-bold transition"
         style={{
           background: ORANGE_GRADIENT,
@@ -971,11 +989,74 @@ function CreateRequest({ onBack }: { onBack: () => void }) {
           cursor: valid ? "pointer" : "not-allowed",
         }}
       >
-        Продолжить
+        {editing ? "Сохранить изменения" : "Продолжить"}
       </button>
+
+      {editing && onDelete && (
+        <button
+          onClick={onDelete}
+          className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold"
+          style={{ background: "#fff", color: "#dc2626", border: "1px solid #fecaca" }}
+        >
+          Удалить заявку
+        </button>
+      )}
     </div>
   );
 }
+
+// ───────────────────────── Own request summary (main screen) ─────────────────────────
+
+function MyOwnFoursomeSummary({
+  req,
+  onEdit,
+  onDelete,
+}: {
+  req: FoursomeRequest;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <Card className="p-3.5">
+      <div className="flex items-center gap-2 mb-2">
+        <span
+          className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full"
+          style={{ background: "#fff3e0", color: "#FF6D00", letterSpacing: 0.4 }}
+        >
+          Ваша заявка
+        </span>
+        <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
+          {DAY_FULL[req.day]} · {req.time} МСК
+        </span>
+      </div>
+      {req.extra && (
+        <p className="text-[13px] leading-snug line-clamp-2" style={{ color: "#3a352d" }}>
+          {req.extra}
+        </p>
+      )}
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <button
+          onClick={onEdit}
+          className="tap rounded-xl py-2.5 text-[13px] font-bold text-white inline-flex items-center justify-center gap-1.5"
+          style={{
+            background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+            boxShadow: "0 4px 14px rgba(255,109,0,0.30)",
+          }}
+        >
+          <Pencil className="h-4 w-4" /> Редактировать
+        </button>
+        <button
+          onClick={onDelete}
+          className="tap rounded-xl py-2.5 text-[13px] font-bold inline-flex items-center justify-center gap-1.5"
+          style={{ background: "#fff", color: "#dc2626", border: "1px solid #fecaca" }}
+        >
+          <X className="h-4 w-4" /> Удалить
+        </button>
+      </div>
+    </Card>
+  );
+}
+
 
 
 // ───────────────────────── Screen 5: Browse requests ─────────────────────────
