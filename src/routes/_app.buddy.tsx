@@ -811,7 +811,7 @@ function BrowseRequests({
   );
 }
 
-function RequestCard({ req, onSend, mine }: { req: BuddyRequest; onSend: () => void; mine?: boolean }) {
+function RequestCard({ req, onSend, mine, pending }: { req: BuddyRequest; onSend: () => void; mine?: boolean; pending?: boolean }) {
   return (
     <div className="bg-card shadow-card rounded-2xl p-3.5 animate-fade-up">
       {mine && (
