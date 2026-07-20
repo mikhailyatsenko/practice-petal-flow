@@ -1320,7 +1320,7 @@ const INCOMING_REQUESTS: BuddyRequest[] = [
   },
 ];
 
-function Waiting({ outgoing, onBack }: { outgoing: BuddyRequest[]; onBack: () => void }) {
+function Waiting({ outgoing, onBack }: { outgoing: OutgoingItem[]; onBack: () => void }) {
   const [incoming, setIncoming] = useState<BuddyRequest[]>(INCOMING_REQUESTS);
   const [accepted, setAccepted] = useState<BuddyRequest | null>(null);
   const [tab, setTab] = useState<"incoming" | "outgoing">(
