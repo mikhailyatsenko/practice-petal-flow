@@ -352,16 +352,12 @@ function NoBuddy({
         Два способа найти Бадди
       </h3>
       <div className="space-y-2">
-        {myOwn ? (
-          <MyOwnRequestSummary req={myOwn} onEdit={onEditMyRequest} onDelete={onDeleteMyRequest} />
-        ) : (
-          <ActionCard
-            emoji="✍️"
-            title="Оставить заявку"
-            subtitle="Расскажи о себе, и тебя найдут"
-            onClick={() => onNavigate({ name: "create_request" })}
-          />
-        )}
+        <ActionCard
+          emoji="✍️"
+          title="Оставить заявку"
+          subtitle={myOwn ? "Заявка создана" : "Расскажи о себе, и тебя найдут"}
+          onClick={() => onNavigate({ name: "create_request" })}
+        />
         <ActionCard
           emoji="🔍"
           title="Выбрать из заявок"
