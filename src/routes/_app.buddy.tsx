@@ -19,7 +19,7 @@ import {
 } from "@/lib/myBuddyRequestStore";
 
 export const Route = createFileRoute("/_app/buddy")({
-  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "has-no-link" | "waiting" | "create-tg-no-username" | "create-max" | "start-max-bot" | "start-tg-bot" } => {
+  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "has-no-link" | "waiting" | "create-tg-no-username" | "create-max" | "start-max-bot" | "start-tg-bot" | "edit-my-request" } => {
     const d = search.demo;
     if (
       d === "has" ||
@@ -28,12 +28,14 @@ export const Route = createFileRoute("/_app/buddy")({
       d === "create-tg-no-username" ||
       d === "create-max" ||
       d === "start-max-bot" ||
-      d === "start-tg-bot"
+      d === "start-tg-bot" ||
+      d === "edit-my-request"
     ) {
       return { demo: d };
     }
     return {};
   },
+
   head: () => ({
     meta: [
       { title: "Бадди — Клуб «Моя жизнь»" },
