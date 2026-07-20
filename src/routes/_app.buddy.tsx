@@ -11,6 +11,12 @@ import { useBuddySchedule, setBuddySchedule, DAYS_FULL } from "@/lib/buddySchedu
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 import { LeaveMenu } from "@/components/layout/LeaveMenu";
 import { LocalTimeHint } from "@/components/common/LocalTimeHint";
+import {
+  useMyBuddyRequest,
+  setMyBuddyRequest,
+  clearMyBuddyRequest,
+  type MyBuddyRequestData,
+} from "@/lib/myBuddyRequestStore";
 
 export const Route = createFileRoute("/_app/buddy")({
   validateSearch: (search: Record<string, unknown>): { demo?: "has" | "has-no-link" | "waiting" | "create-tg-no-username" | "create-max" | "start-max-bot" | "start-tg-bot" } => {
