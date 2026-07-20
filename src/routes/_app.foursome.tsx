@@ -134,7 +134,7 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
 const MY_OWN_FOURSOME_REQUEST: FoursomeRequest = {
   id: "me-pair",
   members: [
-    { ...ME_MEMBER, bio: "Так ваша заявка выглядит для других пар. Они видят её в общем списке." },
+    { ...ME_MEMBER, bio: "Моя пара ищет ещё одну пару для Четвёрки." },
     { ...MY_BUDDY_MEMBER, username: MY_BUDDY_MEMBER.telegram, bio: "Мой бадди — вместе ищем ещё одну пару для Четвёрки." },
   ],
   representativeId: ME_MEMBER.userId,
