@@ -571,23 +571,7 @@ function NoFoursome({
       </div>
 
 
-      {/* Два способа */}
-      <SectionLabel>Два способа найти Четвёрку</SectionLabel>
-      <div className="space-y-2.5 mb-4">
-        <ActionCard
-          emoji="✍️"
-          title="Оставить заявку"
-          subtitle="Опишите пару — вас найдут"
-          onClick={() => onNavigate({ name: "create_request" })}
-        />
-        <ActionCard
-          emoji="🔍"
-          title="Выбрать из заявок"
-          subtitle="Просмотри заявки других пар"
-          badge={String(DEMO_REQUESTS.length)}
-          onClick={() => onNavigate({ name: "browse_requests" })}
-        />
-      </div>
+
 
       {/* Ожидание — переход к откликам */}
       <button
