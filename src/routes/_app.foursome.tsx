@@ -1037,7 +1037,7 @@ function BrowseRequests({
                 className="w-full py-2.5 rounded-xl text-[13px] font-semibold text-center"
                 style={{ background: "#f3f4f6", color: "#6b7280" }}
               >
-                Ваша заявка
+                Это ваша заявка
               </div>
             ) : (
               <button
