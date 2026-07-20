@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { Menu, Bell } from "lucide-react";
-import { useBellMode } from "@/lib/bellMode";
 import { useUnreadCount } from "@/lib/notificationsStore";
 
 interface TopbarProps {
