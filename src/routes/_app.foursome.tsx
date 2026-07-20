@@ -187,25 +187,43 @@ function FoursomeScreen() {
     }
   }, [demo]);
 
+  const myRequestData = useMyFoursomeRequest();
+  const myOwn = myRequestData ? buildMyFoursomeRequest(myRequestData) : null;
+  const handleDeleteMyRequest = () => {
+    clearMyFoursomeRequest();
+    setScreen({ name: "no_foursome" });
+  };
+
   switch (screen.name) {
     case "locked":
       return <Locked onNavigate={setScreen} />;
     case "no_foursome":
-      return <NoFoursome onNavigate={setScreen} />;
+      return (
+        <NoFoursome
+          onNavigate={setScreen}
+          myOwn={myOwn}
+          onEditMyRequest={() => setScreen({ name: "create_request" })}
+          onDeleteMyRequest={handleDeleteMyRequest}
+        />
+      );
     case "instructions":
       return <Instructions onBack={() => setScreen(screen.from === "locked" ? { name: "locked" } : { name: "no_foursome" })} />;
     case "create_request":
       return (
         <CreateRequest
           onBack={() => setScreen({ name: "no_foursome" })}
+          initial={myRequestData}
+          onDelete={myRequestData ? handleDeleteMyRequest : undefined}
         />
-
       );
     case "browse_requests":
       return (
         <BrowseRequests
           onBack={() => setScreen({ name: "no_foursome" })}
           onConfirm={(req) => setScreen({ name: "waiting", to: req })}
+          myOwn={myOwn}
+          onEditMyRequest={() => setScreen({ name: "create_request" })}
+          onDeleteMyRequest={handleDeleteMyRequest}
         />
       );
     case "waiting":
@@ -213,6 +231,7 @@ function FoursomeScreen() {
     case "has_foursome":
       return <HasFoursome onBack={() => setScreen({ name: "no_foursome" })} data={DEMO_FOURSOME} />;
   }
+
 }
 
 // ───────────────────────── Shared ─────────────────────────
