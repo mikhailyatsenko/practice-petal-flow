@@ -60,6 +60,13 @@ interface BuddyRequest {
   channels: ("tg" | "max")[];
 }
 
+type OutgoingStatus = "waiting" | "expired" | "declined";
+interface OutgoingItem {
+  req: BuddyRequest;
+  status: OutgoingStatus;
+  expiresAt?: number; // ms epoch, для waiting
+}
+
 type Screen =
   | { name: "no_buddy" }
   | { name: "instructions" }
@@ -67,8 +74,15 @@ type Screen =
   | { name: "contact_step"; variant?: "max" | "tg-no-username" }
   | { name: "start_bot"; variant: "max" | "tg" }
   | { name: "browse_requests" }
-  | { name: "waiting"; outgoing: BuddyRequest[] }
+  | { name: "waiting"; outgoing: OutgoingItem[] }
   | { name: "has_buddy" };
+
+const H24 = 24 * 60 * 60 * 1000;
+const makeWaitingItem = (req: BuddyRequest, hoursLeft = 24): OutgoingItem => ({
+  req,
+  status: "waiting",
+  expiresAt: Date.now() + hoursLeft * 60 * 60 * 1000,
+});
 
 
 const DAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
