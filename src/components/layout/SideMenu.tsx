@@ -238,6 +238,22 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
           </button>
           <button
             onClick={() => {
+              toggleTripleBannerMode();
+            }}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+            style={{ color: tripleBanner ? "#E53935" : "#FF6D00" }}
+          >
+            {tripleBanner ? (
+              <BellOff className="h-[18px] w-[18px]" strokeWidth={2} />
+            ) : (
+              <Bell className="h-[18px] w-[18px]" strokeWidth={2} />
+            )}
+            <span>
+              {tripleBanner ? "Выключить режим трёх уведомлений" : "Включить режим трёх уведомлений"}
+            </span>
+          </button>
+          <button
+            onClick={() => {
               toggleBuddyFoundMode();
             }}
             className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
