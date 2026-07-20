@@ -15,6 +15,7 @@ import { useLevel2DoneMode, toggleLevel2DoneMode, setLevel2DoneMode } from "@/li
 import { useLevel3DoneMode, toggleLevel3DoneMode, setLevel3DoneMode } from "@/lib/level3DoneMode";
 import { useLevel4DoneMode, toggleLevel4DoneMode, setLevel4DoneMode } from "@/lib/level4DoneMode";
 import { useLevel5WaitingMode, toggleLevel5WaitingMode, setLevel5WaitingMode } from "@/lib/level5WaitingMode";
+import { useTripleBannerMode, toggleTripleBannerMode } from "@/lib/tripleBannerMode";
 import { setPreviewLevel } from "@/lib/previewLevel";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 
@@ -38,6 +39,7 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
   const level3Done = useLevel3DoneMode();
   const level4Done = useLevel4DoneMode();
   const level5Waiting = useLevel5WaitingMode();
+  const tripleBanner = useTripleBannerMode();
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-[300px] sm:w-[320px] bg-background p-0 overflow-y-auto" data-version="v2">
@@ -232,6 +234,22 @@ export function SideMenu({ open, onOpenChange, onOpenOnboarding }: SideMenuProps
             )}
             <span>
               {bellOn ? "Выключить режим колокольчика" : "Включить режим колокольчика"}
+            </span>
+          </button>
+          <button
+            onClick={() => {
+              toggleTripleBannerMode();
+            }}
+            className="tap w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-[14px] font-medium"
+            style={{ color: tripleBanner ? "#E53935" : "#FF6D00" }}
+          >
+            {tripleBanner ? (
+              <BellOff className="h-[18px] w-[18px]" strokeWidth={2} />
+            ) : (
+              <Bell className="h-[18px] w-[18px]" strokeWidth={2} />
+            )}
+            <span>
+              {tripleBanner ? "Выключить режим трёх уведомлений" : "Включить режим трёх уведомлений"}
             </span>
           </button>
           <button
