@@ -1458,7 +1458,7 @@ function Waiting({ outgoing, onBack }: { outgoing: FoursomeRequest[]; onBack: ()
             </button>
             <button
               onClick={() => setTab("outgoing")}
-              className="tap rounded-xl py-2.5 text-[12px] font-bold transition-all leading-tight text-center"
+              className="tap relative rounded-xl py-2.5 text-[12px] font-bold inline-flex items-center justify-center gap-1.5 transition-all leading-tight text-center"
               style={
                 tab === "outgoing"
                   ? { background: ORANGE_GRADIENT, color: "#fff", boxShadow: "0 4px 14px rgba(255,109,0,0.35)" }
@@ -1466,6 +1466,18 @@ function Waiting({ outgoing, onBack }: { outgoing: FoursomeRequest[]; onBack: ()
               }
             >
               Ваш запрос другой паре
+              {outgoing.length > 0 && (
+                <span
+                  className="text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center"
+                  style={
+                    tab === "outgoing"
+                      ? { background: "#fff", color: "#FF6D00" }
+                      : { background: ORANGE_GRADIENT, color: "#fff" }
+                  }
+                >
+                  {outgoing.length}
+                </span>
+              )}
             </button>
           </div>
 
