@@ -2004,7 +2004,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
           </button>
         </div>
 
-      ) : (
+      ) : !noLink ? (
         <div
           className="rounded-2xl p-4 flex items-center gap-3 animate-fade-up"
           style={{ background: "linear-gradient(135deg, #8BC34A, #4CAF50)" }}
@@ -2015,7 +2015,7 @@ function HasBuddy({ buddy, onBack, noLink }: { buddy: BuddyRequest; onBack: () =
             <p className="text-[12px] opacity-85 mt-0.5">Пока у тебя есть Бадди</p>
           </div>
         </div>
-      )}
+      ) : null}
 
       {!noLink && !noLinkActive && !show2h && meetingLink && (
         <a
