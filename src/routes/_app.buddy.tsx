@@ -983,17 +983,17 @@ function RequestCard({ req, onSend, mine, pending, onEdit, onDelete }: { req: Bu
           <div className="flex gap-2">
             <button
               onClick={onEdit}
-              className="tap rounded-full py-2 px-3.5 text-[13px] font-semibold inline-flex items-center gap-1.5"
-              style={{ background: "#fff", color: "#FF6D00", border: "1.5px solid #ffd8a8" }}
+              className="tap rounded-md py-1 px-2 text-[11px] font-medium inline-flex items-center gap-1"
+              style={{ background: "#fff", color: "#FF6D00", border: "1px solid #ffd8a8" }}
             >
-              <Pencil className="h-4 w-4" /> Редактировать
+              <Pencil className="h-3 w-3" /> Редактировать
             </button>
             <button
               onClick={onDelete}
-              className="tap rounded-full py-2 px-3.5 text-[13px] font-semibold inline-flex items-center gap-1.5"
-              style={{ background: "#fff", color: "#dc2626", border: "1.5px solid #fecaca" }}
+              className="tap rounded-md py-1 px-2 text-[11px] font-medium inline-flex items-center gap-1"
+              style={{ background: "#fff", color: "#dc2626", border: "1px solid #fecaca" }}
             >
-              <Trash2 className="h-4 w-4" /> Удалить
+              <Trash2 className="h-3 w-3" /> Удалить
             </button>
           </div>
         </div>
