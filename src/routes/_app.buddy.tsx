@@ -282,7 +282,7 @@ function BuddyScreen() {
       return (
         <BrowseRequests
           onBack={() => setScreen({ name: "no_buddy" })}
-          onConfirm={(req) => setScreen({ name: "waiting", outgoing: [req] })}
+          onConfirm={(req) => setScreen({ name: "waiting", outgoing: [makeWaitingItem(req)] })}
           myOwn={myOwn}
           onEditMyRequest={() => setScreen({ name: "create_request" })}
           onDeleteMyRequest={handleDeleteMyRequest}
