@@ -563,16 +563,12 @@ function NoFoursome({
       {/* Два способа */}
       <SectionLabel>Два способа найти Четвёрку</SectionLabel>
       <div className="space-y-2.5 mb-4">
-        {myOwn ? (
-          <MyOwnFoursomeSummary req={myOwn} onEdit={onEditMyRequest} onDelete={onDeleteMyRequest} />
-        ) : (
-          <ActionCard
-            emoji="✍️"
-            title="Оставить заявку"
-            subtitle="Опишите пару — вас найдут"
-            onClick={() => onNavigate({ name: "create_request" })}
-          />
-        )}
+        <ActionCard
+          emoji="✍️"
+          title="Оставить заявку"
+          subtitle={myOwn ? "Заявка создана" : "Опишите пару — вас найдут"}
+          onClick={() => onNavigate({ name: "create_request" })}
+        />
         <ActionCard
           emoji="🔍"
           title="Выбрать из заявок"
