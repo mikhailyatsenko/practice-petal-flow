@@ -8,7 +8,6 @@ interface TopbarProps {
 }
 
 export function Topbar({ onMenu, stickyTop = 0 }: TopbarProps) {
-  const bellOn = useBellMode();
   const unread = useUnreadCount();
 
   return (
