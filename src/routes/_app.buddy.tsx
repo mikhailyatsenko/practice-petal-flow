@@ -811,7 +811,7 @@ function BrowseRequests({
   );
 }
 
-function RequestCard({ req, onSend, mine }: { req: BuddyRequest; onSend: () => void; mine?: boolean }) {
+function RequestCard({ req, onSend, mine, pending }: { req: BuddyRequest; onSend: () => void; mine?: boolean; pending?: boolean }) {
   return (
     <div className="bg-card shadow-card rounded-2xl p-3.5 animate-fade-up">
       {mine && (
@@ -882,6 +882,13 @@ function RequestCard({ req, onSend, mine }: { req: BuddyRequest; onSend: () => v
           style={{ background: "#f3f4f6", color: "#6b7280" }}
         >
           Это твоя заявка
+        </div>
+      ) : pending ? (
+        <div
+          className="mt-3 w-full rounded-xl py-2.5 text-[13px] font-bold text-center inline-flex items-center justify-center gap-1.5"
+          style={{ background: "#fff8dc", color: "#b45309" }}
+        >
+          <span aria-hidden>🕐</span> Ожидание ответа
         </div>
       ) : (
         <button
@@ -1210,29 +1217,7 @@ function Waiting({ to, onBack }: { to: BuddyRequest; onBack: () => void }) {
               <p className="px-1 text-[12px] text-muted-foreground mb-3 leading-snug">
                 Ты отправил запрос на эту заявку. Ждём ответа — действий пока не требуется.
               </p>
-              <div className="bg-card hairline shadow-card rounded-2xl p-3.5 animate-fade-up">
-                <div className="flex items-center gap-3">
-                  <div
-                    className="h-12 w-12 shrink-0 rounded-[14px] flex items-center justify-center text-[24px]"
-                    style={{ background: "#FAF6EF" }}
-                  >
-                    {to.avatar}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-[15px] font-bold leading-tight">{to.name}</h3>
-                    <p className="text-[12px] text-muted-foreground mt-0.5">
-                      {to.job} · {pluralAge(to.age)} · {to.day} {to.time} МСК
-                    </p>
-                    <LocalTimeHint time={to.time} align="left" className="mt-0.5" />
-                  </div>
-                </div>
-                <div
-                  className="mt-3 inline-flex items-center gap-1.5 text-[12px] font-bold px-3 py-1.5 rounded-full"
-                  style={{ background: "#fff8dc", color: "#b45309" }}
-                >
-                  <span aria-hidden>🕐</span> Ожидание ответа
-                </div>
-              </div>
+              <RequestCard req={to} onSend={() => {}} pending />
             </div>
           )}
         </>
