@@ -11,6 +11,12 @@ import { useBuddySchedule, setBuddySchedule, DAYS_FULL } from "@/lib/buddySchedu
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
 import { LeaveMenu } from "@/components/layout/LeaveMenu";
 import { LocalTimeHint } from "@/components/common/LocalTimeHint";
+import {
+  useMyBuddyRequest,
+  setMyBuddyRequest,
+  clearMyBuddyRequest,
+  type MyBuddyRequestData,
+} from "@/lib/myBuddyRequestStore";
 
 export const Route = createFileRoute("/_app/buddy")({
   validateSearch: (search: Record<string, unknown>): { demo?: "has" | "has-no-link" | "waiting" | "create-tg-no-username" | "create-max" | "start-max-bot" | "start-tg-bot" } => {
@@ -117,18 +123,21 @@ const DEMO_REQUESTS: BuddyRequest[] = [
   },
 ];
 
-// Твоя собственная заявка — показываем первой в списке (демо)
-const MY_OWN_REQUEST: BuddyRequest = {
-  id: "me",
-  name: "Ты",
-  age: 28,
-  avatar: "🙂",
-  job: "Твоя анкета",
-  day: "Чт",
-  time: "20:00",
-  bio: "Моя заявка на поиск Бадди для еженедельных созвонов.",
-  channels: ["tg"],
-};
+// Собираем «свою заявку» из сохранённых данных пользователя
+function buildMyRequest(data: MyBuddyRequestData): BuddyRequest {
+  return {
+    id: "me",
+    name: "Ты",
+    age: 28,
+    avatar: "🙂",
+    job: data.job || "Твоя анкета",
+    day: data.day,
+    time: data.time,
+    bio: data.bio,
+    extra: data.extra || undefined,
+    channels: [data.channel],
+  };
+}
 
 // Демо-бадди (Экран 6)
 const DEMO_BUDDY: BuddyRequest = {
@@ -175,20 +184,38 @@ function BuddyScreen() {
   const contactVariant: ContactVariant =
     demo === "create-max" ? "max" : demo === "create-tg-no-username" ? "tg-no-username" : "none";
 
+  const myRequestData = useMyBuddyRequest();
+  const myOwn = myRequestData ? buildMyRequest(myRequestData) : null;
+
+  const handleDeleteMyRequest = () => {
+    clearMyBuddyRequest();
+    setScreen({ name: "no_buddy" });
+  };
+
   switch (screen.name) {
     case "no_buddy":
-      return <NoBuddy onNavigate={setScreen} />;
+      return (
+        <NoBuddy
+          onNavigate={setScreen}
+          myOwn={myOwn}
+          onEditMyRequest={() => setScreen({ name: "create_request" })}
+          onDeleteMyRequest={handleDeleteMyRequest}
+        />
+      );
     case "instructions":
       return <Instructions onBack={() => setScreen({ name: "no_buddy" })} />;
     case "create_request":
       return (
         <CreateRequest
+          initial={myRequestData}
           onBack={() => setScreen({ name: "no_buddy" })}
-          onSubmit={() => {
+          onDelete={myRequestData ? handleDeleteMyRequest : undefined}
+          onSubmit={(data) => {
+            setMyBuddyRequest(data);
             if (contactVariant !== "none") {
               setScreen({ name: "contact_step" });
             } else {
-              setScreen({ name: "waiting", to: DEMO_REQUESTS[0] });
+              setScreen({ name: "no_buddy" });
             }
           }}
         />
@@ -223,6 +250,9 @@ function BuddyScreen() {
         <BrowseRequests
           onBack={() => setScreen({ name: "no_buddy" })}
           onConfirm={(req) => setScreen({ name: "waiting", to: req })}
+          myOwn={myOwn}
+          onEditMyRequest={() => setScreen({ name: "create_request" })}
+          onDeleteMyRequest={handleDeleteMyRequest}
         />
       );
     case "waiting":
@@ -260,7 +290,17 @@ function PageHeader({ title, onBack, badge, right }: { title: string; onBack: ()
 
 // ───────────────────────── Screen 1: No buddy ─────────────────────────
 
-function NoBuddy({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+function NoBuddy({
+  onNavigate,
+  myOwn,
+  onEditMyRequest,
+  onDeleteMyRequest,
+}: {
+  onNavigate: (s: Screen) => void;
+  myOwn: BuddyRequest | null;
+  onEditMyRequest: () => void;
+  onDeleteMyRequest: () => void;
+}) {
   const navigate = useNavigate();
   const [howOpen, setHowOpen] = useState(false);
   const [howTab, setHowTab] = useState<"text" | "video">("text");
@@ -297,12 +337,16 @@ function NoBuddy({ onNavigate }: { onNavigate: (s: Screen) => void }) {
         Два способа найти Бадди
       </h3>
       <div className="space-y-2">
-        <ActionCard
-          emoji="✍️"
-          title="Оставить заявку"
-          subtitle="Расскажи о себе, и тебя найдут"
-          onClick={() => onNavigate({ name: "create_request" })}
-        />
+        {myOwn ? (
+          <MyOwnRequestSummary req={myOwn} onEdit={onEditMyRequest} onDelete={onDeleteMyRequest} />
+        ) : (
+          <ActionCard
+            emoji="✍️"
+            title="Оставить заявку"
+            subtitle="Расскажи о себе, и тебя найдут"
+            onClick={() => onNavigate({ name: "create_request" })}
+          />
+        )}
         <ActionCard
           emoji="🔍"
           title="Выбрать из заявок"
@@ -311,6 +355,7 @@ function NoBuddy({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           rightBadge={String(DEMO_REQUESTS.length)}
         />
       </div>
+
 
       {/* Ожидание — переход в карточку запросов */}
       <button
@@ -624,25 +669,36 @@ function Chip({
 function CreateRequest({
   onBack,
   onSubmit,
+  initial,
+  onDelete,
 }: {
   onBack: () => void;
-  onSubmit: () => void;
+  onSubmit: (data: MyBuddyRequestData) => void;
+  initial?: MyBuddyRequestData | null;
+  onDelete?: () => void;
 }) {
-  const [day, setDay] = useState<string | null>(null);
-  const [time, setTime] = useState<string | null>(null);
-  const [job, setJob] = useState("");
-  const [bio, setBio] = useState("");
-  const [extra, setExtra] = useState("");
-  const [channel, setChannel] = useState<"tg" | "max" | null>(null);
+  const [day, setDay] = useState<string | null>(initial?.day ?? null);
+  const [time, setTime] = useState<string | null>(initial?.time ?? null);
+  const [job, setJob] = useState(initial?.job ?? "");
+  const [bio, setBio] = useState(initial?.bio ?? "");
+  const [extra, setExtra] = useState(initial?.extra ?? "");
+  const [channel, setChannel] = useState<"tg" | "max" | null>(initial?.channel ?? null);
 
+  const editing = !!initial;
   const valid = !!day && !!time && job.trim().length > 1 && bio.trim().length > 20 && !!channel;
 
+  const handleSubmit = () => {
+    if (!valid || !day || !time || !channel) return;
+    onSubmit({ day, time, job: job.trim(), bio: bio.trim(), extra: extra.trim(), channel });
+  };
 
   return (
     <div className="px-4 pb-8">
-      <PageHeader title="Оставить заявку" onBack={onBack} />
+      <PageHeader title={editing ? "Твоя заявка" : "Оставить заявку"} onBack={onBack} />
       <p className="text-[13px] text-muted-foreground -mt-2 mb-4 px-1">
-        Заполни анкету — другие участники смогут найти тебя
+        {editing
+          ? "Отредактируй анкету или удали заявку"
+          : "Заполни анкету — другие участники смогут найти тебя"}
       </p>
 
       <div className="space-y-5">
@@ -752,9 +808,8 @@ function CreateRequest({
         </div>
 
         <button
-
           disabled={!valid}
-          onClick={() => valid && onSubmit()}
+          onClick={handleSubmit}
           className="w-full rounded-2xl py-3.5 text-[14px] font-bold text-white transition-all"
           style={{
             background: "linear-gradient(135deg, #FFB300, #FF6D00)",
@@ -763,7 +818,71 @@ function CreateRequest({
             boxShadow: valid ? "0 6px 20px rgba(255,109,0,0.40)" : "none",
           }}
         >
-          Опубликовать заявку
+          {editing ? "Сохранить изменения" : "Опубликовать заявку"}
+        </button>
+
+        {editing && onDelete && (
+          <button
+            onClick={onDelete}
+            className="tap w-full rounded-2xl py-3 text-[14px] font-bold transition-all"
+            style={{
+              background: "#fff",
+              color: "#dc2626",
+              border: "1px solid #fecaca",
+            }}
+          >
+            Удалить заявку
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ───────────────────────── Own request summary (main screen) ─────────────────────────
+
+function MyOwnRequestSummary({
+  req,
+  onEdit,
+  onDelete,
+}: {
+  req: BuddyRequest;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <div className="bg-card hairline shadow-card rounded-2xl p-3.5 animate-fade-up">
+      <div className="flex items-center gap-2 mb-2">
+        <span
+          className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full"
+          style={{ background: "#fff3e0", color: "#FF6D00", letterSpacing: 0.4 }}
+        >
+          Твоя заявка
+        </span>
+        <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
+          {req.day} · {req.time} МСК
+        </span>
+      </div>
+      <p className="text-[13px] leading-snug line-clamp-2" style={{ color: "#3a352d" }}>
+        {req.bio}
+      </p>
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <button
+          onClick={onEdit}
+          className="tap rounded-xl py-2.5 text-[13px] font-bold text-white inline-flex items-center justify-center gap-1.5"
+          style={{
+            background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+            boxShadow: "0 4px 14px rgba(255,109,0,0.30)",
+          }}
+        >
+          <Pencil className="h-4 w-4" /> Редактировать
+        </button>
+        <button
+          onClick={onDelete}
+          className="tap rounded-xl py-2.5 text-[13px] font-bold inline-flex items-center justify-center gap-1.5"
+          style={{ background: "#fff", color: "#dc2626", border: "1px solid #fecaca" }}
+        >
+          <X className="h-4 w-4" /> Удалить
         </button>
       </div>
     </div>
@@ -771,14 +890,21 @@ function CreateRequest({
 }
 
 
+
 // ───────────────────────── Screen 4: Browse requests ─────────────────────────
 
 function BrowseRequests({
   onBack,
   onConfirm,
+  myOwn,
+  onEditMyRequest,
+  onDeleteMyRequest,
 }: {
   onBack: () => void;
   onConfirm: (req: BuddyRequest) => void;
+  myOwn: BuddyRequest | null;
+  onEditMyRequest: () => void;
+  onDeleteMyRequest: () => void;
 }) {
   const [selected, setSelected] = useState<BuddyRequest | null>(null);
 
@@ -790,11 +916,20 @@ function BrowseRequests({
       </p>
 
       <div className="space-y-3">
-        <RequestCard req={MY_OWN_REQUEST} onSend={() => {}} mine />
+        {myOwn && (
+          <RequestCard
+            req={myOwn}
+            onSend={() => {}}
+            mine
+            onEdit={onEditMyRequest}
+            onDelete={onDeleteMyRequest}
+          />
+        )}
         {DEMO_REQUESTS.map((r) => (
           <RequestCard key={r.id} req={r} onSend={() => setSelected(r)} />
         ))}
       </div>
+
 
       {selected && (
         <ConfirmSheet
@@ -811,7 +946,7 @@ function BrowseRequests({
   );
 }
 
-function RequestCard({ req, onSend, mine, pending }: { req: BuddyRequest; onSend: () => void; mine?: boolean; pending?: boolean }) {
+function RequestCard({ req, onSend, mine, pending, onEdit, onDelete }: { req: BuddyRequest; onSend: () => void; mine?: boolean; pending?: boolean; onEdit?: () => void; onDelete?: () => void }) {
   return (
     <div className="bg-card shadow-card rounded-2xl p-3.5 animate-fade-up">
       {mine && (
@@ -877,11 +1012,24 @@ function RequestCard({ req, onSend, mine, pending }: { req: BuddyRequest; onSend
       )}
 
       {mine ? (
-        <div
-          className="mt-3 w-full rounded-xl py-2.5 text-[13px] font-semibold text-center"
-          style={{ background: "#f3f4f6", color: "#6b7280" }}
-        >
-          Это твоя заявка
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <button
+            onClick={onEdit}
+            className="tap rounded-xl py-2.5 text-[13px] font-bold text-white inline-flex items-center justify-center gap-1.5"
+            style={{
+              background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+              boxShadow: "0 4px 14px rgba(255,109,0,0.30)",
+            }}
+          >
+            <Pencil className="h-4 w-4" /> Редактировать
+          </button>
+          <button
+            onClick={onDelete}
+            className="tap rounded-xl py-2.5 text-[13px] font-bold inline-flex items-center justify-center gap-1.5"
+            style={{ background: "#fff", color: "#dc2626", border: "1px solid #fecaca" }}
+          >
+            <X className="h-4 w-4" /> Удалить
+          </button>
         </div>
       ) : pending ? (
         <div

@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Calendar, Globe, MessageCircle, Users, Check, X, Send, FileText, Video, Copy } from "lucide-react";
+import { ArrowLeft, ChevronRight, ChevronDown, BookOpen, Play, Zap, Calendar, Globe, MessageCircle, Users, Check, X, Send, FileText, Video, Copy, Pencil } from "lucide-react";
 import { BackButton } from "@/components/layout/BackButton";
 import { HowVideoCards } from "@/components/section/HowVideoCards";
 import { TelegramIcon, MaxIcon } from "@/components/icons/MessengerIcons";
@@ -13,6 +13,13 @@ import { useTelemostLink } from "@/lib/telemostLinkStore";
 import { useFoursomeChat } from "@/lib/foursomeChatStore";
 import { ackCallReminder, useCallReminder, formatHMS } from "@/lib/callReminderMode";
 import { LocalTimeHint } from "@/components/common/LocalTimeHint";
+import {
+  useMyFoursomeRequest,
+  setMyFoursomeRequest,
+  clearMyFoursomeRequest,
+  type MyFoursomeRequestData,
+} from "@/lib/myFoursomeRequestStore";
+
 
 
 
@@ -130,19 +137,22 @@ const DEMO_REQUESTS: FoursomeRequest[] = [
   },
 ];
 
-// Собственная заявка твоей пары — показываем первой в списке (демо)
-const MY_OWN_FOURSOME_REQUEST: FoursomeRequest = {
-  id: "me-pair",
-  members: [
-    { ...ME_MEMBER, bio: "Моя пара ищет ещё одну пару для Четвёрки." },
-    { ...MY_BUDDY_MEMBER, username: MY_BUDDY_MEMBER.telegram, bio: "Мой бадди — вместе ищем ещё одну пару для Четвёрки." },
-  ],
-  representativeId: ME_MEMBER.userId,
-  chatMessenger: "telegram",
-  day: "Чт",
-  time: "20:00",
-  extra: "Готовы созваниваться в первый четверг месяца. Ждём отклики от других пар клуба.",
-};
+// Собственная заявка твоей пары — собирается из сохранённых данных пользователя
+function buildMyFoursomeRequest(data: MyFoursomeRequestData): FoursomeRequest {
+  return {
+    id: "me-pair",
+    members: [
+      { ...ME_MEMBER, bio: "Моя пара ищет ещё одну пару для Четвёрки." },
+      { ...MY_BUDDY_MEMBER, username: MY_BUDDY_MEMBER.telegram, bio: "Мой бадди — вместе ищем ещё одну пару для Четвёрки." },
+    ],
+    representativeId: ME_MEMBER.userId,
+    chatMessenger: data.messenger,
+    day: data.day,
+    time: data.time,
+    extra: data.extra || undefined,
+  };
+}
+
 
 const DEMO_FOURSOME: FoursomeData = {
   pair1: { members: [ME, MY_BUDDY] },
@@ -177,25 +187,43 @@ function FoursomeScreen() {
     }
   }, [demo]);
 
+  const myRequestData = useMyFoursomeRequest();
+  const myOwn = myRequestData ? buildMyFoursomeRequest(myRequestData) : null;
+  const handleDeleteMyRequest = () => {
+    clearMyFoursomeRequest();
+    setScreen({ name: "no_foursome" });
+  };
+
   switch (screen.name) {
     case "locked":
       return <Locked onNavigate={setScreen} />;
     case "no_foursome":
-      return <NoFoursome onNavigate={setScreen} />;
+      return (
+        <NoFoursome
+          onNavigate={setScreen}
+          myOwn={myOwn}
+          onEditMyRequest={() => setScreen({ name: "create_request" })}
+          onDeleteMyRequest={handleDeleteMyRequest}
+        />
+      );
     case "instructions":
       return <Instructions onBack={() => setScreen(screen.from === "locked" ? { name: "locked" } : { name: "no_foursome" })} />;
     case "create_request":
       return (
         <CreateRequest
           onBack={() => setScreen({ name: "no_foursome" })}
+          initial={myRequestData}
+          onDelete={myRequestData ? handleDeleteMyRequest : undefined}
         />
-
       );
     case "browse_requests":
       return (
         <BrowseRequests
           onBack={() => setScreen({ name: "no_foursome" })}
           onConfirm={(req) => setScreen({ name: "waiting", to: req })}
+          myOwn={myOwn}
+          onEditMyRequest={() => setScreen({ name: "create_request" })}
+          onDeleteMyRequest={handleDeleteMyRequest}
         />
       );
     case "waiting":
@@ -203,6 +231,7 @@ function FoursomeScreen() {
     case "has_foursome":
       return <HasFoursome onBack={() => setScreen({ name: "no_foursome" })} data={DEMO_FOURSOME} />;
   }
+
 }
 
 // ───────────────────────── Shared ─────────────────────────
@@ -460,7 +489,17 @@ function BenefitRow({ icon, title, sub }: { icon: React.ReactNode; title: string
 
 // ───────────────────────── Screen 2: No foursome ─────────────────────────
 
-function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
+function NoFoursome({
+  onNavigate,
+  myOwn,
+  onEditMyRequest,
+  onDeleteMyRequest,
+}: {
+  onNavigate: (s: Screen) => void;
+  myOwn: FoursomeRequest | null;
+  onEditMyRequest: () => void;
+  onDeleteMyRequest: () => void;
+}) {
   const navigate = useNavigate();
   const [howOpen, setHowOpen] = useState(false);
   const [howTab, setHowTab] = useState<"text" | "video">("text");
@@ -512,12 +551,16 @@ function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
       {/* Два способа */}
       <SectionLabel>Два способа найти Четвёрку</SectionLabel>
       <div className="space-y-2.5 mb-4">
-        <ActionCard
-          emoji="✍️"
-          title="Оставить заявку"
-          subtitle="Опишите пару — вас найдут"
-          onClick={() => onNavigate({ name: "create_request" })}
-        />
+        {myOwn ? (
+          <MyOwnFoursomeSummary req={myOwn} onEdit={onEditMyRequest} onDelete={onDeleteMyRequest} />
+        ) : (
+          <ActionCard
+            emoji="✍️"
+            title="Оставить заявку"
+            subtitle="Опишите пару — вас найдут"
+            onClick={() => onNavigate({ name: "create_request" })}
+          />
+        )}
         <ActionCard
           emoji="🔍"
           title="Выбрать из заявок"
@@ -526,6 +569,9 @@ function NoFoursome({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           onClick={() => onNavigate({ name: "browse_requests" })}
         />
       </div>
+
+
+
 
       {/* Ожидание — переход к откликам */}
       <button
@@ -816,19 +862,40 @@ const INSTRUCTION_CARDS: { emoji: string; title: string; text: string; important
 
 // ───────────────────────── Screen 4: Create request ─────────────────────────
 
-function CreateRequest({ onBack }: { onBack: () => void }) {
+function CreateRequest({
+  onBack,
+  initial,
+  onDelete,
+}: {
+  onBack: () => void;
+  initial?: MyFoursomeRequestData | null;
+  onDelete?: () => void;
+}) {
   const navigate = useNavigate();
-  const [day, setDay] = useState<string | null>(null);
-  const [time, setTime] = useState<string | null>(null);
-  const [extra, setExtra] = useState("");
-  const [messenger, setMessenger] = useState<"telegram" | "max" | null>(null);
+  const [day, setDay] = useState<string | null>(initial?.day ?? null);
+  const [time, setTime] = useState<string | null>(initial?.time ?? null);
+  const [extra, setExtra] = useState(initial?.extra ?? "");
+  const [messenger, setMessenger] = useState<"telegram" | "max" | null>(initial?.messenger ?? null);
   const valid = !!day && !!time && !!messenger;
+  const editing = !!initial;
+
+  const handleSubmit = () => {
+    if (!valid || !day || !time || !messenger) return;
+    setMyFoursomeRequest({ day, time, extra: extra.trim(), messenger });
+    if (editing) {
+      onBack();
+    } else {
+      navigate({ to: "/foursome-chat", search: { messenger } });
+    }
+  };
 
   return (
     <div className="px-4 pb-8">
-      <PageHeader title="Оставить заявку" onBack={onBack} />
+      <PageHeader title={editing ? "Ваша заявка" : "Оставить заявку"} onBack={onBack} />
       <p className="text-[13px] text-foreground mb-4 px-1">
-        Заявка подаётся от имени вашей пары. Другие пары увидят её в списке.
+        {editing
+          ? "Отредактируйте параметры или удалите заявку"
+          : "Заявка подаётся от имени вашей пары. Другие пары увидят её в списке."}
       </p>
 
       <div
@@ -914,10 +981,7 @@ function CreateRequest({ onBack }: { onBack: () => void }) {
 
       <button
         disabled={!valid}
-        onClick={() =>
-          messenger &&
-          navigate({ to: "/foursome-chat", search: { messenger } })
-        }
+        onClick={handleSubmit}
         className="tap w-full py-3.5 rounded-2xl text-white text-[14px] font-bold transition"
         style={{
           background: ORANGE_GRADIENT,
@@ -925,11 +989,74 @@ function CreateRequest({ onBack }: { onBack: () => void }) {
           cursor: valid ? "pointer" : "not-allowed",
         }}
       >
-        Продолжить
+        {editing ? "Сохранить изменения" : "Продолжить"}
       </button>
+
+      {editing && onDelete && (
+        <button
+          onClick={onDelete}
+          className="tap mt-3 w-full rounded-2xl py-3 text-[14px] font-bold"
+          style={{ background: "#fff", color: "#dc2626", border: "1px solid #fecaca" }}
+        >
+          Удалить заявку
+        </button>
+      )}
     </div>
   );
 }
+
+// ───────────────────────── Own request summary (main screen) ─────────────────────────
+
+function MyOwnFoursomeSummary({
+  req,
+  onEdit,
+  onDelete,
+}: {
+  req: FoursomeRequest;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <Card className="p-3.5">
+      <div className="flex items-center gap-2 mb-2">
+        <span
+          className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full"
+          style={{ background: "#fff3e0", color: "#FF6D00", letterSpacing: 0.4 }}
+        >
+          Ваша заявка
+        </span>
+        <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "#fff3e0", color: "#FF6D00" }}>
+          {DAY_FULL[req.day]} · {req.time} МСК
+        </span>
+      </div>
+      {req.extra && (
+        <p className="text-[13px] leading-snug line-clamp-2" style={{ color: "#3a352d" }}>
+          {req.extra}
+        </p>
+      )}
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <button
+          onClick={onEdit}
+          className="tap rounded-xl py-2.5 text-[13px] font-bold text-white inline-flex items-center justify-center gap-1.5"
+          style={{
+            background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+            boxShadow: "0 4px 14px rgba(255,109,0,0.30)",
+          }}
+        >
+          <Pencil className="h-4 w-4" /> Редактировать
+        </button>
+        <button
+          onClick={onDelete}
+          className="tap rounded-xl py-2.5 text-[13px] font-bold inline-flex items-center justify-center gap-1.5"
+          style={{ background: "#fff", color: "#dc2626", border: "1px solid #fecaca" }}
+        >
+          <X className="h-4 w-4" /> Удалить
+        </button>
+      </div>
+    </Card>
+  );
+}
+
 
 
 // ───────────────────────── Screen 5: Browse requests ─────────────────────────
@@ -937,11 +1064,18 @@ function CreateRequest({ onBack }: { onBack: () => void }) {
 function BrowseRequests({
   onBack,
   onConfirm,
+  myOwn,
+  onEditMyRequest,
+  onDeleteMyRequest,
 }: {
   onBack: () => void;
   onConfirm: (req: FoursomeRequest) => void;
+  myOwn: FoursomeRequest | null;
+  onEditMyRequest: () => void;
+  onDeleteMyRequest: () => void;
 }) {
   const [confirming, setConfirming] = useState<FoursomeRequest | null>(null);
+  const list: FoursomeRequest[] = myOwn ? [myOwn, ...DEMO_REQUESTS] : [...DEMO_REQUESTS];
 
   return (
     <div className="px-4 pb-8">
@@ -951,8 +1085,9 @@ function BrowseRequests({
       </p>
 
       <div className="space-y-3">
-        {[MY_OWN_FOURSOME_REQUEST, ...DEMO_REQUESTS].map((req) => {
-          const mine = req.id === MY_OWN_FOURSOME_REQUEST.id;
+        {list.map((req) => {
+          const mine = myOwn ? req.id === myOwn.id : false;
+
           return (
           <Card
             key={req.id}
@@ -1033,11 +1168,24 @@ function BrowseRequests({
             )}
 
             {mine ? (
-              <div
-                className="w-full py-2.5 rounded-xl text-[13px] font-semibold text-center"
-                style={{ background: "#f3f4f6", color: "#6b7280" }}
-              >
-                Это ваша заявка
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={onEditMyRequest}
+                  className="tap rounded-xl py-2.5 text-[13px] font-bold text-white inline-flex items-center justify-center gap-1.5"
+                  style={{
+                    background: "linear-gradient(135deg, #FFB300, #FF6D00)",
+                    boxShadow: "0 4px 14px rgba(255,109,0,0.30)",
+                  }}
+                >
+                  <Pencil className="h-4 w-4" /> Редактировать
+                </button>
+                <button
+                  onClick={onDeleteMyRequest}
+                  className="tap rounded-xl py-2.5 text-[13px] font-bold inline-flex items-center justify-center gap-1.5"
+                  style={{ background: "#fff", color: "#dc2626", border: "1px solid #fecaca" }}
+                >
+                  <X className="h-4 w-4" /> Удалить
+                </button>
               </div>
             ) : (
               <button
