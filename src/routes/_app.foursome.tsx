@@ -24,14 +24,15 @@ import {
 
 
 export const Route = createFileRoute("/_app/foursome")({
-  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "locked"; cards?: "empty" | "full" } => {
+  validateSearch: (search: Record<string, unknown>): { demo?: "has" | "waiting" | "locked" | "edit-my-request"; cards?: "empty" | "full" } => {
     const d = search.demo;
     const c = search.cards;
-    const out: { demo?: "has" | "waiting" | "locked"; cards?: "empty" | "full" } = {};
-    if (d === "has" || d === "waiting" || d === "locked") out.demo = d;
+    const out: { demo?: "has" | "waiting" | "locked" | "edit-my-request"; cards?: "empty" | "full" } = {};
+    if (d === "has" || d === "waiting" || d === "locked" || d === "edit-my-request") out.demo = d;
     if (c === "empty" || c === "full") out.cards = c;
     return out;
   },
+
   head: () => ({
     meta: [
       { title: "Четвёрка — Клуб «Моя жизнь»" },
